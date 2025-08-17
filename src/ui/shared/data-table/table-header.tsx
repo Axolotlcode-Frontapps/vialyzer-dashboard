@@ -1,0 +1,44 @@
+import { Input } from '../input'
+import { Search } from 'lucide-react'
+
+import type { Table } from '@tanstack/react-table'
+import { TableFilters } from '../search-filters'
+
+export function DataTableHeader<TData>({
+  table,
+  searchBy,
+  searchPlaceholder = 'Buscar...',
+  filters = [],
+}: {
+  table: Table<TData>
+  searchBy: keyof TData
+  searchPlaceholder?: string
+  filters?: Filters[]
+}) {
+  return (
+    <div className='w-full flex items-center justify-between gap-4 pb-4'>
+      <div className='w-full md:max-w-1/3 relative'>
+        <Input
+          placeholder={searchPlaceholder}
+          value={
+            (table.getColumn(String(searchBy))?.getFilterValue() as string) ??
+            ''
+          }
+          onChange={(event) =>
+            table
+              .getColumn(String(searchBy))
+              ?.setFilterValue(event.target.value)
+          }
+          className='pl-9 py-2 max-h-9 placeholder:text-sm'
+        />
+        <Search className='absolute top-2 left-2.5 text-muted-foreground size-5' />
+      </div>
+
+      {filters.length ? (
+        <div className='flex gap-2 items-center justify-end'>
+          <TableFilters filters={filters} />
+        </div>
+      ) : null}
+    </div>
+  )
+}

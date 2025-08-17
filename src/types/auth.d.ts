@@ -1,0 +1,3 @@
+interface SignInResponse {
+  token: string
+}

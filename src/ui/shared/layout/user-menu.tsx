@@ -1,0 +1,78 @@
+import { BadgeCheck, LogOut } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from '../avatar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../dropdown-menu'
+
+import { Button } from '../button'
+import { useRouter } from '@tanstack/react-router'
+import { useAuth } from '@/contexts/auth-provider'
+
+export function UserMenu() {
+  const user = {
+    name: 'shadcn',
+    email: 'm@example.com',
+    avatar: '/avatars/shadcn.jpg',
+  }
+
+  const router = useRouter()
+  const auth = useAuth()
+
+  async function handleLogout() {
+    await auth.logout()
+    await router.invalidate()
+    await router.navigate({ to: '/' })
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          size='lg'
+          variant='secondary'
+          className='data-[state=open]:bg-accent data-[state=open]:text-sidebar-accent-foreground size-10 rounded-full p-0 crusor-pointer'>
+          <Avatar className='size-10 rounded-full grid place-content-center'>
+            <AvatarImage src={user.avatar} alt={user.name} />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className='w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg'
+        side='bottom'
+        align='end'
+        sideOffset={4}>
+        <DropdownMenuLabel className='p-0 font-normal'>
+          <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
+            <Avatar className='h-8 w-8 rounded-lg'>
+              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarFallback className='rounded-lg'>CN</AvatarFallback>
+            </Avatar>
+            <div className='grid flex-1 text-left text-sm leading-tight'>
+              <span className='truncate font-medium'>{user.name}</span>
+              <span className='truncate text-xs'>{user.email}</span>
+            </div>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem>
+            <BadgeCheck />
+            Mi cuenta
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleLogout}>
+          <LogOut />
+          Cerrar sesión
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}

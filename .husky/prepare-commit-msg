@@ -1,0 +1,2 @@
+pnpm build
+exec < /dev/tty && pnpm prepare-message || true
