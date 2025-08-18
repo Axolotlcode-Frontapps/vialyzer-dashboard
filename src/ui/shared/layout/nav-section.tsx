@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronRight, type LucideIcon } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -16,24 +16,12 @@ import {
   CollapsibleTrigger,
 } from '../collapsible'
 import { Link } from '@tanstack/react-router'
+import type { INavSection } from './types'
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string
-    to: string
-    icon?: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      to: string
-    }[]
-  }[]
-}) {
+export function NavSection({ group, items }: INavSection) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Principal</SidebarGroupLabel>
+      {group ? <SidebarGroupLabel>{group}</SidebarGroupLabel> : null}
 
       <SidebarMenu>
         {items.map((item) => {
@@ -53,8 +41,8 @@ export function NavMain({
           return (
             <Collapsible
               key={item.title}
+              defaultOpen={item.defaultOpen}
               asChild
-              defaultOpen={item.isActive}
               className='group/collapsible'>
               <SidebarMenuSubItem>
                 <CollapsibleTrigger asChild>
@@ -70,6 +58,7 @@ export function NavMain({
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton asChild>
                           <Link to={subItem.to}>
+                            {subItem.icon && <subItem.icon />}
                             <span>{subItem.title}</span>
                           </Link>
                         </SidebarMenuSubButton>

@@ -16,6 +16,7 @@ import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
 import { Route as AuthVerifyCodeRouteImport } from './routes/auth/verify-code'
 import { Route as AuthUpdatePasswordRouteImport } from './routes/auth/update-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
+import { Route as DashboardProfileRouteImport } from './routes/_dashboard/profile'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -51,9 +52,15 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthRoute,
 } as any)
+const DashboardProfileRoute = DashboardProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
+  '/profile': typeof DashboardProfileRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/update-password': typeof AuthUpdatePasswordRoute
   '/auth/verify-code': typeof AuthVerifyCodeRoute
@@ -61,6 +68,7 @@ export interface FileRoutesByFullPath {
   '/auth/': typeof AuthIndexRoute
 }
 export interface FileRoutesByTo {
+  '/profile': typeof DashboardProfileRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/update-password': typeof AuthUpdatePasswordRoute
   '/auth/verify-code': typeof AuthVerifyCodeRoute
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_dashboard': typeof DashboardRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
+  '/_dashboard/profile': typeof DashboardProfileRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/update-password': typeof AuthUpdatePasswordRoute
   '/auth/verify-code': typeof AuthVerifyCodeRoute
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/auth'
+    | '/profile'
     | '/auth/forgot-password'
     | '/auth/update-password'
     | '/auth/verify-code'
@@ -88,6 +98,7 @@ export interface FileRouteTypes {
     | '/auth/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/profile'
     | '/auth/forgot-password'
     | '/auth/update-password'
     | '/auth/verify-code'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_dashboard'
     | '/auth'
+    | '/_dashboard/profile'
     | '/auth/forgot-password'
     | '/auth/update-password'
     | '/auth/verify-code'
@@ -160,14 +172,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_dashboard/profile': {
+      id: '/_dashboard/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof DashboardProfileRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
 interface DashboardRouteChildren {
+  DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardProfileRoute: DashboardProfileRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
