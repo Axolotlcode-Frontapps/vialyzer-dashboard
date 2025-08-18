@@ -1,5 +1,15 @@
 import { Sidebar, SidebarContent, SidebarHeader, SidebarRail } from '../sidebar'
-import { SquareTerminal } from 'lucide-react'
+import {
+  Camera,
+  FileChartColumnIncreasing,
+  FileChartLine,
+  House,
+  Megaphone,
+  Settings,
+  Shield,
+  User,
+  Video,
+} from 'lucide-react'
 import { NavSection } from './nav-section'
 import type { INavSection } from './types'
 
@@ -8,7 +18,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     group: 'Principal',
     items: [
       {
-        icon: SquareTerminal,
+        icon: House,
         title: 'Dashboard',
         to: '/',
       },
@@ -20,40 +30,40 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     items: [
       {
         title: 'Movilidad',
-        icon: SquareTerminal,
+        icon: Video,
         defaultOpen: true,
         items: [
           {
-            icon: SquareTerminal,
+            icon: Camera,
             title: 'Transito',
-            to: '/settings/profile',
+            to: '/mobility',
           },
           {
-            icon: SquareTerminal,
+            icon: Megaphone,
             title: 'Seguridad vial',
-            to: '/settings/preferences',
+            to: '/mobility/security',
           },
           {
-            icon: SquareTerminal,
+            icon: FileChartColumnIncreasing,
             title: 'Pronostico',
-            to: '/settings/preferences',
+            to: '/mobility/forecast',
           },
           {
-            icon: SquareTerminal,
+            icon: FileChartLine,
             title: 'Cruce de variables',
-            to: '/settings/preferences',
+            to: '/mobility/variables',
           },
         ],
       },
       {
         title: 'Monitoreo',
-        icon: SquareTerminal,
+        icon: Video,
         defaultOpen: true,
         items: [
           {
-            icon: SquareTerminal,
+            icon: Camera,
             title: 'Agentes',
-            to: '/settings/profile',
+            to: '/monitoring',
           },
         ],
       },
@@ -65,23 +75,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     items: [
       {
         title: 'Administración',
-        icon: SquareTerminal,
+        icon: Settings,
         defaultOpen: true,
         items: [
           {
             title: 'Roles',
-            icon: SquareTerminal,
-            to: '/settings/profile',
+            icon: Shield,
+            to: '/settings/roles',
           },
           {
             title: 'Usuarios',
-            icon: SquareTerminal,
-            to: '/settings/preferences',
+            icon: User,
+            to: '/settings/users',
           },
           {
             title: 'Empresas',
-            icon: SquareTerminal,
-            to: '/settings/preferences',
+            icon: Settings,
+            to: '/settings/companies',
           },
         ],
       },
