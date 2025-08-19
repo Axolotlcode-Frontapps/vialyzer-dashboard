@@ -1,5 +1,5 @@
 import { fetcher } from '@/utils/fetch-api'
-import type { RoleValues } from '../schemas/settings'
+import type { RoleValues, UserValues } from '../schemas/settings'
 
 class SettingsServices {
   async getAllRoles() {
@@ -22,6 +22,31 @@ class SettingsServices {
 
   async deleteRole(id: string) {
     return await fetcher<GeneralResponse<Role>>(`/roles/delete`, {
+      method: 'DELETE',
+      data: { id },
+    })
+  }
+
+  async getAllUsers() {
+    return await fetcher<GeneralResponse<User[]>>('/users/get-all')
+  }
+
+  async createUser(values: UserValues) {
+    return await fetcher<GeneralResponse<User>>('/users/create', {
+      method: 'POST',
+      data: values,
+    })
+  }
+
+  async updateUser(id: string, values: UserValues) {
+    return await fetcher<GeneralResponse<User>>(`/users/update`, {
+      method: 'PUT',
+      data: { id, ...values },
+    })
+  }
+
+  async deleteUser(id: string) {
+    return await fetcher<GeneralResponse<User>>(`/users/delete`, {
       method: 'DELETE',
       data: { id },
     })

@@ -11,30 +11,33 @@ import {
   SheetTrigger,
 } from '@/ui/shared/sheet'
 import { useMutation } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import { RoleFields } from './role-fields'
-import { roleFieldsOpts } from './role-fields/options'
-import { settingsService } from '@/lib/services/settings'
-import type { RoleValues } from '@/lib/schemas/settings'
-import { Pencil } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
+import { CirclePlus } from 'lucide-react'
+import { userFieldsOpts } from './user-fields/options'
+import { UserFields } from './user-fields'
+import type { UserValues } from '@/lib/schemas/settings'
 
-export function RoleEdit({ roleId }: { roleId: string }) {
-  const [open, onOpenChange] = useState(false)
+export function UserAdd() {
+  const [open, setOpen] = useState(false)
 
-  const roleEditMutation = useMutation({
-    mutationFn: async (values: RoleValues) => {
-      return await settingsService.updateRole(roleId, values)
+  const userAddMutation = useMutation({
+    mutationFn: async (values: UserValues) => {
+      // return await settingsService.createUser(values)
+      console.log(values)
+      return {
+        payload: values,
+      }
     },
     onSuccess: ({ payload }) => {
       form.reset()
-      toast.success(`Rol actualizado correctamente`, {
-        description: `Se ha actualizado el rol "${payload?.name}" correctamente.`,
+      toast.success(`Usuario creado correctamente`, {
+        description: `Se ha creado el usuario "${payload?.name}" correctamente.`,
       })
     },
     onError: (error) => {
       form.state.canSubmit = true
-      toast.error(`Error al actualizar el rol`, {
+      toast.error(`Error al crear el usuario`, {
         description:
           error instanceof Error
             ? error.message
@@ -47,40 +50,41 @@ export function RoleEdit({ roleId }: { roleId: string }) {
   })
 
   const form = useAppForm({
-    ...roleFieldsOpts,
-    onSubmit: ({ value }) => roleEditMutation.mutate(value),
+    ...userFieldsOpts,
+    onSubmit: ({ value }) => userAddMutation.mutate(value as UserValues),
   })
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button size='icon'>
-          <Pencil />
+        <Button>
+          <CirclePlus />
+          <span className='hidden sm:inline'>Crear usuario</span>
         </Button>
       </SheetTrigger>
       <SheetContent className='w-full sm:min-w-[600px]'>
         <SheetHeader>
-          <SheetTitle>Editar rol</SheetTitle>
+          <SheetTitle>Crear usuario</SheetTitle>
           <SheetDescription>
-            Vas a modificar la información de este rol. Realiza los cambios
-            necesarios y guarda para actualizar el rol.
+            Vas a crear un nuevo usuario. Completa la información necesaria y
+            guarda para agregar el usuario.
           </SheetDescription>
         </SheetHeader>
         <form
-          id='role-edit-form'
+          id='user-add-form'
           className='px-4 space-y-2'
           onSubmit={(e) => {
             e.preventDefault()
             form.handleSubmit()
           }}>
-          <RoleFields form={form} />
+          <UserFields form={form} />
         </form>
         <SheetFooter>
           <form.AppForm>
             <form.SubmitButton
-              form='role-edit-form'
-              label='Actualizar rol'
-              labelLoading='Actualizando rol...'
+              form='user-add-form'
+              label='Crear usuario'
+              labelLoading='Creando usuario...'
             />
           </form.AppForm>
           <SheetClose asChild>
