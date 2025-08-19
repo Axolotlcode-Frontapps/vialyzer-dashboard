@@ -16,6 +16,15 @@ import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
 import { Route as AuthVerifyCodeRouteImport } from './routes/auth/verify-code'
 import { Route as AuthUpdatePasswordRouteImport } from './routes/auth/update-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
+import { Route as DashboardProfileRouteImport } from './routes/_dashboard/profile'
+import { Route as DashboardMonitoringRouteImport } from './routes/_dashboard/monitoring'
+import { Route as DashboardMobilityIndexRouteImport } from './routes/_dashboard/mobility/index'
+import { Route as DashboardSettingsUsersRouteImport } from './routes/_dashboard/settings/users'
+import { Route as DashboardSettingsRolesRouteImport } from './routes/_dashboard/settings/roles'
+import { Route as DashboardSettingsCompaniesRouteImport } from './routes/_dashboard/settings/companies'
+import { Route as DashboardMobilityVariablesRouteImport } from './routes/_dashboard/mobility/variables'
+import { Route as DashboardMobilitySecurityRouteImport } from './routes/_dashboard/mobility/security'
+import { Route as DashboardMobilityForecastRouteImport } from './routes/_dashboard/mobility/forecast'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -51,57 +60,160 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthRoute,
 } as any)
+const DashboardProfileRoute = DashboardProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardMonitoringRoute = DashboardMonitoringRouteImport.update({
+  id: '/monitoring',
+  path: '/monitoring',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardMobilityIndexRoute = DashboardMobilityIndexRouteImport.update({
+  id: '/mobility/',
+  path: '/mobility/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSettingsUsersRoute = DashboardSettingsUsersRouteImport.update({
+  id: '/settings/users',
+  path: '/settings/users',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSettingsRolesRoute = DashboardSettingsRolesRouteImport.update({
+  id: '/settings/roles',
+  path: '/settings/roles',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSettingsCompaniesRoute =
+  DashboardSettingsCompaniesRouteImport.update({
+    id: '/settings/companies',
+    path: '/settings/companies',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardMobilityVariablesRoute =
+  DashboardMobilityVariablesRouteImport.update({
+    id: '/mobility/variables',
+    path: '/mobility/variables',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardMobilitySecurityRoute =
+  DashboardMobilitySecurityRouteImport.update({
+    id: '/mobility/security',
+    path: '/mobility/security',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardMobilityForecastRoute =
+  DashboardMobilityForecastRouteImport.update({
+    id: '/mobility/forecast',
+    path: '/mobility/forecast',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
+  '/monitoring': typeof DashboardMonitoringRoute
+  '/profile': typeof DashboardProfileRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/update-password': typeof AuthUpdatePasswordRoute
   '/auth/verify-code': typeof AuthVerifyCodeRoute
   '/': typeof DashboardIndexRoute
   '/auth/': typeof AuthIndexRoute
+  '/mobility/forecast': typeof DashboardMobilityForecastRoute
+  '/mobility/security': typeof DashboardMobilitySecurityRoute
+  '/mobility/variables': typeof DashboardMobilityVariablesRoute
+  '/settings/companies': typeof DashboardSettingsCompaniesRoute
+  '/settings/roles': typeof DashboardSettingsRolesRoute
+  '/settings/users': typeof DashboardSettingsUsersRoute
+  '/mobility': typeof DashboardMobilityIndexRoute
 }
 export interface FileRoutesByTo {
+  '/monitoring': typeof DashboardMonitoringRoute
+  '/profile': typeof DashboardProfileRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/update-password': typeof AuthUpdatePasswordRoute
   '/auth/verify-code': typeof AuthVerifyCodeRoute
   '/': typeof DashboardIndexRoute
   '/auth': typeof AuthIndexRoute
+  '/mobility/forecast': typeof DashboardMobilityForecastRoute
+  '/mobility/security': typeof DashboardMobilitySecurityRoute
+  '/mobility/variables': typeof DashboardMobilityVariablesRoute
+  '/settings/companies': typeof DashboardSettingsCompaniesRoute
+  '/settings/roles': typeof DashboardSettingsRolesRoute
+  '/settings/users': typeof DashboardSettingsUsersRoute
+  '/mobility': typeof DashboardMobilityIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_dashboard': typeof DashboardRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
+  '/_dashboard/monitoring': typeof DashboardMonitoringRoute
+  '/_dashboard/profile': typeof DashboardProfileRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/update-password': typeof AuthUpdatePasswordRoute
   '/auth/verify-code': typeof AuthVerifyCodeRoute
   '/_dashboard/': typeof DashboardIndexRoute
   '/auth/': typeof AuthIndexRoute
+  '/_dashboard/mobility/forecast': typeof DashboardMobilityForecastRoute
+  '/_dashboard/mobility/security': typeof DashboardMobilitySecurityRoute
+  '/_dashboard/mobility/variables': typeof DashboardMobilityVariablesRoute
+  '/_dashboard/settings/companies': typeof DashboardSettingsCompaniesRoute
+  '/_dashboard/settings/roles': typeof DashboardSettingsRolesRoute
+  '/_dashboard/settings/users': typeof DashboardSettingsUsersRoute
+  '/_dashboard/mobility/': typeof DashboardMobilityIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/auth'
+    | '/monitoring'
+    | '/profile'
     | '/auth/forgot-password'
     | '/auth/update-password'
     | '/auth/verify-code'
     | '/'
     | '/auth/'
+    | '/mobility/forecast'
+    | '/mobility/security'
+    | '/mobility/variables'
+    | '/settings/companies'
+    | '/settings/roles'
+    | '/settings/users'
+    | '/mobility'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/monitoring'
+    | '/profile'
     | '/auth/forgot-password'
     | '/auth/update-password'
     | '/auth/verify-code'
     | '/'
     | '/auth'
+    | '/mobility/forecast'
+    | '/mobility/security'
+    | '/mobility/variables'
+    | '/settings/companies'
+    | '/settings/roles'
+    | '/settings/users'
+    | '/mobility'
   id:
     | '__root__'
     | '/_dashboard'
     | '/auth'
+    | '/_dashboard/monitoring'
+    | '/_dashboard/profile'
     | '/auth/forgot-password'
     | '/auth/update-password'
     | '/auth/verify-code'
     | '/_dashboard/'
     | '/auth/'
+    | '/_dashboard/mobility/forecast'
+    | '/_dashboard/mobility/security'
+    | '/_dashboard/mobility/variables'
+    | '/_dashboard/settings/companies'
+    | '/_dashboard/settings/roles'
+    | '/_dashboard/settings/users'
+    | '/_dashboard/mobility/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -160,15 +272,96 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_dashboard/profile': {
+      id: '/_dashboard/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof DashboardProfileRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/monitoring': {
+      id: '/_dashboard/monitoring'
+      path: '/monitoring'
+      fullPath: '/monitoring'
+      preLoaderRoute: typeof DashboardMonitoringRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/mobility/': {
+      id: '/_dashboard/mobility/'
+      path: '/mobility'
+      fullPath: '/mobility'
+      preLoaderRoute: typeof DashboardMobilityIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/settings/users': {
+      id: '/_dashboard/settings/users'
+      path: '/settings/users'
+      fullPath: '/settings/users'
+      preLoaderRoute: typeof DashboardSettingsUsersRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/settings/roles': {
+      id: '/_dashboard/settings/roles'
+      path: '/settings/roles'
+      fullPath: '/settings/roles'
+      preLoaderRoute: typeof DashboardSettingsRolesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/settings/companies': {
+      id: '/_dashboard/settings/companies'
+      path: '/settings/companies'
+      fullPath: '/settings/companies'
+      preLoaderRoute: typeof DashboardSettingsCompaniesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/mobility/variables': {
+      id: '/_dashboard/mobility/variables'
+      path: '/mobility/variables'
+      fullPath: '/mobility/variables'
+      preLoaderRoute: typeof DashboardMobilityVariablesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/mobility/security': {
+      id: '/_dashboard/mobility/security'
+      path: '/mobility/security'
+      fullPath: '/mobility/security'
+      preLoaderRoute: typeof DashboardMobilitySecurityRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/mobility/forecast': {
+      id: '/_dashboard/mobility/forecast'
+      path: '/mobility/forecast'
+      fullPath: '/mobility/forecast'
+      preLoaderRoute: typeof DashboardMobilityForecastRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
 interface DashboardRouteChildren {
+  DashboardMonitoringRoute: typeof DashboardMonitoringRoute
+  DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardMobilityForecastRoute: typeof DashboardMobilityForecastRoute
+  DashboardMobilitySecurityRoute: typeof DashboardMobilitySecurityRoute
+  DashboardMobilityVariablesRoute: typeof DashboardMobilityVariablesRoute
+  DashboardSettingsCompaniesRoute: typeof DashboardSettingsCompaniesRoute
+  DashboardSettingsRolesRoute: typeof DashboardSettingsRolesRoute
+  DashboardSettingsUsersRoute: typeof DashboardSettingsUsersRoute
+  DashboardMobilityIndexRoute: typeof DashboardMobilityIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardMonitoringRoute: DashboardMonitoringRoute,
+  DashboardProfileRoute: DashboardProfileRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardMobilityForecastRoute: DashboardMobilityForecastRoute,
+  DashboardMobilitySecurityRoute: DashboardMobilitySecurityRoute,
+  DashboardMobilityVariablesRoute: DashboardMobilityVariablesRoute,
+  DashboardSettingsCompaniesRoute: DashboardSettingsCompaniesRoute,
+  DashboardSettingsRolesRoute: DashboardSettingsRolesRoute,
+  DashboardSettingsUsersRoute: DashboardSettingsUsersRoute,
+  DashboardMobilityIndexRoute: DashboardMobilityIndexRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(

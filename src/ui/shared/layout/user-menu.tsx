@@ -62,7 +62,7 @@ export function UserMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.navigate({ to: '/profile' })}>
             <BadgeCheck />
             Mi cuenta
           </DropdownMenuItem>
