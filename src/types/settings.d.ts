@@ -4,3 +4,15 @@ interface Role {
   description: string
   active: boolean
 }
+
+interface User {
+  id: string
+  name: string
+  lastName: string
+  email: string
+  phone: string
+  role: Role
+  createdAt: Date
+  active: boolean
+  lastLogin: Date
+}

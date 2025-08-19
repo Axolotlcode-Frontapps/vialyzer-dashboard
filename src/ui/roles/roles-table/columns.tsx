@@ -1,5 +1,5 @@
 import { DataTableColumnHeader } from '@/ui/shared/data-table/column-header'
-import { RolesTableActions } from './actions'
+import { RoleTableActions } from './actions'
 import type { ColumnDef } from '@tanstack/react-table'
 
 export const columns: ColumnDef<Role>[] = [
@@ -18,6 +18,6 @@ export const columns: ColumnDef<Role>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <RolesTableActions role={row.original} />,
+    cell: ({ row }) => <RoleTableActions role={row.original} />,
   },
 ]
