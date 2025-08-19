@@ -18,7 +18,7 @@ export function DataTableHeader<TData>({
   children?: React.ReactNode
 }) {
   return (
-    <div className='w-full flex items-center justify-between gap-4 pb-4'>
+    <div className='w-full flex items-center justify-between gap-4'>
       <div className='w-full md:max-w-1/3 relative'>
         <Input
           placeholder={searchPlaceholder}

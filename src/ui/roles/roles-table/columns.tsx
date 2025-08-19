@@ -18,6 +18,6 @@ export const columns: ColumnDef<Role>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <RolesTableActions roleId={row.original.id} />,
+    cell: ({ row }) => <RolesTableActions role={row.original} />,
   },
 ]

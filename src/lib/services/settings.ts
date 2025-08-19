@@ -19,6 +19,13 @@ class SettingsServices {
       data: { id, ...values },
     })
   }
+
+  async deleteRole(id: string) {
+    return await fetcher<GeneralResponse<Role>>(`/roles/delete`, {
+      method: 'DELETE',
+      data: { id },
+    })
+  }
 }
 
 export const settingsService = new SettingsServices()
