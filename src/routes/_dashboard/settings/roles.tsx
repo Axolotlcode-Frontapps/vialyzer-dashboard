@@ -1,3 +1,4 @@
+import { RolesTable } from '@/ui/roles/roles-table'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_dashboard/settings/roles')({
@@ -5,5 +6,5 @@ export const Route = createFileRoute('/_dashboard/settings/roles')({
 })
 
 function Roles() {
-  return <div>roles</div>
+  return <RolesTable />
 }

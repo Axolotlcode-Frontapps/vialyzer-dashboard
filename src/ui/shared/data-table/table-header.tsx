@@ -9,11 +9,13 @@ export function DataTableHeader<TData>({
   searchBy,
   searchPlaceholder = 'Buscar...',
   filters = [],
+  children,
 }: {
   table: Table<TData>
   searchBy: keyof TData
   searchPlaceholder?: string
   filters?: Filters[]
+  children?: React.ReactNode
 }) {
   return (
     <div className='w-full flex items-center justify-between gap-4 pb-4'>
@@ -34,9 +36,10 @@ export function DataTableHeader<TData>({
         <Search className='absolute top-2 left-2.5 text-muted-foreground size-5' />
       </div>
 
-      {filters.length ? (
+      {children || filters.length ? (
         <div className='flex gap-2 items-center justify-end'>
-          <TableFilters filters={filters} />
+          {filters.length ? <TableFilters filters={filters} /> : null}
+          {children}
         </div>
       ) : null}
     </div>
