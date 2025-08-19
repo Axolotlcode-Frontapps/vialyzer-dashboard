@@ -8,6 +8,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
+  SheetTrigger,
 } from '@/ui/shared/sheet'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -15,16 +16,12 @@ import { RoleFields } from './role-fields'
 import { roleFieldsOpts } from './role-fields/options'
 import { settingsService } from '@/lib/services/settings'
 import type { RoleValues } from '@/lib/schemas/settings'
+import { Pencil } from 'lucide-react'
+import { useState } from 'react'
 
-export function RoleEdit({
-  open,
-  onOpenChange,
-  roleId,
-}: {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  roleId: string
-}) {
+export function RoleEdit({ roleId }: { roleId: string }) {
+  const [open, onOpenChange] = useState(false)
+
   const roleEditMutation = useMutation({
     mutationFn: async (values: RoleValues) => {
       return await settingsService.updateRole(roleId, values)
@@ -56,6 +53,11 @@ export function RoleEdit({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetTrigger asChild>
+        <Button size='icon'>
+          <Pencil />
+        </Button>
+      </SheetTrigger>
       <SheetContent className='w-full sm:min-w-[600px]'>
         <SheetHeader>
           <SheetTitle>Editar rol</SheetTitle>

@@ -20,11 +20,12 @@ import { Route as DashboardProfileRouteImport } from './routes/_dashboard/profil
 import { Route as DashboardMonitoringRouteImport } from './routes/_dashboard/monitoring'
 import { Route as DashboardMobilityIndexRouteImport } from './routes/_dashboard/mobility/index'
 import { Route as DashboardSettingsUsersRouteImport } from './routes/_dashboard/settings/users'
-import { Route as DashboardSettingsRolesRouteImport } from './routes/_dashboard/settings/roles'
 import { Route as DashboardSettingsCompaniesRouteImport } from './routes/_dashboard/settings/companies'
 import { Route as DashboardMobilityVariablesRouteImport } from './routes/_dashboard/mobility/variables'
 import { Route as DashboardMobilitySecurityRouteImport } from './routes/_dashboard/mobility/security'
 import { Route as DashboardMobilityForecastRouteImport } from './routes/_dashboard/mobility/forecast'
+import { Route as DashboardSettingsRolesIndexRouteImport } from './routes/_dashboard/settings/roles/index'
+import { Route as DashboardSettingsRolesRoleIdIndexRouteImport } from './routes/_dashboard/settings/roles/$roleId/index'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -80,11 +81,6 @@ const DashboardSettingsUsersRoute = DashboardSettingsUsersRouteImport.update({
   path: '/settings/users',
   getParentRoute: () => DashboardRoute,
 } as any)
-const DashboardSettingsRolesRoute = DashboardSettingsRolesRouteImport.update({
-  id: '/settings/roles',
-  path: '/settings/roles',
-  getParentRoute: () => DashboardRoute,
-} as any)
 const DashboardSettingsCompaniesRoute =
   DashboardSettingsCompaniesRouteImport.update({
     id: '/settings/companies',
@@ -109,6 +105,18 @@ const DashboardMobilityForecastRoute =
     path: '/mobility/forecast',
     getParentRoute: () => DashboardRoute,
   } as any)
+const DashboardSettingsRolesIndexRoute =
+  DashboardSettingsRolesIndexRouteImport.update({
+    id: '/settings/roles/',
+    path: '/settings/roles/',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardSettingsRolesRoleIdIndexRoute =
+  DashboardSettingsRolesRoleIdIndexRouteImport.update({
+    id: '/settings/roles/$roleId/',
+    path: '/settings/roles/$roleId/',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
@@ -123,9 +131,10 @@ export interface FileRoutesByFullPath {
   '/mobility/security': typeof DashboardMobilitySecurityRoute
   '/mobility/variables': typeof DashboardMobilityVariablesRoute
   '/settings/companies': typeof DashboardSettingsCompaniesRoute
-  '/settings/roles': typeof DashboardSettingsRolesRoute
   '/settings/users': typeof DashboardSettingsUsersRoute
   '/mobility': typeof DashboardMobilityIndexRoute
+  '/settings/roles': typeof DashboardSettingsRolesIndexRoute
+  '/settings/roles/$roleId': typeof DashboardSettingsRolesRoleIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/monitoring': typeof DashboardMonitoringRoute
@@ -139,9 +148,10 @@ export interface FileRoutesByTo {
   '/mobility/security': typeof DashboardMobilitySecurityRoute
   '/mobility/variables': typeof DashboardMobilityVariablesRoute
   '/settings/companies': typeof DashboardSettingsCompaniesRoute
-  '/settings/roles': typeof DashboardSettingsRolesRoute
   '/settings/users': typeof DashboardSettingsUsersRoute
   '/mobility': typeof DashboardMobilityIndexRoute
+  '/settings/roles': typeof DashboardSettingsRolesIndexRoute
+  '/settings/roles/$roleId': typeof DashboardSettingsRolesRoleIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -158,9 +168,10 @@ export interface FileRoutesById {
   '/_dashboard/mobility/security': typeof DashboardMobilitySecurityRoute
   '/_dashboard/mobility/variables': typeof DashboardMobilityVariablesRoute
   '/_dashboard/settings/companies': typeof DashboardSettingsCompaniesRoute
-  '/_dashboard/settings/roles': typeof DashboardSettingsRolesRoute
   '/_dashboard/settings/users': typeof DashboardSettingsUsersRoute
   '/_dashboard/mobility/': typeof DashboardMobilityIndexRoute
+  '/_dashboard/settings/roles/': typeof DashboardSettingsRolesIndexRoute
+  '/_dashboard/settings/roles/$roleId/': typeof DashboardSettingsRolesRoleIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -177,9 +188,10 @@ export interface FileRouteTypes {
     | '/mobility/security'
     | '/mobility/variables'
     | '/settings/companies'
-    | '/settings/roles'
     | '/settings/users'
     | '/mobility'
+    | '/settings/roles'
+    | '/settings/roles/$roleId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/monitoring'
@@ -193,9 +205,10 @@ export interface FileRouteTypes {
     | '/mobility/security'
     | '/mobility/variables'
     | '/settings/companies'
-    | '/settings/roles'
     | '/settings/users'
     | '/mobility'
+    | '/settings/roles'
+    | '/settings/roles/$roleId'
   id:
     | '__root__'
     | '/_dashboard'
@@ -211,9 +224,10 @@ export interface FileRouteTypes {
     | '/_dashboard/mobility/security'
     | '/_dashboard/mobility/variables'
     | '/_dashboard/settings/companies'
-    | '/_dashboard/settings/roles'
     | '/_dashboard/settings/users'
     | '/_dashboard/mobility/'
+    | '/_dashboard/settings/roles/'
+    | '/_dashboard/settings/roles/$roleId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -300,13 +314,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsUsersRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/settings/roles': {
-      id: '/_dashboard/settings/roles'
-      path: '/settings/roles'
-      fullPath: '/settings/roles'
-      preLoaderRoute: typeof DashboardSettingsRolesRouteImport
-      parentRoute: typeof DashboardRoute
-    }
     '/_dashboard/settings/companies': {
       id: '/_dashboard/settings/companies'
       path: '/settings/companies'
@@ -335,6 +342,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardMobilityForecastRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_dashboard/settings/roles/': {
+      id: '/_dashboard/settings/roles/'
+      path: '/settings/roles'
+      fullPath: '/settings/roles'
+      preLoaderRoute: typeof DashboardSettingsRolesIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/settings/roles/$roleId/': {
+      id: '/_dashboard/settings/roles/$roleId/'
+      path: '/settings/roles/$roleId'
+      fullPath: '/settings/roles/$roleId'
+      preLoaderRoute: typeof DashboardSettingsRolesRoleIdIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
@@ -346,9 +367,10 @@ interface DashboardRouteChildren {
   DashboardMobilitySecurityRoute: typeof DashboardMobilitySecurityRoute
   DashboardMobilityVariablesRoute: typeof DashboardMobilityVariablesRoute
   DashboardSettingsCompaniesRoute: typeof DashboardSettingsCompaniesRoute
-  DashboardSettingsRolesRoute: typeof DashboardSettingsRolesRoute
   DashboardSettingsUsersRoute: typeof DashboardSettingsUsersRoute
   DashboardMobilityIndexRoute: typeof DashboardMobilityIndexRoute
+  DashboardSettingsRolesIndexRoute: typeof DashboardSettingsRolesIndexRoute
+  DashboardSettingsRolesRoleIdIndexRoute: typeof DashboardSettingsRolesRoleIdIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
@@ -359,9 +381,11 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardMobilitySecurityRoute: DashboardMobilitySecurityRoute,
   DashboardMobilityVariablesRoute: DashboardMobilityVariablesRoute,
   DashboardSettingsCompaniesRoute: DashboardSettingsCompaniesRoute,
-  DashboardSettingsRolesRoute: DashboardSettingsRolesRoute,
   DashboardSettingsUsersRoute: DashboardSettingsUsersRoute,
   DashboardMobilityIndexRoute: DashboardMobilityIndexRoute,
+  DashboardSettingsRolesIndexRoute: DashboardSettingsRolesIndexRoute,
+  DashboardSettingsRolesRoleIdIndexRoute:
+    DashboardSettingsRolesRoleIdIndexRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
