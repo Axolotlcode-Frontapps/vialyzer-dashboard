@@ -4,7 +4,7 @@ import { genericTableSearchSchema } from '@/lib/schemas/table'
 import { RolesTable } from '@/ui/roles/roles-table'
 import { RoleAdd } from '@/ui/roles/role-add'
 
-export const Route = createFileRoute('/_dashboard/settings/roles')({
+export const Route = createFileRoute('/_dashboard/settings/roles/')({
   component: Roles,
   validateSearch: zodValidator(genericTableSearchSchema),
 })

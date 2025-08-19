@@ -1,7 +1,8 @@
-import { Button } from '@/ui/shared/button'
+import { buttonVariants } from '@/ui/shared/button'
 import { KeyRound } from 'lucide-react'
 import { RoleEdit } from '../role-edit'
 import { RoleDelete } from '../role-delete'
+import { Link } from '@tanstack/react-router'
 
 export function RolesTableActions({ role }: { role: Role }) {
   return (
@@ -9,10 +10,15 @@ export function RolesTableActions({ role }: { role: Role }) {
       <RoleEdit roleId={role.id} />
       <RoleDelete role={role} />
 
-      <Button variant='secondary'>
+      <Link
+        to='/settings/roles/$roleId'
+        params={{ roleId: role.id }}
+        className={buttonVariants({
+          variant: 'secondary',
+        })}>
         <KeyRound />
         Editar permisos
-      </Button>
+      </Link>
     </div>
   )
 }
