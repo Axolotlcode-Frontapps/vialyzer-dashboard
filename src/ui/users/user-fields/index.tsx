@@ -1,9 +1,34 @@
 import { withForm } from '@/contexts/form-create'
 import { userFieldsOpts } from './options'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { settingsService } from '@/lib/services/settings'
 
 export const UserFields = withForm({
   ...userFieldsOpts,
   render: ({ form }) => {
+    const queryClient = useQueryClient()
+
+    const roles = queryClient.getQueryData<GeneralResponse<Role[]>>(['roles'])
+    const companies = queryClient.getQueryData<GeneralResponse<Company[]>>([
+      'companies',
+    ])
+
+    const { data: rolesData = [] } = useQuery({
+      queryKey: ['roles'],
+      queryFn: () => settingsService.getAllRoles(),
+      initialData: roles,
+      enabled: !roles,
+      select: (data) => data?.payload,
+    })
+
+    const { data: companiesData = [] } = useQuery({
+      queryKey: ['companies'],
+      queryFn: () => settingsService.getAllCompanies(),
+      initialData: companies,
+      enabled: !companies,
+      select: (data) => data?.payload,
+    })
+
     return (
       <>
         <div className='flex flex-col sm:flex-row gap-4 justify-between'>
@@ -17,7 +42,7 @@ export const UserFields = withForm({
             )}
           />
           <form.AppField
-            name='lastName'
+            name='lastname'
             children={(field) => (
               <field.TextField
                 label='Apellido'
@@ -52,16 +77,27 @@ export const UserFields = withForm({
         <form.AppField
           name='role'
           children={(field) => (
-            <field.TextField label='Rol' placeholder='Rol del usuario' />
+            <field.SelectField
+              label='Rol'
+              placeholder='Selecciona un rol'
+              options={rolesData.map((role) => ({
+                label: role.name,
+                value: role.id,
+              }))}
+            />
           )}
         />
 
         <form.AppField
           name='company'
           children={(field) => (
-            <field.TextField
+            <field.SelectField
               label='Empresa'
-              placeholder='Empresa del usuario'
+              placeholder='Selecciona una empresa'
+              options={companiesData.map((company) => ({
+                label: company.name,
+                value: company.id,
+              }))}
             />
           )}
         />

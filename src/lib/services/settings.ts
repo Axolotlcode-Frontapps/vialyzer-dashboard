@@ -32,17 +32,26 @@ class SettingsServices {
   }
 
   async createUser(values: UserValues) {
+    const { lastname, ...rest } = values
+    const parseData = {
+      ...rest,
+      lastName: lastname,
+    }
+
     return await fetcher<GeneralResponse<User>>('/users/create', {
       method: 'POST',
-      data: values,
+      data: parseData,
     })
   }
 
   async updateUser(id: string, values: UserValues) {
-    return await fetcher<GeneralResponse<User>>(`/users/update`, {
-      method: 'PUT',
-      data: { id, ...values },
-    })
+    return await fetcher<GeneralResponse<User>>(
+      `users/update-user?userId=${id}`,
+      {
+        method: 'PATCH',
+        data: { ...values },
+      }
+    )
   }
 
   async deleteUser(id: string) {

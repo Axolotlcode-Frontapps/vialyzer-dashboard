@@ -8,9 +8,9 @@ class Settings {
 
   user = z.object({
     name: z.string().min(1, { error: 'El nombre es obligatorio' }),
-    lastName: z.string().min(1, { error: 'El apellido es obligatorio' }),
+    lastname: z.string().min(1, { error: 'El apellido es obligatorio' }),
     email: z.email({ error: 'El email es obligatorio' }),
-    phone: z.string().min(1, { error: 'El teléfono es obligatorio' }),
+    phone: z.string(),
     role: z.string().min(1, { error: 'El rol es obligatorio' }),
     company: z.string().min(1, { error: 'La empresa es obligatoria' }),
   })

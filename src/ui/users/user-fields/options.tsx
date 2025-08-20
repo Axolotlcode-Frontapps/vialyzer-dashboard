@@ -2,7 +2,14 @@ import { settingsSchemas } from '@/lib/schemas/settings'
 import { formOptions } from '@tanstack/react-form'
 
 export const userFieldsOpts = formOptions({
-  defaultValues: {},
+  defaultValues: {
+    name: '',
+    lastname: '',
+    email: '',
+    phone: '',
+    role: '',
+    company: '',
+  },
   validators: {
     onMount: ({ formApi }) => {
       formApi.state.canSubmit = false

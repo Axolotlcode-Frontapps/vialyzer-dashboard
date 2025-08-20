@@ -1,7 +1,7 @@
 import { DataTableColumnHeader } from '@/ui/shared/data-table/column-header'
-import type { ColumnDef } from '@tanstack/react-table'
-import { UserTableActions } from './actions'
 import { Badge } from '@/ui/shared/badge'
+import { UserTableActions } from './actions'
+import type { ColumnDef } from '@tanstack/react-table'
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -39,6 +39,15 @@ export const columns: ColumnDef<User>[] = [
     ),
     cell: ({ row }) => (
       <Badge className='capitalize'>{row.original.role.name}</Badge>
+    ),
+  },
+  {
+    accessorKey: 'companie',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Empresa' />
+    ),
+    cell: ({ row }) => (
+      <span className='capitalize'>{row.original.companie.name}</span>
     ),
   },
   {
