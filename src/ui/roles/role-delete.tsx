@@ -10,11 +10,15 @@ import {
 } from '@/ui/shared/dialog'
 import { LoaderCircle, Trash } from 'lucide-react'
 import { Button } from '../shared/button'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { settingsService } from '@/lib/services/settings'
+import { useState } from 'react'
 
 export function RoleDelete({ role }: { role: Role }) {
+  const [open, setOpen] = useState(false)
+  const queryClient = useQueryClient()
+
   const roleEditMutation = useMutation({
     mutationFn: async () => {
       return await settingsService.deleteRole(role.id)
@@ -32,10 +36,14 @@ export function RoleDelete({ role }: { role: Role }) {
             : 'Por favor, inténtalo de nuevo.',
       })
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['roles'] })
+      setOpen(false)
+    },
   })
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size='icon' variant='destructive'>
           <Trash />

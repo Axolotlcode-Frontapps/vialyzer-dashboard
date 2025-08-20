@@ -11,7 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/ui/shared/sheet'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { RoleFields } from './role-fields'
@@ -20,6 +20,7 @@ import { settingsService } from '@/lib/services/settings'
 import { CirclePlus } from 'lucide-react'
 
 export function RoleAdd() {
+  const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
 
   const roleAddMutation = useMutation({
@@ -43,6 +44,8 @@ export function RoleAdd() {
     },
     onSettled: () => {
       form.state.isSubmitting = false
+      queryClient.invalidateQueries({ queryKey: ['roles'] })
+      setOpen(false)
     },
   })
 

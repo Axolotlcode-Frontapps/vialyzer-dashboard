@@ -2,18 +2,17 @@ import { z } from 'zod/v4'
 
 class Settings {
   role = z.object({
-    name: z.string({ error: 'El nombre es obligatorio' }),
-    description: z.string({ error: 'La descripción es obligatoria' }),
-    active: z.boolean().optional(),
+    name: z.string().min(1, { error: 'El nombre es obligatorio' }),
+    description: z.string().min(1, { error: 'La descripción es obligatoria' }),
   })
 
   user = z.object({
-    name: z.string({ error: 'El nombre es obligatorio' }),
-    lastName: z.string({ error: 'El apellido es obligatorio' }),
+    name: z.string().min(1, { error: 'El nombre es obligatorio' }),
+    lastName: z.string().min(1, { error: 'El apellido es obligatorio' }),
     email: z.email({ error: 'El email es obligatorio' }),
-    phone: z.string({ error: 'El teléfono es obligatorio' }),
-    role: z.string({ error: 'El rol es obligatorio' }),
-    company: z.string({ error: 'La empresa es obligatoria' }),
+    phone: z.string().min(1, { error: 'El teléfono es obligatorio' }),
+    role: z.string().min(1, { error: 'El rol es obligatorio' }),
+    company: z.string().min(1, { error: 'La empresa es obligatoria' }),
   })
 
   company = z.object({
