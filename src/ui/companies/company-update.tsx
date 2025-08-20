@@ -1,0 +1,93 @@
+import { useAppForm } from '@/contexts/form-create'
+import { Button } from '@/ui/shared/button'
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/ui/shared/sheet'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import { settingsService } from '@/lib/services/settings'
+import { Pencil } from 'lucide-react'
+import { useState } from 'react'
+import { CompanyFields } from './company-fields'
+import { companyFieldsOpts } from './company-fields/options'
+import type { CompanyValues } from '@/lib/schemas/settings'
+
+export function CompanyUpdate({ company }: { company: Company }) {
+  const [open, onOpenChange] = useState(false)
+
+  const companyUpdateMutation = useMutation({
+    mutationFn: async (values: CompanyValues) => {
+      return await settingsService.updateCompany(company.id, values)
+    },
+    onSuccess: () => {
+      form.reset()
+      toast.success(`Empresa actualizada correctamente`, {
+        description: `Se ha actualizado la empresa "${company.name}" correctamente.`,
+      })
+    },
+    onError: (error) => {
+      form.state.canSubmit = true
+      toast.error(`Error al actualizar la empresa`, {
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Por favor, inténtalo de nuevo.',
+      })
+    },
+    onSettled: () => {
+      form.state.isSubmitting = false
+    },
+  })
+
+  const form = useAppForm({
+    ...companyFieldsOpts,
+    onSubmit: ({ value }) => companyUpdateMutation.mutate(value),
+  })
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetTrigger asChild>
+        <Button size='icon'>
+          <Pencil />
+        </Button>
+      </SheetTrigger>
+      <SheetContent className='w-full sm:min-w-[600px]'>
+        <SheetHeader>
+          <SheetTitle>Editar empresa</SheetTitle>
+          <SheetDescription>
+            Vas a modificar la información de esta empresa. Realiza los cambios
+            necesarios y guarda para actualizar la empresa.
+          </SheetDescription>
+        </SheetHeader>
+        <form
+          id='company-edit-form'
+          className='px-4 space-y-2'
+          onSubmit={(e) => {
+            e.preventDefault()
+            form.handleSubmit()
+          }}>
+          <CompanyFields form={form} />
+        </form>
+        <SheetFooter>
+          <form.AppForm>
+            <form.SubmitButton
+              form='company-edit-form'
+              label='Actualizar empresa'
+              labelLoading='Actualizando empresa...'
+            />
+          </form.AppForm>
+          <SheetClose asChild>
+            <Button variant='destructive'>Cancelar</Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  )
+}

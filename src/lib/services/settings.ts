@@ -1,5 +1,5 @@
 import { fetcher } from '@/utils/fetch-api'
-import type { RoleValues, UserValues } from '../schemas/settings'
+import type { CompanyValues, RoleValues, UserValues } from '../schemas/settings'
 
 class SettingsServices {
   async getAllRoles() {
@@ -50,6 +50,37 @@ class SettingsServices {
       method: 'DELETE',
       data: { id },
     })
+  }
+
+  async getAllCompanies() {
+    return await fetcher<GeneralResponse<Company[]>>('/companies/get-all')
+  }
+
+  async createCompany(values: CompanyValues) {
+    return await fetcher<GeneralResponse<Company>>('/companies/create', {
+      method: 'POST',
+      data: values,
+    })
+  }
+
+  async updateCompany(id: string, values: CompanyValues) {
+    return await fetcher<GeneralResponse<Company>>(
+      `/companies/update?companyId=${id}`,
+      {
+        method: 'PUT',
+        data: { id, ...values },
+      }
+    )
+  }
+
+  async deleteCompany(id: string) {
+    return await fetcher<GeneralResponse<Company>>(
+      `/companies/delete?companyId=${id}`,
+      {
+        method: 'DELETE',
+        data: { id },
+      }
+    )
   }
 }
 

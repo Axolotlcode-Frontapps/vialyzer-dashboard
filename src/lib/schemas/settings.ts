@@ -15,9 +15,20 @@ class Settings {
     role: z.string({ error: 'El rol es obligatorio' }),
     company: z.string({ error: 'La empresa es obligatoria' }),
   })
+
+  company = z.object({
+    name: z.string({ error: 'El nombre es obligatorio' }),
+    nit: z.string({ error: 'El NIT es obligatorio' }),
+    phone: z.string({ error: 'El teléfono es obligatorio' }),
+    address: z.string({ error: 'La dirección es obligatoria' }),
+    department: z.string({ error: 'El departamento es obligatorio' }),
+    city: z.string({ error: 'La ciudad es obligatoria' }),
+    description: z.string({ error: 'La descripción es obligatoria' }),
+  })
 }
 
 export const settingsSchemas = new Settings()
 
 export type RoleValues = z.infer<typeof settingsSchemas.role>
 export type UserValues = z.infer<typeof settingsSchemas.user>
+export type CompanyValues = z.infer<typeof settingsSchemas.company>
