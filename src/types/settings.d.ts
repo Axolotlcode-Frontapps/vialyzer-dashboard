@@ -12,6 +12,7 @@ interface User {
   email: string
   phone: string
   role: Role
+  companie: Company
   createdAt: Date
   active: boolean
   lastLogin: Date

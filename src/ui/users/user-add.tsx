@@ -10,24 +10,22 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/ui/shared/sheet'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { CirclePlus } from 'lucide-react'
 import { userFieldsOpts } from './user-fields/options'
 import { UserFields } from './user-fields'
 import type { UserValues } from '@/lib/schemas/settings'
+import { settingsService } from '@/lib/services/settings'
 
 export function UserAdd() {
+  const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
 
   const userAddMutation = useMutation({
     mutationFn: async (values: UserValues) => {
-      // return await settingsService.createUser(values)
-      console.log(values)
-      return {
-        payload: values,
-      }
+      return await settingsService.createUser(values)
     },
     onSuccess: ({ payload }) => {
       form.reset()
@@ -45,7 +43,9 @@ export function UserAdd() {
       })
     },
     onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] })
       form.state.isSubmitting = false
+      setOpen(false)
     },
   })
 

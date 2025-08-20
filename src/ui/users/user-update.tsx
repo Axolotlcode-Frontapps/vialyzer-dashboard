@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { Pencil } from 'lucide-react'
@@ -20,6 +20,7 @@ import type { UserValues } from '@/lib/schemas/settings'
 import { settingsService } from '@/lib/services/settings'
 
 export function UserUpdate({ user }: { user: User }) {
+  const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
 
   const userUpdateMutation = useMutation({
@@ -42,12 +43,22 @@ export function UserUpdate({ user }: { user: User }) {
       })
     },
     onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] })
       form.state.isSubmitting = false
+      setOpen(false)
     },
   })
 
   const form = useAppForm({
     ...userFieldsOpts,
+    defaultValues: {
+      name: user.name ?? '',
+      lastname: user.lastName ?? '',
+      email: user.email ?? '',
+      phone: user.phone ?? '',
+      role: user.role.id ?? '',
+      company: user.companie.id ?? '',
+    },
     onSubmit: ({ value }) => userUpdateMutation.mutate(value as UserValues),
   })
 

@@ -10,16 +10,17 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/ui/shared/sheet'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { RoleFields } from './role-fields'
 import { roleFieldsOpts } from './role-fields/options'
 import { settingsService } from '@/lib/services/settings'
-import type { RoleValues } from '@/lib/schemas/settings'
 import { Pencil } from 'lucide-react'
 import { useState } from 'react'
+import type { RoleValues } from '@/lib/schemas/settings'
 
 export function RoleUpdate({ role }: { role: Role }) {
+  const queryClient = useQueryClient()
   const [open, onOpenChange] = useState(false)
 
   const roleUpdateMutation = useMutation({
@@ -42,12 +43,18 @@ export function RoleUpdate({ role }: { role: Role }) {
       })
     },
     onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['roles'] })
       form.state.isSubmitting = false
+      onOpenChange(false)
     },
   })
 
   const form = useAppForm({
     ...roleFieldsOpts,
+    defaultValues: {
+      name: role.name ?? '',
+      description: role.description ?? '',
+    },
     onSubmit: ({ value }) => roleUpdateMutation.mutate(value),
   })
 
