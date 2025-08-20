@@ -10,7 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/ui/shared/sheet'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { settingsService } from '@/lib/services/settings'
 import { Pencil } from 'lucide-react'
@@ -20,6 +20,7 @@ import { companyFieldsOpts } from './company-fields/options'
 import type { CompanyValues } from '@/lib/schemas/settings'
 
 export function CompanyUpdate({ company }: { company: Company }) {
+  const queryClient = useQueryClient()
   const [open, onOpenChange] = useState(false)
 
   const companyUpdateMutation = useMutation({
@@ -43,12 +44,24 @@ export function CompanyUpdate({ company }: { company: Company }) {
     },
     onSettled: () => {
       form.state.isSubmitting = false
+      queryClient.invalidateQueries({ queryKey: ['companies'] })
+      onOpenChange(false)
     },
   })
 
   const form = useAppForm({
     ...companyFieldsOpts,
-    onSubmit: ({ value }) => companyUpdateMutation.mutate(value),
+    defaultValues: {
+      name: company.name ?? '',
+      description: company.description ?? '',
+      nit: company.nit ?? '',
+      phone: company.phone ?? '',
+      address: company.address ?? '',
+      department: company.department ?? '',
+      city: company.city ?? '',
+    },
+    onSubmit: ({ value }) =>
+      companyUpdateMutation.mutate(value as CompanyValues),
   })
 
   return (

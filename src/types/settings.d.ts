@@ -32,3 +32,12 @@ interface Company {
   updatedAt: Date | null
   deletedAt: Date | null
 }
+
+interface Department {
+  departments: string
+  cities: string[]
+}
+
+interface Departments {
+  departments: Department[]
+}

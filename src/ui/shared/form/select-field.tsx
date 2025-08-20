@@ -11,22 +11,17 @@ import {
 import { useFieldContext } from '@/contexts/form-context'
 import { ResetField } from './reset-field'
 
-interface Props<T> {
-  label?: string
-  placeholder?: string
-  options: T[]
-}
-
 interface Option {
   label: string
   value: string
 }
+interface Props extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  label?: string
+  placeholder?: string
+  options: Option[]
+}
 
-export function SelectField<T extends Option>({
-  label,
-  placeholder,
-  options,
-}: Props<T>) {
+export function SelectField({ label, placeholder, options, disabled }: Props) {
   const field = useFieldContext<string | undefined>()
   const [open, setOpen] = useState(false)
 
@@ -57,7 +52,8 @@ export function SelectField<T extends Option>({
         open={open}
         onValueChange={field.handleChange}
         value={field.state.value ?? ''}
-        onOpenChange={setOpen}>
+        onOpenChange={setOpen}
+        disabled={disabled}>
         <SelectTrigger size='default' className='w-full' aria-invalid={!!error}>
           <SelectValue placeholder={placeholder ?? ''} />
         </SelectTrigger>

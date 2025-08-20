@@ -59,7 +59,10 @@ class SettingsServices {
   async createCompany(values: CompanyValues) {
     return await fetcher<GeneralResponse<Company>>('/companies/create', {
       method: 'POST',
-      data: values,
+      data: {
+        ...values,
+        active: true,
+      },
     })
   }
 
@@ -68,7 +71,7 @@ class SettingsServices {
       `/companies/update?companyId=${id}`,
       {
         method: 'PUT',
-        data: { id, ...values },
+        data: { ...values, active: true },
       }
     )
   }

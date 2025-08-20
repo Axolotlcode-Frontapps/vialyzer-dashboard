@@ -17,13 +17,13 @@ class Settings {
   })
 
   company = z.object({
-    name: z.string({ error: 'El nombre es obligatorio' }),
-    nit: z.string({ error: 'El NIT es obligatorio' }),
-    phone: z.string({ error: 'El teléfono es obligatorio' }),
-    address: z.string({ error: 'La dirección es obligatoria' }),
-    department: z.string({ error: 'El departamento es obligatorio' }),
-    city: z.string({ error: 'La ciudad es obligatoria' }),
-    description: z.string({ error: 'La descripción es obligatoria' }),
+    name: z.string().min(1, { error: 'El nombre es obligatorio' }),
+    description: z.string().min(1, { error: 'La descripción es obligatoria' }),
+    nit: z.string().min(1, { error: 'El NIT es obligatorio' }),
+    phone: z.string().min(1, { error: 'El teléfono es obligatorio' }),
+    address: z.string().min(1, { error: 'La dirección es obligatoria' }),
+    department: z.string().min(1, { error: 'El departamento es obligatorio' }),
+    city: z.string().min(1, { error: 'La ciudad es obligatoria' }),
   })
 }
 

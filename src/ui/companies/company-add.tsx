@@ -10,7 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/ui/shared/sheet'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { settingsService } from '@/lib/services/settings'
@@ -20,6 +20,7 @@ import { CompanyFields } from './company-fields'
 import type { CompanyValues } from '@/lib/schemas/settings'
 
 export function CompanyAdd() {
+  const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
 
   const companyAddMutation = useMutation({
@@ -42,7 +43,9 @@ export function CompanyAdd() {
       })
     },
     onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['companies'] })
       form.state.isSubmitting = false
+      setOpen(false)
     },
   })
 

@@ -1,9 +1,18 @@
 import { withForm } from '@/contexts/form-create'
 import { companyFieldsOpts } from './options'
+import { useQuery } from '@tanstack/react-query'
+import { departmentsServices } from '@/lib/services/deparments'
 
 export const CompanyFields = withForm({
   ...companyFieldsOpts,
   render: ({ form }) => {
+    const { data: departmentsData } = useQuery({
+      queryKey: ['departments'],
+      queryFn: async () => await departmentsServices.getAllDepartments(),
+      initialData: { departments: [] },
+      select: (data) => data.departments,
+    })
+
     return (
       <>
         <form.AppField
@@ -53,18 +62,38 @@ export const CompanyFields = withForm({
         <form.AppField
           name='department'
           children={(field) => (
-            <field.TextField
+            <field.SelectField
               label='Departamento'
               placeholder='Departamento de la empresa'
+              options={departmentsData.map((department) => ({
+                label: department.departments,
+                value: department.departments,
+              }))}
             />
           )}
         />
-        <form.AppField
-          name='city'
-          children={(field) => (
-            <field.TextField
-              label='Ciudad'
-              placeholder='Ciudad de la empresa'
+        <form.Subscribe
+          selector={(state) => state.values.department}
+          children={(deparment) => (
+            <form.AppField
+              name='city'
+              children={(field) => (
+                <field.SelectField
+                  label='Ciudad'
+                  placeholder='Ciudad de la empresa'
+                  disabled={!deparment}
+                  options={
+                    departmentsData
+                      .find(
+                        (department) => department.departments === deparment
+                      )
+                      ?.cities.map((city: string) => ({
+                        label: city,
+                        value: city,
+                      })) ?? []
+                  }
+                />
+              )}
             />
           )}
         />
