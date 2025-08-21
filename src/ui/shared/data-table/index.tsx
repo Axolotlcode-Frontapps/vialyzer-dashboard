@@ -26,25 +26,24 @@ import { getRouteApi } from '@tanstack/react-router'
 import { DataTablePagination } from './pagination'
 import type { GenericTableSearchValues } from '@/lib/schemas/table'
 
+const routeApi = getRouteApi('__root__')
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   children?: ({ table }: { table: TableType<TData> }) => React.ReactNode
 }
 
-const route = getRouteApi('__root__')
-
 export function DataTable<TData, TValue>({
   columns,
   data,
   children,
 }: DataTableProps<TData, TValue>) {
-  const navigate = route.useNavigate()
-  const { limit, page, ...search } =
-    route.useSearch() as GenericTableSearchValues
+  const navigate = routeApi.useNavigate()
+  const search = routeApi.useSearch() as GenericTableSearchValues
   const [filters, setFilters] = useState({
-    page: (page || 1) - 1,
-    limit: limit || 10,
+    page: (search.page || 1) - 1,
+    limit: search.limit || 10,
   })
 
   const [sorting, setSorting] = useState<SortingState>([])
@@ -69,13 +68,14 @@ export function DataTable<TData, TValue>({
           ? updater({ pageIndex: filters.page, pageSize: filters.limit })
           : updater
 
-      if (limit && page) {
+      if (search.limit && search.page) {
         navigate({
           search: {
             ...search,
             page: newPaginationState.pageIndex + 1,
             limit: newPaginationState.pageSize,
-          },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any,
         })
       }
 
