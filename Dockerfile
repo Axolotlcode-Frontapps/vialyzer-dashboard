@@ -1,4 +1,4 @@
-FROM oven/bun:debian AS build
+FROM oven/bun:latest AS build
 WORKDIR /app
 
 RUN curl -fsSL https://bun.sh/install | bash
@@ -10,7 +10,7 @@ RUN bun install --frozen-lockfile
 COPY . .
 RUN bun run build
 
-FROM oven/bun:debian AS production
+FROM oven/bun:latest AS production
 WORKDIR /app
 
 RUN bun add -g serve
