@@ -2,6 +2,7 @@ import { AppSidebar } from '@/ui/shared/layout/app-side'
 import { Header } from '@/ui/shared/header'
 import { SidebarInset, SidebarProvider } from '@/ui/shared/sidebar'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import { GoogleMapsProvider } from '@/contexts/maps-provider'
 
 export const Route = createFileRoute('/_dashboard')({
   beforeLoad: async ({ context }) => {
@@ -22,7 +23,9 @@ function PrivateLayout() {
       <SidebarInset>
         <Header />
         <main className='min-h-[calc(100dvh-64px)] md:min-h-[calc(100dvh-108px)] flex flex-col pt-4 pb-5 md:pb-8 px-5 md:px-8'>
-          <Outlet />
+          <GoogleMapsProvider>
+            <Outlet />
+          </GoogleMapsProvider>
         </main>
       </SidebarInset>
     </SidebarProvider>
