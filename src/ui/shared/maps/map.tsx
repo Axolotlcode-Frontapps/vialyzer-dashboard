@@ -3,7 +3,7 @@ import { mapContainerStyle, mapOptions } from '@/utils/map-options'
 import { Circle, GoogleMap, Marker, TrafficLayer } from '@react-google-maps/api'
 import { MapLegend } from './map-legend'
 import { useQuery } from '@tanstack/react-query'
-import { camerasService } from '@/lib/services/cameras'
+import { homeService } from '@/lib/services/home'
 import { useSelectedLocation } from '@/hooks/use-selected-location'
 
 const center = { lat: 3.4516, lng: -76.532 }
@@ -13,7 +13,7 @@ export function Map() {
   const { isLoaded } = useGoogleMaps()
   const { data: previewCamerasData } = useQuery({
     queryKey: ['get-cameras'],
-    queryFn: async () => await camerasService.getCameras(),
+    queryFn: async () => await homeService.getCameras(),
     select: (data) => data.payload || [],
   })
 

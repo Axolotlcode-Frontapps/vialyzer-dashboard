@@ -1,5 +1,5 @@
 import { filtersSchemas } from '@/lib/schemas/filters'
-import { camerasService } from '@/lib/services/cameras'
+import { homeService } from '@/lib/services/home'
 import { CamerasPreview } from '@/ui/home/cameras-preview'
 import { Map } from '@/ui/shared/maps/map'
 import { MapDetails } from '@/ui/shared/maps/map-details'
@@ -15,7 +15,7 @@ export const Route = createFileRoute('/_dashboard/')({
 function Home() {
   useQuery({
     queryKey: ['get-cameras'],
-    queryFn: async () => await camerasService.getCameras(),
+    queryFn: async () => await homeService.getCameras(),
     select: (data) => data.payload || [],
   })
 

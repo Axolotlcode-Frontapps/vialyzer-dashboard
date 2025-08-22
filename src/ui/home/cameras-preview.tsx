@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { camerasService } from '@/lib/services/cameras'
+import { homeService } from '@/lib/services/home'
 import { Skeleton } from '@/ui/shared/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/shared/tooltip'
 
@@ -16,7 +16,7 @@ export function CamerasPreview() {
     isError: isErrorPreviews,
   } = useQuery({
     queryKey: ['get-preview-cameras'],
-    queryFn: async () => await camerasService.getPreviewCameras(),
+    queryFn: async () => await homeService.getPreviewCameras(),
     select: (data) => data.payload || [],
   })
 
