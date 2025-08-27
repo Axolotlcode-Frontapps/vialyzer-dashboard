@@ -126,7 +126,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           ) : null}
         </a>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent
+        className={cn(
+          'divide-foreground/30 gap-0',
+          open ? 'divide-y-0' : 'divide-y'
+        )}>
         <NavSection group={principalMenu.group} items={principalMenu.items} />
         <NavSection group={metricsMenu.group} items={metricsMenu.items} />
         <NavSection group={settingsMenu.group} items={settingsMenu.items} />

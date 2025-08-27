@@ -13,6 +13,7 @@ import {
 import { Button } from '../button'
 import { useRouter } from '@tanstack/react-router'
 import { useAuth } from '@/contexts/auth-provider'
+import { useQueryClient } from '@tanstack/react-query'
 
 export function UserMenu() {
   const user = {
@@ -20,6 +21,14 @@ export function UserMenu() {
     email: 'm@example.com',
     avatar: '/avatars/shadcn.jpg',
   }
+
+  const queryClient = useQueryClient()
+
+  const userMe = queryClient.getQueryData<GeneralResponse<User>>([
+    'get-me',
+  ])?.payload
+
+  console.log(userMe)
 
   const router = useRouter()
   const auth = useAuth()
@@ -39,7 +48,10 @@ export function UserMenu() {
           className='data-[state=open]:bg-accent data-[state=open]:text-sidebar-accent-foreground size-10 rounded-full p-0 crusor-pointer'>
           <Avatar className='size-10 rounded-full grid place-content-center'>
             <AvatarImage src={user.avatar} alt={user.name} />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback className='uppercase'>
+              {userMe?.name.charAt(0)}
+              {userMe?.lastName.charAt(0)}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -52,11 +64,16 @@ export function UserMenu() {
           <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
             <Avatar className='h-8 w-8 rounded-lg'>
               <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback className='rounded-lg'>CN</AvatarFallback>
+              <AvatarFallback className='uppercase'>
+                {userMe?.name.charAt(0)}
+                {userMe?.lastName.charAt(0)}
+              </AvatarFallback>
             </Avatar>
             <div className='grid flex-1 text-left text-sm leading-tight'>
-              <span className='truncate font-medium'>{user.name}</span>
-              <span className='truncate text-xs'>{user.email}</span>
+              <span className='truncate font-medium'>
+                {userMe?.name} {userMe?.lastName}
+              </span>
+              <span className='truncate text-xs'>{userMe?.email}</span>
             </div>
           </div>
         </DropdownMenuLabel>

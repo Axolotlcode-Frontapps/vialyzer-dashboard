@@ -12,6 +12,12 @@ class AuthServices {
     })
   }
 
+  async logOut() {
+    return await fetcher<GeneralResponse<void>>('/auth/logout', {
+      method: 'POST',
+    })
+  }
+
   async forgotPassword(values: ForgotPasswordValues) {
     return await fetcher<GeneralResponse<Pick<User, 'email'>>>(
       '/users/recovery-password',
@@ -20,6 +26,10 @@ class AuthServices {
         data: values,
       }
     )
+  }
+
+  async getMeUser() {
+    return await fetcher<GeneralResponse<User>>('/users/get-me')
   }
 }
 
