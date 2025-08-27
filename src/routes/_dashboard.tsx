@@ -3,6 +3,14 @@ import { Header } from '@/ui/shared/header'
 import { SidebarInset, SidebarProvider } from '@/ui/shared/sidebar'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import { GoogleMapsProvider } from '@/contexts/maps-provider'
+import { queryOptions } from '@tanstack/react-query'
+import { authServices } from '@/lib/services/auth'
+import { PermissionsProvider } from '@/contexts/permissions-provider'
+
+const getMeQuery = queryOptions({
+  queryKey: ['get-me'],
+  queryFn: async () => await authServices.getMeUser(),
+})
 
 export const Route = createFileRoute('/_dashboard')({
   beforeLoad: async ({ context }) => {
@@ -13,21 +21,26 @@ export const Route = createFileRoute('/_dashboard')({
       })
     }
   },
+  loader: async ({ context: { queryClient } }) => {
+    await queryClient.ensureQueryData(getMeQuery)
+  },
   component: PrivateLayout,
 })
 
 function PrivateLayout() {
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <Header />
-        <main className='min-h-[calc(100dvh-64px)] md:min-h-[calc(100dvh-108px)] flex flex-col pt-4 pb-5 md:pb-8 px-5 md:px-8'>
-          <GoogleMapsProvider>
-            <Outlet />
-          </GoogleMapsProvider>
-        </main>
-      </SidebarInset>
-    </SidebarProvider>
+    <PermissionsProvider>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <Header />
+          <main className='min-h-[calc(100dvh-64px)] md:min-h-[calc(100dvh-108px)] flex flex-col pt-4 pb-5 md:pb-8 px-5 md:px-8'>
+            <GoogleMapsProvider>
+              <Outlet />
+            </GoogleMapsProvider>
+          </main>
+        </SidebarInset>
+      </SidebarProvider>
+    </PermissionsProvider>
   )
 }

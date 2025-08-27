@@ -5,6 +5,13 @@ interface Role {
   active: boolean
 }
 
+interface Permission {
+  module: string
+  action: string
+  description: string
+  active: boolean
+}
+
 interface User {
   id: string
   name: string
