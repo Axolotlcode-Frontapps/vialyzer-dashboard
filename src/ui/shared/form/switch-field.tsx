@@ -23,8 +23,8 @@ export function Switchfield({ label }: Props) {
   return (
     <>
       {label && (
-        <Label className='flex items-center gap-2 text-sm cursor-pointer'>
-          <span className='block w-full'>{label}</span>{' '}
+        <Label className='flex-row-reverse items-center gap-2 text-sm cursor-pointer'>
+          <span className='block w-full py-1'>{label}</span>{' '}
           <Switch
             checked={field.state.value}
             onCheckedChange={field.handleChange}
