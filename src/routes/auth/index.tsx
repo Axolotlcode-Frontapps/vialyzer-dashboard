@@ -36,7 +36,7 @@ function SignIn() {
         </CardContent>
       </Card>
 
-      <Decoration className='relative mt-45 2xl:mt-55 '>
+      <Decoration className='relative mt-35 2xl:mt-55 '>
         <DecorationTop>
           <DecorationBlock className='bg-[#1352ED]' />
           <DecorationBlock className='bg-[#FC4B5F]' />

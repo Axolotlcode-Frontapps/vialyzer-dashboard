@@ -7,17 +7,22 @@ import { useMutation } from '@tanstack/react-query'
 import { authServices } from '@/lib/services/auth'
 import { toast } from 'sonner'
 import { Button } from '@/ui/shared/button'
+import {
+  getRememberMeEmail,
+  setRememberMeData,
+  clearRememberMeData,
+} from '@/utils/remember-me-cookie'
 
 export function SignInForm() {
   const auth = useAuth()
   const router = useRouter()
   const navigate = useNavigate()
-
+  const initialEmail = getRememberMeEmail()
   const form = useAppForm({
     defaultValues: {
-      email: '',
+      email: initialEmail,
       password: '',
-      rememberMe: false,
+      rememberMe: !!initialEmail,
     },
     validators: {
       onMount: ({ formApi }) => {
@@ -37,6 +42,12 @@ export function SignInForm() {
       const data = await authServices.signIn(values)
 
       if (!data.payload?.token) return
+
+      if (values.rememberMe) {
+        setRememberMeData({ email: values.email, remember: true })
+      } else {
+        clearRememberMeData()
+      }
 
       await auth.login(data.payload.token)
       await router.invalidate()
@@ -76,7 +87,7 @@ export function SignInForm() {
         e.preventDefault()
         form.handleSubmit()
       }}
-      className='w-[90%] h-full mx-auto flex-1 flex flex-col justify-between pb-6 gap-4 '>
+      className='w-[90%] h-full mx-auto flex-1 flex flex-col justify-between pb-6 gap-4'>
       <form.AppField
         name='email'
         children={(field) => (

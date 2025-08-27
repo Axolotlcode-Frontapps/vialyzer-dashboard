@@ -45,7 +45,7 @@ function DecorationTop({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot='decoration-top'
       className={cn(
-        'hidden lg:flex absolute -top-45 -left-40 xl:-left-30',
+        'hidden lg:flex absolute -top-35 2xl:-top-55 -left-40 xl:-left-30',
         className
       )}
       {...props}
