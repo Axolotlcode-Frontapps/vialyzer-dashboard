@@ -2,9 +2,9 @@ import { ModeToggle } from '@/ui/shared/mode-toggle'
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 
-import slide1 from '@/assets/login_banner.jpg'
-import slide2 from '@/assets/slide2.jpg'
-import slide3 from '@/assets/slide3.jpg'
+import slide1 from '@/assets/images/login_banner.jpg'
+import slide2 from '@/assets/images/slide2.jpg'
+import slide3 from '@/assets/images/slide3.jpg'
 
 export const Route = createFileRoute('/auth')({
   beforeLoad: ({ context }) => {

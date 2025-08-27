@@ -9,8 +9,8 @@ import { toast } from 'sonner'
 import { Button } from '@/ui/shared/button'
 import {
   getRememberMeEmail,
-  setRememberMeData,
   clearRememberMeData,
+  setRememberMeData,
 } from '@/utils/remember-me-cookie'
 
 export function SignInForm() {
@@ -18,9 +18,10 @@ export function SignInForm() {
   const router = useRouter()
   const navigate = useNavigate()
   const initialEmail = getRememberMeEmail()
+
   const form = useAppForm({
     defaultValues: {
-      email: initialEmail,
+      email: initialEmail || '',
       password: '',
       rememberMe: !!initialEmail,
     },
@@ -87,13 +88,13 @@ export function SignInForm() {
         e.preventDefault()
         form.handleSubmit()
       }}
-      className='w-[90%] h-full mx-auto flex-1 flex flex-col justify-between pb-6 gap-4'>
+      className='flex flex-col gap-4'>
       <form.AppField
         name='email'
         children={(field) => (
           <field.TextField
             label='Correo electrónico'
-            placeholder='usuario@vialyzer.com'
+            placeholder='Correo electrónico'
           />
         )}
       />
@@ -104,7 +105,7 @@ export function SignInForm() {
         )}
       />
 
-      <div className='h-full flex flex-col items-start justify-between '>
+      <div className='flex items-center justify-between gap-2'>
         <form.AppField
           name='rememberMe'
           children={(field) => <field.Switchfield label='Recordar sesión' />}
@@ -113,7 +114,7 @@ export function SignInForm() {
         <Button
           variant='link'
           onClick={() => navigate({ to: '/auth/forgot-password' })}
-          className='text-sm hover:text-primary transition-colors font-medium self-end'>
+          className='cursor-pointer text-muted-foreground p-0'>
           ¿Olvidaste tu contraseña?
         </Button>
       </div>
