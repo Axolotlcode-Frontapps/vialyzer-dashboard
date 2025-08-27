@@ -15,7 +15,7 @@ import {
   DecorationBottom,
   DecorationTitle,
   DecorationTop,
-} from '@/ui/shared/sign-in-decoration'
+} from '@/ui/auth/sign-in-decoration'
 
 export const Route = createFileRoute('/auth/')({
   component: SignIn,
