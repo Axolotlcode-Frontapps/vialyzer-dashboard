@@ -24,6 +24,10 @@ class Settings {
     department: z.string().min(1, { error: 'El departamento es obligatorio' }),
     city: z.string().min(1, { error: 'La ciudad es obligatoria' }),
   })
+
+  searchRoles = z.object({
+    module: z.string().optional(),
+  })
 }
 
 export const settingsSchemas = new Settings()
@@ -31,3 +35,4 @@ export const settingsSchemas = new Settings()
 export type RoleValues = z.infer<typeof settingsSchemas.role>
 export type UserValues = z.infer<typeof settingsSchemas.user>
 export type CompanyValues = z.infer<typeof settingsSchemas.company>
+export type SearchRolesValues = z.infer<typeof settingsSchemas.searchRoles>

@@ -1,25 +1,23 @@
-import { useQuery } from '@tanstack/react-query'
-import { settingsService } from '@/lib/services/settings'
 import { DataTable } from '@/ui/shared/data-table'
 import { DataTableHeader } from '@/ui/shared/data-table/table-header'
-import { columns } from './columns'
 import { TableSkeleton } from '@/ui/shared/data-table/table-skeleton'
+import { columns } from './columns'
 
-export function RolesTable() {
-  const { data: rolesData = [], isLoading } = useQuery({
-    queryKey: ['roles'],
-    queryFn: () => settingsService.getAllRoles(),
-    select: (data) => data.payload,
-  })
-
+export function PermissionsTable({
+  data,
+  isLoading,
+}: {
+  data: Permission[]
+  isLoading: boolean
+}) {
   return (
     <>
       {!isLoading ? (
-        <DataTable columns={columns} data={rolesData}>
+        <DataTable columns={columns} data={data}>
           {({ table }) => (
             <DataTableHeader
               table={table}
-              searchBy='name'
+              searchBy='action'
               searchPlaceholder='Busqueda por nombre'
             />
           )}

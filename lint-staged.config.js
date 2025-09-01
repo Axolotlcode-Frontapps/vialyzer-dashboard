@@ -3,5 +3,5 @@
  * @type {import('lint-staged').Configuration}
  */
 export default {
-  '*.{ts,tsx}': ['pnpm lint:fix', 'pnpm format'],
+  '*.{ts,tsx}': ['bun run lint:fix', 'bun run format'],
 }

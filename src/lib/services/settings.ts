@@ -6,6 +6,15 @@ class SettingsServices {
     return await fetcher<GeneralResponse<Role[]>>('/roles/get-all')
   }
 
+  async getRoleById(roleId: string) {
+    return await fetcher<
+      GeneralResponse<{
+        role: Role
+        actions: Permission[]
+      }>
+    >(`/roles/get-by-id-role?roleId=${roleId}`)
+  }
+
   async createRole(values: RoleValues) {
     return await fetcher<GeneralResponse<Role>>('/roles/create', {
       method: 'POST',
@@ -18,6 +27,10 @@ class SettingsServices {
       method: 'PUT',
       data: { id, ...values },
     })
+  }
+
+  async getAllPermissions() {
+    return await fetcher<GeneralResponse<Permission[]>>('/create/get-all')
   }
 
   async deleteRole(id: string) {

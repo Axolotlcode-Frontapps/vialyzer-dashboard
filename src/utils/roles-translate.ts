@@ -1,0 +1,16 @@
+export const rolesTranslate: Record<string, string> = {
+  users: 'Usuarios',
+  companies: 'Compañías',
+  roles: 'Roles',
+  cameras: 'Cámaras',
+  scenarios: 'Escenarios',
+  permissions: 'Permisos',
+  dashboard: 'Inicio',
+  permission: 'Permiso',
+  'role-permission': 'Rol-Permiso',
+  mobility: 'Movilidad',
+  vehicles: 'Vehiculos',
+  profile: 'Perfil',
+  update: 'Actualizaciones',
+  projects: 'Proyectos',
+}

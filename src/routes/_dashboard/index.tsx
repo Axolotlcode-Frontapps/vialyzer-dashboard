@@ -21,9 +21,9 @@ function Home() {
 
   return (
     <div className='space-y-4'>
-      <h2 className='text-xl lg:text-2xl font-medium'>
+      <h1 className='text-xl lg:text-2xl font-medium'>
         Localización de Cámaras
-      </h2>
+      </h1>
       <div className='@container/map relative w-full h-[400px] md:h-[650px] rounded-2xl overflow-hidden bg-card shadow-lg'>
         <Map />
         <MapDetails />
