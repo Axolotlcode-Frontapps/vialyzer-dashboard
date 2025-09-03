@@ -24,7 +24,7 @@ import { toast } from 'sonner'
 
 export const Route = createFileRoute('/auth/verify-code')({
   component: VerifyCode,
-  validateSearch: zodValidator(authSchemas.verifyCodeQueries),
+  validateSearch: zodValidator(authSchemas.verifyQueries),
 })
 
 function VerifyCode() {
@@ -149,7 +149,6 @@ function VerifyCode() {
 
         <Button
           variant='link'
-          // onClick={() => navigate({ to: '/auth' })}
           className='w-full cursor-pointer text-muted-foreground mt-4'>
           Iniciar sesión
         </Button>

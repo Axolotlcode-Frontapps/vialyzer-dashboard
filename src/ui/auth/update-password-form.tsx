@@ -10,7 +10,7 @@ import { zodValidator } from '@tanstack/zod-adapter'
 
 export const Route = createFileRoute('/auth/update-password')({
   component: UpdatePasswordForm,
-  validateSearch: zodValidator(authSchemas.updatePassword),
+  validateSearch: zodValidator(authSchemas.verifyQueries),
 })
 
 export function UpdatePasswordForm() {
@@ -69,7 +69,6 @@ export function UpdatePasswordForm() {
       navigate({ to: '/auth' })
     },
     onError: (error) => {
-      console.error('updatePassword error:', error)
       toast.error('Error al actualizar la contraseña', {
         description:
           error instanceof Error
