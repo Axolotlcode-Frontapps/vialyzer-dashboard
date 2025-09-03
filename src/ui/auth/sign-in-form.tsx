@@ -105,7 +105,7 @@ export function SignInForm() {
         )}
       />
 
-      <div className='flex items-center justify-between gap-2'>
+      <div className='flex flex-col gap-4'>
         <form.AppField
           name='rememberMe'
           children={(field) => <field.Switchfield label='Recordar sesión' />}
@@ -114,7 +114,7 @@ export function SignInForm() {
         <Button
           variant='link'
           onClick={() => navigate({ to: '/auth/forgot-password' })}
-          className='cursor-pointer text-muted-foreground p-0'>
+          className='cursor-pointer text-muted-foreground p-0 self-end'>
           ¿Olvidaste tu contraseña?
         </Button>
       </div>
