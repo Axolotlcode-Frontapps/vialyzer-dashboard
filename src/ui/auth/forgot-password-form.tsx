@@ -29,14 +29,26 @@ export function ForgotPasswordForm() {
 
   const forgotPasswordMutation = useMutation({
     mutationFn: async (values: ForgotPasswordValues) => {
-      return await authServices.forgotPassword(values)
+      const response = await authServices.forgotPassword(values)
+
+      return response.payload as {
+        idUser: string
+        token: string
+      }
     },
-    onSuccess: () => {
+    onSuccess: ({ idUser, token }) => {
       form.reset()
       toast.success(`¡Se ha enviado un correo electrónico de recuperación!`, {
         position: 'bottom-right',
         description:
           'Por favor, revisa tu correo electrónico para restablecer tu contraseña.',
+      })
+      navigate({
+        to: '/auth/verify-code',
+        search: {
+          userId: idUser,
+          token,
+        },
       })
     },
     onError: (error) => {
@@ -88,7 +100,7 @@ export function ForgotPasswordForm() {
 
       <Button
         variant='link'
-        onClick={() => navigate({ to: '/auth' })}
+        onClick={() => navigate({ to: '/auth/verify-code' })}
         className='w-full cursor-pointer text-muted-foreground'>
         Iniciar sesión
       </Button>

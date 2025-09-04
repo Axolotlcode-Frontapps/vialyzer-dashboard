@@ -1,61 +1,82 @@
 import { useAppForm } from '@/contexts/form-create'
 import { authSchemas, type UpdatePasswordValues } from '@/lib/schemas/auth'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
+import { authServices } from '@/lib/services/auth'
 
 import { toast } from 'sonner'
+import { createFileRoute } from '@tanstack/react-router'
+import { zodValidator } from '@tanstack/zod-adapter'
+
+export const Route = createFileRoute('/auth/update-password')({
+  component: UpdatePasswordForm,
+  validateSearch: zodValidator(authSchemas.verifyQueries),
+})
 
 export function UpdatePasswordForm() {
+  const navigate = Route.useNavigate()
+  const search = Route.useSearch() as { userId?: string; token?: string }
+
+  const [persistedParams, setPersistedParams] = useState({
+    userId: search.userId || null,
+    token: search.token || null,
+  })
+
+  useEffect(() => {
+    if (search.userId && search.token) {
+      setPersistedParams((prev) => ({
+        userId: search.userId || prev.userId,
+        token: search.token || prev.token,
+      }))
+
+      navigate({ search: undefined })
+    }
+  }, [search])
+
   const form = useAppForm({
     defaultValues: {
       password: '',
       confirmPassword: '',
     },
     validators: {
-      onMount: ({ formApi }) => {
-        formApi.state.canSubmit = false
-        return authSchemas.updatePassword
-      },
       onChange: authSchemas.updatePassword,
-      onSubmitAsync: async ({ formApi }) => {
-        formApi.state.isSubmitting = true
-      },
     },
-    onSubmit: ({ value }) => loginMutation.mutate(value),
+    onSubmit: ({ value }) => {
+      if (!persistedParams.userId || !persistedParams.token) {
+        toast.error('Sesión inválida, vuelve a verificar el código.')
+        return
+      }
+      mutation.mutate(value)
+    },
   })
 
-  const loginMutation = useMutation({
-    mutationFn: async (values: UpdatePasswordValues) => {
-      // const data = await authServices.signIn(values)
-      console.log(values)
-    },
+  const mutation = useMutation({
+    mutationKey: ['updatePassword'],
+    mutationFn: (values: UpdatePasswordValues) =>
+      authServices.updateUser(
+        {
+          password: values.password,
+          confirmPassword: '',
+        },
+        persistedParams.userId!,
+        persistedParams.token!
+      ),
     onSuccess: () => {
       form.reset()
-      toast.success(`¡Contraseña actualizada!`, {
-        position: 'bottom-right',
-        description: 'Tu contraseña ha sido actualizada correctamente.',
+      toast.success('¡Contraseña actualizada!', {
+        description: 'Ya puedes iniciar sesión con tu nueva contraseña.',
       })
+      navigate({ to: '/auth' })
     },
     onError: (error) => {
-      form.state.canSubmit = true
-      toast.error(`Error al actualizar la contraseña`, {
+      toast.error('Error al actualizar la contraseña', {
         description:
           error instanceof Error
             ? error.message
             : 'Ocurrió un error inesperado al actualizar la contraseña.',
       })
     },
-    onSettled: () => {
-      form.state.isSubmitting = false
-    },
   })
-
-  useEffect(() => {
-    if (loginMutation.isPending) {
-      form.state.isSubmitting = true
-      form.state.canSubmit = false
-    }
-  }, [loginMutation.isPending])
 
   return (
     <form
@@ -87,6 +108,7 @@ export function UpdatePasswordForm() {
           labelLoading='Actualizando...'
           className='w-full text-base h-11.5'
           size='lg'
+          disabled={mutation.isPending}
         />
       </form.AppForm>
     </form>

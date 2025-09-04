@@ -48,7 +48,7 @@ export function PasswordField({
       <Button
         size='icon'
         variant='ghost'
-        className='absolute top-8 right-1 hover:!bg-transparent hover:!text-primary cursor-pointer'
+        className='absolute top-7 right-1 hover:!bg-transparent hover:!text-primary cursor-pointer'
         type='button'
         onClick={() => setShowPassword(!showPassword)}>
         {showPassword ? <Eye /> : <EyeOff />}

@@ -1,5 +1,10 @@
 import { fetcher } from '@/utils/fetch-api'
-import type { ForgotPasswordValues, SignInValues } from '@/lib/schemas/auth'
+import type {
+  ForgotPasswordValues,
+  SignInValues,
+  UpdatePasswordValues,
+  VerifyCodeValues,
+} from '@/lib/schemas/auth'
 
 class AuthServices {
   async signIn(values: SignInValues) {
@@ -19,11 +24,49 @@ class AuthServices {
   }
 
   async forgotPassword(values: ForgotPasswordValues) {
-    return await fetcher<GeneralResponse<Pick<User, 'email'>>>(
-      '/users/recovery-password',
+    return await fetcher<
+      GeneralResponse<{
+        token: string
+        idUser: string
+      }>
+    >('/users/recovery-password', {
+      method: 'POST',
+      data: values,
+    })
+  }
+
+  async verifyCode(values: VerifyCodeValues, userId: string, token: string) {
+    const response = await fetcher<
+      GeneralResponse<{ id: string; token: string }>
+    >('/users/validate-code', {
+      method: 'POST',
+      data: {
+        ...values,
+        id: userId,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return response.payload
+  }
+
+  async updateUser(
+    values: UpdatePasswordValues,
+    userId: string,
+    token: string
+  ) {
+    return await fetcher<GeneralResponse<void>>(
+      `/users/update-user?userId=${userId}`,
       {
-        method: 'POST',
-        data: values,
+        method: 'PATCH',
+        data: {
+          password: values.password,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     )
   }

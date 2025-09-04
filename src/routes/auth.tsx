@@ -37,10 +37,10 @@ export default function AuthLayout() {
         backgroundImage: `url(${backgrounds[currentBg]})`,
         transition: 'background-image 0.5s ease-in-out',
       }}>
-      <div className='flex min-h-dvh w-full items-center justify-center p-6 md:p-10 absolute inset-0 bg-[#113372]/90 z-10 h-full gap-8 lg:gap-16'>
+      <div className='flex min-h-dvh w-full items-center justify-center p-6 md:p-10 absolute inset-0 bg-black/90 dark:bg-[#113372]/80 z-10 h-full gap-8 lg:gap-16'>
         <Outlet />
       </div>
-      <div className='absolute top-4 right-4'>
+      <div className='absolute top-4 right-4 z-10'>
         <ModeToggle />
       </div>
     </main>
