@@ -1,5 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 
+import { formatDate } from "@/lib/utils/date-format";
 import { Badge } from "@/ui/shared/badge";
 import { DataTableColumnHeader } from "@/ui/shared/data-table/column-header";
 import { UserTableActions } from "./actions";
@@ -36,14 +37,14 @@ export const columns: ColumnDef<User>[] = [
 	{
 		accessorKey: "createdAt",
 		header: ({ column }) => <DataTableColumnHeader column={column} title="Fecha de creación" />,
-		cell: ({ row }) => <div className="capitalize">{row.getValue("createdAt")}</div>,
+		cell: ({ row }) => <span className="capitalize">{formatDate(row.getValue("createdAt"))}</span>,
 	},
 	{
 		accessorKey: "lastLogin",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Fecha de último acceso" />
 		),
-		cell: ({ row }) => <div className="capitalize">{row.getValue("lastLogin")}</div>,
+		cell: ({ row }) => <span className="capitalize">{formatDate(row.getValue("lastLogin"))}</span>,
 	},
 	{
 		accessorKey: "active",

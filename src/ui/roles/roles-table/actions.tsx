@@ -1,26 +1,40 @@
 import { Link } from "@tanstack/react-router";
-import { KeyRound } from "lucide-react";
+import { useState } from "react";
+import { KeyRound, Pencil, Trash } from "lucide-react";
 
-import { buttonVariants } from "@/ui/shared/button";
+import { Button, buttonVariants } from "@/ui/shared/button";
 import { RoleDelete } from "../role-delete";
 import { RoleUpdate } from "../role-update";
 
 export function RoleTableActions({ role }: { role: Role }) {
-	return (
-		<div className="flex items-center justify-end gap-2">
-			<RoleUpdate role={role} />
-			<RoleDelete role={role} />
+	const [openUpdate, setOpenRoleUpdate] = useState(false);
+	const [openDelete, setOpenDelete] = useState(false);
 
-			<Link
-				to="/settings/roles/$roleId"
-				params={{ roleId: role.id }}
-				className={buttonVariants({
-					variant: "secondary",
-				})}
-			>
-				<KeyRound />
-				Editar permisos
-			</Link>
-		</div>
+	return (
+		<>
+			<div className="flex items-center justify-end gap-2">
+				<Button size="icon" onClick={() => setOpenRoleUpdate(true)}>
+					<Pencil />
+				</Button>
+
+				<Button size="icon" variant="destructive" onClick={() => setOpenDelete(true)}>
+					<Trash />
+				</Button>
+
+				<Link
+					to="/settings/roles/$roleId"
+					params={{ roleId: role.id }}
+					className={buttonVariants({
+						variant: "secondary",
+					})}
+				>
+					<KeyRound />
+					Editar permisos
+				</Link>
+			</div>
+
+			<RoleUpdate role={role} open={openUpdate} onOpenChange={setOpenRoleUpdate} />
+			<RoleDelete role={role} open={openDelete} onOpenChange={setOpenDelete} />
+		</>
 	);
 }

@@ -1,5 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 
+import { formatDate } from "@/lib/utils/date-format";
 import { Badge } from "@/ui/shared/badge";
 import { DataTableColumnHeader } from "@/ui/shared/data-table/column-header";
 import { CompanyTableActions } from "./actions";
@@ -39,6 +40,7 @@ export const columns: ColumnDef<Company>[] = [
 	{
 		accessorKey: "createdAt",
 		header: ({ column }) => <DataTableColumnHeader column={column} title="Fecha de creación" />,
+		cell: ({ row }) => <span className="capitalize">{formatDate(row.getValue("createdAt"))}</span>,
 	},
 	{
 		id: "actions",

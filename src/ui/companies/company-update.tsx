@@ -1,6 +1,4 @@
-import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { useAppForm } from "@/contexts/form";
 
@@ -16,14 +14,20 @@ import {
 	SheetFooter,
 	SheetHeader,
 	SheetTitle,
-	SheetTrigger,
 } from "@/ui/shared/sheet";
 import { CompanyFields } from "./company-fields";
 import { companyFieldsOpts } from "./company-fields/options";
 
-export function CompanyUpdate({ company }: { company: Company }) {
+export function CompanyUpdate({
+	company,
+	open,
+	onOpenChange,
+}: {
+	company: Company;
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+}) {
 	const queryClient = useQueryClient();
-	const [open, onOpenChange] = useState(false);
 
 	const companyUpdateMutation = useMutation({
 		mutationFn: async (values: CompanyValues) => {
@@ -64,11 +68,6 @@ export function CompanyUpdate({ company }: { company: Company }) {
 
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
-			<SheetTrigger asChild>
-				<Button size="icon">
-					<Pencil />
-				</Button>
-			</SheetTrigger>
 			<SheetContent className="w-full sm:min-w-[600px]">
 				<SheetHeader>
 					<SheetTitle>Editar empresa</SheetTitle>

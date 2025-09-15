@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { LoaderCircle, Trash } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { settingsService } from "@/lib/services/settings";
@@ -12,13 +11,19 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "@/ui/shared/dialog";
 import { Button } from "../shared/button";
 
-export function UserDelete({ user }: { user: User }) {
+export function UserDelete({
+	user,
+	open,
+	onOpenChange,
+}: {
+	user: User;
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+}) {
 	const queryClient = useQueryClient();
-	const [open, setOpen] = useState(false);
 
 	const userDeleteMutation = useMutation({
 		mutationFn: async () => {
@@ -36,17 +41,12 @@ export function UserDelete({ user }: { user: User }) {
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ["users"] });
-			setOpen(false);
+			onOpenChange(false);
 		},
 	});
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				<Button size="icon" variant="destructive">
-					<Trash />
-				</Button>
-			</DialogTrigger>
+		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>Eliminar usuario</DialogTitle>
@@ -58,7 +58,10 @@ export function UserDelete({ user }: { user: User }) {
 				</DialogHeader>
 
 				<DialogFooter>
-					<Button onClick={() => userDeleteMutation.mutate()}>
+					<DialogClose asChild>
+						<Button>Cancelar</Button>
+					</DialogClose>
+					<Button variant="destructive" onClick={() => userDeleteMutation.mutate()}>
 						{userDeleteMutation.isPending ? (
 							<>
 								<LoaderCircle className="mr-2 animate-spin" />
@@ -68,9 +71,6 @@ export function UserDelete({ user }: { user: User }) {
 							<span>Eliminar</span>
 						)}
 					</Button>
-					<DialogClose>
-						<Button variant="destructive">Cancelar</Button>
-					</DialogClose>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>

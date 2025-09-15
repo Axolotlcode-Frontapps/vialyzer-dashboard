@@ -1,6 +1,4 @@
-import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { useAppForm } from "@/contexts/form";
 
@@ -16,14 +14,20 @@ import {
 	SheetFooter,
 	SheetHeader,
 	SheetTitle,
-	SheetTrigger,
 } from "@/ui/shared/sheet";
 import { UserFields } from "./user-fields";
 import { userFieldsOpts } from "./user-fields/options";
 
-export function UserUpdate({ user }: { user: User }) {
+export function UserUpdate({
+	user,
+	open,
+	onOpenChange,
+}: {
+	user: User;
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+}) {
 	const queryClient = useQueryClient();
-	const [open, setOpen] = useState(false);
 
 	const userUpdateMutation = useMutation({
 		mutationFn: async (values: UserValues) => {
@@ -44,7 +48,7 @@ export function UserUpdate({ user }: { user: User }) {
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ["users"] });
 			form.state.isSubmitting = false;
-			setOpen(false);
+			onOpenChange(false);
 		},
 	});
 
@@ -62,12 +66,7 @@ export function UserUpdate({ user }: { user: User }) {
 	});
 
 	return (
-		<Sheet open={open} onOpenChange={setOpen}>
-			<SheetTrigger asChild>
-				<Button>
-					<Pencil />
-				</Button>
-			</SheetTrigger>
+		<Sheet open={open} onOpenChange={onOpenChange}>
 			<SheetContent className="w-full sm:min-w-[600px]">
 				<SheetHeader>
 					<SheetTitle>Actualizar usuario</SheetTitle>

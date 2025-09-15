@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { LoaderCircle, Trash } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { settingsService } from "@/lib/services/settings";
@@ -12,13 +11,20 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "@/ui/shared/dialog";
 import { Button } from "../shared/button";
 
-export function CompanyDelete({ company }: { company: Company }) {
+export function CompanyDelete({
+	company,
+	open,
+	onOpenChange,
+}: {
+	company: Company;
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+}) {
 	const queryClient = useQueryClient();
-	const [open, setOpen] = useState(false);
+
 	const companyDeleteMutation = useMutation({
 		mutationFn: async () => {
 			return await settingsService.deleteCompany(company.id);
@@ -35,17 +41,12 @@ export function CompanyDelete({ company }: { company: Company }) {
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: ["companies"] });
-			setOpen(false);
+			onOpenChange(false);
 		},
 	});
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				<Button size="icon" variant="destructive">
-					<Trash />
-				</Button>
-			</DialogTrigger>
+		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>Eliminar rol</DialogTitle>
@@ -57,7 +58,10 @@ export function CompanyDelete({ company }: { company: Company }) {
 				</DialogHeader>
 
 				<DialogFooter>
-					<Button onClick={() => companyDeleteMutation.mutate()}>
+					<DialogClose asChild>
+						<Button>Cancelar</Button>
+					</DialogClose>
+					<Button variant="destructive" onClick={() => companyDeleteMutation.mutate()}>
 						{companyDeleteMutation.isPending ? (
 							<>
 								<LoaderCircle className="mr-2 animate-spin" />
@@ -67,9 +71,6 @@ export function CompanyDelete({ company }: { company: Company }) {
 							<span>Eliminar</span>
 						)}
 					</Button>
-					<DialogClose>
-						<Button variant="destructive">Cancelar</Button>
-					</DialogClose>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>
