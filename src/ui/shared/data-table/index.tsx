@@ -25,17 +25,20 @@ import { Card, CardContent, CardFooter, CardHeader } from '../card'
 import { getRouteApi } from '@tanstack/react-router'
 import { DataTablePagination } from './pagination'
 import type { GenericTableSearchValues } from '@/lib/schemas/table'
+import { TableSkeleton } from './table-skeleton'
 
 const routeApi = getRouteApi('__root__')
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
+  isLoading?: boolean
   data: TData[]
   children?: ({ table }: { table: TableType<TData> }) => React.ReactNode
 }
 
 export function DataTable<TData, TValue>({
   columns,
+  isLoading = false,
   data,
   children,
 }: DataTableProps<TData, TValue>) {
@@ -95,6 +98,10 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   })
+
+  if (isLoading) {
+    return <TableSkeleton />
+  }
 
   return (
     <Card>

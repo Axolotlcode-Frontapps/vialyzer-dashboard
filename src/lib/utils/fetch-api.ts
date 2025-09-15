@@ -1,5 +1,5 @@
 import type { AxiosRequestConfig } from 'axios'
-import axios from '@/utils/axios'
+import axios from '@/lib/utils/axios'
 
 export const fetcher = async <T>(
   url: string,

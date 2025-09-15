@@ -1,4 +1,4 @@
-import { withForm } from '@/contexts/form-create'
+import { withForm } from '@/contexts/form'
 import { roleFieldsOpts } from './options'
 
 export const RoleFields = withForm({

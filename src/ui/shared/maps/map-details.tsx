@@ -1,8 +1,8 @@
 import { useSelectedLocation } from '@/hooks/use-selected-location'
 import { Button } from '../button'
 import { X } from 'lucide-react'
-import { formatDate } from '@/utils/date-format'
-import { STATUS } from '@/utils/statuses'
+import { formatDate } from '@/lib/utils/date-format'
+import { STATUS } from '@/lib/utils/statuses'
 
 export function MapDetails() {
   const { selectedLocation: location, onSelect } = useSelectedLocation()

@@ -1,7 +1,7 @@
-import { useAppForm } from '@/contexts/form-create'
+import { useAppForm } from '@/contexts/form'
 import { authSchemas, type SignInValues } from '@/lib/schemas/auth'
 import { useEffect } from 'react'
-import { useAuth } from '@/contexts/auth-provider'
+import { useAuth } from '@/contexts/auth'
 import { useNavigate, useRouter } from '@tanstack/react-router'
 import { useMutation } from '@tanstack/react-query'
 import { authServices } from '@/lib/services/auth'
@@ -11,7 +11,7 @@ import {
   getRememberMeEmail,
   clearRememberMeData,
   setRememberMeData,
-} from '@/utils/remember-me-cookie'
+} from '@/lib/utils/remember-me-cookie'
 
 export function SignInForm() {
   const auth = useAuth()

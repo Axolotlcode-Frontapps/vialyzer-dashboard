@@ -12,7 +12,7 @@ import {
 
 import { Button } from '../button'
 import { useRouter } from '@tanstack/react-router'
-import { useAuth } from '@/contexts/auth-provider'
+import { useAuth } from '@/contexts/auth'
 import { useQueryClient } from '@tanstack/react-query'
 
 export function UserMenu() {

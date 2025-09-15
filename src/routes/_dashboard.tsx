@@ -2,10 +2,10 @@ import { AppSidebar } from '@/ui/shared/layout/app-side'
 import { Header } from '@/ui/shared/header'
 import { SidebarInset, SidebarProvider } from '@/ui/shared/sidebar'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
-import { GoogleMapsProvider } from '@/contexts/maps-provider'
+import { GoogleMapsProvider } from '@/contexts/maps'
 import { queryOptions } from '@tanstack/react-query'
 import { authServices } from '@/lib/services/auth'
-import { PermissionsProvider } from '@/contexts/permissions-provider'
+import { PermissionsProvider } from '@/contexts/permissions'
 
 const getMeQuery = queryOptions({
   queryKey: ['get-me'],

@@ -11,13 +11,13 @@ import '@fontsource/poppins/900.css'
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-import { ThemeProvider } from '@/contexts/theme-provider'
+import { ThemeProvider } from '@/contexts/theme'
 
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { Toaster } from '@/ui/shared/sonner'
 
-import type { AuthContext } from '@/contexts/auth-provider'
+import type { AuthContext } from '@/contexts/auth'
 import type { QueryClient } from '@tanstack/react-query'
 
 interface MyRouterContext {

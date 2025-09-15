@@ -9,8 +9,8 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../dropdown-menu'
-import { useFieldContext } from '@/contexts/form-context'
-import { cn } from '@/utils'
+import { useFieldContext } from '@/contexts/form'
+import { cn } from '@/lib/utils/cn'
 
 export function SearchDropdownFilter({
   label,

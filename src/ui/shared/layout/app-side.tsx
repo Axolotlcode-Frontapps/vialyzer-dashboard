@@ -16,13 +16,13 @@ import {
   User,
   Video,
 } from 'lucide-react'
-import { cn } from '@/utils'
-import { config } from '@/utils/config'
+import { config } from '@/lib/utils/config'
 import { NavSection } from './nav-section'
 
 import Logo from '@/assets/icons/logo.svg'
 
 import type { INavSection } from './types'
+import { cn } from '@/lib/utils/cn'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { open } = useSidebar()

@@ -1,6 +1,6 @@
 import { LoaderCircle } from 'lucide-react'
 import { Button, buttonVariants } from '../button'
-import { useFormContext } from '@/contexts/form-context'
+import { useFormContext } from '@/contexts/form'
 import type { ComponentProps } from 'react'
 import type { VariantProps } from 'class-variance-authority'
 

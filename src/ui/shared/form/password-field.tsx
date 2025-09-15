@@ -3,7 +3,7 @@ import { Label } from '../label'
 import { Input } from '../input'
 import { Button } from '../button'
 import { Eye, EyeOff } from 'lucide-react'
-import { useFieldContext } from '@/contexts/form-context'
+import { useFieldContext } from '@/contexts/form'
 
 interface Props extends React.ComponentProps<'input'> {
   label?: string

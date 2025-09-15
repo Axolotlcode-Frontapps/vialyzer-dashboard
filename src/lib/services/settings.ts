@@ -1,4 +1,4 @@
-import { fetcher } from '@/utils/fetch-api'
+import { fetcher } from '@/lib/utils/fetch-api'
 import type { CompanyValues, RoleValues, UserValues } from '../schemas/settings'
 
 class SettingsServices {

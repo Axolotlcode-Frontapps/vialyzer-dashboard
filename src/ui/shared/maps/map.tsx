@@ -1,5 +1,5 @@
-import { useGoogleMaps } from '@/contexts/maps-provider'
-import { mapContainerStyle, mapOptions } from '@/utils/map-options'
+import { useGoogleMaps } from '@/contexts/maps'
+import { mapContainerStyle, mapOptions } from '@/lib/utils/map-options'
 import { Circle, GoogleMap, Marker, TrafficLayer } from '@react-google-maps/api'
 import { MapLegend } from './map-legend'
 import { useQuery } from '@tanstack/react-query'

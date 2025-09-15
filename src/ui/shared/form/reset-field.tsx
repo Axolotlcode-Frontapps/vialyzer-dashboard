@@ -1,6 +1,6 @@
 import { X } from 'lucide-react'
 import { Button } from '../button'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils/cn'
 
 interface Props {
   onReset: () => void

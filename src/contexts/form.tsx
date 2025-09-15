@@ -1,5 +1,4 @@
 import { createFormHook } from '@tanstack/react-form'
-import { fieldContext, formContext } from './form-context.tsx'
 import { TextField } from '@/ui/shared/form/text-field.tsx'
 import { PasswordField } from '@/ui/shared/form/password-field.tsx'
 import { SelectField } from '@/ui/shared/form/select-field.tsx'
@@ -10,6 +9,10 @@ import { SearchAccordionField } from '@/ui/shared/search-filters/search-accordio
 import { SearchDropdownFilter } from '@/ui/shared/search-filters/search-dropdown-filter.tsx'
 import { Switchfield } from '@/ui/shared/form/switch-field.tsx'
 import { SubmitButton } from '@/ui/shared/form/submit-form.tsx'
+import { createFormHookContexts } from '@tanstack/react-form'
+
+export const { fieldContext, useFieldContext, formContext, useFormContext } =
+  createFormHookContexts()
 
 export const { useAppForm, withForm } = createFormHook({
   fieldComponents: {

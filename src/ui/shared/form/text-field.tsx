@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Label } from '../label'
 import { Input } from '../input'
-import { useFieldContext } from '@/contexts/form-context'
+import { useFieldContext } from '@/contexts/form'
 
 interface Props extends React.ComponentProps<'input'> {
   label: string

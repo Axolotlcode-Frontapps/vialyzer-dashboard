@@ -1,9 +1,9 @@
-import { SESSION_NAME } from '@/utils/contants'
+import { SESSION_NAME } from '@/lib/utils/contants'
 import {
   getSessionCookie,
   removeSessionCookie,
   setSessionCookie,
-} from '@/utils/cookies-secure'
+} from '@/lib/utils/cookies-secure'
 import {
   createContext,
   useCallback,

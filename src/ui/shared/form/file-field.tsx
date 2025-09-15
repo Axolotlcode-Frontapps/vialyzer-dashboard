@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { Label } from '../label'
-import { useFieldContext } from '@/contexts/form-context'
+import { useFieldContext } from '@/contexts/form'
 import { ResetField } from './reset-field'
 import { FilePlus2 } from 'lucide-react'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils/cn'
 
 interface Props extends React.ComponentProps<'input'> {
   label: string

@@ -1,4 +1,4 @@
-import { useFieldContext } from '@/contexts/form-context'
+import { useFieldContext } from '@/contexts/form'
 import {
   Accordion,
   AccordionContent,
@@ -7,7 +7,7 @@ import {
 } from '../accordion'
 import { Input } from '../input'
 import { Label } from '../label'
-import { cn } from '@/utils'
+import { cn } from '@/lib/utils/cn'
 
 export function SearchAccordionField({
   label,

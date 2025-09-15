@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../select'
-import { useFieldContext } from '@/contexts/form-context'
+import { useFieldContext } from '@/contexts/form'
 import { ResetField } from './reset-field'
 
 interface Option {
