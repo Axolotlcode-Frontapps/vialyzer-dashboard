@@ -1,9 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/_dashboard/mobility/')({
-  component: Mobility,
-})
+export const Route = createFileRoute("/_dashboard/mobility/")({
+	component: Mobility,
+});
 
 function Mobility() {
-  return <div>Mobility!</div>
+	return <div>Mobility!</div>;
 }

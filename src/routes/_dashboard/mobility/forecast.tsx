@@ -1,9 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/_dashboard/mobility/forecast')({
-  component: Forecast,
-})
+export const Route = createFileRoute("/_dashboard/mobility/forecast")({
+	component: Forecast,
+});
 
 function Forecast() {
-  return <div>forecast</div>
+	return <div>forecast</div>;
 }

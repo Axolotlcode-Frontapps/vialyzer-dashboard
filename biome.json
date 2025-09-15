@@ -1,0 +1,212 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": false,
+		"defaultBranch": "main"
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"includes": [
+			"**",
+			"!**/.husky",
+			"!**/.vscode",
+			"!**/test-results",
+			"!**/node_modules",
+			"!**/.output",
+			"!**/.vercel",
+			"!**/.netlify",
+			"!**/.wrangler",
+			"!**/dist",
+			"!**/.env",
+			"!**/.env.*",
+			"!**/.tanstack",
+			"!**/cz.config.mjs",
+			"!**/vite.config.js.timestamp-*",
+			"!**/vite.config.ts.timestamp-*",
+			"!**/package-lock.json",
+			"!**/bun.lock",
+			"!**/vite.config.ts",
+			"!**/components.json",
+			"!**/tsconfig.json",
+			"!**/tsconfig.json",
+			"!**/cta.json",
+			"!**/biome.json",
+			"!**/routeTree.gen.ts"
+		]
+	},
+	"formatter": {
+		"enabled": true,
+		"useEditorconfig": true,
+		"formatWithErrors": false,
+		"indentStyle": "tab",
+		"indentWidth": 2,
+		"lineEnding": "lf",
+		"lineWidth": 100,
+		"attributePosition": "auto",
+		"bracketSpacing": true
+	},
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": {
+					"level": "on",
+					"options": {
+						"groups": [
+							{
+								"type": false,
+								"source": [":BUN:", ":NODE:"]
+							},
+							{
+								"type": false,
+								"source": ["@tanstack/react-router", "react"]
+							},
+							{
+								"type": false,
+								"source": [":PACKAGE:", "!**/*.css*"]
+							},
+							{
+								"type": false,
+								"source": ["@/lib", "@/contexts/*", "@/hooks/*"]
+							},
+							":BLANK_LINE:",
+							{
+								"type": true,
+								"source": [
+									":BUN:",
+									":NODE:",
+									"@tanstack/react-router",
+									"react",
+									":PACKAGE:",
+									"@/lib",
+									"@/hooks",
+									"@/contexts/*",
+									"@/hooks/*",
+									":ALIAS:",
+									":PATH:"
+								]
+							},
+							":BLANK_LINE:",
+							["@/app.css", "**/*.css*"],
+							":BLANK_LINE:",
+							["@/assets/images/**", "@/assets/icons/**"]
+						]
+					}
+				}
+			}
+		}
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": false,
+			"a11y": {
+				"recommended": true,
+				"useSemanticElements": "off",
+				"useFocusableInteractive": "off",
+				"useAriaPropsForRole": "off",
+				"noSvgWithoutTitle": "off"
+			},
+			"complexity": {
+				"noExtraBooleanCast": "error",
+				"noUselessCatch": "error",
+				"noUselessTypeConstraint": "error",
+				"noForEach": "error",
+				"noUselessFragments": "error",
+				"noUselessRename": "error",
+				"noUselessStringConcat": "error",
+				"noUselessTernary": "error",
+				"useFlatMap": "error",
+				"noAdjacentSpacesInRegex": "error",
+				"noUselessContinue": "error",
+				"useWhile": "error"
+			},
+			"correctness": {
+				"noConstAssign": "error",
+				"noConstantCondition": "error",
+				"noEmptyCharacterClassInRegex": "error",
+				"noEmptyPattern": "error",
+				"noGlobalObjectCalls": "error",
+				"noInvalidBuiltinInstantiation": "error",
+				"noInvalidConstructorSuper": "error",
+				"noNonoctalDecimalEscape": "error",
+				"noPrecisionLoss": "error",
+				"noSelfAssign": "error",
+				"noSetterReturn": "error",
+				"noSwitchDeclarations": "error",
+				"noUndeclaredVariables": "error",
+				"noUnreachable": "error",
+				"noUnreachableSuper": "error",
+				"noUnsafeFinally": "error",
+				"noUnsafeOptionalChaining": "error",
+				"noUnusedLabels": "error",
+				"noUnusedPrivateClassMembers": "error",
+				"noUnusedVariables": "off",
+				"useIsNan": "error",
+				"useValidForDirection": "error",
+				"useYield": "error",
+				"noInvalidGridAreas": "error",
+				"noInvalidPositionAtImportRule": "off",
+				"noUnusedFunctionParameters": "error",
+				"noUnusedImports": "error",
+				"useExhaustiveDependencies": "error",
+				"useHookAtTopLevel": "error"
+			},
+			"performance": {},
+			"security": {},
+			"nursery": {},
+			"style": {
+				"recommended": true,
+				"noDefaultExport": "off",
+				"noNonNullAssertion": "off",
+				"noNamespace": "error",
+				"noYodaExpression": "error",
+				"useBlockStatements": "off",
+				"useCollapsedElseIf": "error",
+				"useConsistentArrayType": "error",
+				"useConsistentBuiltinInstantiation": "error",
+				"useDefaultSwitchClause": "error",
+				"useEnumInitializers": "off",
+				"useExplicitLengthCheck": "off",
+				"useFilenamingConvention": {
+					"level": "error",
+					"options": {
+						"filenameCases": ["kebab-case"]
+					}
+				},
+				"useFragmentSyntax": "error",
+				"useLiteralEnumMembers": "off",
+				"useThrowNewError": "error",
+				"useArrayLiterals": "off",
+				"noEnum": "error",
+				"useImportType": {
+					"level": "error",
+					"options": {
+						"style": "separatedType"
+					}
+				}
+			},
+			"suspicious": {
+				"recommended": true,
+				"noEmptyBlockStatements": "error",
+				"noWith": "error",
+				"noUnknownAtRules": "off",
+				"noArrayIndexKey": "off"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"jsxQuoteStyle": "double",
+			"quoteProperties": "asNeeded",
+			"trailingCommas": "es5",
+			"semicolons": "always",
+			"arrowParentheses": "always",
+			"bracketSameLine": false,
+			"quoteStyle": "double",
+			"attributePosition": "auto",
+			"bracketSpacing": true
+		}
+	}
+}

@@ -1,1 +1,1 @@
-export const SESSION_NAME = 'dashboard__session'
+export const SESSION_NAME = "dashboard__session";
