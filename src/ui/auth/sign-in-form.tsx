@@ -67,7 +67,10 @@ export function SignInForm() {
 		onError: (error) => {
 			form.state.canSubmit = true;
 			toast.error(`Inicio de sesión fallido`, {
-				description: error instanceof Error ? error.message : "Por favor, inténtalo de nuevo.",
+				description:
+					error instanceof Error
+						? error.message
+						: "Por favor, inténtalo de nuevo.",
 			});
 		},
 		onSettled: () => {
@@ -93,12 +96,17 @@ export function SignInForm() {
 			<form.AppField
 				name="email"
 				children={(field) => (
-					<field.TextField label="Correo electrónico" placeholder="Correo electrónico" />
+					<field.TextField
+						label="Correo electrónico"
+						placeholder="Correo electrónico"
+					/>
 				)}
 			/>
 			<form.AppField
 				name="password"
-				children={(field) => <field.PasswordField label="Contraseña" placeholder="Contraseña" />}
+				children={(field) => (
+					<field.PasswordField label="Contraseña" placeholder="Contraseña" />
+				)}
 			/>
 
 			<div className="flex flex-col gap-4">

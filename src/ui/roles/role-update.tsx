@@ -4,7 +4,7 @@ import { useAppForm } from "@/contexts/form";
 
 import type { RoleValues } from "@/lib/schemas/settings";
 
-import { settingsService } from "@/lib/services/settings";
+import { rolesService } from "@/lib/services/roles";
 import { Button } from "@/ui/shared/button";
 import {
 	Sheet,
@@ -31,7 +31,7 @@ export function RoleUpdate({
 
 	const roleUpdateMutation = useMutation({
 		mutationFn: async (values: RoleValues) => {
-			return await settingsService.updateRole(role.id, values);
+			return await rolesService.updateRole(role.id, values);
 		},
 		onSuccess: () => {
 			form.reset();
@@ -42,7 +42,10 @@ export function RoleUpdate({
 		onError: (error) => {
 			form.state.canSubmit = true;
 			toast.error(`Error al actualizar el rol`, {
-				description: error instanceof Error ? error.message : "Por favor, inténtalo de nuevo.",
+				description:
+					error instanceof Error
+						? error.message
+						: "Por favor, inténtalo de nuevo.",
 			});
 		},
 		onSettled: () => {
@@ -67,8 +70,8 @@ export function RoleUpdate({
 				<SheetHeader>
 					<SheetTitle>Editar rol</SheetTitle>
 					<SheetDescription>
-						Vas a modificar la información de este rol. Realiza los cambios necesarios y guarda para
-						actualizar el rol.
+						Vas a modificar la información de este rol. Realiza los cambios
+						necesarios y guarda para actualizar el rol.
 					</SheetDescription>
 				</SheetHeader>
 				<form

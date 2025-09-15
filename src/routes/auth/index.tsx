@@ -8,7 +8,13 @@ import {
 	DecorationTop,
 } from "@/ui/auth/sign-in-decoration";
 import { SignInForm } from "@/ui/auth/sign-in-form";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/ui/shared/card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/ui/shared/card";
 import { LogoVialyzer } from "@/ui/shared/logo-vialyzer";
 
 export const Route = createFileRoute("/auth/")({
@@ -27,7 +33,9 @@ function SignIn() {
           /> */}
 					<LogoVialyzer className="mb-6" />
 
-					<CardTitle className="text-xl md:text-2xl text-center">Bienvenido a Vialyzer</CardTitle>
+					<CardTitle className="text-xl md:text-2xl text-center">
+						Bienvenido a Vialyzer
+					</CardTitle>
 					<CardDescription className="md:text-base  text-center">
 						Ingresa tus credenciales para acceder a tu cuenta
 					</CardDescription>
@@ -44,7 +52,9 @@ function SignIn() {
 					<DecorationBlock className="bg-white ml-100 md:ml-50 border border-accent" />
 				</DecorationTop>
 				<div className="text-white space-y-4">
-					<DecorationTitle className="md:text-left">Actores viales</DecorationTitle>
+					<DecorationTitle className="md:text-left">
+						Actores viales
+					</DecorationTitle>
 					<DecorationTitle className="font-bold md:text-right md:pl-10">
 						mejor perfilados
 					</DecorationTitle>

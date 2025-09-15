@@ -6,7 +6,7 @@ import { useAppForm } from "@/contexts/form";
 
 import type { CompanyValues } from "@/lib/schemas/settings";
 
-import { settingsService } from "@/lib/services/settings";
+import { companiesService } from "@/lib/services/companies";
 import { Button } from "@/ui/shared/button";
 import {
 	Sheet,
@@ -27,7 +27,7 @@ export function CompanyAdd() {
 
 	const companyAddMutation = useMutation({
 		mutationFn: async (values: CompanyValues) => {
-			return await settingsService.createCompany(values);
+			return await companiesService.createCompany(values);
 		},
 		onSuccess: ({ payload }) => {
 			form.reset();
@@ -38,7 +38,10 @@ export function CompanyAdd() {
 		onError: (error) => {
 			form.state.canSubmit = true;
 			toast.error(`Error al crear la empresa`, {
-				description: error instanceof Error ? error.message : "Por favor, inténtalo de nuevo.",
+				description:
+					error instanceof Error
+						? error.message
+						: "Por favor, inténtalo de nuevo.",
 			});
 		},
 		onSettled: () => {
@@ -65,8 +68,8 @@ export function CompanyAdd() {
 				<SheetHeader>
 					<SheetTitle>Crear empresa</SheetTitle>
 					<SheetDescription>
-						Vas a crear una nueva empresa. Completa la información necesaria y guarda para agregar
-						la empresa.
+						Vas a crear una nueva empresa. Completa la información necesaria y
+						guarda para agregar la empresa.
 					</SheetDescription>
 				</SheetHeader>
 				<form

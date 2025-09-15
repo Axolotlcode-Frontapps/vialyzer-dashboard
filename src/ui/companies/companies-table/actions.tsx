@@ -15,12 +15,24 @@ export function CompanyTableActions({ company }: { company: Company }) {
 				<Button size="icon" onClick={() => setOpenUpdate(true)}>
 					<Pencil />
 				</Button>
-				<Button size="icon" variant="destructive" onClick={() => setOpenDelete(true)}>
+				<Button
+					size="icon"
+					variant="destructive"
+					onClick={() => setOpenDelete(true)}
+				>
 					<Trash />
 				</Button>
 			</div>
-			<CompanyUpdate open={openUpdate} onOpenChange={setOpenUpdate} company={company} />
-			<CompanyDelete open={openDelete} onOpenChange={setOpenDelete} company={company} />
+			<CompanyUpdate
+				open={openUpdate}
+				onOpenChange={setOpenUpdate}
+				company={company}
+			/>
+			<CompanyDelete
+				open={openDelete}
+				onOpenChange={setOpenDelete}
+				company={company}
+			/>
 		</>
 	);
 }

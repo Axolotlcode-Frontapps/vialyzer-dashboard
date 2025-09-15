@@ -9,6 +9,6 @@
     "**/routeTree.gen.ts": true
   },
   "editor.tabSize": 2,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "biomejs.biome",
   "editor.formatOnSave": true
 }

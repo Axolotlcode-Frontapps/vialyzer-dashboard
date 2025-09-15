@@ -37,37 +37,39 @@ class AuthServices {
 	}
 
 	async verifyCode(values: VerifyCodeValues, userId: string, token: string) {
-		const response = await fetcher<GeneralResponse<{ id: string; token: string }>>(
-			"/users/validate-code",
+		const response = await fetcher<
+			GeneralResponse<{ id: string; token: string }>
+		>("/users/validate-code", {
+			method: "POST",
+			data: {
+				...values,
+				id: userId,
+			},
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		return response.payload;
+	}
+
+	async updateUser(
+		values: UpdatePasswordValues,
+		userId: string,
+		token: string
+	) {
+		return await fetcher<GeneralResponse<void>>(
+			`/users/update-user?userId=${userId}`,
 			{
-				method: "POST",
+				method: "PATCH",
 				data: {
-					...values,
-					id: userId,
+					password: values.password,
 				},
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
 			}
 		);
-
-		return response.payload;
-	}
-
-	async updateUser(values: UpdatePasswordValues, userId: string, token: string) {
-		return await fetcher<GeneralResponse<void>>(`/users/update-user?userId=${userId}`, {
-			method: "PATCH",
-			data: {
-				password: values.password,
-			},
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
-	}
-
-	async getMeUser() {
-		return await fetcher<GeneralResponse<User>>("/users/get-me");
 	}
 }
 

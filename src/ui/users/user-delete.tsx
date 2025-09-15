@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 
-import { settingsService } from "@/lib/services/settings";
+import { usersService } from "@/lib/services/users";
 import {
 	Dialog,
 	DialogClose,
@@ -27,7 +27,7 @@ export function UserDelete({
 
 	const userDeleteMutation = useMutation({
 		mutationFn: async () => {
-			return await settingsService.deleteUser(user.id);
+			return await usersService.deleteUser(user.id);
 		},
 		onSuccess: () => {
 			toast.success(`Usuario eliminado correctamente`, {
@@ -36,7 +36,10 @@ export function UserDelete({
 		},
 		onError: (error) => {
 			toast.error(`Error al eliminar el usuario "${user.name}"`, {
-				description: error instanceof Error ? error.message : "Por favor, inténtalo de nuevo.",
+				description:
+					error instanceof Error
+						? error.message
+						: "Por favor, inténtalo de nuevo.",
 			});
 		},
 		onSettled: () => {
@@ -61,7 +64,10 @@ export function UserDelete({
 					<DialogClose asChild>
 						<Button>Cancelar</Button>
 					</DialogClose>
-					<Button variant="destructive" onClick={() => userDeleteMutation.mutate()}>
+					<Button
+						variant="destructive"
+						onClick={() => userDeleteMutation.mutate()}
+					>
 						{userDeleteMutation.isPending ? (
 							<>
 								<LoaderCircle className="mr-2 animate-spin" />

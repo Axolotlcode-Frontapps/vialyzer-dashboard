@@ -45,13 +45,19 @@ function DecorationTop({ className, ...props }: React.ComponentProps<"div">) {
 	return (
 		<div
 			data-slot="decoration-top"
-			className={cn("hidden lg:flex absolute -top-35 2xl:-top-55 -left-40 xl:-left-30", className)}
+			className={cn(
+				"hidden lg:flex absolute -top-35 2xl:-top-55 -left-40 xl:-left-30",
+				className
+			)}
 			{...props}
 		/>
 	);
 }
 
-function DecorationBottom({ className, ...props }: React.ComponentProps<"div">) {
+function DecorationBottom({
+	className,
+	...props
+}: React.ComponentProps<"div">) {
 	return (
 		<div
 			data-slot="decoration-bottom"
@@ -61,4 +67,10 @@ function DecorationBottom({ className, ...props }: React.ComponentProps<"div">) 
 	);
 }
 
-export { Decoration, DecorationTitle, DecorationBlock, DecorationTop, DecorationBottom };
+export {
+	Decoration,
+	DecorationTitle,
+	DecorationBlock,
+	DecorationTop,
+	DecorationBottom,
+};

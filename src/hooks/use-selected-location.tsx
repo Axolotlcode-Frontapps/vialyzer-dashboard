@@ -10,7 +10,8 @@ export function useSelectedLocation() {
 	const { selected } = routeApi.useSearch();
 
 	const cameras =
-		queryClient.getQueryData<GeneralResponse<Camera[]>>(["get-cameras"])?.payload ?? [];
+		queryClient.getQueryData<GeneralResponse<Camera[]>>(["get-cameras"])
+			?.payload ?? [];
 
 	const onSelect = useCallback(
 		(id?: string) => {

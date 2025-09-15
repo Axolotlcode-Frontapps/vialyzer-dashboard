@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ReactDOM from "react-dom/client";
 
 import { AuthProvider, useAuth } from "./contexts/auth";
+import { PermissionsProvider, usePermissions } from "./contexts/permissions";
 import { routeTree } from "./routeTree.gen";
 
 const queryClient = new QueryClient();
@@ -13,8 +14,9 @@ const router = createRouter({
 	defaultPreload: "intent",
 	scrollRestoration: true,
 	context: {
-		auth: undefined!,
 		queryClient,
+		auth: undefined!,
+		permissions: undefined!,
 	},
 	defaultStructuralSharing: true,
 	defaultPreloadStaleTime: 0,
@@ -28,9 +30,11 @@ declare module "@tanstack/react-router" {
 
 function App() {
 	const auth = useAuth();
+	const permissions = usePermissions();
+
 	return (
 		<QueryClientProvider client={queryClient}>
-			<RouterProvider router={router} context={{ auth }} />
+			<RouterProvider router={router} context={{ auth, permissions }} />
 		</QueryClientProvider>
 	);
 }
@@ -41,7 +45,9 @@ if (rootElement && !rootElement.innerHTML) {
 	root.render(
 		<StrictMode>
 			<AuthProvider>
-				<App />
+				<PermissionsProvider>
+					<App />
+				</PermissionsProvider>
 			</AuthProvider>
 		</StrictMode>
 	);

@@ -19,31 +19,45 @@ export const CompanyFields = withForm({
 				<form.AppField
 					name="name"
 					children={(field) => (
-						<field.TextField label="Nombre" placeholder="Nombre de la empresa" />
+						<field.TextField
+							label="Nombre"
+							placeholder="Nombre de la empresa"
+						/>
 					)}
 				/>
 				<form.AppField
 					name="description"
 					children={(field) => (
-						<field.TextField label="Descripción" placeholder="Descripción de la empresa" />
+						<field.TextField
+							label="Descripción"
+							placeholder="Descripción de la empresa"
+						/>
 					)}
 				/>
 				<div className="flex flex-col sm:flex-row gap-4">
 					<form.AppField
 						name="nit"
-						children={(field) => <field.TextField label="NIT" placeholder="NIT de la empresa" />}
+						children={(field) => (
+							<field.TextField label="NIT" placeholder="NIT de la empresa" />
+						)}
 					/>
 					<form.AppField
 						name="phone"
 						children={(field) => (
-							<field.TextField label="Teléfono" placeholder="Teléfono de la empresa" />
+							<field.TextField
+								label="Teléfono"
+								placeholder="Teléfono de la empresa"
+							/>
 						)}
 					/>
 				</div>
 				<form.AppField
 					name="address"
 					children={(field) => (
-						<field.TextField label="Dirección" placeholder="Dirección de la empresa" />
+						<field.TextField
+							label="Dirección"
+							placeholder="Dirección de la empresa"
+						/>
 					)}
 				/>
 				<form.AppField
@@ -71,7 +85,9 @@ export const CompanyFields = withForm({
 									disabled={!deparment}
 									options={
 										departmentsData
-											.find((department) => department.departments === deparment)
+											.find(
+												(department) => department.departments === deparment
+											)
 											?.cities.map((city: string) => ({
 												label: city,
 												value: city,

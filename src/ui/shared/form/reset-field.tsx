@@ -8,7 +8,10 @@ interface Props {
 	className?: string;
 }
 
-export function ResetField({ onReset, className = "right-8 top-[35px]" }: Props) {
+export function ResetField({
+	onReset,
+	className = "right-8 top-[35px]",
+}: Props) {
 	return (
 		<Button
 			variant="ghost"

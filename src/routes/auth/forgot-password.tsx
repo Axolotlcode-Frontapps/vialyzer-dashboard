@@ -1,7 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { ForgotPasswordForm } from "@/ui/auth/forgot-password-form";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/ui/shared/card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/ui/shared/card";
 import { LogoVialyzer } from "@/ui/shared/logo-vialyzer";
 
 export const Route = createFileRoute("/auth/forgot-password")({
@@ -18,9 +24,12 @@ function ForgotPassword() {
 				>
 					<LogoVialyzer className="mb-6" />
 				</a>
-				<CardTitle className="text-xl md:text-2xl text-center">Recuperar contraseña</CardTitle>
+				<CardTitle className="text-xl md:text-2xl text-center">
+					Recuperar contraseña
+				</CardTitle>
 				<CardDescription className="md:text-base  text-center">
-					Ingresa tu correo electrónico a continuación para recuperar tu contraseña
+					Ingresa tu correo electrónico a continuación para recuperar tu
+					contraseña
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="px-0">

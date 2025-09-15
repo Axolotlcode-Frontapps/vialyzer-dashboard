@@ -10,8 +10,19 @@ import type { VerifyCodeValues } from "@/lib/schemas/auth";
 import { authSchemas } from "@/lib/schemas/auth";
 import { authServices } from "@/lib/services/auth";
 import { Button } from "@/ui/shared/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/ui/shared/card";
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/ui/shared/input-otp";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/ui/shared/card";
+import {
+	InputOTP,
+	InputOTPGroup,
+	InputOTPSeparator,
+	InputOTPSlot,
+} from "@/ui/shared/input-otp";
 import { LogoVialyzer } from "@/ui/shared/logo-vialyzer";
 
 export const Route = createFileRoute("/auth/verify-code")({
@@ -67,7 +78,10 @@ function VerifyCode() {
 		},
 		onError: (error) => {
 			toast.error(`Error al verificar el código`, {
-				description: error instanceof Error ? error.message : "Por favor, inténtalo de nuevo.",
+				description:
+					error instanceof Error
+						? error.message
+						: "Por favor, inténtalo de nuevo.",
 			});
 		},
 	});
@@ -91,10 +105,12 @@ function VerifyCode() {
 				>
 					<LogoVialyzer className="mb-6" />
 				</a>
-				<CardTitle className="text-xl md:text-2xl text-center">Verificar código</CardTitle>
+				<CardTitle className="text-xl md:text-2xl text-center">
+					Verificar código
+				</CardTitle>
 				<CardDescription>
-					Introduce el código de verificación que te hemos enviado por correo electrónico para
-					continuar.
+					Introduce el código de verificación que te hemos enviado por correo
+					electrónico para continuar.
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="h-fit px-0">
@@ -107,7 +123,11 @@ function VerifyCode() {
 					<form.AppField
 						name="code"
 						children={(field) => (
-							<InputOTP maxLength={6} value={field.state.value} onChange={field.handleChange}>
+							<InputOTP
+								maxLength={6}
+								value={field.state.value}
+								onChange={field.handleChange}
+							>
 								<InputOTPGroup className="w-full">
 									<InputOTPSlot className="w-full" index={0} />
 									<InputOTPSlot className="w-full" index={1} />
@@ -133,7 +153,10 @@ function VerifyCode() {
 					</form.AppForm>
 				</form>
 
-				<Button variant="link" className="w-full cursor-pointer text-muted-foreground mt-4">
+				<Button
+					variant="link"
+					className="w-full cursor-pointer text-muted-foreground mt-4"
+				>
 					Iniciar sesión
 				</Button>
 			</CardContent>

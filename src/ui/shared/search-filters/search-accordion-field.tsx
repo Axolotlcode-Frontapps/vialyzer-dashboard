@@ -1,7 +1,12 @@
 import { useFieldContext } from "@/contexts/form";
 
 import { cn } from "@/lib/utils/cn";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../accordion";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "../accordion";
 import { Input } from "../input";
 import { Label } from "../label";
 
@@ -26,7 +31,8 @@ export function SearchAccordionField({
 							<Label
 								className={cn(
 									"w-full inline-block cursor-pointer px-4 py-3",
-									field.state.value === option.value && "bg-secondary text-secondary-foreground"
+									field.state.value === option.value &&
+										"bg-secondary text-secondary-foreground"
 								)}
 							>
 								<Input

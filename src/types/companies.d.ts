@@ -1,30 +1,3 @@
-interface Role {
-	id: string;
-	name: string;
-	description: string;
-	active: boolean;
-}
-
-interface Permission {
-	module: string;
-	action: string;
-	description: string;
-	active: boolean;
-}
-
-interface User {
-	id: string;
-	name: string;
-	lastName: string;
-	email: string;
-	phone: string;
-	role: Role;
-	companie: Company;
-	createdAt: Date;
-	active: boolean;
-	lastLogin: Date;
-}
-
 interface Company {
 	id: string;
 	name: string;

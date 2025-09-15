@@ -15,7 +15,13 @@ import type { INavSection } from "./types";
 import Logo from "@/assets/icons/logo.svg";
 import { cn } from "@/lib/utils/cn";
 import { config } from "@/lib/utils/config";
-import { Sidebar, SidebarContent, SidebarHeader, SidebarRail, useSidebar } from "../sidebar";
+import {
+	Sidebar,
+	SidebarContent,
+	SidebarHeader,
+	SidebarRail,
+	useSidebar,
+} from "../sidebar";
 import { NavSection } from "./nav-section";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -116,11 +122,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				>
 					<img src={Logo} className="size-8" alt="Vialyzer Dashboard Logo" />
 					<span className="sr-only">{config.name}</span>
-					{open ? <span className="text-xl font-semibold">{config.name}</span> : null}
+					{open ? (
+						<span className="text-xl font-semibold">{config.name}</span>
+					) : null}
 				</a>
 			</SidebarHeader>
 			<SidebarContent
-				className={cn("divide-foreground/30 gap-0", open ? "divide-y-0" : "divide-y")}
+				className={cn(
+					"divide-foreground/30 gap-0",
+					open ? "divide-y-0" : "divide-y"
+				)}
 			>
 				<NavSection group={principalMenu.group} items={principalMenu.items} />
 				<NavSection group={metricsMenu.group} items={metricsMenu.items} />

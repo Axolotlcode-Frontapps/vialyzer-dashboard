@@ -24,7 +24,9 @@ export function UserMenu() {
 
 	const queryClient = useQueryClient();
 
-	const userMe = queryClient.getQueryData<GeneralResponse<User>>(["get-me"])?.payload;
+	const userMe = queryClient.getQueryData<GeneralResponse<User>>([
+		"get-me",
+	])?.payload;
 
 	console.log(userMe);
 

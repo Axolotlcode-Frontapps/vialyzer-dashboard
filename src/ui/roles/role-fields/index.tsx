@@ -9,12 +9,17 @@ export const RoleFields = withForm({
 			<>
 				<form.AppField
 					name="name"
-					children={(field) => <field.TextField label="Nombre" placeholder="Nombre del rol" />}
+					children={(field) => (
+						<field.TextField label="Nombre" placeholder="Nombre del rol" />
+					)}
 				/>
 				<form.AppField
 					name="description"
 					children={(field) => (
-						<field.TextField label="Descripción" placeholder="Descripción del rol" />
+						<field.TextField
+							label="Descripción"
+							placeholder="Descripción del rol"
+						/>
 					)}
 				/>
 			</>

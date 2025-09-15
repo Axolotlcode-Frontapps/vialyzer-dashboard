@@ -1,4 +1,9 @@
-import { Circle, GoogleMap, Marker, TrafficLayer } from "@react-google-maps/api";
+import {
+	Circle,
+	GoogleMap,
+	Marker,
+	TrafficLayer,
+} from "@react-google-maps/api";
 import { useQuery } from "@tanstack/react-query";
 import { useGoogleMaps } from "@/contexts/maps";
 import { useSelectedLocation } from "@/hooks/use-selected-location";

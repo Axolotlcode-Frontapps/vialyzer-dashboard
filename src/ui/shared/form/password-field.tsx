@@ -56,7 +56,9 @@ export function PasswordField({
 				{showPassword ? <Eye /> : <EyeOff />}
 			</Button>
 
-			{error ? <span className="w-full text-sm text-destructive mt-2">{error}</span> : null}
+			{error ? (
+				<span className="w-full text-sm text-destructive mt-2">{error}</span>
+			) : null}
 		</Label>
 	);
 }

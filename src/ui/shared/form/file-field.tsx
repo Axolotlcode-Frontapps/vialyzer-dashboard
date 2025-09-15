@@ -53,7 +53,9 @@ export function FileField({ label, placeholder, ...props }: Props) {
 					"w-full flex justify-between"
 				)}
 			>
-				<p className="block truncate ">{field.state.value?.name || placeholder}</p>
+				<p className="block truncate ">
+					{field.state.value?.name || placeholder}
+				</p>
 
 				{field.state.value ? (
 					<ResetField className="top-3 right-2" onReset={handleReset} />
@@ -64,7 +66,9 @@ export function FileField({ label, placeholder, ...props }: Props) {
 				)}
 			</div>
 
-			{error ? <span className="w-full text-sm text-destructive mt-2">{error}</span> : null}
+			{error ? (
+				<span className="w-full text-sm text-destructive mt-2">{error}</span>
+			) : null}
 		</Label>
 	);
 }

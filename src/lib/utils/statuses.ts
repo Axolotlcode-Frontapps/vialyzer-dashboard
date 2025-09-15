@@ -19,7 +19,10 @@ export const STATUS_STYLES = {
 	},
 };
 
-export const STATUS: Record<TStatus, { label: string; color: string; dot: string }> = {
+export const STATUS: Record<
+	TStatus,
+	{ label: string; color: string; dot: string }
+> = {
 	// normal statuses
 	PROCESSING: { ...STATUS_STYLES.normal, label: "Procesando" },
 	// warning statuses
@@ -48,7 +51,12 @@ export const STATUS: Record<TStatus, { label: string; color: string; dot: string
 
 export const STATUS_ORDER: Record<TStatusType, TStatus[]> = {
 	normal: ["PROCESSING"],
-	warning: ["PROVISIONING", "VALIDATION", "WAITING_FOR_CONFIGURATION", "VIEW_CHANGED"],
+	warning: [
+		"PROVISIONING",
+		"VALIDATION",
+		"WAITING_FOR_CONFIGURATION",
+		"VIEW_CHANGED",
+	],
 	error: [
 		"UNIT_DISCONNECTED",
 		"UNIT_IMPAIRED",

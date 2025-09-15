@@ -8,48 +8,80 @@ import { UserTableActions } from "./actions";
 export const columns: ColumnDef<User>[] = [
 	{
 		accessorKey: "name",
-		header: ({ column }) => <DataTableColumnHeader column={column} title="Nombre" />,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Nombre" />
+		),
 		cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
 	},
 	{
 		accessorKey: "lastName",
-		header: ({ column }) => <DataTableColumnHeader column={column} title="Apellidos" />,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Apellidos" />
+		),
 	},
 	{
 		accessorKey: "email",
-		header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Email" />
+		),
 	},
 	{
 		accessorKey: "phone",
-		header: ({ column }) => <DataTableColumnHeader column={column} title="Teléfono" />,
-		cell: ({ row }) => <div className="capitalize">{row.getValue("phone") || "-"}</div>,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Teléfono" />
+		),
+		cell: ({ row }) => (
+			<div className="capitalize">{row.getValue("phone") || "-"}</div>
+		),
 	},
 	{
 		accessorKey: "role",
-		header: ({ column }) => <DataTableColumnHeader column={column} title="Rol" />,
-		cell: ({ row }) => <Badge className="capitalize">{row.original.role.name}</Badge>,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Rol" />
+		),
+		cell: ({ row }) => (
+			<Badge className="capitalize">{row.original.role.name}</Badge>
+		),
 	},
 	{
 		accessorKey: "companie",
-		header: ({ column }) => <DataTableColumnHeader column={column} title="Empresa" />,
-		cell: ({ row }) => <span className="capitalize">{row.original.companie.name}</span>,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Empresa" />
+		),
+		cell: ({ row }) => (
+			<span className="capitalize">{row.original.companie.name}</span>
+		),
 	},
 	{
 		accessorKey: "createdAt",
-		header: ({ column }) => <DataTableColumnHeader column={column} title="Fecha de creación" />,
-		cell: ({ row }) => <span className="capitalize">{formatDate(row.getValue("createdAt"))}</span>,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Fecha de creación" />
+		),
+		cell: ({ row }) => (
+			<span className="capitalize">
+				{formatDate(row.getValue("createdAt"))}
+			</span>
+		),
 	},
 	{
 		accessorKey: "lastLogin",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Fecha de último acceso" />
 		),
-		cell: ({ row }) => <span className="capitalize">{formatDate(row.getValue("lastLogin"))}</span>,
+		cell: ({ row }) => (
+			<span className="capitalize">
+				{formatDate(row.getValue("lastLogin"))}
+			</span>
+		),
 	},
 	{
 		accessorKey: "active",
-		header: ({ column }) => <DataTableColumnHeader column={column} title="Activo" />,
-		cell: ({ row }) => <Badge variant="secondary">{row.getValue("active") ? "Sí" : "No"}</Badge>,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Activo" />
+		),
+		cell: ({ row }) => (
+			<Badge variant="secondary">{row.getValue("active") ? "Sí" : "No"}</Badge>
+		),
 	},
 	{
 		id: "actions",

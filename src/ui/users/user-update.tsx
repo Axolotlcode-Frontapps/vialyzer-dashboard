@@ -4,7 +4,7 @@ import { useAppForm } from "@/contexts/form";
 
 import type { UserValues } from "@/lib/schemas/settings";
 
-import { settingsService } from "@/lib/services/settings";
+import { usersService } from "@/lib/services/users";
 import { Button } from "@/ui/shared/button";
 import {
 	Sheet,
@@ -31,7 +31,7 @@ export function UserUpdate({
 
 	const userUpdateMutation = useMutation({
 		mutationFn: async (values: UserValues) => {
-			return await settingsService.updateUser(user.id, values);
+			return await usersService.updateUser(user.id, values);
 		},
 		onSuccess: () => {
 			form.reset();
@@ -42,7 +42,10 @@ export function UserUpdate({
 		onError: (error) => {
 			form.state.canSubmit = true;
 			toast.error(`Error al actualizar el usuario`, {
-				description: error instanceof Error ? error.message : "Por favor, inténtalo de nuevo.",
+				description:
+					error instanceof Error
+						? error.message
+						: "Por favor, inténtalo de nuevo.",
 			});
 		},
 		onSettled: () => {
@@ -71,8 +74,8 @@ export function UserUpdate({
 				<SheetHeader>
 					<SheetTitle>Actualizar usuario</SheetTitle>
 					<SheetDescription>
-						Vas a actualizar un usuario existente. Completa la información necesaria y guarda para
-						aplicar los cambios.
+						Vas a actualizar un usuario existente. Completa la información
+						necesaria y guarda para aplicar los cambios.
 					</SheetDescription>
 				</SheetHeader>
 				<form

@@ -17,7 +17,11 @@ export function RoleTableActions({ role }: { role: Role }) {
 					<Pencil />
 				</Button>
 
-				<Button size="icon" variant="destructive" onClick={() => setOpenDelete(true)}>
+				<Button
+					size="icon"
+					variant="destructive"
+					onClick={() => setOpenDelete(true)}
+				>
 					<Trash />
 				</Button>
 
@@ -33,7 +37,11 @@ export function RoleTableActions({ role }: { role: Role }) {
 				</Link>
 			</div>
 
-			<RoleUpdate role={role} open={openUpdate} onOpenChange={setOpenRoleUpdate} />
+			<RoleUpdate
+				role={role}
+				open={openUpdate}
+				onOpenChange={setOpenRoleUpdate}
+			/>
 			<RoleDelete role={role} open={openDelete} onOpenChange={setOpenDelete} />
 		</>
 	);

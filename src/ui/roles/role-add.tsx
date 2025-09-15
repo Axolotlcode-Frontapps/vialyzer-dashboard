@@ -6,7 +6,7 @@ import { useAppForm } from "@/contexts/form";
 
 import type { RoleValues } from "@/lib/schemas/settings";
 
-import { settingsService } from "@/lib/services/settings";
+import { rolesService } from "@/lib/services/roles";
 import { Button } from "@/ui/shared/button";
 import {
 	Sheet,
@@ -27,7 +27,7 @@ export function RoleAdd() {
 
 	const roleAddMutation = useMutation({
 		mutationFn: async (values: RoleValues) => {
-			return await settingsService.createRole(values);
+			return await rolesService.createRole(values);
 		},
 		onSuccess: ({ payload }) => {
 			form.reset();
@@ -38,7 +38,10 @@ export function RoleAdd() {
 		onError: (error) => {
 			form.state.canSubmit = true;
 			toast.error(`Error al crear el rol`, {
-				description: error instanceof Error ? error.message : "Por favor, inténtalo de nuevo.",
+				description:
+					error instanceof Error
+						? error.message
+						: "Por favor, inténtalo de nuevo.",
 			});
 		},
 		onSettled: () => {
@@ -65,8 +68,8 @@ export function RoleAdd() {
 				<SheetHeader>
 					<SheetTitle>Crear rol</SheetTitle>
 					<SheetDescription>
-						Vas a crear un nuevo rol. Completa la información necesaria y guarda para agregar el
-						rol.
+						Vas a crear un nuevo rol. Completa la información necesaria y guarda
+						para agregar el rol.
 					</SheetDescription>
 				</SheetHeader>
 				<form

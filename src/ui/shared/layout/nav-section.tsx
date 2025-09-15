@@ -5,7 +5,11 @@ import { ChevronRight } from "lucide-react";
 
 import type { INavSection } from "./types";
 
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../collapsible";
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "../collapsible";
 import {
 	SidebarGroup,
 	SidebarGroupLabel,

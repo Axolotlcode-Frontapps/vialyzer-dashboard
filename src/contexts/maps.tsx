@@ -8,9 +8,15 @@ interface GoogleMapsContextType {
 	loadError: Error | undefined;
 }
 
-const GoogleMapsContext = createContext<GoogleMapsContextType | undefined>(undefined);
+const GoogleMapsContext = createContext<GoogleMapsContextType | undefined>(
+	undefined
+);
 
-const libraries: ("places" | "visualization" | "maps")[] = ["places", "visualization", "maps"];
+const libraries: ("places" | "visualization" | "maps")[] = [
+	"places",
+	"visualization",
+	"maps",
+];
 
 interface GoogleMapsProviderProps {
 	children: ReactNode;
@@ -27,7 +33,11 @@ export function GoogleMapsProvider({ children }: GoogleMapsProviderProps) {
 		loadError,
 	};
 
-	return <GoogleMapsContext.Provider value={value}>{children}</GoogleMapsContext.Provider>;
+	return (
+		<GoogleMapsContext.Provider value={value}>
+			{children}
+		</GoogleMapsContext.Provider>
+	);
 }
 
 export function useGoogleMaps() {

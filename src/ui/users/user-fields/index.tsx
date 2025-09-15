@@ -1,7 +1,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { withForm } from "@/contexts/form";
 
-import { settingsService } from "@/lib/services/settings";
+import { companiesQueries } from "@/lib/query-options/companies";
+import { rolesQueries } from "@/lib/query-options/roles";
 import { userFieldsOpts } from "./options";
 
 export const UserFields = withForm({
@@ -10,19 +11,19 @@ export const UserFields = withForm({
 		const queryClient = useQueryClient();
 
 		const roles = queryClient.getQueryData<GeneralResponse<Role[]>>(["roles"]);
-		const companies = queryClient.getQueryData<GeneralResponse<Company[]>>(["companies"]);
+		const companies = queryClient.getQueryData<GeneralResponse<Company[]>>([
+			"companies",
+		]);
 
 		const { data: rolesData = [] } = useQuery({
-			queryKey: ["roles"],
-			queryFn: () => settingsService.getAllRoles(),
+			...rolesQueries.rolesOptions(),
 			initialData: roles,
 			enabled: !roles,
 			select: (data) => data?.payload,
 		});
 
 		const { data: companiesData = [] } = useQuery({
-			queryKey: ["companies"],
-			queryFn: () => settingsService.getAllCompanies(),
+			...companiesQueries.companiesOptions(),
 			initialData: companies,
 			enabled: !companies,
 			select: (data) => data?.payload,
@@ -34,13 +35,19 @@ export const UserFields = withForm({
 					<form.AppField
 						name="name"
 						children={(field) => (
-							<field.TextField label="Nombre" placeholder="Nombre del usuario" />
+							<field.TextField
+								label="Nombre"
+								placeholder="Nombre del usuario"
+							/>
 						)}
 					/>
 					<form.AppField
 						name="lastname"
 						children={(field) => (
-							<field.TextField label="Apellido" placeholder="Apellido del usuario" />
+							<field.TextField
+								label="Apellido"
+								placeholder="Apellido del usuario"
+							/>
 						)}
 					/>
 				</div>
@@ -48,14 +55,22 @@ export const UserFields = withForm({
 				<form.AppField
 					name="email"
 					children={(field) => (
-						<field.TextField label="Email" type="email" placeholder="Email del usuario" />
+						<field.TextField
+							label="Email"
+							type="email"
+							placeholder="Email del usuario"
+						/>
 					)}
 				/>
 
 				<form.AppField
 					name="phone"
 					children={(field) => (
-						<field.TextField label="Teléfono" type="tel" placeholder="Teléfono del usuario" />
+						<field.TextField
+							label="Teléfono"
+							type="tel"
+							placeholder="Teléfono del usuario"
+						/>
 					)}
 				/>
 

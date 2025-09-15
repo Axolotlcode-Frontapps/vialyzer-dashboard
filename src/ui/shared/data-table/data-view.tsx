@@ -14,11 +14,19 @@ import {
 	DropdownMenuSeparator,
 } from "../dropdown-menu";
 
-export function DataTableViewOptions<TData>({ table }: { table: Table<TData> }) {
+export function DataTableViewOptions<TData>({
+	table,
+}: {
+	table: Table<TData>;
+}) {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" size="sm" className="ml-auto hidden h-8 lg:flex">
+				<Button
+					variant="outline"
+					size="sm"
+					className="ml-auto hidden h-8 lg:flex"
+				>
 					<Settings2 />
 					Columnas
 				</Button>
@@ -28,7 +36,10 @@ export function DataTableViewOptions<TData>({ table }: { table: Table<TData> }) 
 				<DropdownMenuSeparator />
 				{table
 					.getAllColumns()
-					.filter((column) => typeof column.accessorFn !== "undefined" && column.getCanHide())
+					.filter(
+						(column) =>
+							typeof column.accessorFn !== "undefined" && column.getCanHide()
+					)
 					.map((column) => {
 						return (
 							<DropdownMenuCheckboxItem

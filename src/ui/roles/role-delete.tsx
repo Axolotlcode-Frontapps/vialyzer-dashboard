@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 
-import { settingsService } from "@/lib/services/settings";
+import { rolesService } from "@/lib/services/roles";
 import {
 	Dialog,
 	DialogClose,
@@ -27,7 +27,7 @@ export function RoleDelete({
 
 	const roleEditMutation = useMutation({
 		mutationFn: async () => {
-			return await settingsService.deleteRole(role.id);
+			return await rolesService.deleteRole(role.id);
 		},
 		onSuccess: () => {
 			toast.success(`Rol eliminado correctamente`, {
@@ -36,7 +36,10 @@ export function RoleDelete({
 		},
 		onError: (error) => {
 			toast.error(`Error al eliminar el rol "${role.name}"`, {
-				description: error instanceof Error ? error.message : "Por favor, inténtalo de nuevo.",
+				description:
+					error instanceof Error
+						? error.message
+						: "Por favor, inténtalo de nuevo.",
 			});
 		},
 		onSettled: () => {
@@ -61,7 +64,10 @@ export function RoleDelete({
 					<DialogClose asChild>
 						<Button>Cancelar</Button>
 					</DialogClose>
-					<Button variant="destructive" onClick={() => roleEditMutation.mutate()}>
+					<Button
+						variant="destructive"
+						onClick={() => roleEditMutation.mutate()}
+					>
 						{roleEditMutation.isPending ? (
 							<>
 								<LoaderCircle className="mr-2 animate-spin" />

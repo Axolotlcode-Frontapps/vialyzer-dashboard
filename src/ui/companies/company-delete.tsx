@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 
-import { settingsService } from "@/lib/services/settings";
+import { companiesService } from "@/lib/services/companies";
 import {
 	Dialog,
 	DialogClose,
@@ -27,7 +27,7 @@ export function CompanyDelete({
 
 	const companyDeleteMutation = useMutation({
 		mutationFn: async () => {
-			return await settingsService.deleteCompany(company.id);
+			return await companiesService.deleteCompany(company.id);
 		},
 		onSuccess: () => {
 			toast.success(`Empresa eliminada correctamente`, {
@@ -36,7 +36,10 @@ export function CompanyDelete({
 		},
 		onError: (error) => {
 			toast.error(`Error al eliminar la empresa "${company.name}"`, {
-				description: error instanceof Error ? error.message : "Por favor, inténtalo de nuevo.",
+				description:
+					error instanceof Error
+						? error.message
+						: "Por favor, inténtalo de nuevo.",
 			});
 		},
 		onSettled: () => {
@@ -61,7 +64,10 @@ export function CompanyDelete({
 					<DialogClose asChild>
 						<Button>Cancelar</Button>
 					</DialogClose>
-					<Button variant="destructive" onClick={() => companyDeleteMutation.mutate()}>
+					<Button
+						variant="destructive"
+						onClick={() => companyDeleteMutation.mutate()}
+					>
 						{companyDeleteMutation.isPending ? (
 							<>
 								<LoaderCircle className="mr-2 animate-spin" />

@@ -6,12 +6,16 @@ import { RoleTableActions } from "./actions";
 export const columns: ColumnDef<Role>[] = [
 	{
 		accessorKey: "name",
-		header: ({ column }) => <DataTableColumnHeader column={column} title="Nombre" />,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Nombre" />
+		),
 		cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
 	},
 	{
 		accessorKey: "description",
-		header: ({ column }) => <DataTableColumnHeader column={column} title="Descripción" />,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Descripción" />
+		),
 	},
 	{
 		id: "actions",

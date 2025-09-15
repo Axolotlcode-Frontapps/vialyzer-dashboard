@@ -4,7 +4,7 @@ import { useAppForm } from "@/contexts/form";
 
 import type { CompanyValues } from "@/lib/schemas/settings";
 
-import { settingsService } from "@/lib/services/settings";
+import { companiesService } from "@/lib/services/companies";
 import { Button } from "@/ui/shared/button";
 import {
 	Sheet,
@@ -31,7 +31,7 @@ export function CompanyUpdate({
 
 	const companyUpdateMutation = useMutation({
 		mutationFn: async (values: CompanyValues) => {
-			return await settingsService.updateCompany(company.id, values);
+			return await companiesService.updateCompany(company.id, values);
 		},
 		onSuccess: () => {
 			form.reset();
@@ -42,7 +42,10 @@ export function CompanyUpdate({
 		onError: (error) => {
 			form.state.canSubmit = true;
 			toast.error(`Error al actualizar la empresa`, {
-				description: error instanceof Error ? error.message : "Por favor, inténtalo de nuevo.",
+				description:
+					error instanceof Error
+						? error.message
+						: "Por favor, inténtalo de nuevo.",
 			});
 		},
 		onSettled: () => {
@@ -63,7 +66,8 @@ export function CompanyUpdate({
 			department: company.department ?? "",
 			city: company.city ?? "",
 		},
-		onSubmit: ({ value }) => companyUpdateMutation.mutate(value as CompanyValues),
+		onSubmit: ({ value }) =>
+			companyUpdateMutation.mutate(value as CompanyValues),
 	});
 
 	return (
@@ -72,8 +76,8 @@ export function CompanyUpdate({
 				<SheetHeader>
 					<SheetTitle>Editar empresa</SheetTitle>
 					<SheetDescription>
-						Vas a modificar la información de esta empresa. Realiza los cambios necesarios y guarda
-						para actualizar la empresa.
+						Vas a modificar la información de esta empresa. Realiza los cambios
+						necesarios y guarda para actualizar la empresa.
 					</SheetDescription>
 				</SheetHeader>
 				<form

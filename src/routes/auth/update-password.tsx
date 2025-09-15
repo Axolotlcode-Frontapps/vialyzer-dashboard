@@ -1,7 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { UpdatePasswordForm } from "@/ui/auth/update-password-form";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/ui/shared/card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/ui/shared/card";
 import { LogoVialyzer } from "@/ui/shared/logo-vialyzer";
 
 export const Route = createFileRoute("/auth/update-password")({
@@ -18,7 +24,9 @@ function UpdatePassword() {
 				>
 					<LogoVialyzer className="mb-6" />
 				</a>
-				<CardTitle className="text-xl md:text-2xl text-center">Actualizar contraseña</CardTitle>
+				<CardTitle className="text-xl md:text-2xl text-center">
+					Actualizar contraseña
+				</CardTitle>
 				<CardDescription className="md:text-base  text-center">
 					Ingresa tu nueva contraseña para actualizarla.
 				</CardDescription>

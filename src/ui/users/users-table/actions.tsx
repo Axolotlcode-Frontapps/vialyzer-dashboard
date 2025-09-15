@@ -15,7 +15,11 @@ export function UserTableActions({ user }: { user: User }) {
 				<Button onClick={() => setOpenUpdate(true)} size="icon">
 					<Pencil />
 				</Button>
-				<Button size="icon" variant="destructive" onClick={() => setOpenDelete(true)}>
+				<Button
+					size="icon"
+					variant="destructive"
+					onClick={() => setOpenDelete(true)}
+				>
 					<Trash />
 				</Button>
 			</div>

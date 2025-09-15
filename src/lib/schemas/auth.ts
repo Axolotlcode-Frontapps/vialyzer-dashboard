@@ -23,7 +23,11 @@ class AuthSchemas {
 	});
 
 	verifyCode = z.object({
-		code: z.string().min(6).max(6).regex(/^\d+$/, "El código debe ser numérico"),
+		code: z
+			.string()
+			.min(6)
+			.max(6)
+			.regex(/^\d+$/, "El código debe ser numérico"),
 	});
 
 	updatePassword = z

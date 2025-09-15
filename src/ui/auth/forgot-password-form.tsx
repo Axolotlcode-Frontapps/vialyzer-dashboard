@@ -43,7 +43,8 @@ export function ForgotPasswordForm() {
 			form.reset();
 			toast.success(`¡Se ha enviado un correo electrónico de recuperación!`, {
 				position: "bottom-right",
-				description: "Por favor, revisa tu correo electrónico para restablecer tu contraseña.",
+				description:
+					"Por favor, revisa tu correo electrónico para restablecer tu contraseña.",
 			});
 			navigate({
 				to: "/auth/verify-code",
@@ -56,7 +57,10 @@ export function ForgotPasswordForm() {
 		onError: (error) => {
 			form.state.canSubmit = true;
 			toast.error(`Error al enviar el correo electrónico de recuperación`, {
-				description: error instanceof Error ? error.message : "Por favor, inténtalo de nuevo.",
+				description:
+					error instanceof Error
+						? error.message
+						: "Por favor, inténtalo de nuevo.",
 			});
 		},
 		onSettled: () => {
@@ -82,7 +86,10 @@ export function ForgotPasswordForm() {
 			<form.AppField
 				name="email"
 				children={(field) => (
-					<field.TextField label="Correo electrónico" placeholder="Correo electrónico" />
+					<field.TextField
+						label="Correo electrónico"
+						placeholder="Correo electrónico"
+					/>
 				)}
 			/>
 

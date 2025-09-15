@@ -6,7 +6,7 @@ import { useAppForm } from "@/contexts/form";
 
 import type { UserValues } from "@/lib/schemas/settings";
 
-import { settingsService } from "@/lib/services/settings";
+import { usersService } from "@/lib/services/users";
 import { Button } from "@/ui/shared/button";
 import {
 	Sheet,
@@ -27,7 +27,7 @@ export function UserAdd() {
 
 	const userAddMutation = useMutation({
 		mutationFn: async (values: UserValues) => {
-			return await settingsService.createUser(values);
+			return await usersService.createUser(values);
 		},
 		onSuccess: ({ payload }) => {
 			form.reset();
@@ -38,7 +38,10 @@ export function UserAdd() {
 		onError: (error) => {
 			form.state.canSubmit = true;
 			toast.error(`Error al crear el usuario`, {
-				description: error instanceof Error ? error.message : "Por favor, inténtalo de nuevo.",
+				description:
+					error instanceof Error
+						? error.message
+						: "Por favor, inténtalo de nuevo.",
 			});
 		},
 		onSettled: () => {
@@ -65,8 +68,8 @@ export function UserAdd() {
 				<SheetHeader>
 					<SheetTitle>Crear usuario</SheetTitle>
 					<SheetDescription>
-						Vas a crear un nuevo usuario. Completa la información necesaria y guarda para agregar el
-						usuario.
+						Vas a crear un nuevo usuario. Completa la información necesaria y
+						guarda para agregar el usuario.
 					</SheetDescription>
 				</SheetHeader>
 				<form

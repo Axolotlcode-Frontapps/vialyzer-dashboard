@@ -90,13 +90,18 @@ export function UpdatePasswordForm() {
 		>
 			<form.AppField
 				name="password"
-				children={(field) => <field.PasswordField label="Contraseña" placeholder="Contraseña" />}
+				children={(field) => (
+					<field.PasswordField label="Contraseña" placeholder="Contraseña" />
+				)}
 			/>
 
 			<form.AppField
 				name="confirmPassword"
 				children={(field) => (
-					<field.PasswordField label="Confirmar contraseña" placeholder="Confirmar contraseña" />
+					<field.PasswordField
+						label="Confirmar contraseña"
+						placeholder="Confirmar contraseña"
+					/>
 				)}
 			/>
 

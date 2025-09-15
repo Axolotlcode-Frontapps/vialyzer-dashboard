@@ -16,12 +16,14 @@ import { ThemeProvider } from "@/contexts/theme";
 
 import type { QueryClient } from "@tanstack/react-query";
 import type { AuthContext } from "@/contexts/auth";
+import type { PermissionsContext } from "@/contexts/permissions";
 
 import { Toaster } from "@/ui/shared/sonner";
 
 interface MyRouterContext {
-	auth: AuthContext;
 	queryClient: QueryClient;
+	auth: AuthContext;
+	permissions: PermissionsContext;
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({

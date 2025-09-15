@@ -23,9 +23,14 @@ export function DataTableHeader<TData>({
 			<div className="w-full md:max-w-1/3 relative">
 				<Input
 					placeholder={searchPlaceholder}
-					value={(table.getColumn(String(searchBy))?.getFilterValue() as string) ?? ""}
+					value={
+						(table.getColumn(String(searchBy))?.getFilterValue() as string) ??
+						""
+					}
 					onChange={(event) =>
-						table.getColumn(String(searchBy))?.setFilterValue(event.target.value)
+						table
+							.getColumn(String(searchBy))
+							?.setFilterValue(event.target.value)
 					}
 					className="pl-9 py-2 max-h-9 placeholder:text-sm"
 				/>
