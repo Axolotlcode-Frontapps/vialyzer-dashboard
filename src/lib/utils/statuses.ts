@@ -1,3 +1,5 @@
+import type { Status, StatusType } from "@/types/movility";
+
 export const STATUS_STYLES = {
 	normal: {
 		label: "Normal",
@@ -20,7 +22,7 @@ export const STATUS_STYLES = {
 };
 
 export const STATUS: Record<
-	TStatus,
+	Status,
 	{ label: string; color: string; dot: string }
 > = {
 	// normal statuses
@@ -49,7 +51,7 @@ export const STATUS: Record<
 	CAMERA_ERROR: { ...STATUS_STYLES.error, label: "Error de cámara" },
 };
 
-export const STATUS_ORDER: Record<TStatusType, TStatus[]> = {
+export const STATUS_ORDER: Record<StatusType, Status[]> = {
 	normal: ["PROCESSING"],
 	warning: [
 		"PROVISIONING",
@@ -68,4 +70,4 @@ export const STATUS_ORDER: Record<TStatusType, TStatus[]> = {
 	],
 };
 
-export const STATUS_TYPES: TStatusType[] = ["normal", "warning", "error"];
+export const STATUS_TYPES: StatusType[] = ["normal", "warning", "error"];

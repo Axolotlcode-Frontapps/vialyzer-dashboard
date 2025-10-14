@@ -112,7 +112,7 @@
 				"noExtraBooleanCast": "error",
 				"noUselessCatch": "error",
 				"noUselessTypeConstraint": "error",
-				"noForEach": "error",
+				"noForEach": "off",
 				"noUselessFragments": "error",
 				"noUselessRename": "error",
 				"noUselessStringConcat": "error",

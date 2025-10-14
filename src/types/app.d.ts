@@ -23,3 +23,20 @@ interface Filters {
 	mode?: "single" | "multiple";
 	options: { label: string; value: string }[];
 }
+
+interface AuthLoaderData {
+	token: string;
+	appToken?: string;
+	refreshToken?: string;
+	refreshTokenExpiration?: string;
+	api: string;
+}
+
+interface AuthLoaderDataWithParams extends AuthLoaderData {
+	project: string;
+	camera: string;
+}
+
+interface AuthLoaderDataWithProject extends AuthLoaderData {
+	project: string;
+}
