@@ -1,4 +1,4 @@
-import type { CompanyValues } from "../schemas/settings";
+import type { CompanyValues } from "@/lib/schemas/settings";
 
 import { fetcher } from "@/lib/utils/fetch-api";
 
