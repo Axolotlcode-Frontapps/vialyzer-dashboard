@@ -5,7 +5,7 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@/ui/shared/sheet";
-import { CompanyFields } from "./company-fields";
+import { CompanyForm } from "./company-form";
 
 export function CompanyUpdate({
 	company,
@@ -27,7 +27,7 @@ export function CompanyUpdate({
 					</SheetDescription>
 				</SheetHeader>
 
-				<CompanyFields onSuccess={onOpenChange} update company={company} />
+				<CompanyForm onSuccess={onOpenChange} update company={company} />
 			</SheetContent>
 		</Sheet>
 	);

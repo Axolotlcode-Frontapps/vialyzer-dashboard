@@ -1,13 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { zodValidator } from "@tanstack/zod-adapter";
 
-import { genericTableSearchSchema } from "@/lib/schemas/table";
 import { RoleAdd } from "@/ui/roles/role-add";
 import { RolesTable } from "@/ui/roles/roles-table";
 
 export const Route = createFileRoute("/_dashboard/settings/roles/")({
 	component: Roles,
-	validateSearch: zodValidator(genericTableSearchSchema),
 });
 
 function Roles() {

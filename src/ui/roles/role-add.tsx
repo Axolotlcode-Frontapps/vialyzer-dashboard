@@ -1,60 +1,19 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CirclePlus } from "lucide-react";
-import { toast } from "sonner";
-import { useAppForm } from "@/contexts/form";
 
-import type { RoleValues } from "@/lib/schemas/settings";
-
-import { rolesService } from "@/lib/services/roles";
 import { Button } from "@/ui/shared/button";
 import {
 	Sheet,
-	SheetClose,
 	SheetContent,
 	SheetDescription,
-	SheetFooter,
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,
 } from "@/ui/shared/sheet";
-import { RoleFields } from "./role-fields";
-import { roleFieldsOpts } from "./role-fields/options";
+import { RoleForm } from "./role-form";
 
 export function RoleAdd() {
-	const queryClient = useQueryClient();
 	const [open, setOpen] = useState(false);
-
-	const roleAddMutation = useMutation({
-		mutationFn: async (values: RoleValues) => {
-			return await rolesService.createRole(values);
-		},
-		onSuccess: ({ payload }) => {
-			form.reset();
-			toast.success(`Rol creado correctamente`, {
-				description: `Se ha creado el rol "${payload?.name}" correctamente.`,
-			});
-		},
-		onError: (error) => {
-			form.state.canSubmit = true;
-			toast.error(`Error al crear el rol`, {
-				description:
-					error instanceof Error
-						? error.message
-						: "Por favor, inténtalo de nuevo.",
-			});
-		},
-		onSettled: () => {
-			form.state.isSubmitting = false;
-			queryClient.invalidateQueries({ queryKey: ["roles"] });
-			setOpen(false);
-		},
-	});
-
-	const form = useAppForm({
-		...roleFieldsOpts,
-		onSubmit: ({ value }) => roleAddMutation.mutate(value),
-	});
 
 	return (
 		<Sheet open={open} onOpenChange={setOpen}>
@@ -72,28 +31,8 @@ export function RoleAdd() {
 						para agregar el rol.
 					</SheetDescription>
 				</SheetHeader>
-				<form
-					id="role-add-form"
-					className="px-4 space-y-2"
-					onSubmit={(e) => {
-						e.preventDefault();
-						form.handleSubmit();
-					}}
-				>
-					<RoleFields form={form} />
-				</form>
-				<SheetFooter>
-					<form.AppForm>
-						<form.SubmitButton
-							form="role-add-form"
-							label="Crear rol"
-							labelLoading="Creando rol..."
-						/>
-					</form.AppForm>
-					<SheetClose asChild>
-						<Button variant="destructive">Cancelar</Button>
-					</SheetClose>
-				</SheetFooter>
+
+				<RoleForm onSuccess={setOpen} />
 			</SheetContent>
 		</Sheet>
 	);
