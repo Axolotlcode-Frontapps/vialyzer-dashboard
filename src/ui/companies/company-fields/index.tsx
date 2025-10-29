@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useForm, useStore } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import type { CompanyValues } from "@/lib/schemas/settings";
@@ -20,13 +19,15 @@ import {
 	SelectValue,
 } from "@/ui/shared/select";
 import { SheetClose, SheetFooter } from "@/ui/shared/sheet";
+import { Spinner } from "@/ui/shared/spinner";
 
 interface Props {
+	onSuccess: (open: boolean) => void;
 	update?: boolean;
 	company?: Company;
 }
 
-export function CompanyFields({ update = false, company }: Props) {
+export function CompanyFields({ onSuccess, update = false, company }: Props) {
 	const queryClient = useQueryClient();
 
 	const form = useForm({
@@ -57,23 +58,27 @@ export function CompanyFields({ update = false, company }: Props) {
 
 	const companyMutation = useMutation({
 		mutationFn: async (values: CompanyValues) => {
-			update
-				? await companiesService.updateCompany("", values)
+			form.state.isSubmitting = true;
+
+			update && company?.id
+				? await companiesService.updateCompany(company?.id, values)
 				: await companiesService.createCompany(values);
 
 			return values;
 		},
 		onSuccess: ({ name }) => {
 			form.reset();
+			queryClient.invalidateQueries({ queryKey: ["companies"] });
 			toast.success(
 				`Empresa ${update ? "actualizada" : "creada"} correctamente`,
 				{
 					description: `Se ha ${update ? "actualizado" : "creado"} la empresa "${name}" correctamente.`,
 				}
 			);
+			onSuccess(false);
 		},
 		onError: (error) => {
-			form.state.canSubmit = true;
+			form.state.canSubmit = false;
 			toast.error(`Error al ${update ? "actualizar" : "crear"} la empresa`, {
 				description:
 					error instanceof Error
@@ -82,7 +87,6 @@ export function CompanyFields({ update = false, company }: Props) {
 			});
 		},
 		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: ["companies"] });
 			form.state.isSubmitting = false;
 		},
 	});
@@ -104,6 +108,7 @@ export function CompanyFields({ update = false, company }: Props) {
 	return (
 		<>
 			<form
+				id="company-form"
 				className="px-4 space-y-2"
 				onSubmit={(e) => {
 					e.preventDefault();
@@ -311,10 +316,8 @@ export function CompanyFields({ update = false, company }: Props) {
 				>
 					{([canSubmit, isSubmitting]) => {
 						return (
-							<Button type="submit" disabled={!canSubmit}>
-								{isSubmitting ? (
-									<LoaderCircle className="size-4 animate-spin" />
-								) : null}
+							<Button type="submit" disabled={!canSubmit} form="company-form">
+								{isSubmitting ? <Spinner /> : null}
 								{isSubmitting ? "Confirmando empresa" : "Confirmar empresa"}
 							</Button>
 						);

@@ -1,12 +1,11 @@
 import { queryOptions } from "@tanstack/react-query";
 
 import { usersService } from "../services/users";
-import { QueryKeys } from "../utils/enums";
 
 class UsersQueries {
 	usersOptions() {
 		return queryOptions({
-			queryKey: [QueryKeys.GET_USERS],
+			queryKey: ["users"],
 			queryFn: async () => await usersService.getAllUsers(),
 		});
 	}

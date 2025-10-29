@@ -36,7 +36,7 @@ export function CompanyAdd() {
 					</SheetDescription>
 				</SheetHeader>
 
-				<CompanyFields />
+				<CompanyFields onSuccess={setOpen} />
 			</SheetContent>
 		</Sheet>
 	);

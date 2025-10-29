@@ -18,7 +18,13 @@ class Settings {
 	company = z.object({
 		name: z.string().min(1, { error: "El nombre es obligatorio" }),
 		description: z.string().min(1, { error: "La descripción es obligatoria" }),
-		nit: z.string().min(1, { error: "El NIT es obligatorio" }),
+		nit: z
+			.string()
+			.min(1, { error: "El NIT es obligatorio" })
+			.regex(/^\d{5,13}-\d$/, {
+				message:
+					"El NIT debe tener entre 5 y 13 dígitos, seguido de un guion y un dígito de verificación (ej: 123456789-0)",
+			}),
 		phone: z
 			.string()
 			.min(1, { error: "El teléfono es obligatorio" })

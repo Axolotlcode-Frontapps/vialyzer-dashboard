@@ -3,13 +3,12 @@ import { queryOptions } from "@tanstack/react-query";
 import { GoogleMapsProvider } from "@/contexts/maps";
 
 import { usersService } from "@/lib/services/users";
-import { QueryKeys } from "@/lib/utils/enums";
 import { Header } from "@/ui/shared/header";
 import { AppSidebar } from "@/ui/shared/layout/app-side";
 import { SidebarInset, SidebarProvider } from "@/ui/shared/sidebar";
 
 const getMeQuery = queryOptions({
-	queryKey: [QueryKeys.GET_ME],
+	queryKey: ["get-me"],
 	queryFn: async () => await usersService.getMeUser(),
 });
 

@@ -18,23 +18,17 @@ class CompaniesService {
 	}
 
 	async updateCompany(id: string, values: CompanyValues) {
-		return await fetcher<GeneralResponse<Company>>(
-			`/companies/update?companyId=${id}`,
-			{
-				method: "PUT",
-				data: { ...values, active: true },
-			}
-		);
+		return await fetcher<GeneralResponse<Company>>(`/companies/update/${id}`, {
+			method: "PUT",
+			data: { ...values, active: true },
+		});
 	}
 
 	async deleteCompany(id: string) {
-		return await fetcher<GeneralResponse<Company>>(
-			`/companies/delete?companyId=${id}`,
-			{
-				method: "DELETE",
-				data: { id },
-			}
-		);
+		return await fetcher<GeneralResponse<Company>>(`/companies/delete/${id}`, {
+			method: "DELETE",
+			data: { id },
+		});
 	}
 }
 
