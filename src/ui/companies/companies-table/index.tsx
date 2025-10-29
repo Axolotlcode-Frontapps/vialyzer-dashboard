@@ -1,13 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { companiesQueries } from "@/lib/query-options/companies";
+import { companiesService } from "@/lib/services/companies";
 import { DataTable } from "@/ui/shared/data-table";
 import { DataTableHeader } from "@/ui/shared/data-table/table-header";
 import { columns } from "./columns";
 
 export function CompaniesTable() {
 	const { data: companiesData = [], isLoading } = useQuery({
-		...companiesQueries.companiesOptions(),
+		queryKey: ["companies"],
+		queryFn: async () => await companiesService.getAllCompanies(),
 		select: (data) => data.payload,
 	});
 

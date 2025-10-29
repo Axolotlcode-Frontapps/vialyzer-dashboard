@@ -8,14 +8,14 @@ export function getRememberMeEmail(): string {
 }
 
 export function setRememberMeData({
-	email,
+	userName,
 	remember,
 }: {
-	email: string;
+	userName: string;
 	remember: boolean;
 }) {
 	if (remember) {
-		Cookies.set(REMEMBER_EMAIL_KEY, email, {
+		Cookies.set(REMEMBER_EMAIL_KEY, userName, {
 			expires: 30,
 			secure: process.env.NODE_ENV === "production",
 			sameSite: "lax",
