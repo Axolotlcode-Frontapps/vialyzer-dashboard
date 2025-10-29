@@ -15,8 +15,6 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@/ui/shared/sheet";
-import { CompanyFields } from "./company-fields";
-import { companyFieldsOpts } from "./company-fields/options";
 
 export function CompanyUpdate({
 	company,
@@ -56,7 +54,7 @@ export function CompanyUpdate({
 	});
 
 	const form = useAppForm({
-		...companyFieldsOpts,
+		// ...companyFieldsOpts,
 		defaultValues: {
 			name: company.name ?? "",
 			description: company.description ?? "",
@@ -80,16 +78,9 @@ export function CompanyUpdate({
 						necesarios y guarda para actualizar la empresa.
 					</SheetDescription>
 				</SheetHeader>
-				<form
-					id="company-edit-form"
-					className="px-4 space-y-2"
-					onSubmit={(e) => {
-						e.preventDefault();
-						form.handleSubmit();
-					}}
-				>
-					<CompanyFields form={form} />
-				</form>
+
+				{/* <CompanyFields form={form} formId="company-edit-form" /> */}
+
 				<SheetFooter>
 					<form.AppForm>
 						<form.SubmitButton

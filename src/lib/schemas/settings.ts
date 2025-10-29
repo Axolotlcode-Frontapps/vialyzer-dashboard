@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 
 class Settings {
 	role = z.object({
@@ -19,7 +19,13 @@ class Settings {
 		name: z.string().min(1, { error: "El nombre es obligatorio" }),
 		description: z.string().min(1, { error: "La descripción es obligatoria" }),
 		nit: z.string().min(1, { error: "El NIT es obligatorio" }),
-		phone: z.string().min(1, { error: "El teléfono es obligatorio" }),
+		phone: z
+			.string()
+			.min(1, { error: "El teléfono es obligatorio" })
+			.regex(/^3\d{9}$/, {
+				message:
+					"El teléfono debe ser un número celular colombiano válido (10 dígitos, inicia en 3)",
+			}),
 		address: z.string().min(1, { error: "La dirección es obligatoria" }),
 		department: z.string().min(1, { error: "El departamento es obligatorio" }),
 		city: z.string().min(1, { error: "La ciudad es obligatoria" }),

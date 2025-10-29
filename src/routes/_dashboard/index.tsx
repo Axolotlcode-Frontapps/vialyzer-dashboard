@@ -5,7 +5,7 @@ import { zodValidator } from "@tanstack/zod-adapter";
 import { filtersSchemas } from "@/lib/schemas/filters";
 import { homeService } from "@/lib/services/home";
 import { CamerasPreview } from "@/ui/home/cameras-preview";
-import { Maps } from "@/ui/shared/maps";
+// import { Maps } from "@/ui/shared/maps";
 import { MapDetails } from "@/ui/shared/maps/map-details";
 
 export const Route = createFileRoute("/_dashboard/")({
@@ -26,7 +26,7 @@ function Home() {
 				Localización de Cámaras
 			</h2>
 			<div className="@container/map relative w-full h-[400px] md:h-[650px] rounded-2xl overflow-hidden bg-card shadow-lg">
-				<Maps />
+				{/* <Maps /> */}
 				<MapDetails />
 			</div>
 

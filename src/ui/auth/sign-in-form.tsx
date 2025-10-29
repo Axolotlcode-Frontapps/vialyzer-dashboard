@@ -24,7 +24,7 @@ export function SignInForm() {
 
 	const form = useAppForm({
 		defaultValues: {
-			email: initialEmail || "",
+			userName: initialEmail || "",
 			password: "",
 			rememberMe: !!initialEmail,
 		},
@@ -48,7 +48,7 @@ export function SignInForm() {
 			if (!data.payload?.token) return;
 
 			if (values.rememberMe) {
-				setRememberMeData({ email: values.email, remember: true });
+				setRememberMeData({ userName: values.userName, remember: true });
 			} else {
 				clearRememberMeData();
 			}
@@ -94,7 +94,7 @@ export function SignInForm() {
 			className="flex flex-col gap-4"
 		>
 			<form.AppField
-				name="email"
+				name="userName"
 				children={(field) => (
 					<field.TextField
 						label="Correo electrónico"
