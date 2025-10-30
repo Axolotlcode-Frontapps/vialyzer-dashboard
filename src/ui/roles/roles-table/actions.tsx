@@ -1,5 +1,6 @@
+import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { MoreHorizontal, Pencil, Trash } from "lucide-react";
+import { CirclePlus, MoreHorizontal, Pencil, Trash } from "lucide-react";
 
 import { Button } from "@/ui/shared/button";
 import {
@@ -25,15 +26,25 @@ export function RoleTableActions({ role }: { role: Role }) {
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end">
+					<DropdownMenuItem asChild>
+						<Link
+							to={`/settings/roles/$roleId`}
+							params={{ roleId: role.id }}
+							className="capitalize hover:bg-accent transition-colors p-2 rounded-md block"
+						>
+							<CirclePlus />
+							Asignar permisos
+						</Link>
+					</DropdownMenuItem>
 					<DropdownMenuItem onClick={() => setOpenUpdate(true)}>
-						<Pencil className="mr-2 h-4 w-4" />
+						<Pencil />
 						Editar
 					</DropdownMenuItem>
 					<DropdownMenuItem
 						variant="destructive"
 						onClick={() => setOpenDelete(true)}
 					>
-						<Trash className="mr-2 h-4 w-4" />
+						<Trash />
 						Eliminar
 					</DropdownMenuItem>
 				</DropdownMenuContent>

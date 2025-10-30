@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+
 import type { ColumnDef } from "@tanstack/react-table";
 
 import { Badge } from "@/ui/shared/badge";
@@ -10,7 +12,15 @@ export const columns: ColumnDef<Role>[] = [
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Nombre" />
 		),
-		cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+		cell: ({ row }) => (
+			<Link
+				to={`/settings/roles/$roleId`}
+				params={{ roleId: row.original.id }}
+				className="capitalize hover:bg-accent transition-colors p-2 rounded-md block"
+			>
+				{row.getValue("name")}
+			</Link>
+		),
 	},
 	{
 		accessorKey: "description",
