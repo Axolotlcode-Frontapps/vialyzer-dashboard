@@ -4,31 +4,38 @@ import { fetcher } from "@/lib/utils/fetch-api";
 
 class CompaniesService {
 	async getAllCompanies() {
-		return await fetcher<GeneralResponse<Company[]>>("/companies/get-all");
+		const res = await fetcher<GeneralResponse<Company[]>>("/companies/get-all");
+		return res;
 	}
 
 	async createCompany(values: CompanyValues) {
-		return await fetcher<GeneralResponse<Company>>("/companies/create", {
+		const res = await fetcher<GeneralResponse<Company>>("/companies/create", {
 			method: "POST",
-			data: {
-				...values,
-				active: true,
-			},
+			data: values,
 		});
+		return res;
 	}
 
 	async updateCompany(id: string, values: CompanyValues) {
-		return await fetcher<GeneralResponse<Company>>(`/companies/update/${id}`, {
-			method: "PUT",
-			data: { ...values, active: true },
-		});
+		const res = await fetcher<GeneralResponse<Company>>(
+			`/companies/update/${id}`,
+			{
+				method: "PUT",
+				data: values,
+			}
+		);
+		return res;
 	}
 
 	async deleteCompany(id: string) {
-		return await fetcher<GeneralResponse<Company>>(`/companies/delete/${id}`, {
-			method: "DELETE",
-			data: { id },
-		});
+		const res = await fetcher<GeneralResponse<Company>>(
+			`/companies/delete/${id}`,
+			{
+				method: "DELETE",
+				data: { id },
+			}
+		);
+		return res;
 	}
 }
 

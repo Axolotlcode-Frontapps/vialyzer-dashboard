@@ -8,7 +8,7 @@ export function UserData({ user }: UserDataProps) {
 		},
 		{
 			title: "Apellidos",
-			description: user.lastName,
+			description: user.lastname,
 		},
 		{
 			title: "Correo electrónico",
@@ -24,7 +24,7 @@ export function UserData({ user }: UserDataProps) {
 		},
 		{
 			title: "Empresa",
-			description: user.companie.name,
+			description: user.company.name,
 		},
 	];
 

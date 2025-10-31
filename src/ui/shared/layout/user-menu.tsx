@@ -51,7 +51,7 @@ export function UserMenu() {
 						<AvatarImage src={user.avatar} alt={user.name} />
 						<AvatarFallback className="uppercase">
 							{userMe?.name.charAt(0)}
-							{userMe?.lastName.charAt(0)}
+							{userMe?.lastname.charAt(0)}
 						</AvatarFallback>
 					</Avatar>
 				</Button>
@@ -68,12 +68,12 @@ export function UserMenu() {
 							<AvatarImage src={user.avatar} alt={user.name} />
 							<AvatarFallback className="uppercase">
 								{userMe?.name.charAt(0)}
-								{userMe?.lastName.charAt(0)}
+								{userMe?.lastname.charAt(0)}
 							</AvatarFallback>
 						</Avatar>
 						<div className="grid flex-1 text-left text-sm leading-tight">
 							<span className="truncate font-medium">
-								{userMe?.name} {userMe?.lastName}
+								{userMe?.name} {userMe?.lastname}
 							</span>
 							<span className="truncate text-xs">{userMe?.email}</span>
 						</div>

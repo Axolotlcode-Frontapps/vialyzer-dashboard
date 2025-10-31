@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { usersService } from "@/lib/services/users";
@@ -13,6 +12,7 @@ import {
 	DialogTitle,
 } from "@/ui/shared/dialog";
 import { Button } from "../shared/button";
+import { Spinner } from "../shared/spinner";
 
 export function UserDelete({
 	user,
@@ -30,9 +30,11 @@ export function UserDelete({
 			return await usersService.deleteUser(user.id);
 		},
 		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["users"] });
 			toast.success(`Usuario eliminado correctamente`, {
 				description: `Se ha eliminado el usuario "${user.name}" correctamente.`,
 			});
+			onOpenChange(false);
 		},
 		onError: (error) => {
 			toast.error(`Error al eliminar el usuario "${user.name}"`, {
@@ -41,10 +43,6 @@ export function UserDelete({
 						? error.message
 						: "Por favor, inténtalo de nuevo.",
 			});
-		},
-		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: ["users"] });
-			onOpenChange(false);
 		},
 	});
 
@@ -70,7 +68,7 @@ export function UserDelete({
 					>
 						{userDeleteMutation.isPending ? (
 							<>
-								<LoaderCircle className="mr-2 animate-spin" />
+								<Spinner />
 								<span>Eliminando...</span>
 							</>
 						) : (
