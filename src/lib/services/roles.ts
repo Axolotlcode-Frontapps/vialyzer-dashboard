@@ -4,32 +4,28 @@ import { fetcher } from "@/lib/utils/fetch-api";
 
 class RolesServices {
 	async getAllRoles() {
-		const res = await fetcher<GeneralResponse<Role[]>>("/roles/get-all");
-		return res ?? [];
+		return await fetcher<GeneralResponse<Role[]>>("/roles/get-all");
 	}
 
 	async createRole(values: RoleValues) {
-		const res = await fetcher<GeneralResponse<Role>>("/roles/create", {
+		return await fetcher<GeneralResponse<Role>>("/roles/create", {
 			method: "POST",
 			data: values,
 		});
-		return res ?? [];
 	}
 
 	async updateRole(id: string, values: RoleValues) {
-		const res = await fetcher<GeneralResponse<Role>>(`/roles/update`, {
+		return await fetcher<GeneralResponse<Role>>(`/roles/update`, {
 			method: "PUT",
 			data: { id, ...values },
 		});
-		return res ?? [];
 	}
 
 	async deleteRole(id: string) {
-		const res = await fetcher<GeneralResponse<Role>>(`/roles/delete`, {
+		return await fetcher<GeneralResponse<Role>>(`/roles/delete`, {
 			method: "DELETE",
 			data: { id },
 		});
-		return res ?? [];
 	}
 }
 

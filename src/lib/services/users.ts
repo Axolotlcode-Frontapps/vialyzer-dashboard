@@ -14,28 +14,14 @@ class UsersService {
 	async createUser(values: UserValues) {
 		return await fetcher<GeneralResponse<User>>("/users/create", {
 			method: "POST",
-			data: {
-				name: values.name,
-				lastname: values.lastname,
-				email: values.email,
-				phone: values.phone,
-				role: values.role,
-				company: values.company,
-			},
+			data: { ...values },
 		});
 	}
 
 	async updateUser(id: string, values: UserValues) {
 		return await fetcher<GeneralResponse<User>>(`/users/update-user/${id}`, {
 			method: "PATCH",
-			data: {
-				name: values.name,
-				lastname: values.lastname,
-				email: values.email,
-				phone: values.phone,
-				idRole: values.role,
-				idCompany: values.company,
-			},
+			data: { ...values },
 		});
 	}
 
