@@ -1,22 +1,11 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { useAppForm } from "@/contexts/form";
-
-import type { UserValues } from "@/lib/schemas/settings";
-
-import { usersService } from "@/lib/services/users";
-import { Button } from "@/ui/shared/button";
 import {
 	Sheet,
-	SheetClose,
 	SheetContent,
 	SheetDescription,
-	SheetFooter,
 	SheetHeader,
 	SheetTitle,
 } from "@/ui/shared/sheet";
 import { UserFields } from "./user-fields";
-import { userFieldsOpts } from "./user-fields/options";
 
 export function UserUpdate({
 	user,
@@ -27,47 +16,6 @@ export function UserUpdate({
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 }) {
-	const queryClient = useQueryClient();
-
-	const userUpdateMutation = useMutation({
-		mutationFn: async (values: UserValues) => {
-			return await usersService.updateUser(user.id, values);
-		},
-		onSuccess: () => {
-			form.reset();
-			toast.success(`Usuario actualizado correctamente`, {
-				description: `Se ha actualizado el usuario "${user?.name}" correctamente.`,
-			});
-		},
-		onError: (error) => {
-			form.state.canSubmit = true;
-			toast.error(`Error al actualizar el usuario`, {
-				description:
-					error instanceof Error
-						? error.message
-						: "Por favor, inténtalo de nuevo.",
-			});
-		},
-		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: ["users"] });
-			form.state.isSubmitting = false;
-			onOpenChange(false);
-		},
-	});
-
-	const form = useAppForm({
-		...userFieldsOpts,
-		defaultValues: {
-			name: user.name ?? "",
-			lastname: user.lastName ?? "",
-			email: user.email ?? "",
-			phone: user.phone ?? "",
-			role: user.role.id ?? "",
-			company: user.companie.id ?? "",
-		},
-		onSubmit: ({ value }) => userUpdateMutation.mutate(value as UserValues),
-	});
-
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
 			<SheetContent className="w-full sm:min-w-[600px]">
@@ -78,28 +26,8 @@ export function UserUpdate({
 						necesaria y guarda para aplicar los cambios.
 					</SheetDescription>
 				</SheetHeader>
-				<form
-					id="user-edit-form"
-					className="px-4 space-y-2"
-					onSubmit={(e) => {
-						e.preventDefault();
-						form.handleSubmit();
-					}}
-				>
-					<UserFields form={form} />
-				</form>
-				<SheetFooter>
-					<form.AppForm>
-						<form.SubmitButton
-							form="user-edit-form"
-							label="Actualizar usuario"
-							labelLoading="Actualizando usuario..."
-						/>
-					</form.AppForm>
-					<SheetClose asChild>
-						<Button variant="destructive">Cancelar</Button>
-					</SheetClose>
-				</SheetFooter>
+
+				<UserFields onSuccess={onOpenChange} update user={user} />
 			</SheetContent>
 		</Sheet>
 	);

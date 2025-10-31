@@ -17,25 +17,27 @@ class UsersService {
 			...rest,
 			lastName: lastname,
 		};
-
 		return await fetcher<GeneralResponse<User>>("/users/create", {
 			method: "POST",
-			data: parseData,
+			data: { ...parseData },
 		});
 	}
 
 	async updateUser(id: string, values: UserValues) {
-		return await fetcher<GeneralResponse<User>>(
-			`users/update-user?userId=${id}`,
-			{
-				method: "PATCH",
-				data: { ...values },
-			}
-		);
+		const { role, company, ...rest } = values;
+		const parseData = {
+			...rest,
+			idRole: role,
+			idCompany: company,
+		};
+		return await fetcher<GeneralResponse<User>>(`/users/update-user/${id}`, {
+			method: "PATCH",
+			data: { ...parseData },
+		});
 	}
 
 	async deleteUser(id: string) {
-		return await fetcher<GeneralResponse<User>>(`/users/delete`, {
+		return await fetcher<GeneralResponse<User>>(`/users/delete/${id}`, {
 			method: "DELETE",
 			data: { id },
 		});

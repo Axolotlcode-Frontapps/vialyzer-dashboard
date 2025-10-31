@@ -3,10 +3,10 @@ interface User {
 	email: string;
 	phone: string;
 	name: string;
-	lastName: string;
+	lastname: string;
 	identification: string | null;
 	role: Role;
-	companie: Company;
+	company: Company;
 	active?: boolean;
 	createdAt?: Date;
 	lastLogin?: Date;

@@ -10,17 +10,14 @@ class CompaniesService {
 	async createCompany(values: CompanyValues) {
 		return await fetcher<GeneralResponse<Company>>("/companies/create", {
 			method: "POST",
-			data: {
-				...values,
-				active: true,
-			},
+			data: values,
 		});
 	}
 
 	async updateCompany(id: string, values: CompanyValues) {
 		return await fetcher<GeneralResponse<Company>>(`/companies/update/${id}`, {
 			method: "PUT",
-			data: { ...values, active: true },
+			data: values,
 		});
 	}
 

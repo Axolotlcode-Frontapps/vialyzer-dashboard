@@ -44,12 +44,12 @@ export const columns: ColumnDef<User>[] = [
 		),
 	},
 	{
-		accessorKey: "companie",
+		accessorKey: "company",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Empresa" />
 		),
 		cell: ({ row }) => (
-			<span className="capitalize">{row.original.companie.name}</span>
+			<span className="capitalize">{row.original.company.name}</span>
 		),
 	},
 	{
