@@ -12,7 +12,7 @@ class AuthServices {
 		return await fetcher<GeneralResponse<SignInResponse>>("/auth/sign-in", {
 			method: "POST",
 			data: {
-				userName: values.userName,
+				username: values.username,
 				password: values.password,
 			},
 		});

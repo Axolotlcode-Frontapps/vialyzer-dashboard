@@ -8,7 +8,7 @@ class AuthSchemas {
 		.min(8, { message: "La contraseña debe tener al menos 8 caracteres" });
 
 	signIn = z.object({
-		userName: z
+		username: z
 			.string({
 				error: "El correo electrónico o número de usuario no es válido",
 			})
@@ -23,7 +23,7 @@ class AuthSchemas {
 	});
 
 	forgotPassword = z.object({
-		userName: z.email("El correo electrónico o número de usuario no es válido"),
+		username: z.email("El correo electrónico o número de usuario no es válido"),
 	});
 
 	verifyQueries = z.object({
