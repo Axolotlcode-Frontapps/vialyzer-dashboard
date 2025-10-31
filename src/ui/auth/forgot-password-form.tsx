@@ -15,7 +15,7 @@ export function ForgotPasswordForm() {
 
 	const form = useAppForm({
 		defaultValues: {
-			userName: "",
+			username: "",
 		},
 		validators: {
 			onMount: ({ formApi }) => {
@@ -84,7 +84,7 @@ export function ForgotPasswordForm() {
 			className="flex flex-col gap-4"
 		>
 			<form.AppField
-				name="userName"
+				name="username"
 				children={(field) => (
 					<field.TextField
 						label="Correo electrónico o número de usuario"
