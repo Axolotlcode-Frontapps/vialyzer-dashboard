@@ -15,13 +15,7 @@ import type { INavSection } from "./types";
 import Logo from "@/assets/icons/logo.svg";
 import { cn } from "@/lib/utils/cn";
 import { config } from "@/lib/utils/config";
-import {
-	Sidebar,
-	SidebarContent,
-	SidebarHeader,
-	SidebarRail,
-	useSidebar,
-} from "../sidebar";
+import { Sidebar, SidebarContent, SidebarHeader, useSidebar } from "../sidebar";
 import { NavSection } from "./nav-section";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -112,7 +106,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	};
 
 	return (
-		<Sidebar collapsible="icon" {...props}>
+		<Sidebar collapsible="offcanvas" {...props}>
 			<SidebarHeader>
 				<a
 					href="https://sittycia.com/"
@@ -127,17 +121,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					) : null}
 				</a>
 			</SidebarHeader>
-			<SidebarContent
-				className={cn(
-					"divide-foreground/30 gap-0",
-					open ? "divide-y-0" : "divide-y"
-				)}
-			>
+			<SidebarContent>
 				<NavSection group={principalMenu.group} items={principalMenu.items} />
 				<NavSection group={metricsMenu.group} items={metricsMenu.items} />
 				<NavSection group={settingsMenu.group} items={settingsMenu.items} />
 			</SidebarContent>
-			<SidebarRail />
 		</Sidebar>
 	);
 }

@@ -12,7 +12,12 @@ export function UsersTable() {
 	});
 
 	return (
-		<DataTable columns={columns} data={usersData} isLoading={isLoading}>
+		<DataTable
+			columns={columns}
+			data={usersData}
+			isLoading={isLoading}
+			totalRows={usersData.length}
+		>
 			{({ table }) => (
 				<DataTableHeader
 					table={table}

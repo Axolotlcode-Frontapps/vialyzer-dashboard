@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -18,11 +19,22 @@ import {
 
 interface DataTablePaginationProps<TData> {
 	table: Table<TData>;
+	totalRows?: number;
 }
 
 export function DataTablePagination<TData>({
 	table,
+	totalRows,
 }: DataTablePaginationProps<TData>) {
+	const [totalPages, setTotalPages] = useState(0);
+
+	useEffect(() => {
+		setTotalPages(
+			(totalRows ?? 0) / table.getState().pagination.pageSize ||
+				table.getPageCount() + 1
+		);
+	}, [table, totalRows]);
+
 	return (
 		<div className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 			<div className="flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -30,82 +42,87 @@ export function DataTablePagination<TData>({
 					{table.getFilteredSelectedRowModel().rows.length ? (
 						<>
 							{table.getFilteredSelectedRowModel().rows.length} de{" "}
-							{table.getFilteredRowModel().rows.length} fila(s) seleccionada(s)
+							{totalRows ?? table.getFilteredRowModel().rows.length} fila(s)
+							seleccionada(s)
 						</>
 					) : (
-						<>{table.getFilteredRowModel().rows.length} fila(s)</>
+						<>{totalRows ?? table.getFilteredRowModel().rows.length} fila(s)</>
 					)}
 				</div>
-				<div className="flex items-center justify-between sm:justify-start space-x-2">
-					<p className="text-sm font-medium">Filas por página:</p>
-					<Select
-						value={`${table.getState().pagination.pageSize}`}
-						onValueChange={(value) => {
-							table.setPageSize(Number(value));
-						}}
-					>
-						<SelectTrigger className="h-8 w-[70px]">
-							<SelectValue placeholder={table.getState().pagination.pageSize} />
-						</SelectTrigger>
-						<SelectContent side="top">
-							{[10, 20, 25, 30, 40, 50].map((pageSize) => (
-								<SelectItem key={pageSize} value={`${pageSize}`}>
-									{pageSize}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-				</div>
-			</div>
 
-			<div className="flex items-center justify-between sm:justify-end space-x-6 lg:space-x-8">
-				<div className="flex w-[100px] items-center justify-center text-sm font-medium">
-					Página {table.getState().pagination.pageIndex + 1} de{" "}
-					{table.getPageCount()}
-				</div>
-				<div className="flex items-center gap-x-2">
-					<Button
-						variant="outline"
-						size="icon"
-						className="hidden size-8 lg:flex"
-						onClick={() => table.setPageIndex(0)}
-						disabled={!table.getCanPreviousPage()}
-					>
-						<span className="sr-only">Ir a la primera página</span>
-						<ChevronsLeft />
-					</Button>
-					<Button
-						variant="outline"
-						size="icon"
-						className="size-8"
-						onClick={() => table.previousPage()}
-						disabled={!table.getCanPreviousPage()}
-					>
-						<span className="sr-only">Ir a la página anterior</span>
-						<ChevronLeft />
-					</Button>
-					<Button
-						variant="outline"
-						size="icon"
-						className="size-8"
-						onClick={() => table.nextPage()}
-						disabled={!table.getCanNextPage()}
-					>
-						<span className="sr-only">Ir a la página siguiente</span>
-						<ChevronRight />
-					</Button>
-					<Button
-						variant="outline"
-						size="icon"
-						className="hidden size-8 lg:flex"
-						onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-						disabled={!table.getCanNextPage()}
-					>
-						<span className="sr-only">Ir a la última página</span>
-						<ChevronsRight />
-					</Button>
-				</div>
+				{totalPages > 1 ? (
+					<div className="flex items-center justify-between sm:justify-start space-x-2">
+						<p className="text-sm font-medium">Filas por página:</p>
+						<Select
+							value={`${table.getState().pagination.pageSize}`}
+							onValueChange={(value) => table.setPageSize(Number(value))}
+						>
+							<SelectTrigger className="h-8 w-[70px]">
+								<SelectValue
+									placeholder={table.getState().pagination.pageSize}
+								/>
+							</SelectTrigger>
+							<SelectContent side="top">
+								{[10, 20, 25, 30, 40, 50].map((pageSize) => (
+									<SelectItem key={pageSize} value={`${pageSize}`}>
+										{pageSize}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+				) : null}
 			</div>
+			{totalPages > 1 ? (
+				<div className="flex items-center justify-between sm:justify-end space-x-6 lg:space-x-8">
+					<div className="flex w-full max-w-[150px] items-center justify-start text-sm font-medium">
+						Página {table.getState().pagination.pageIndex + 1} de{" "}
+						{table.getPageCount()}
+					</div>
+					<div className="flex items-center gap-x-2">
+						<Button
+							variant="outline"
+							size="icon"
+							className="hidden size-8 lg:flex"
+							onClick={() => table.setPageIndex(0)}
+							disabled={!table.getCanPreviousPage()}
+						>
+							<span className="sr-only">Ir a la primera página</span>
+							<ChevronsLeft />
+						</Button>
+						<Button
+							variant="outline"
+							size="icon"
+							className="size-8"
+							onClick={() => table.previousPage()}
+							disabled={!table.getCanPreviousPage()}
+						>
+							<span className="sr-only">Ir a la página anterior</span>
+							<ChevronLeft />
+						</Button>
+						<Button
+							variant="outline"
+							size="icon"
+							className="size-8"
+							onClick={() => table.nextPage()}
+							disabled={!table.getCanNextPage()}
+						>
+							<span className="sr-only">Ir a la página siguiente</span>
+							<ChevronRight />
+						</Button>
+						<Button
+							variant="outline"
+							size="icon"
+							className="hidden size-8 lg:flex"
+							onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+							disabled={!table.getCanNextPage()}
+						>
+							<span className="sr-only">Ir a la última página</span>
+							<ChevronsRight />
+						</Button>
+					</div>
+				</div>
+			) : null}
 		</div>
 	);
 }

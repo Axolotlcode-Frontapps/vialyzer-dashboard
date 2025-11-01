@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { queryOptions } from "@tanstack/react-query";
-import { GoogleMapsProvider } from "@/contexts/maps";
+
+// import { GoogleMapsProvider } from "@/contexts/maps";
 
 import { usersService } from "@/lib/services/users";
 import { Header } from "@/ui/shared/header";
@@ -29,15 +30,25 @@ export const Route = createFileRoute("/_dashboard")({
 
 function PrivateLayout() {
 	return (
-		<SidebarProvider>
+		<SidebarProvider
+			style={
+				{
+					"--sidebar-width": "calc(var(--spacing) * 72)",
+					"--header-height": "calc(var(--spacing) * 12)",
+				} as React.CSSProperties
+			}
+		>
 			<AppSidebar />
 			<SidebarInset>
 				<Header />
-				<main className="min-h-[calc(100dvh-64px)] md:min-h-[calc(100dvh-108px)] flex flex-col pt-4 pb-5 md:pb-8 px-5 md:px-8">
-					<GoogleMapsProvider>
+				<div className="flex flex-1 flex-col">
+					<div className="@container/main flex flex-1 flex-col gap-2 p-4">
 						<Outlet />
-					</GoogleMapsProvider>
-				</main>
+					</div>
+				</div>
+
+				{/* <GoogleMapsProvider> */}
+				{/* </GoogleMapsProvider> */}
 			</SidebarInset>
 		</SidebarProvider>
 	);

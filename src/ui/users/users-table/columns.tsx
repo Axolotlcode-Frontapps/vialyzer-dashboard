@@ -43,15 +43,15 @@ export const columns: ColumnDef<User>[] = [
 			<Badge className="capitalize">{row.original.role.name}</Badge>
 		),
 	},
-	{
-		accessorKey: "company",
-		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title="Empresa" />
-		),
-		cell: ({ row }) => (
-			<span className="capitalize">{row.original.company.name}</span>
-		),
-	},
+	// {
+	// 	accessorKey: "company",
+	// 	header: ({ column }) => (
+	// 		<DataTableColumnHeader column={column} title="Empresa" />
+	// 	),
+	// 	cell: ({ row }) => (
+	// 		<span className="capitalize">{row.original.company.name}</span>
+	// 	),
+	// },
 	{
 		accessorKey: "createdAt",
 		header: ({ column }) => (

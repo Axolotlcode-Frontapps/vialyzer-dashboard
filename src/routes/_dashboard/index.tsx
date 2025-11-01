@@ -1,16 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { zodValidator } from "@tanstack/zod-adapter";
 
-import { filtersSchemas } from "@/lib/schemas/filters";
 import { homeService } from "@/lib/services/home";
 import { CamerasPreview } from "@/ui/home/cameras-preview";
 // import { Maps } from "@/ui/shared/maps";
-import { MapDetails } from "@/ui/shared/maps/map-details";
+// import { MapDetails } from "@/ui/shared/maps/map-details";
 
 export const Route = createFileRoute("/_dashboard/")({
 	component: Home,
-	validateSearch: zodValidator(filtersSchemas.map),
+	// validateSearch: zodValidator(filtersSchemas.map),
 });
 
 function Home() {
@@ -27,7 +25,7 @@ function Home() {
 			</h2>
 			<div className="@container/map relative w-full h-[400px] md:h-[650px] rounded-2xl overflow-hidden bg-card shadow-lg">
 				{/* <Maps /> */}
-				<MapDetails />
+				{/* <MapDetails /> */}
 			</div>
 
 			<h2 className="text-xl lg:text-2xl font-medium">Previews de Cámaras</h2>
