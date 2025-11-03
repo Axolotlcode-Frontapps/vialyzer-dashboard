@@ -1,2 +1,2 @@
-pnpm build
-exec < /dev/tty && pnpm prepare-message || true
+bun run build
+exec < /dev/tty && bun run prepare-message || true

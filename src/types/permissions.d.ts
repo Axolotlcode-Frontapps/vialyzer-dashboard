@@ -11,7 +11,8 @@ interface Permission {
 	id: string;
 	action: string;
 	module: string;
-	active: boolean;
+	description: string;
+	active?: boolean;
 }
 
 interface Module {
