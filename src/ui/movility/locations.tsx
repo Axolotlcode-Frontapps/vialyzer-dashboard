@@ -13,9 +13,20 @@ export function Locations() {
 	const { search } = useSearch({ from: "/_dashboard/movility/" });
 
 	const filteredCameras = useMemo(() => {
-		return cameras.filter((camera) =>
-			camera.name.toLowerCase().includes(search?.toLowerCase() ?? "")
-		);
+		return cameras.filter((camera) => {
+			const matchesSearch = camera.name
+				.toLowerCase()
+				.includes(search?.toLowerCase() ?? "");
+
+			// const filterStatis = camera.
+
+			// console.log(filter);
+
+			// if (filter) {
+			// 	return matchesSearch;
+			// }
+			return matchesSearch;
+		});
 	}, [cameras, search]);
 
 	return (

@@ -5,6 +5,7 @@ import { GoogleMapsProvider } from "@/contexts/maps";
 
 import { movilitySchemas } from "@/lib/schemas/movility";
 import { DetailsCard } from "@/ui/movility/details-card";
+import { LocationFilter } from "@/ui/movility/location-filter";
 import { Locations } from "@/ui/movility/locations";
 import {
 	InputGroup,
@@ -20,11 +21,12 @@ export const Route = createFileRoute("/_dashboard/movility/")({
 });
 
 function Mobility() {
-	const { search } = Route.useSearch();
+	const search = Route.useSearch();
 	const navigate = Route.useNavigate();
 
 	function handleSearchChange(newValue: string) {
 		navigate({
+			...search,
 			search: {
 				search: newValue === "" ? undefined : newValue,
 			},
@@ -43,7 +45,7 @@ function Mobility() {
 						<InputGroup>
 							<InputGroupInput
 								type="text"
-								value={search ?? ""}
+								value={search.search ?? ""}
 								onChange={(e) => handleSearchChange(e.target.value)}
 								placeholder="Buscar ubicaciones..."
 							/>
@@ -51,7 +53,7 @@ function Mobility() {
 								<SearchIcon />
 							</InputGroupAddon>
 						</InputGroup>
-						{/* <LocationFilter /> */}
+						<LocationFilter />
 					</div>
 					<Locations />
 				</section>
