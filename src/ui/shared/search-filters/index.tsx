@@ -4,7 +4,7 @@ import { ListFilter } from "lucide-react";
 import { useAppForm } from "@/contexts/form";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
-import type { GenericTableSearchValues } from "@/lib/schemas/table";
+import type { GenericTableSearchValues } from "@/lib/schemas/shared";
 
 import { Button, buttonVariants } from "@/ui/shared/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/shared/popover";
@@ -104,7 +104,8 @@ export function TableFilters({ filters = [] }: Props) {
 						{filters?.map((filter, index) => (
 							<form.AppField
 								key={index}
-								name={filter.name as "search"}
+								// name={filter.name as "search"}
+								name="searchText"
 								children={(field) => (
 									<field.SearchAccordionField
 										label={filter.label}
@@ -169,7 +170,7 @@ export function TableFilters({ filters = [] }: Props) {
 					{filters?.map((filter, index) => (
 						<form.AppField
 							key={index}
-							name={filter.name as "search"}
+							name="searchText"
 							children={(field) => (
 								<field.SearchDropdownFilter
 									label={filter.label}

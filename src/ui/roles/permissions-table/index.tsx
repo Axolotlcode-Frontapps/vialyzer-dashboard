@@ -1,28 +1,29 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { usersQueries } from "@/lib/query-options/users";
+import { permissionsServices } from "@/lib/services/permissions";
 import { DataTable } from "@/ui/shared/data-table";
 import { DataTableHeader } from "@/ui/shared/data-table/table-header";
 import { columns } from "./columns";
 
-export function UsersTable() {
-	const { data: usersData = [], isLoading } = useQuery({
-		...usersQueries.usersOptions(),
+export function PermissionsTable() {
+	const { data: permissions = [], isLoading } = useQuery({
+		queryKey: ["permissions"],
+		queryFn: async () => await permissionsServices.getAllPermissions(),
 		select: (data) => data.payload,
 	});
 
 	return (
 		<DataTable
 			columns={columns}
-			data={usersData}
+			data={permissions}
 			isLoading={isLoading}
-			totalRows={usersData.length}
+			totalRows={permissions.length}
 		>
 			{({ table }) => (
 				<DataTableHeader
 					table={table}
-					searchBy="name"
-					searchPlaceholder="Busqueda por nombre"
+					searchBy="action"
+					searchPlaceholder="Busqueda por acción..."
 				/>
 			)}
 		</DataTable>

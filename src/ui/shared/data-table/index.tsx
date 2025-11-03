@@ -1,5 +1,5 @@
-import { getRouteApi } from "@tanstack/react-router";
-import { useState } from "react";
+import { getRouteApi, useLocation } from "@tanstack/react-router";
+import React, { useState } from "react";
 import {
 	flexRender,
 	getCoreRowModel,
@@ -12,11 +12,12 @@ import {
 import type {
 	ColumnDef,
 	ColumnFiltersState,
+	Row,
 	SortingState,
 	Table as TableType,
 	VisibilityState,
 } from "@tanstack/react-table";
-import type { GenericTableSearchValues } from "@/lib/schemas/table";
+import type { GenericTableSearchValues } from "@/lib/schemas/shared";
 
 import {
 	Table,
@@ -27,26 +28,33 @@ import {
 	TableRow,
 } from "@/ui/shared/table";
 import { Card, CardContent, CardFooter, CardHeader } from "../card";
+import { Skeleton } from "../skeleton";
 import { DataTablePagination } from "./pagination";
-import { TableSkeleton } from "./table-skeleton";
-
-const routeApi = getRouteApi("__root__");
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
-	isLoading?: boolean;
 	data: TData[];
+	isLoading?: boolean;
+	totalRows?: number;
 	children?: ({ table }: { table: TableType<TData> }) => React.ReactNode;
+	onSelectedChange?: (ids: string[]) => void;
+	renderSubComponent?: (props: { row: Row<TData> }) => React.ReactElement;
+	getRowCanExpand?: (row: Row<TData>) => boolean;
 }
+
+const routeApi = getRouteApi("__root__");
 
 export function DataTable<TData, TValue>({
 	columns,
-	isLoading = false,
 	data,
+	totalRows,
+	isLoading = false,
 	children,
 }: DataTableProps<TData, TValue>) {
+	const location = useLocation();
 	const navigate = routeApi.useNavigate();
 	const search = routeApi.useSearch() as GenericTableSearchValues;
+
 	const [filters, setFilters] = useState({
 		page: (search.page || 1) - 1,
 		limit: search.limit || 10,
@@ -55,11 +63,11 @@ export function DataTable<TData, TValue>({
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-	const [rowSelection, setRowSelection] = useState({});
 
 	const table = useReactTable({
 		data,
 		columns,
+		pageCount: totalRows ? Math.ceil(totalRows / filters.limit) : -1,
 		onSortingChange: setSorting,
 		onColumnFiltersChange: setColumnFilters,
 		getCoreRowModel: getCoreRowModel(),
@@ -67,7 +75,6 @@ export function DataTable<TData, TValue>({
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
 		onColumnVisibilityChange: setColumnVisibility,
-		onRowSelectionChange: setRowSelection,
 		onPaginationChange: (updater) => {
 			const newPaginationState =
 				typeof updater === "function"
@@ -76,12 +83,12 @@ export function DataTable<TData, TValue>({
 
 			if (search.limit && search.page) {
 				navigate({
+					to: location.pathname,
 					search: {
 						...search,
-						page: newPaginationState.pageIndex + 1,
 						limit: newPaginationState.pageSize,
-						// biome-ignore lint/suspicious/noExplicitAny: third-party API requires 'any' here
-					} as any,
+						page: newPaginationState.pageIndex + 1,
+					},
 				});
 			}
 
@@ -98,69 +105,75 @@ export function DataTable<TData, TValue>({
 			sorting,
 			columnFilters,
 			columnVisibility,
-			rowSelection,
 		},
 	});
-
-	if (isLoading) {
-		return <TableSkeleton />;
-	}
 
 	return (
 		<Card>
 			{children ? <CardHeader>{children({ table })}</CardHeader> : null}
-			<CardContent>
-				<Table>
-					<TableHeader>
-						{table.getHeaderGroups().map((headerGroup) => (
-							<TableRow key={headerGroup.id}>
-								{headerGroup.headers.map((header) => {
-									return (
-										<TableHead key={header.id}>
-											{header.isPlaceholder
-												? null
-												: flexRender(
-														header.column.columnDef.header,
-														header.getContext()
-													)}
-										</TableHead>
-									);
-								})}
-							</TableRow>
-						))}
-					</TableHeader>
-					<TableBody>
-						{table.getRowModel().rows?.length ? (
-							table.getRowModel().rows.map((row) => (
-								<TableRow
-									key={row.id}
-									data-state={row.getIsSelected() && "selected"}
-								>
-									{row.getVisibleCells().map((cell) => (
-										<TableCell key={cell.id}>
-											{flexRender(
-												cell.column.columnDef.cell,
-												cell.getContext()
-											)}
-										</TableCell>
-									))}
+			<CardContent className="w-full xl:min-h-96">
+				{isLoading ? (
+					<Skeleton className="h-[350px] w-full" />
+				) : (
+					<Table>
+						<TableHeader>
+							{table.getHeaderGroups().map((headerGroup) => (
+								<TableRow key={headerGroup.id}>
+									{headerGroup.headers.map((header) => {
+										return (
+											<TableHead key={header.id}>
+												{header.isPlaceholder
+													? null
+													: flexRender(
+															header.column.columnDef.header,
+															header.getContext()
+														)}
+											</TableHead>
+										);
+									})}
 								</TableRow>
-							))
-						) : (
-							<TableRow>
-								<TableCell
-									colSpan={columns.length}
-									className="h-24 text-center"
-								>
-									Sin resultados
-								</TableCell>
-							</TableRow>
-						)}
-					</TableBody>
-				</Table>
+							))}
+						</TableHeader>
+						<TableBody>
+							{table.getRowModel().rows?.length ? (
+								table.getRowModel().rows.map((row) => (
+									<React.Fragment key={row.id}>
+										<TableRow>
+											{row.getVisibleCells().map((cell) => (
+												<TableCell key={cell.id}>
+													{flexRender(
+														cell.column.columnDef.cell,
+														cell.getContext()
+													)}
+												</TableCell>
+											))}
+										</TableRow>
+									</React.Fragment>
+								))
+							) : (
+								<TableRow>
+									<TableCell
+										colSpan={columns.length}
+										className="h-24 text-center"
+									>
+										Sin resultados
+									</TableCell>
+								</TableRow>
+							)}
+						</TableBody>
+					</Table>
+				)}
 			</CardContent>
 			<CardFooter>
-				<DataTablePagination table={table} />
+				{isLoading ? (
+					<div className="flex flex-col sm:flex-row items-center justify-between gap-x-4 w-full">
+						<Skeleton className="h-5 sm:h-9 w-full sm:w-2/6 mb-2 sm:mb-0" />
+						<Skeleton className="h-9 sm:h-9 w-full sm:w-2/6 mb-4 sm:mb-0" />
+						<Skeleton className="h-8 sm:h-9 w-full sm:w-2/6" />
+					</div>
+				) : (
+					<DataTablePagination totalRows={totalRows} table={table} />
+				)}
 			</CardFooter>
 		</Card>
 	);

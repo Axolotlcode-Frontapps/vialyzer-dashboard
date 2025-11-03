@@ -10,8 +10,10 @@ import "@fontsource/poppins/800.css";
 import "@fontsource/poppins/900.css";
 
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { FormDevtoolsPlugin } from "@tanstack/react-form-devtools";
+import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { ThemeProvider } from "@/contexts/theme";
 
 import type { QueryClient } from "@tanstack/react-query";
@@ -32,8 +34,21 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 			<Toaster position="top-right" />
 			<Outlet />
 
-			{import.meta.env.DEV && <TanStackRouterDevtools />}
-			{import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+			{import.meta.env.DEV && (
+				<TanStackDevtools
+					plugins={[
+						{
+							name: "TanStack Query",
+							render: <ReactQueryDevtoolsPanel />,
+						},
+						{
+							name: "TanStack Router",
+							render: <TanStackRouterDevtoolsPanel />,
+						},
+						FormDevtoolsPlugin(),
+					]}
+				/>
+			)}
 		</ThemeProvider>
 	),
 });

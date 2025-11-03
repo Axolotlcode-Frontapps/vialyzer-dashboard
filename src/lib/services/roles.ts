@@ -15,16 +15,15 @@ class RolesServices {
 	}
 
 	async updateRole(id: string, values: RoleValues) {
-		return await fetcher<GeneralResponse<Role>>(`/roles/update`, {
+		return await fetcher<GeneralResponse<Role>>(`/roles/update/${id}`, {
 			method: "PUT",
-			data: { id, ...values },
+			data: values,
 		});
 	}
 
 	async deleteRole(id: string) {
-		return await fetcher<GeneralResponse<Role>>(`/roles/delete`, {
+		return await fetcher<GeneralResponse<Role>>(`/roles/delete/${id}`, {
 			method: "DELETE",
-			data: { id },
 		});
 	}
 }

@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { rolesService } from "@/lib/services/roles";
@@ -13,6 +12,7 @@ import {
 	DialogTitle,
 } from "@/ui/shared/dialog";
 import { Button } from "../shared/button";
+import { Spinner } from "../shared/spinner";
 
 export function RoleDelete({
 	role,
@@ -33,6 +33,8 @@ export function RoleDelete({
 			toast.success(`Rol eliminado correctamente`, {
 				description: `Se ha eliminado el rol "${role.name}" correctamente.`,
 			});
+			queryClient.invalidateQueries({ queryKey: ["roles"] });
+			onOpenChange(false);
 		},
 		onError: (error) => {
 			toast.error(`Error al eliminar el rol "${role.name}"`, {
@@ -41,10 +43,6 @@ export function RoleDelete({
 						? error.message
 						: "Por favor, inténtalo de nuevo.",
 			});
-		},
-		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: ["roles"] });
-			onOpenChange(false);
 		},
 	});
 
@@ -70,7 +68,7 @@ export function RoleDelete({
 					>
 						{roleEditMutation.isPending ? (
 							<>
-								<LoaderCircle className="mr-2 animate-spin" />
+								<Spinner />
 								<span>Eliminando...</span>
 							</>
 						) : (

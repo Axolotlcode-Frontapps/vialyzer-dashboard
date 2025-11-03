@@ -27,7 +27,7 @@ interface Props {
 	company?: Company;
 }
 
-export function CompanyFields({ onSuccess, update = false, company }: Props) {
+export function CompanyForm({ onSuccess, update = false, company }: Props) {
 	const queryClient = useQueryClient();
 
 	const form = useForm({

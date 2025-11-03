@@ -10,7 +10,7 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/ui/shared/sheet";
-import { CompanyFields } from "./company-fields";
+import { CompanyForm } from "./company-form";
 
 export function CompanyAdd() {
 	const [open, setOpen] = useState(false);
@@ -36,7 +36,7 @@ export function CompanyAdd() {
 					</SheetDescription>
 				</SheetHeader>
 
-				<CompanyFields onSuccess={setOpen} />
+				<CompanyForm onSuccess={setOpen} />
 			</SheetContent>
 		</Sheet>
 	);
