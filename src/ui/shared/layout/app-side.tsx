@@ -43,22 +43,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					{
 						icon: Camera,
 						title: "Transito",
-						to: "/mobility",
+						to: "/movility",
 					},
 					{
 						icon: Megaphone,
 						title: "Seguridad vial",
-						to: "/mobility/security",
+						to: "/security",
 					},
 					{
 						icon: FileChartColumnIncreasing,
 						title: "Pronostico",
-						to: "/mobility/forecast",
+						to: "/forecast",
 					},
 					{
 						icon: FileChartLine,
 						title: "Cruce de variables",
-						to: "/mobility/variables",
+						to: "/variables",
 					},
 				],
 			},

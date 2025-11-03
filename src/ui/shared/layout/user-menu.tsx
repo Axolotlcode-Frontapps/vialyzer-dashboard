@@ -28,8 +28,6 @@ export function UserMenu() {
 		"get-me",
 	])?.payload;
 
-	console.log(userMe);
-
 	const router = useRouter();
 	const auth = useAuth();
 

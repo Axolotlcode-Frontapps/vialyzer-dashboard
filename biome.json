@@ -169,12 +169,7 @@
 				"useDefaultSwitchClause": "error",
 				"useEnumInitializers": "off",
 				"useExplicitLengthCheck": "off",
-				"useFilenamingConvention": {
-					"level": "error",
-					"options": {
-						"filenameCases": ["kebab-case"]
-					}
-				},
+				"useFilenamingConvention": "off",
 				"useFragmentSyntax": "error",
 				"useLiteralEnumMembers": "off",
 				"useThrowNewError": "error",

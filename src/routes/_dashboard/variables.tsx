@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_dashboard/mobility/variables")({
+export const Route = createFileRoute("/_dashboard/variables")({
 	component: Variables,
 });
 

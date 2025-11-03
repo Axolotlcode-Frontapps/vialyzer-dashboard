@@ -1,9 +1,14 @@
+import { getRouteApi, useLocation } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Search } from "lucide-react";
 
 import type { Table } from "@tanstack/react-table";
+import type { GenericSearchParams } from "@/lib/schemas/shared";
 
 import { Input } from "../input";
 import { TableFilters } from "../search-filters";
+
+const Route = getRouteApi("__root__");
 
 export function DataTableHeader<TData>({
 	table,
@@ -11,27 +16,53 @@ export function DataTableHeader<TData>({
 	searchPlaceholder = "Buscar...",
 	filters = [],
 	children,
+	hasSearchUrl = false,
 }: {
 	table: Table<TData>;
 	searchBy: keyof TData;
 	searchPlaceholder?: string;
 	filters?: Filters[];
 	children?: React.ReactNode;
+	hasSearchUrl?: boolean;
 }) {
+	const location = useLocation();
+	const searchValues = Route.useSearch() as GenericSearchParams;
+	const navigate = Route.useNavigate();
+
+	useEffect(() => {
+		if (hasSearchUrl) {
+			table
+				.getColumn(String(searchBy))
+				?.setFilterValue(searchValues.search || "");
+		}
+	}, [hasSearchUrl, searchValues.search, table, searchBy]);
+
+	function onChangeSearch(value: string) {
+		if (!hasSearchUrl) {
+			table.getColumn(String(searchBy))?.setFilterValue(value || "");
+			return;
+		}
+
+		navigate({
+			to: location.pathname,
+			search: {
+				...searchValues,
+				...(value === "" ? { search: undefined } : { search: value }),
+			},
+		});
+	}
+
 	return (
 		<div className="w-full flex items-center justify-between gap-4">
 			<div className="w-full md:max-w-1/3 relative">
 				<Input
 					placeholder={searchPlaceholder}
 					value={
-						(table.getColumn(String(searchBy))?.getFilterValue() as string) ??
+						searchValues.search ||
+						(table.getColumn(String(searchBy))?.getFilterValue() as string) ||
 						""
 					}
-					onChange={(event) =>
-						table
-							.getColumn(String(searchBy))
-							?.setFilterValue(event.target.value)
-					}
+					onChange={(event) => onChangeSearch(event.target.value)}
 					className="pl-9 py-2 max-h-9 placeholder:text-sm"
 				/>
 				<Search className="absolute top-2 left-2.5 text-muted-foreground size-5" />
