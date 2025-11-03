@@ -72,8 +72,7 @@ export function TableFilters({ filters = [] }: Props) {
 			search: {
 				page: 1,
 				limit: 10,
-				// biome-ignore lint/suspicious/noExplicitAny: required for navigation search type
-			} as any,
+			},
 		});
 		setOpen(false);
 	};
@@ -105,7 +104,7 @@ export function TableFilters({ filters = [] }: Props) {
 							<form.AppField
 								key={index}
 								// name={filter.name as "search"}
-								name="searchText"
+								name="search"
 								children={(field) => (
 									<field.SearchAccordionField
 										label={filter.label}
@@ -170,7 +169,7 @@ export function TableFilters({ filters = [] }: Props) {
 					{filters?.map((filter, index) => (
 						<form.AppField
 							key={index}
-							name="searchText"
+							name="search"
 							children={(field) => (
 								<field.SearchDropdownFilter
 									label={filter.label}

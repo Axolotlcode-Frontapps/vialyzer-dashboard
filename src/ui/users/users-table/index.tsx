@@ -20,6 +20,7 @@ export function UsersTable() {
 		>
 			{({ table }) => (
 				<DataTableHeader
+					hasSearchUrl
 					table={table}
 					searchBy="name"
 					searchPlaceholder="Busqueda por nombre"

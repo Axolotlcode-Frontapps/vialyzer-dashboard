@@ -6,8 +6,7 @@ import {
 } from "@react-google-maps/api";
 import { useQuery } from "@tanstack/react-query";
 import { useGoogleMaps } from "@/contexts/maps";
-
-// import { useSelectedLocation } from "@/hooks/use-selected-location";
+import { useSelectedLocation } from "@/hooks/use-selected-location";
 
 import { homeService } from "@/lib/services/home";
 import { mapContainerStyle, mapOptions } from "@/lib/utils/map-options";
@@ -24,7 +23,7 @@ export function Maps() {
 		select: (data) => data.payload || [],
 	});
 
-	// const { onSelect, selectedLocation } = useSelectedLocation();
+	const { onSelect, selectedLocation } = useSelectedLocation();
 
 	if (!isLoaded) return null;
 
@@ -32,8 +31,7 @@ export function Maps() {
 		<div className="relative w-full h-full">
 			<GoogleMap
 				mapContainerStyle={mapContainerStyle}
-				// center={selectedLocation ? selectedLocation.location : center}
-				center={center}
+				center={selectedLocation ? selectedLocation.location : center}
 				zoom={13}
 				options={
 					{
@@ -120,7 +118,7 @@ export function Maps() {
 							lat: parseFloat(loc.location.latitude),
 							lng: parseFloat(loc.location.longitude),
 						}}
-						// onClick={() => onSelect(loc.id)}
+						onClick={() => onSelect(loc.id)}
 						icon={{
 							url: cameraPinSvg,
 							scaledSize: new window.google.maps.Size(48, 64),

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_dashboard/mobility/security")({
+export const Route = createFileRoute("/_dashboard/security")({
 	component: Security,
 });
 
