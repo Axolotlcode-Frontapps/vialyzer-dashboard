@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import { devtools } from "@tanstack/devtools-vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
@@ -21,6 +21,6 @@ export default defineConfig({
 		},
 	},
 	preview: {
-		allowedHosts: ["vialyzer.axolotl-code.codes, ."],
+		allowedHosts: [".axolotl-code.codes"],
 	},
 });
