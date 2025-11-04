@@ -55,12 +55,7 @@ export function CamerasPreview() {
 			{previewCamerasData?.map((previewCamera) => (
 				<Tooltip key={previewCamera.id}>
 					<TooltipTrigger asChild>
-						<a
-							className="cursor-pointer bg-card rounded-lg shadow hover:shadow-lg transition overflow-hidden h-60 relative"
-							href={previewCamera.url}
-							target="_blank"
-							rel="noreferrer"
-						>
+						<div className="cursor-pointer bg-card rounded-lg shadow hover:shadow-lg transition overflow-hidden h-60 relative">
 							<img
 								src={
 									previewCamera.name === "Clinica Remedios"
@@ -81,7 +76,7 @@ export function CamerasPreview() {
 									{previewCamera.name}
 								</span>
 							</div>
-						</a>
+						</div>
 					</TooltipTrigger>
 					<TooltipContent className="text-base">
 						Ver preview de cámara

@@ -20,6 +20,7 @@ export interface AuthContext {
 	isAuthenticated: boolean;
 	login: (signInResponse: SignInResponse) => Promise<SignInResponse>;
 	logout: () => Promise<void>;
+	silentRefresh: (signInResponse: SignInResponse) => void;
 	signInResponse: SignInResponse | null;
 }
 
@@ -49,6 +50,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		return signInResponse;
 	}, []);
 
+	const silentRefresh = useCallback((signInResponse: SignInResponse) => {
+		setSessionCookie(SESSION_NAME, signInResponse);
+		setSignInResponse(signInResponse);
+	}, []);
+
 	useEffect(() => {
 		const handleAutoLogout = () => {
 			setSignInResponse(null);
@@ -67,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	return (
 		<AuthContext.Provider
-			value={{ isAuthenticated, signInResponse, login, logout }}
+			value={{ isAuthenticated, signInResponse, login, logout, silentRefresh }}
 		>
 			{children}
 		</AuthContext.Provider>
