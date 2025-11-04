@@ -1,70 +1,70 @@
 @reference "@/app.css";
 
 .monitoring {
-  @apply h-[calc(100dvh_-_96px)] w-full flex flex-col @container/graphs;
+	@apply h-[calc(100dvh_-_96px)] w-full flex flex-col @container/graphs;
 }
 
 .monitoring__content {
-  @apply w-full flex-1 grid-cols-1 grid @3xl/graphs:grid-cols-4 @5xl/graphs:grid-cols-8 gap-6;
+	@apply w-full flex-1 grid-cols-1 grid @3xl/graphs:grid-cols-4 @5xl/graphs:grid-cols-8 gap-6;
 }
 
 .monitoring__stats {
-  @apply w-full;
-  @container graphs (width >= 48rem) {
-    grid-area: 4 / 1 / 5 / 5;
-  }
-  @container graphs (width >= 64rem) {
-    grid-area: 1 / 1 / 2 / 10;
-  }
+	@apply w-full;
+	@container graphs (width >= 48rem) {
+		grid-area: 4 / 1 / 5 / 5;
+	}
+	@container graphs (width >= 64rem) {
+		grid-area: 1 / 1 / 2 / 10;
+	}
 }
 
 .monitoring__stats div[data-item] {
-  @apply flex gap-5 w-full;
+	@apply flex gap-5 w-full;
 }
-.monitoring__stats div[data-item] > [data-slot='card']:is(:nth-child(odd)) {
-  @apply grow-[1.5];
+.monitoring__stats div[data-item] > [data-slot="card"]:is(:nth-child(odd)) {
+	@apply grow-[1.5];
 }
-.monitoring__stats div[data-item] > [data-slot='card'] {
-  @apply snap-center grow-[.5] shrink-0 basis-45 min-w-max w-full;
+.monitoring__stats div[data-item] > [data-slot="card"] {
+	@apply snap-center grow-[.5] shrink-0 basis-45 min-w-max w-full;
 }
 
 .monitoring__stat-title {
-  @apply block font-semibold text-center text-[#8A91A6] text-balance;
+	@apply block font-semibold text-center text-[#8A91A6] text-balance;
 }
 
 .monitoring__stat-box {
-  @apply block text-center font-medium text-base;
+	@apply block text-center font-medium text-base;
 }
 
 .monitoring__notifications {
-  @apply w-full flex flex-col gap-4;
-  @container graphs (width >= 48rem) {
-    grid-area: 5 / 1 / 10 / 3;
-  }
-  @container graphs (width >= 64rem) {
-    grid-area: 2 / 1 / 5 / 3;
-  }
+	@apply w-full flex flex-col gap-4;
+	@container graphs (width >= 48rem) {
+		grid-area: 5 / 1 / 10 / 3;
+	}
+	@container graphs (width >= 64rem) {
+		grid-area: 2 / 1 / 5 / 3;
+	}
 }
 
 .monitoring__map {
-  @apply size-full;
-  grid-area: 1 / 1 / 4 / 2;
-  @container graphs (width >= 48rem) {
-    grid-area: 1 / 1 / 4 / 5;
-  }
-  @container graphs (width >= 64rem) {
-    grid-area: 2 / 3 / 5 / 6;
-  }
+	@apply size-full;
+	grid-area: 1 / 1 / 4 / 2;
+	@container graphs (width >= 48rem) {
+		grid-area: 1 / 1 / 4 / 5;
+	}
+	@container graphs (width >= 64rem) {
+		grid-area: 2 / 3 / 5 / 6;
+	}
 }
 
 .monitoring__graph {
-  @apply @3xl/graphs:col-span-2 @5xl/graphs:col-span-3;
+	@apply @3xl/graphs:col-span-2 @5xl/graphs:col-span-3;
 }
 
 .monitoring__graph--rejects {
-  @apply @5xl/graphs:col-span-4;
+	@apply @5xl/graphs:col-span-4;
 }
 
 .monitoring__graph--volume {
-  @apply @5xl/graphs:col-span-4;
+	@apply @5xl/graphs:col-span-4;
 }

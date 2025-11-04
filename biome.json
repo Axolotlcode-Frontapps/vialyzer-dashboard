@@ -27,7 +27,6 @@
 			"!**/vite.config.ts.timestamp-*",
 			"!**/package-lock.json",
 			"!**/bun.lock",
-			"!**/vite.config.ts",
 			"!**/components.json",
 			"!**/tsconfig.json",
 			"!**/tsconfig.json",
@@ -187,7 +186,8 @@
 				"noEmptyBlockStatements": "error",
 				"noWith": "error",
 				"noUnknownAtRules": "off",
-				"noArrayIndexKey": "off"
+				"noArrayIndexKey": "off",
+				"noDuplicateProperties": "off"
 			}
 		}
 	},
