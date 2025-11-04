@@ -140,20 +140,20 @@ class AgentsServices {
 	async getVolumeHour() {
 		await new Promise((res) => setTimeout(res, 800));
 		return [
-			{ hour: "06:00", car: 12, motorcycle: 8 },
-			{ hour: "07:00", car: 18, motorcycle: 12 },
-			{ hour: "08:00", car: 25, motorcycle: 16 },
-			{ hour: "09:00", car: 22, motorcycle: 14 },
-			{ hour: "10:00", car: 20, motorcycle: 10 },
-			{ hour: "11:00", car: 17, motorcycle: 9 },
-			{ hour: "12:00", car: 15, motorcycle: 7 },
-			{ hour: "13:00", car: 18, motorcycle: 11 },
-			{ hour: "14:00", car: 20, motorcycle: 13 },
-			{ hour: "15:00", car: 24, motorcycle: 15 },
-			{ hour: "16:00", car: 28, motorcycle: 19 },
-			{ hour: "17:00", car: 30, motorcycle: 22 },
-			{ hour: "18:00", car: 26, motorcycle: 18 },
-			{ hour: "19:00", car: 21, motorcycle: 14 },
+			{ hour: "06:00", count: 12 },
+			{ hour: "07:00", count: 18 },
+			{ hour: "08:00", count: 25 },
+			{ hour: "09:00", count: 22 },
+			{ hour: "10:00", count: 20 },
+			{ hour: "11:00", count: 17 },
+			{ hour: "12:00", count: 15 },
+			{ hour: "13:00", count: 18 },
+			{ hour: "14:00", count: 20 },
+			{ hour: "15:00", count: 24 },
+			{ hour: "16:00", count: 28 },
+			{ hour: "17:00", count: 30 },
+			{ hour: "18:00", count: 26 },
+			{ hour: "19:00", count: 21 },
 		];
 	}
 }
