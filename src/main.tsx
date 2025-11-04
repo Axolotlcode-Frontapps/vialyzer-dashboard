@@ -5,6 +5,7 @@ import ReactDOM from "react-dom/client";
 
 import { AuthProvider, useAuth } from "./contexts/auth";
 import { PermissionsProvider, usePermissions } from "./contexts/permissions";
+import { TokenRefreshProvider } from "./contexts/token-refresh";
 import { routeTree } from "./routeTree.gen";
 
 const queryClient = new QueryClient();
@@ -45,9 +46,11 @@ if (rootElement && !rootElement.innerHTML) {
 	root.render(
 		<StrictMode>
 			<AuthProvider>
-				<PermissionsProvider>
-					<App />
-				</PermissionsProvider>
+				<TokenRefreshProvider>
+					<PermissionsProvider>
+						<App />
+					</PermissionsProvider>
+				</TokenRefreshProvider>
 			</AuthProvider>
 		</StrictMode>
 	);

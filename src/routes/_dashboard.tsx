@@ -46,9 +46,6 @@ function PrivateLayout() {
 						<Outlet />
 					</div>
 				</div>
-
-				{/* <GoogleMapsProvider> */}
-				{/* </GoogleMapsProvider> */}
 			</SidebarInset>
 		</SidebarProvider>
 	);

@@ -1,4 +1,4 @@
-@reference "../../app.css";
+@reference "@/app.css";
 
 .monitoring {
   @apply h-[calc(100dvh_-_96px)] w-full flex flex-col @container/graphs;
