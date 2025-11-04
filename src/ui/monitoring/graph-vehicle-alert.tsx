@@ -127,7 +127,7 @@ export function GraphVehicleAlert() {
 									dataKey="percentage"
 									position="insideRight"
 									offset={8}
-									className="fill-foreground"
+									className="fill-white"
 									fontSize={12}
 									formatter={(value: number) =>
 										value >= 10 ? `${value.toFixed(2)}%` : ""
@@ -137,7 +137,7 @@ export function GraphVehicleAlert() {
 									dataKey="percentage"
 									position="right"
 									offset={4}
-									className="fill-foreground"
+									className="fill-white"
 									fontSize={11}
 									formatter={(value: number) =>
 										value < 10 ? `${value.toFixed(2)}%` : ""

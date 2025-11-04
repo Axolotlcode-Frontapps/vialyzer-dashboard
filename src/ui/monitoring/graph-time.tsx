@@ -107,7 +107,7 @@ export function GraphTime() {
 								dataKey="vehicle"
 								position="center"
 								offset={8}
-								className="fill-foreground"
+								className="fill-white"
 								fontSize={12}
 								content={media}
 							/>

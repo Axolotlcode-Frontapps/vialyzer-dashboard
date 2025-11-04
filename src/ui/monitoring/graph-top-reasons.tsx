@@ -103,7 +103,7 @@ export function GraphTopReasons() {
 								dataKey="reason"
 								position="insideLeft"
 								offset={8}
-								className="fill-foreground"
+								className="fill-white"
 								fontSize={12}
 							/>
 						</Bar>
