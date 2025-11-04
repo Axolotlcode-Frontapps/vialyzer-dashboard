@@ -1,13 +1,12 @@
 import { X } from "lucide-react";
-
-// import { useSelectedLocation } from "@/hooks/use-selected-location";
+import { useSelectedLocation } from "@/hooks/use-selected-location";
 
 // import { formatDate } from "@/lib/utils/date-format";
 // import { STATUS } from "@/lib/utils/statuses";
 import { Button } from "../button";
 
 export function MapDetails() {
-	// const { selectedLocation: location, onSelect } = useSelectedLocation();
+	const { selectedLocation: location, onSelect } = useSelectedLocation();
 
 	if (!location) return null;
 
@@ -17,7 +16,7 @@ export function MapDetails() {
 				size="icon"
 				className="size-5 absolute top-2 right-2 z-0"
 				variant="ghost"
-				// onClick={() => onSelect()}
+				onClick={() => onSelect()}
 			>
 				<X className="size-3.5 text-muted-foreground" />
 			</Button>

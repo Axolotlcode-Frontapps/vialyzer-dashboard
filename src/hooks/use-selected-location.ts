@@ -1,13 +1,15 @@
 import { getRouteApi } from "@tanstack/react-router";
 import { useMemo } from "react";
 
+import type { MovilitySearchParams } from "@/lib/schemas/movility";
+
 import { useCameras } from "./use-cameras";
 
-const Route = getRouteApi("/_dashboard/movility/");
+const Route = getRouteApi("__root__");
 
 export function useSelectedLocation() {
 	const { cameras } = useCameras();
-	const { selected } = Route.useSearch();
+	const { selected } = Route.useSearch() as MovilitySearchParams;
 	const navigate = Route.useNavigate();
 
 	function onSelect(id?: string) {
