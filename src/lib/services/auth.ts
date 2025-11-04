@@ -18,6 +18,18 @@ class AuthServices {
 		});
 	}
 
+	async refreshToken(refreshToken: string) {
+		return await fetcher<GeneralResponse<SignInResponse>>(
+			"/auth/refresh-token",
+			{
+				method: "POST",
+				data: {
+					refreshToken,
+				},
+			}
+		);
+	}
+
 	async logOut() {
 		return await fetcher<GeneralResponse<void>>("/auth/logout", {
 			method: "POST",

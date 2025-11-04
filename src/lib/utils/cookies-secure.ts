@@ -1,6 +1,10 @@
 import Cookies from "js-cookie";
 
-export function setSessionCookie(name: string, value: string, options = {}) {
+export function setSessionCookie(
+	name: string,
+	value: SignInResponse,
+	options = {}
+) {
 	Cookies.set(name, JSON.stringify(value), {
 		expires: 7,
 		secure: process.env.NODE_ENV === "production",

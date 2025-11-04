@@ -25,7 +25,7 @@ export interface PermissionsContext {
 const PermissionsContext = createContext<PermissionsContext | null>(null);
 
 export function PermissionsProvider({ children }: { children: ReactNode }) {
-	const { token } = useAuth();
+	const { signInResponse } = useAuth();
 	const [userState, setUserState] = useState<User | null>(
 		getSessionStorage(USER_PERMISSIONS)
 	);
@@ -49,10 +49,10 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
 	}, [updateUser]);
 
 	useEffect(() => {
-		if (!userState && token) {
+		if (!userState && signInResponse?.token) {
 			setPermissions();
 		}
-	}, [userState, token, setPermissions]);
+	}, [userState, signInResponse, setPermissions]);
 
 	return (
 		<PermissionsContext.Provider

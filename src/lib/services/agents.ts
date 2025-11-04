@@ -57,7 +57,7 @@ class AgentsServices {
 				ticket_status: "PENDING",
 				img_url:
 					"https://images.unsplash.com/photo-1581091870622-3f2a3c1a7c11?w=400",
-				description: "Vehículo estacionado en zona prohibida.",
+				description: "Vehículo transitó por sección no autorizada.",
 				maps_coordinates: "[19.4326, -99.1332]",
 				vehicle: "Nissan Versa 2020",
 				createAt: "2025-11-03T12:45:00Z",
@@ -70,7 +70,7 @@ class AgentsServices {
 				ticket_status: "IN_PROGRESS",
 				img_url:
 					"https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=400",
-				description: "Movimiento detectado en zona restringida.",
+				description: "Paso detectado hacia zona de acceso restringido.",
 				maps_coordinates: "[19.4319, -99.1321]",
 				vehicle: "Toyota Corolla 2018",
 				createAt: "2025-11-03T11:20:00Z",
@@ -83,7 +83,7 @@ class AgentsServices {
 				ticket_status: "RESOLVED",
 				img_url:
 					"https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400",
-				description: "Sensor reportó anomalía en el estacionamiento 3A.",
+				description: "Tránsito no autorizado registrado en sección B.",
 				maps_coordinates: "[19.4331, -99.1345]",
 				vehicle: "Chevrolet Spark 2019",
 				createAt: "2025-11-03T09:50:00Z",

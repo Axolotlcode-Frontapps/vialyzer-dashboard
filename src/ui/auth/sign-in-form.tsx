@@ -53,7 +53,7 @@ export function SignInForm() {
 				clearRememberMeData();
 			}
 
-			await auth.login(data.payload.token);
+			await auth.login(data.payload);
 			await router.invalidate();
 			await navigate({ to: "/" });
 		},
