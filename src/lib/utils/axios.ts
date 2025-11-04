@@ -16,6 +16,7 @@ const axiosInstance = axios.create({
 });
 
 let isRefreshing = false;
+let refreshPromise: Promise<string | null> | null = null;
 let failedQueue: Array<{
 	resolve: (value?: string | null) => void;
 	reject: (error?: Error) => void;
@@ -31,6 +32,7 @@ const processQueue = (error: Error | null, token: string | null = null) => {
 	});
 
 	failedQueue = [];
+	refreshPromise = null;
 };
 
 axiosInstance.interceptors.request.use(
@@ -64,6 +66,8 @@ axiosInstance.interceptors.response.use(
 			error.response.status === 401 &&
 			!originalRequest._retry
 		) {
+			originalRequest._retry = true;
+
 			if (isRefreshing) {
 				return new Promise((resolve, reject) => {
 					failedQueue.push({ resolve, reject });
@@ -79,7 +83,6 @@ axiosInstance.interceptors.response.use(
 					});
 			}
 
-			originalRequest._retry = true;
 			isRefreshing = true;
 
 			const session = getSessionCookie(SESSION_NAME);
@@ -92,35 +95,48 @@ axiosInstance.interceptors.response.use(
 				return Promise.reject(error);
 			}
 
-			try {
-				const response = await authServices.refreshToken(refreshToken);
+			if (!refreshPromise) {
+				refreshPromise = (async () => {
+					try {
+						const response = await authServices.refreshToken(refreshToken);
 
-				if (response.success && response.payload) {
-					const newSignInResponse = response.payload;
-
-					setSessionCookie(SESSION_NAME, newSignInResponse);
-
-					if (originalRequest.headers) {
-						originalRequest.headers.Authorization = `Bearer ${newSignInResponse.token}`;
+						if (response.success && response.payload) {
+							const newSignInResponse = response.payload;
+							setSessionCookie(SESSION_NAME, newSignInResponse);
+							return newSignInResponse.token;
+						} else {
+							throw new Error("Failed to refresh token");
+						}
+					} catch (refreshError) {
+						const error =
+							refreshError instanceof Error
+								? refreshError
+								: new Error("Refresh token failed");
+						removeSessionCookie(SESSION_NAME);
+						document.dispatchEvent(new CustomEvent("auth:logout"));
+						throw error;
+					} finally {
+						isRefreshing = false;
 					}
+				})();
+			}
 
-					processQueue(null, newSignInResponse.token);
+			try {
+				const newToken = await refreshPromise;
 
-					return axiosInstance(originalRequest);
-				} else {
-					throw new Error("Failed to refresh token");
+				if (originalRequest.headers) {
+					originalRequest.headers.Authorization = `Bearer ${newToken}`;
 				}
+
+				processQueue(null, newToken);
+				return axiosInstance(originalRequest);
 			} catch (refreshError) {
 				const error =
 					refreshError instanceof Error
 						? refreshError
 						: new Error("Refresh token failed");
 				processQueue(error, null);
-				removeSessionCookie(SESSION_NAME);
-				document.dispatchEvent(new CustomEvent("auth:logout"));
 				return Promise.reject(refreshError);
-			} finally {
-				isRefreshing = false;
 			}
 		}
 

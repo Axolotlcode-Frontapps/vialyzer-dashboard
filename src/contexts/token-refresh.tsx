@@ -10,11 +10,17 @@ interface TokenRefreshProviderProps {
 }
 
 export function TokenRefreshProvider({ children }: TokenRefreshProviderProps) {
-	const { isAuthenticated, login, logout } = useAuth();
+	const { isAuthenticated, logout, signInResponse, silentRefresh } = useAuth();
 	const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+	const lastScheduledExpiration = useRef<string | null>(null);
 
 	const scheduleTokenRefresh = useCallback(
 		(refreshTokenExpiration: string) => {
+			// Evitar reprogramar si ya tenemos programado para la misma fecha de expiración
+			if (lastScheduledExpiration.current === refreshTokenExpiration) {
+				return;
+			}
+
 			if (refreshTimeoutRef.current) {
 				clearTimeout(refreshTimeoutRef.current);
 			}
@@ -23,7 +29,17 @@ export function TokenRefreshProvider({ children }: TokenRefreshProviderProps) {
 			const currentTime = Date.now();
 			const timeUntilExpiration = expirationTime - currentTime;
 
+			// Si el token ya expiró o está por expirar (menos de 30 segundos), no programar
+			if (timeUntilExpiration <= 30 * 1000) {
+				return;
+			}
+
 			const refreshTime = Math.max(0, timeUntilExpiration - 1 * 60 * 1000);
+			lastScheduledExpiration.current = refreshTokenExpiration;
+
+			console.log(
+				`Token refresh scheduled in ${Math.round(refreshTime / 1000 / 60)} minutes`
+			);
 
 			refreshTimeoutRef.current = setTimeout(async () => {
 				try {
@@ -38,7 +54,13 @@ export function TokenRefreshProvider({ children }: TokenRefreshProviderProps) {
 					);
 
 					if (response.success && response.payload) {
-						await login(response.payload);
+						// Actualizar usando silentRefresh para evitar bucle
+						silentRefresh(response.payload);
+
+						// Resetear la referencia para permitir nueva programación
+						lastScheduledExpiration.current = null;
+
+						// Programar el siguiente refresh
 						scheduleTokenRefresh(response.payload.refreshTokenExpiration);
 					} else {
 						await logout();
@@ -49,21 +71,35 @@ export function TokenRefreshProvider({ children }: TokenRefreshProviderProps) {
 				}
 			}, refreshTime);
 		},
-		[login, logout]
+		[logout, silentRefresh]
 	);
 
 	useEffect(() => {
-		const session = getSessionCookie(SESSION_NAME);
-		if (isAuthenticated && session?.refreshTokenExpiration) {
-			scheduleTokenRefresh(session.refreshTokenExpiration);
+		// Solo programar refresh si está autenticado y tenemos un token válido
+		if (isAuthenticated && signInResponse?.refreshTokenExpiration) {
+			scheduleTokenRefresh(signInResponse.refreshTokenExpiration);
 		}
 
 		return () => {
 			if (refreshTimeoutRef.current) {
 				clearTimeout(refreshTimeoutRef.current);
+				refreshTimeoutRef.current = null;
 			}
 		};
-	}, [isAuthenticated, scheduleTokenRefresh]);
+	}, [
+		isAuthenticated,
+		signInResponse?.refreshTokenExpiration,
+		scheduleTokenRefresh,
+	]);
+
+	// Limpiar timeout cuando se desmonta el componente
+	useEffect(() => {
+		return () => {
+			if (refreshTimeoutRef.current) {
+				clearTimeout(refreshTimeoutRef.current);
+			}
+		};
+	}, []);
 
 	return <>{children}</>;
 }
