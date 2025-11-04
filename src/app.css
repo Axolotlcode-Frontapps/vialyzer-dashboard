@@ -75,6 +75,14 @@
 	--sidebar-accent-foreground: oklch(0.205 0 0);
 	--sidebar-border: oklch(0.922 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
+  --chart-car: 226deg 44.1% 23.1%; /*	#212D55; */
+  --chart-motorcycle: 221deg 52.3% 42%; /*	#3357A3; */
+  --chart-bicycle: 352deg 78% 60.8%; /*	#E94D62; */
+  --chart-van: 336deg 87.1% 36.5%; /*	#AE0C4D; */
+  --chart-truck: 298deg 43.6% 22.9%; /*	#522154; */
+  --chart-heavy-truck: 293deg 52.3% 42%; /*	#9633A3; */
+  --chart-bus: 316deg 62.7% 59%; /*	#D855B4; */
+  --chart-person: 226deg 75.5% 63.1%; /* #5A7CE8; */
 }
 
 .dark {
@@ -109,6 +117,14 @@
 	--sidebar-accent-foreground: oklch(0.985 0 0);
 	--sidebar-border: oklch(1 0 0 / 10%);
 	--sidebar-ring: oklch(0.439 0 0);
+  --chart-car: 226deg 44.1% 23.1%; /*	#212D55; */
+  --chart-motorcycle: 221deg 52.3% 42%; /*	#3357A3; */
+  --chart-bicycle: 352deg 78% 60.8%; /*	#E94D62; */
+  --chart-van: 336deg 87.1% 36.5%; /*	#AE0C4D; */
+  --chart-truck: 298deg 43.6% 22.9%; /*	#522154; */
+  --chart-heavy-truck: 293deg 52.3% 42%; /*	#9633A3; */
+  --chart-bus: 316deg 62.7% 59%; /*	#D855B4; */
+  --chart-person: 226deg 75.5% 63.1%; /* #5A7CE8; */
 }
 
 @layer base {
