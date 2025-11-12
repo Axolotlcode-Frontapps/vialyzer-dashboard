@@ -38,7 +38,7 @@ function PrivateLayout() {
 				} as React.CSSProperties
 			}
 		>
-			<AppSidebar />
+			<AppSidebar variant="sidebar" />
 			<SidebarInset>
 				<Header />
 				<div className="flex flex-1 flex-col">

@@ -1,10 +1,35 @@
-import type { RoleValues } from "../schemas/settings";
+import type { ModuleValues } from "../schemas/modules";
+import type { AssignModuleValues, RoleValues } from "../schemas/roles";
 
 import { fetcher } from "@/lib/utils/fetch-api";
 
 class RolesServices {
+	async createModule(values: ModuleValues) {
+		return await fetcher<GeneralResponse<Role>>("/cat-modules/create", {
+			method: "POST",
+			data: values,
+		});
+	}
+
+	async updateModule(id: string, values: ModuleValues) {
+		return await fetcher<GeneralResponse<Role>>(`/cat-modules/update/${id}`, {
+			method: "PUT",
+			data: values,
+		});
+	}
+
+	async deleteModule(id: string) {
+		return await fetcher<GeneralResponse<Role>>(`/cat-modules/delete/${id}`, {
+			method: "DELETE",
+		});
+	}
+
 	async getAllRoles() {
 		return await fetcher<GeneralResponse<Role[]>>("/roles/get-all");
+	}
+
+	async getRoleById(roleId: string) {
+		return await fetcher<GeneralResponse<Role>>(`/roles/get-by-id/${roleId}`);
 	}
 
 	async createRole(values: RoleValues) {
@@ -25,6 +50,16 @@ class RolesServices {
 		return await fetcher<GeneralResponse<Role>>(`/roles/delete/${id}`, {
 			method: "DELETE",
 		});
+	}
+
+	async assignModulesToRole(roleId: string, values: AssignModuleValues) {
+		return await fetcher<GeneralResponse<Role>>(
+			`/roles/associate-modules/${roleId}`,
+			{
+				method: "PUT",
+				data: values,
+			}
+		);
 	}
 }
 

@@ -13,10 +13,13 @@ interface Permission {
 	module: string;
 	description: string;
 	active?: boolean;
+	assigned?: boolean;
 }
 
 interface Module {
 	id: string;
 	name: string;
+	description: string;
 	active: boolean;
+	permissions: Permission[];
 }
