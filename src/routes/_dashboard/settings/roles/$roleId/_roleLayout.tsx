@@ -40,6 +40,7 @@ export const Route = createFileRoute(
 
 function Permissions() {
 	const [openAdd, setOpenAdd] = useState(false);
+
 	const { _splat: moduleId, roleId } = useParams({
 		from: "/_dashboard/settings/roles/$roleId/_roleLayout/$",
 	});
@@ -52,25 +53,30 @@ function Permissions() {
 
 	return (
 		<>
-			<Tabs
-				defaultValue={
-					moduleId ?? (roleData?.modules ? roleData.modules[0].id : "")
-				}
-				className="mb-4"
-			>
-				<TabsList>
-					{roleData?.modules?.map((module) => (
-						<ModuleAction key={module.id} module={module} name={module.name} />
-					))}
-					<Button
-						variant="secondary"
-						size="icon-sm"
-						onClick={() => setOpenAdd(true)}
-					>
-						<Plus />
-					</Button>
-				</TabsList>
-			</Tabs>
+			<div className="flex items-center justify-between mb-4">
+				<Tabs
+					defaultValue={
+						moduleId ?? (roleData?.modules ? roleData.modules[0].id : "")
+					}
+				>
+					<TabsList>
+						{roleData?.modules?.map((module) => (
+							<ModuleAction
+								key={module.id}
+								module={module}
+								name={module.name}
+							/>
+						))}
+						<Button
+							variant="secondary"
+							size="icon-sm"
+							onClick={() => setOpenAdd(true)}
+						>
+							<Plus />
+						</Button>
+					</TabsList>
+				</Tabs>
+			</div>
 
 			<Outlet />
 

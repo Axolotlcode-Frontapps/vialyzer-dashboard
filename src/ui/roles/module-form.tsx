@@ -2,9 +2,9 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import type { ModuleValues } from "@/lib/schemas/roles";
+import type { ModuleValues } from "@/lib/schemas/modules";
 
-import { rolesSchemas } from "@/lib/schemas/roles";
+import { modulesSchemas } from "@/lib/schemas/modules";
 import { rolesService } from "@/lib/services/roles";
 import { Button } from "@/ui/shared/button";
 import { Field, FieldError, FieldLabel } from "@/ui/shared/field";
@@ -29,8 +29,8 @@ export function ModuleForm({
 			description: isUpdate ? (module?.description ?? "") : "",
 		},
 		validators: {
-			onMount: rolesSchemas.module,
-			onChange: rolesSchemas.module,
+			onMount: modulesSchemas.module,
+			onChange: modulesSchemas.module,
 		},
 		onSubmit: ({ value }) => createModuleMutation.mutate(value),
 	});

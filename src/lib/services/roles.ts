@@ -1,8 +1,5 @@
-import type {
-	AssignModuleValues,
-	ModuleValues,
-	RoleValues,
-} from "../schemas/roles";
+import type { ModuleValues } from "../schemas/modules";
+import type { AssignModuleValues, RoleValues } from "../schemas/roles";
 
 import { fetcher } from "@/lib/utils/fetch-api";
 

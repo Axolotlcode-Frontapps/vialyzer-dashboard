@@ -1,3 +1,5 @@
+import type { AssignPermissionsValues } from "../schemas/modules";
+
 import { fetcher } from "../utils/fetch-api";
 
 class ModulesServices {
@@ -35,6 +37,13 @@ class ModulesServices {
 				method: "DELETE",
 			}
 		);
+	}
+
+	async assignPermissions(moduleId: string, values: AssignPermissionsValues) {
+		return await fetcher(`/cat-modules/associate-permissions/${moduleId}`, {
+			method: "PUT",
+			data: values,
+		});
 	}
 }
 
