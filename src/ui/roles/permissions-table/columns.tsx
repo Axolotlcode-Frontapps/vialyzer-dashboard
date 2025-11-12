@@ -1,7 +1,8 @@
 import type { ColumnDef } from "@tanstack/react-table";
 
-import { actionsTranslate, modulesTranslate } from "@/lib/utils/translates";
 import { DataTableColumnHeader } from "@/ui/shared/data-table/column-header";
+import { Label } from "@/ui/shared/label";
+import { Switch } from "@/ui/shared/switch";
 
 export const columns: ColumnDef<Permission>[] = [
 	{
@@ -9,21 +10,11 @@ export const columns: ColumnDef<Permission>[] = [
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Acción" />
 		),
-		cell: ({ row }) => (
-			<span>
-				{actionsTranslate[row.original.action as keyof typeof actionsTranslate]}
-			</span>
-		),
 	},
 	{
 		accessorKey: "module",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Módulo" />
-		),
-		cell: ({ row }) => (
-			<span className="capitalize">
-				{modulesTranslate[row.original.module as keyof typeof modulesTranslate]}
-			</span>
 		),
 	},
 	{
@@ -34,7 +25,21 @@ export const columns: ColumnDef<Permission>[] = [
 		cell: ({ row }) => <span>{row.original.active ? "Sí" : "No"}</span>,
 	},
 	{
-		id: "actions",
-		// cell: ({ row }) => <RoleTableActions role={row.original} />,
+		accessorKey: "assigned",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Asignado" />
+		),
+		cell: ({ row }) => {
+			return (
+				<Label htmlFor="airplane-mode">
+					<Switch id="airplane-mode" checked={row.original.assigned} />
+					{row.original.assigned ? "Asignado" : "No asignado"}
+				</Label>
+			);
+		},
 	},
+	// {
+	// 	id: "actions",
+	// 	// cell: ({ row }) => <RoleTableActions role={row.original} />,
+	// },
 ];
