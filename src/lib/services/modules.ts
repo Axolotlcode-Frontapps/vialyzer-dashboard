@@ -39,6 +39,15 @@ class ModulesServices {
 		);
 	}
 
+	async activateModule(moduleId: string) {
+		return await fetcher<GeneralResponse<Module>>(
+			`/cat-modules/activate/${moduleId}`,
+			{
+				method: "PATCH",
+			}
+		);
+	}
+
 	async assignPermissions(moduleId: string, values: AssignPermissionsValues) {
 		return await fetcher(`/cat-modules/associate-permissions/${moduleId}`, {
 			method: "PUT",

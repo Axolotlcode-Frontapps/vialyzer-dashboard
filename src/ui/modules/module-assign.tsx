@@ -1,4 +1,3 @@
-import { useParams } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -34,27 +33,20 @@ import {
 import { Spinner } from "../shared/spinner";
 
 export function ModuleAssign({
+	role,
 	open,
 	onOpenChange,
 }: {
+	role: Role;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 }) {
 	const queryClient = useQueryClient();
-	const { roleId } = useParams({
-		from: "/_dashboard/settings/roles/$roleId/_roleLayout/$",
-	});
-
-	const moduleByRoleCache = queryClient.getQueryData<GeneralResponse<Role>>([
-		"role-by-id",
-		roleId,
-	]);
 
 	const { data: moduleByRole } = useQuery({
-		queryKey: ["role-by-id", roleId],
-		queryFn: async () => await rolesService.getRoleById(roleId),
-		initialData: moduleByRoleCache,
-		enabled: !!moduleByRoleCache,
+		queryKey: ["role-by-id", role.id],
+		queryFn: async () => await rolesService.getRoleById(role.id),
+		enabled: !!role.id,
 		select: (data) => data.payload,
 	});
 
@@ -71,12 +63,13 @@ export function ModuleAssign({
 	const assignMutation = useMutation({
 		mutationFn: async (values: AssignModuleValues) => {
 			form.state.isSubmitting = true;
-			return await rolesService.assignModulesToRole(roleId, values);
+			return await rolesService.assignModulesToRole(role.id, values);
 		},
 		onSuccess: () => {
 			form.reset();
 			toast.success("Módulos asignados correctamente al rol.");
-			queryClient.invalidateQueries({ queryKey: ["role-by-id", roleId] });
+			queryClient.invalidateQueries({ queryKey: ["role-by-id", role.id] });
+			queryClient.invalidateQueries({ queryKey: ["roles"] });
 			onOpenChange(false);
 		},
 		onError: (error) => {

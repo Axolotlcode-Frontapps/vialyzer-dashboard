@@ -8,8 +8,6 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
-
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
@@ -28,12 +26,8 @@ import { Route as DashboardSettingsUsersRouteImport } from './routes/_dashboard/
 import { Route as DashboardSettingsCompaniesRouteImport } from './routes/_dashboard/settings/companies'
 import { Route as DashboardMovilityCameraIdRouteImport } from './routes/_dashboard/movility/$cameraId'
 import { Route as DashboardSettingsRolesIndexRouteImport } from './routes/_dashboard/settings/roles/index'
-import { Route as DashboardSettingsRolesRoleIdRoleLayoutRouteImport } from './routes/_dashboard/settings/roles/$roleId/_roleLayout'
-import { Route as DashboardSettingsRolesRoleIdRoleLayoutSplatRouteImport } from './routes/_dashboard/settings/roles/$roleId/_roleLayout/$'
-
-const DashboardSettingsRolesRoleIdRouteImport = createFileRoute(
-  '/_dashboard/settings/roles/$roleId',
-)()
+import { Route as DashboardSettingsModulesIndexRouteImport } from './routes/_dashboard/settings/modules/index'
+import { Route as DashboardSettingsModulesModuleIdRouteImport } from './routes/_dashboard/settings/modules/$moduleId'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -116,28 +110,23 @@ const DashboardMovilityCameraIdRoute =
     path: '/movility/$cameraId',
     getParentRoute: () => DashboardRoute,
   } as any)
-const DashboardSettingsRolesRoleIdRoute =
-  DashboardSettingsRolesRoleIdRouteImport.update({
-    id: '/settings/roles/$roleId',
-    path: '/settings/roles/$roleId',
-    getParentRoute: () => DashboardRoute,
-  } as any)
 const DashboardSettingsRolesIndexRoute =
   DashboardSettingsRolesIndexRouteImport.update({
     id: '/settings/roles/',
     path: '/settings/roles/',
     getParentRoute: () => DashboardRoute,
   } as any)
-const DashboardSettingsRolesRoleIdRoleLayoutRoute =
-  DashboardSettingsRolesRoleIdRoleLayoutRouteImport.update({
-    id: '/_roleLayout',
-    getParentRoute: () => DashboardSettingsRolesRoleIdRoute,
+const DashboardSettingsModulesIndexRoute =
+  DashboardSettingsModulesIndexRouteImport.update({
+    id: '/settings/modules/',
+    path: '/settings/modules/',
+    getParentRoute: () => DashboardRoute,
   } as any)
-const DashboardSettingsRolesRoleIdRoleLayoutSplatRoute =
-  DashboardSettingsRolesRoleIdRoleLayoutSplatRouteImport.update({
-    id: '/$',
-    path: '/$',
-    getParentRoute: () => DashboardSettingsRolesRoleIdRoleLayoutRoute,
+const DashboardSettingsModulesModuleIdRoute =
+  DashboardSettingsModulesModuleIdRouteImport.update({
+    id: '/settings/modules/$moduleId',
+    path: '/settings/modules/$moduleId',
+    getParentRoute: () => DashboardRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -156,9 +145,9 @@ export interface FileRoutesByFullPath {
   '/settings/companies': typeof DashboardSettingsCompaniesRoute
   '/settings/users': typeof DashboardSettingsUsersRoute
   '/movility': typeof DashboardMovilityIndexRoute
+  '/settings/modules/$moduleId': typeof DashboardSettingsModulesModuleIdRoute
+  '/settings/modules': typeof DashboardSettingsModulesIndexRoute
   '/settings/roles': typeof DashboardSettingsRolesIndexRoute
-  '/settings/roles/$roleId': typeof DashboardSettingsRolesRoleIdRoleLayoutRouteWithChildren
-  '/settings/roles/$roleId/$': typeof DashboardSettingsRolesRoleIdRoleLayoutSplatRoute
 }
 export interface FileRoutesByTo {
   '/forecast': typeof DashboardForecastRoute
@@ -175,9 +164,9 @@ export interface FileRoutesByTo {
   '/settings/companies': typeof DashboardSettingsCompaniesRoute
   '/settings/users': typeof DashboardSettingsUsersRoute
   '/movility': typeof DashboardMovilityIndexRoute
+  '/settings/modules/$moduleId': typeof DashboardSettingsModulesModuleIdRoute
+  '/settings/modules': typeof DashboardSettingsModulesIndexRoute
   '/settings/roles': typeof DashboardSettingsRolesIndexRoute
-  '/settings/roles/$roleId': typeof DashboardSettingsRolesRoleIdRoleLayoutRouteWithChildren
-  '/settings/roles/$roleId/$': typeof DashboardSettingsRolesRoleIdRoleLayoutSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -197,10 +186,9 @@ export interface FileRoutesById {
   '/_dashboard/settings/companies': typeof DashboardSettingsCompaniesRoute
   '/_dashboard/settings/users': typeof DashboardSettingsUsersRoute
   '/_dashboard/movility/': typeof DashboardMovilityIndexRoute
+  '/_dashboard/settings/modules/$moduleId': typeof DashboardSettingsModulesModuleIdRoute
+  '/_dashboard/settings/modules/': typeof DashboardSettingsModulesIndexRoute
   '/_dashboard/settings/roles/': typeof DashboardSettingsRolesIndexRoute
-  '/_dashboard/settings/roles/$roleId': typeof DashboardSettingsRolesRoleIdRouteWithChildren
-  '/_dashboard/settings/roles/$roleId/_roleLayout': typeof DashboardSettingsRolesRoleIdRoleLayoutRouteWithChildren
-  '/_dashboard/settings/roles/$roleId/_roleLayout/$': typeof DashboardSettingsRolesRoleIdRoleLayoutSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -220,9 +208,9 @@ export interface FileRouteTypes {
     | '/settings/companies'
     | '/settings/users'
     | '/movility'
+    | '/settings/modules/$moduleId'
+    | '/settings/modules'
     | '/settings/roles'
-    | '/settings/roles/$roleId'
-    | '/settings/roles/$roleId/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/forecast'
@@ -239,9 +227,9 @@ export interface FileRouteTypes {
     | '/settings/companies'
     | '/settings/users'
     | '/movility'
+    | '/settings/modules/$moduleId'
+    | '/settings/modules'
     | '/settings/roles'
-    | '/settings/roles/$roleId'
-    | '/settings/roles/$roleId/$'
   id:
     | '__root__'
     | '/_dashboard'
@@ -260,10 +248,9 @@ export interface FileRouteTypes {
     | '/_dashboard/settings/companies'
     | '/_dashboard/settings/users'
     | '/_dashboard/movility/'
+    | '/_dashboard/settings/modules/$moduleId'
+    | '/_dashboard/settings/modules/'
     | '/_dashboard/settings/roles/'
-    | '/_dashboard/settings/roles/$roleId'
-    | '/_dashboard/settings/roles/$roleId/_roleLayout'
-    | '/_dashboard/settings/roles/$roleId/_roleLayout/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -385,13 +372,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardMovilityCameraIdRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/settings/roles/$roleId': {
-      id: '/_dashboard/settings/roles/$roleId'
-      path: '/settings/roles/$roleId'
-      fullPath: '/settings/roles/$roleId'
-      preLoaderRoute: typeof DashboardSettingsRolesRoleIdRouteImport
-      parentRoute: typeof DashboardRoute
-    }
     '/_dashboard/settings/roles/': {
       id: '/_dashboard/settings/roles/'
       path: '/settings/roles'
@@ -399,52 +379,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsRolesIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/settings/roles/$roleId/_roleLayout': {
-      id: '/_dashboard/settings/roles/$roleId/_roleLayout'
-      path: '/settings/roles/$roleId'
-      fullPath: '/settings/roles/$roleId'
-      preLoaderRoute: typeof DashboardSettingsRolesRoleIdRoleLayoutRouteImport
-      parentRoute: typeof DashboardSettingsRolesRoleIdRoute
+    '/_dashboard/settings/modules/': {
+      id: '/_dashboard/settings/modules/'
+      path: '/settings/modules'
+      fullPath: '/settings/modules'
+      preLoaderRoute: typeof DashboardSettingsModulesIndexRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/settings/roles/$roleId/_roleLayout/$': {
-      id: '/_dashboard/settings/roles/$roleId/_roleLayout/$'
-      path: '/$'
-      fullPath: '/settings/roles/$roleId/$'
-      preLoaderRoute: typeof DashboardSettingsRolesRoleIdRoleLayoutSplatRouteImport
-      parentRoute: typeof DashboardSettingsRolesRoleIdRoleLayoutRoute
+    '/_dashboard/settings/modules/$moduleId': {
+      id: '/_dashboard/settings/modules/$moduleId'
+      path: '/settings/modules/$moduleId'
+      fullPath: '/settings/modules/$moduleId'
+      preLoaderRoute: typeof DashboardSettingsModulesModuleIdRouteImport
+      parentRoute: typeof DashboardRoute
     }
   }
 }
-
-interface DashboardSettingsRolesRoleIdRoleLayoutRouteChildren {
-  DashboardSettingsRolesRoleIdRoleLayoutSplatRoute: typeof DashboardSettingsRolesRoleIdRoleLayoutSplatRoute
-}
-
-const DashboardSettingsRolesRoleIdRoleLayoutRouteChildren: DashboardSettingsRolesRoleIdRoleLayoutRouteChildren =
-  {
-    DashboardSettingsRolesRoleIdRoleLayoutSplatRoute:
-      DashboardSettingsRolesRoleIdRoleLayoutSplatRoute,
-  }
-
-const DashboardSettingsRolesRoleIdRoleLayoutRouteWithChildren =
-  DashboardSettingsRolesRoleIdRoleLayoutRoute._addFileChildren(
-    DashboardSettingsRolesRoleIdRoleLayoutRouteChildren,
-  )
-
-interface DashboardSettingsRolesRoleIdRouteChildren {
-  DashboardSettingsRolesRoleIdRoleLayoutRoute: typeof DashboardSettingsRolesRoleIdRoleLayoutRouteWithChildren
-}
-
-const DashboardSettingsRolesRoleIdRouteChildren: DashboardSettingsRolesRoleIdRouteChildren =
-  {
-    DashboardSettingsRolesRoleIdRoleLayoutRoute:
-      DashboardSettingsRolesRoleIdRoleLayoutRouteWithChildren,
-  }
-
-const DashboardSettingsRolesRoleIdRouteWithChildren =
-  DashboardSettingsRolesRoleIdRoute._addFileChildren(
-    DashboardSettingsRolesRoleIdRouteChildren,
-  )
 
 interface DashboardRouteChildren {
   DashboardForecastRoute: typeof DashboardForecastRoute
@@ -457,8 +407,9 @@ interface DashboardRouteChildren {
   DashboardSettingsCompaniesRoute: typeof DashboardSettingsCompaniesRoute
   DashboardSettingsUsersRoute: typeof DashboardSettingsUsersRoute
   DashboardMovilityIndexRoute: typeof DashboardMovilityIndexRoute
+  DashboardSettingsModulesModuleIdRoute: typeof DashboardSettingsModulesModuleIdRoute
+  DashboardSettingsModulesIndexRoute: typeof DashboardSettingsModulesIndexRoute
   DashboardSettingsRolesIndexRoute: typeof DashboardSettingsRolesIndexRoute
-  DashboardSettingsRolesRoleIdRoute: typeof DashboardSettingsRolesRoleIdRouteWithChildren
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
@@ -472,9 +423,9 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardSettingsCompaniesRoute: DashboardSettingsCompaniesRoute,
   DashboardSettingsUsersRoute: DashboardSettingsUsersRoute,
   DashboardMovilityIndexRoute: DashboardMovilityIndexRoute,
+  DashboardSettingsModulesModuleIdRoute: DashboardSettingsModulesModuleIdRoute,
+  DashboardSettingsModulesIndexRoute: DashboardSettingsModulesIndexRoute,
   DashboardSettingsRolesIndexRoute: DashboardSettingsRolesIndexRoute,
-  DashboardSettingsRolesRoleIdRoute:
-    DashboardSettingsRolesRoleIdRouteWithChildren,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(

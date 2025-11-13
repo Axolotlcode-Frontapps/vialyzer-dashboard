@@ -6,7 +6,7 @@ import { Checkbox } from "@/ui/shared/checkbox";
 import { DataTableColumnHeader } from "@/ui/shared/data-table/column-header";
 import { AssignPermission } from "./assign-permission";
 
-export const useColumns = () => {
+export const useColumns = (moduleData: Module) => {
 	const [selectedPermissionsIds, setSelectedPermissionsIds] = useState<
 		{
 			id: string;
@@ -64,20 +64,6 @@ export const useColumns = () => {
 								);
 							}
 						}}
-						// --- IGNORE ---
-						// checked={selectedPermissionsIds.includes(row.original.id)}
-						// onCheckedChange={(value) => {
-						// 	const id = row.original.id;
-						// 	if (value) {
-						// 		setSelectedPermissionsIds([...selectedPermissionsIds, id]);
-						// 	} else {
-						// 		setSelectedPermissionsIds(
-						// 			selectedPermissionsIds.filter(
-						// 				(selectedId) => selectedId !== id
-						// 			)
-						// 		);
-						// 	}
-						// }}
 						aria-label="Seleccionar fila"
 					/>
 				),
@@ -116,13 +102,19 @@ export const useColumns = () => {
 				header: ({ column }) => (
 					<DataTableColumnHeader column={column} title="Asignado" />
 				),
-				cell: ({ row }) => <AssignPermission permission={row.original} />,
+				cell: ({ row }) => (
+					<AssignPermission
+						permission={row.original}
+						permissionsData={moduleData.permissions}
+					/>
+				),
 			},
 		],
 		[
 			selectedPermissionsIds.length,
 			selectedPermissionsIds.filter,
 			selectedPermissionsIds,
+			moduleData,
 		]
 	);
 

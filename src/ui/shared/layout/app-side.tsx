@@ -91,6 +91,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 						to: "/settings/roles",
 					},
 					{
+						title: "Módulos",
+						icon: Settings,
+						to: "/settings/modules",
+					},
+					{
 						title: "Usuarios",
 						icon: User,
 						to: "/settings/users",
