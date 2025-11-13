@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+import { STATUS_TYPES } from "../utils/statuses";
+import { sharedSchemas } from "./shared";
+
 class Settings {
 	role = z.object({
 		name: z.string().min(1, { error: "El nombre es obligatorio" }),
@@ -35,6 +38,12 @@ class Settings {
 		address: z.string().min(1, { error: "La dirección es obligatoria" }),
 		department: z.string().min(1, { error: "El departamento es obligatorio" }),
 		city: z.string().min(1, { error: "La ciudad es obligatoria" }),
+	});
+
+	cameras = z.object({
+		...sharedSchemas.searchParamsSchema.shape,
+		selected: z.string().optional(),
+		filter: z.enum(STATUS_TYPES).optional(),
 	});
 }
 
