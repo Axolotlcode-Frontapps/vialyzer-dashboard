@@ -29,7 +29,7 @@ export function RoleTableActions({ role }: { role: Role }) {
 				<DropdownMenuContent align="end">
 					<DropdownMenuItem onClick={() => setOpenAssign(true)}>
 						<CirclePlus />
-						Asignar permisos
+						Asignar módulos
 					</DropdownMenuItem>
 					<DropdownMenuItem onClick={() => setOpenUpdate(true)}>
 						<Pencil />

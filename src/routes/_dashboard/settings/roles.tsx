@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { RoleAdd } from "@/ui/roles/role-add";
 import { RolesTable } from "@/ui/roles/roles-table";
 
-export const Route = createFileRoute("/_dashboard/settings/roles/")({
+export const Route = createFileRoute("/_dashboard/settings/roles")({
 	component: Roles,
 });
 

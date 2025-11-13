@@ -46,7 +46,7 @@ export function ModuleAssign({
 	const { data: moduleByRole } = useQuery({
 		queryKey: ["role-by-id", role.id],
 		queryFn: async () => await rolesService.getRoleById(role.id),
-		enabled: !!role.id,
+		enabled: !!role.id && open,
 		select: (data) => data.payload,
 	});
 

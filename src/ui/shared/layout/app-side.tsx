@@ -4,6 +4,7 @@ import {
 	FileChartLine,
 	House,
 	Megaphone,
+	Package,
 	Settings,
 	Shield,
 	User,
@@ -92,7 +93,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					},
 					{
 						title: "Módulos",
-						icon: Settings,
+						icon: Package,
 						to: "/settings/modules",
 					},
 					{
