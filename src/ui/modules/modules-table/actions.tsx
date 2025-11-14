@@ -14,6 +14,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/ui/shared/dropdown-menu";
+import { HasPermission } from "@/ui/shared/permissions/has-permission";
 import { ModuleDelete } from "../module-delete";
 import { ModuleEdit } from "../module-edit";
 
@@ -39,10 +40,12 @@ export function ModuleAction({ module }: { module: Module }) {
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent>
-					<DropdownMenuItem onClick={() => setOpenModuleEdit(true)}>
-						<Pencil />
-						Editar
-					</DropdownMenuItem>
+					<HasPermission moduleBase="cat-modules" permissionName="update">
+						<DropdownMenuItem onClick={() => setOpenModuleEdit(true)}>
+							<Pencil />
+							Editar
+						</DropdownMenuItem>
+					</HasPermission>
 					<Activity mode={module.active ? "hidden" : "visible"}>
 						<DropdownMenuItem onClick={() => setOpenModuleEdit(true)}>
 							<CheckCircle />

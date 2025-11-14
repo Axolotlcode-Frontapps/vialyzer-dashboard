@@ -32,6 +32,7 @@ export function AssignPermission({
 		onSuccess: () => {
 			toast.success("Permiso actualizado correctamente");
 			queryClient.invalidateQueries({ queryKey: ["module-by-id", moduleId] });
+			queryClient.invalidateQueries({ queryKey: ["get-me"] });
 		},
 		onError: () => {
 			toast.error("Error al actualizar el permiso");

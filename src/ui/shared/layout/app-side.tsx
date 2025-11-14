@@ -10,6 +10,7 @@ import {
 	User,
 	Video,
 } from "lucide-react";
+import { useHasModule } from "@/hooks/use-permissions";
 
 import type { INavSection } from "./types";
 
@@ -21,6 +22,7 @@ import { NavSection } from "./nav-section";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	const { open } = useSidebar();
+	const { hasModule } = useHasModule();
 
 	const principalMenu: INavSection = {
 		group: "Principal",
@@ -86,26 +88,42 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				icon: Settings,
 				defaultOpen: true,
 				items: [
-					{
-						title: "Roles",
-						icon: Shield,
-						to: "/settings/roles",
-					},
-					{
-						title: "Módulos",
-						icon: Package,
-						to: "/settings/modules",
-					},
-					{
-						title: "Usuarios",
-						icon: User,
-						to: "/settings/users",
-					},
-					{
-						title: "Empresas",
-						icon: Settings,
-						to: "/settings/companies",
-					},
+					...(!hasModule("roles")
+						? []
+						: [
+								{
+									title: "Roles",
+									icon: Shield,
+									to: "/settings/roles" as const,
+								},
+							]),
+					...(!hasModule("usuarios")
+						? []
+						: [
+								{
+									title: "Usuarios",
+									icon: User,
+									to: "/settings/users" as const,
+								},
+							]),
+					...(!hasModule("modulos")
+						? []
+						: [
+								{
+									title: "Módulos",
+									icon: Package,
+									to: "/settings/modules" as const,
+								},
+							]),
+					...(!hasModule("empresas")
+						? []
+						: [
+								{
+									title: "Empresas",
+									icon: Settings,
+									to: "/settings/companies" as const,
+								},
+							]),
 				],
 			},
 		],
@@ -128,9 +146,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				</a>
 			</SidebarHeader>
 			<SidebarContent>
+				{/* {!isLoading ? (
+					<> */}
 				<NavSection group={principalMenu.group} items={principalMenu.items} />
 				<NavSection group={metricsMenu.group} items={metricsMenu.items} />
 				<NavSection group={settingsMenu.group} items={settingsMenu.items} />
+				{/* </>
+				) : null} */}
 			</SidebarContent>
 		</Sidebar>
 	);

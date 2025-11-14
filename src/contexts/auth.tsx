@@ -3,6 +3,7 @@ import {
 	useCallback,
 	useContext,
 	useLayoutEffect,
+	useRef,
 	useState,
 } from "react";
 
@@ -32,62 +33,137 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		getSessionCookie(SESSION_NAME)
 	);
 
+	// Usar ref para tener siempre la última versión sin recrear el interceptor
+	const signInResponseRef = useRef(signInResponse);
+
 	const isAuthenticated = !!signInResponse;
 
+	// Mantener el ref actualizado
 	useLayoutEffect(() => {
-		const authInterceptor = axiosInstance.interceptors.request.use((config) => {
-			config.headers.Authorization = signInResponse?.token
-				? `Bearer ${signInResponse.token}`
-				: config.headers.Authorization;
-
-			return config;
-		});
-
-		return () => axiosInstance.interceptors.request.eject(authInterceptor);
+		signInResponseRef.current = signInResponse;
 	}, [signInResponse]);
 
+	// Interceptor para manejar errores y refrescar token
 	useLayoutEffect(() => {
 		const refreshInterceptor = axiosInstance.interceptors.response.use(
 			(response) => response,
 			async (error: AxiosError) => {
-				const originalRequest = error.config;
+				console.log("🔴 Error interceptado:", {
+					status: error.response?.status,
+					message: error.message,
+					hasConfig: !!error.config,
+					url: error.config?.url,
+				});
 
+				const originalRequest = error.config as typeof error.config & {
+					_retry?: boolean;
+				};
+
+				if (!originalRequest) {
+					console.log("❌ No hay originalRequest");
+					return Promise.reject(error);
+				}
+
+				console.log("📋 Request info:", {
+					url: originalRequest.url,
+					retry: originalRequest._retry,
+					status: error.response?.status,
+				});
+
+				// Error 401: sesión inválida, hacer logout
 				if (error.response?.status === 401) {
+					console.log("🚪 Error 401 - Logout");
 					setSignInResponse(null);
 					removeSessionCookie(SESSION_NAME);
 					return Promise.reject(error);
 				}
 
-				if (error.response?.status === 403 && originalRequest) {
-					try {
-						const refreshTokenRequest = await (
-							await authServices.refreshToken(signInResponse?.refreshToken!)
-						).payload;
+				// Error 403: token expirado, intentar refrescar
+				if (error.response?.status === 403 && !originalRequest._retry) {
+					console.log("🔄 Error 403 - Intentando refrescar token");
+					originalRequest._retry = true;
 
-						setSignInResponse((prev) => {
-							const updatedResponse = {
-								...prev!,
-								token: refreshTokenRequest?.token ?? "",
-								refreshToken: refreshTokenRequest?.refreshToken ?? "",
-							};
-							setSessionCookie(SESSION_NAME, updatedResponse);
-							return updatedResponse;
-						});
+					const currentRefreshToken = signInResponseRef.current?.refreshToken;
+					console.log("🔑 Refreshing token con:", currentRefreshToken);
 
-						originalRequest.headers.Authorization = `Bearer ${refreshTokenRequest?.token}`;
-					} catch (err) {
+					if (!currentRefreshToken) {
+						console.error("❌ No refresh token available");
 						setSignInResponse(null);
 						removeSessionCookie(SESSION_NAME);
-						return Promise.reject(err);
+						return Promise.reject(new Error("No refresh token available"));
+					}
+
+					try {
+						// Obtener nuevo token usando el refreshToken
+						const response =
+							await authServices.refreshToken(currentRefreshToken);
+						const refreshTokenRequest = response.payload;
+
+						console.log("✅ Token refreshed:", {
+							hasToken: !!refreshTokenRequest?.token,
+							hasRefreshToken: !!refreshTokenRequest?.refreshToken,
+							hasPayload: !!response.payload,
+						});
+
+						if (
+							!refreshTokenRequest?.token ||
+							!refreshTokenRequest?.refreshToken
+						) {
+							throw new Error("Invalid refresh token response");
+						}
+
+						// Actualizar el estado y la cookie con los nuevos tokens
+						const updatedResponse: SignInResponse = {
+							...signInResponseRef.current!,
+							token: refreshTokenRequest.token,
+							refreshToken: refreshTokenRequest.refreshToken,
+							// Mantener todos los demás campos del SignInResponse original
+							refreshTokenExpiration:
+								refreshTokenRequest.refreshTokenExpiration ||
+								signInResponseRef.current!.refreshTokenExpiration,
+							appToken:
+								refreshTokenRequest.appToken ||
+								signInResponseRef.current!.appToken,
+						};
+
+						console.log("💾 Actualizando estado y cookie", {
+							newToken: `${refreshTokenRequest.token.substring(0, 20)}...`,
+							newRefreshToken: `${refreshTokenRequest.refreshToken.substring(0, 20)}...`,
+							expiresAt: updatedResponse.refreshTokenExpiration,
+						});
+
+						// Actualizar ref primero para que esté disponible inmediatamente
+						signInResponseRef.current = updatedResponse;
+						// Luego actualizar estado y cookie
+						setSignInResponse(updatedResponse);
+						setSessionCookie(SESSION_NAME, updatedResponse);
+
+						// Actualizar el header de la petición original con el nuevo token
+						originalRequest.headers.Authorization = `Bearer ${refreshTokenRequest.token}`;
+
+						console.log(
+							"🔁 Reintentando petición original a:",
+							originalRequest.url
+						);
+
+						// IMPORTANTE: Reintentar la petición original con el nuevo token
+						// Esto debe retornar la promesa directamente
+						return axiosInstance(originalRequest);
+					} catch (refreshError) {
+						console.error("💥 Token refresh failed:", refreshError);
+						setSignInResponse(null);
+						removeSessionCookie(SESSION_NAME);
+						return Promise.reject(refreshError);
 					}
 				}
 
+				console.log("⚠️ Error no manejado, rechazando");
 				return Promise.reject(error);
 			}
 		);
 
 		return () => axiosInstance.interceptors.response.eject(refreshInterceptor);
-	}, [signInResponse?.refreshToken]);
+	}, []); // Sin dependencias - usa el ref
 
 	const logout = useCallback(async () => {
 		try {

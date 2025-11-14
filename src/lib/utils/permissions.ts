@@ -12,23 +12,47 @@ export const hasModule = (moduleName: string, user: User) => {
 	);
 };
 
-export const hasPermission = (permissionName: string, user: User) => {
-	if (!user || !permissionName) return false;
+export const hasPermission = (
+	moduleBase: string,
+	permissionName: string,
+	user: User
+) => {
+	if (!user || !permissionName || !moduleBase) return false;
 	return user.role.permissions.some(
 		(permission) =>
-			permission.action.toLowerCase() === permissionName.toLowerCase()
+			permission.action.toLowerCase() === permissionName.toLowerCase() &&
+			permission.module.toLowerCase() === moduleBase.toLowerCase()
 	);
 };
 
 export const hasMultiplePermissions = (
+	moduleBase: string,
 	permissionNames: string[],
 	user: User
 ) => {
-	if (!user || !permissionNames || permissionNames.length === 0) return false;
+	if (!user || !permissionNames || permissionNames.length === 0 || !moduleBase)
+		return false;
 	return permissionNames.every((permissionName) =>
 		user.role.permissions.some(
 			(permission) =>
-				permission.action.toLowerCase() === permissionName.toLowerCase()
+				permission.action.toLowerCase() === permissionName.toLowerCase() &&
+				permission.module.toLowerCase() === moduleBase.toLowerCase()
+		)
+	);
+};
+
+export const hasAnyMultiplePermissions = (
+	moduleBase: string,
+	permissionNames: string[],
+	user: User
+) => {
+	if (!user || !permissionNames || permissionNames.length === 0 || !moduleBase)
+		return false;
+	return permissionNames.some((permissionName) =>
+		user.role.permissions.some(
+			(permission) =>
+				permission.action.toLowerCase() === permissionName.toLowerCase() &&
+				permission.module.toLowerCase() === moduleBase.toLowerCase()
 		)
 	);
 };

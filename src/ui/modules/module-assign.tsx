@@ -54,9 +54,15 @@ export function ModuleAssign({
 		return moduleByRole?.modules?.map((module) => module.id) || [];
 	}, [moduleByRole]);
 
+	const moduleCache = queryClient.getQueryData<GeneralResponse<Module[]>>([
+		"modules",
+	]);
+
 	const { data: modules } = useQuery({
 		queryKey: ["modules"],
 		queryFn: async () => await modulesServices.getAllModules(),
+		initialData: moduleCache,
+		enabled: !moduleCache,
 		select: (data) => data.payload,
 	});
 
@@ -70,6 +76,7 @@ export function ModuleAssign({
 			toast.success("Módulos asignados correctamente al rol.");
 			queryClient.invalidateQueries({ queryKey: ["role-by-id", role.id] });
 			queryClient.invalidateQueries({ queryKey: ["roles"] });
+			queryClient.invalidateQueries({ queryKey: ["get-me"] });
 			onOpenChange(false);
 		},
 		onError: (error) => {
