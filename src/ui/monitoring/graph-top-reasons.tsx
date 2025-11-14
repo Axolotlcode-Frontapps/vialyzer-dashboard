@@ -35,10 +35,17 @@ const config = {
 	},
 } satisfies ChartConfig;
 
+const today = new Date();
+const sevenDaysAgo = new Date();
+sevenDaysAgo.setDate(today.getDate() - 7);
+
+const startDate = sevenDaysAgo.toISOString().split("T")[0];
+const endDate = today.toISOString().split("T")[0];
+
 export function GraphTopReasons() {
 	const { data, isLoading, isRefetching, isFetching, isPending } = useQuery({
-		queryKey: ["monitoring-top-reasons"],
-		queryFn: () => agentsService.getTopReasons(),
+		queryKey: ["monitoring-top-reasons", startDate, endDate],
+		queryFn: () => agentsService.getTopReasons(startDate, endDate),
 	});
 
 	const loading = useMemo(
@@ -47,7 +54,9 @@ export function GraphTopReasons() {
 	);
 
 	const chartData = useMemo(() => {
-		return (data ?? []).map((item) => ({
+		const payload = data ? (Array.isArray(data) ? data : [data]) : [];
+
+		return payload.map((item) => ({
 			reason: item.reason,
 			amount: item.total,
 		}));
@@ -86,7 +95,6 @@ export function GraphTopReasons() {
 							tickLine={false}
 							tickMargin={10}
 							axisLine={false}
-							hide
 						/>
 						<XAxis dataKey="amount" type="number" hide />
 						<ChartTooltip

@@ -16,10 +16,17 @@ const config = {
 	motorcycle: chartConfig.motorcycle,
 };
 
+const today = new Date();
+const sevenDaysAgo = new Date();
+sevenDaysAgo.setDate(today.getDate() - 7);
+
+const startDate = sevenDaysAgo.toISOString().split("T")[0];
+const endDate = today.toISOString().split("T")[0];
+
 export function GraphVolumeHour() {
 	const { data } = useQuery({
-		queryKey: ["monitoring-volume-hour"],
-		queryFn: () => agentsService.getVolumeHour(),
+		queryKey: ["monitoring-volume-hour", startDate, endDate],
+		queryFn: () => agentsService.getVolumeHour(startDate, endDate),
 	});
 
 	const chartData = useMemo(() => data ?? [], [data]);

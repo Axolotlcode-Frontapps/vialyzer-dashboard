@@ -60,7 +60,10 @@ export function Notifications() {
 				<div className="w-full flex flex-col h-[500px] gap-2">
 					{notifications.length > 0 ? (
 						notifications.map((notification) => (
-							<Notification key={notification.id} {...notification} />
+							<Notification
+								key={`${notification.id}-${notification.ticket_id}`}
+								{...notification}
+							/>
 						))
 					) : (
 						<p>No hay notificaciones disponibles.</p>

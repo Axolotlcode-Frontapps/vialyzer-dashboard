@@ -29,10 +29,17 @@ const chartConfig = {
 	},
 } satisfies ChartConfig;
 
+const today = new Date();
+const sevenDaysAgo = new Date();
+sevenDaysAgo.setDate(today.getDate() - 7);
+
+const startDate = sevenDaysAgo.toISOString().split("T")[0];
+const endDate = today.toISOString().split("T")[0];
+
 export function GraphVehicleAlert() {
 	const { data, isLoading, error } = useQuery({
-		queryKey: ["monitoring-vehicle-alerts"],
-		queryFn: () => agentsService.getVehicleAlert(),
+		queryKey: ["monitoring-vehicle-alerts", startDate, endDate],
+		queryFn: () => agentsService.getVehicleAlert(startDate, endDate),
 	});
 
 	const chartData = useMemo(() => {
@@ -57,7 +64,6 @@ export function GraphVehicleAlert() {
 			trafficLight: "Semáforo",
 			combi: "Combi",
 		};
-
 		return data?.map((item) => ({
 			vehicle: translations[item.name] || item.name,
 			percentage: item.porcentaje,

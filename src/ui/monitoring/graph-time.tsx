@@ -34,6 +34,13 @@ const config = {
 	},
 } satisfies ChartConfig;
 
+const today = new Date();
+const sevenDaysAgo = new Date();
+sevenDaysAgo.setDate(today.getDate() - 7);
+
+const startDate = sevenDaysAgo.toISOString().split("T")[0];
+const endDate = today.toISOString().split("T")[0];
+
 const media: ContentType = ({ x, y, width, height }) => {
 	const radius = 8;
 	return (
@@ -50,8 +57,8 @@ const media: ContentType = ({ x, y, width, height }) => {
 
 export function GraphTime() {
 	const { data } = useQuery({
-		queryKey: ["monitoring-time-permanence"],
-		queryFn: () => agentsService.getTime(),
+		queryKey: ["monitoring-time-permanence", startDate, endDate],
+		queryFn: () => agentsService.getTime(startDate, endDate),
 	});
 
 	const chartData = useMemo(() => {
