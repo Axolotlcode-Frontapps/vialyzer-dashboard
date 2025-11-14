@@ -17,7 +17,7 @@ export const Route = createFileRoute("/auth/forgot-password")({
 function ForgotPassword() {
 	return (
 		<Card className="w-full max-w-[500px] dark:bg-[#05225E]/80 rounded-xl shadow-2xl p-6 md:p-10 relative text-card-foreground flex flex-col gap-6 border">
-			<CardHeader className="!px-0">
+			<CardHeader className="px-0">
 				<a
 					href="/auth"
 					className="cursor-pointer hover:scale-110 transition-all duration-300 ease-in-out mx-auto mb-6"

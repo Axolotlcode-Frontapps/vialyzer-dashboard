@@ -1,45 +1,38 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useAppForm } from "@/contexts/form";
 
 import type { ForgotPasswordValues } from "@/lib/schemas/auth";
 
 import { authSchemas } from "@/lib/schemas/auth";
 import { authServices } from "@/lib/services/auth";
 import { Button } from "@/ui/shared/button";
+import { Field, FieldError, FieldLabel } from "../shared/field";
+import { Input } from "../shared/input";
+import { Spinner } from "../shared/spinner";
 
 export function ForgotPasswordForm() {
 	const navigate = useNavigate();
 
-	const form = useAppForm({
+	const form = useForm({
 		defaultValues: {
-			username: "",
+			email: "",
 		},
 		validators: {
-			onMount: ({ formApi }) => {
-				formApi.state.canSubmit = false;
-				return authSchemas.forgotPassword;
-			},
+			onMount: authSchemas.forgotPassword,
 			onChange: authSchemas.forgotPassword,
-			onSubmitAsync: async ({ formApi }) => {
-				formApi.state.isSubmitting = true;
-			},
 		},
 		onSubmit: ({ value }) => forgotPasswordMutation.mutate(value),
 	});
 
 	const forgotPasswordMutation = useMutation({
 		mutationFn: async (values: ForgotPasswordValues) => {
-			const response = await authServices.forgotPassword(values);
-
-			return response.payload as {
-				idUser: string;
-				token: string;
-			};
+			form.state.isSubmitting = true;
+			return await authServices.forgotPassword(values);
 		},
-		onSuccess: ({ idUser, token }) => {
+		onSuccess: ({ payload }) => {
 			form.reset();
 			toast.success(`¡Se ha enviado un correo electrónico de recuperación!`, {
 				position: "bottom-right",
@@ -49,8 +42,8 @@ export function ForgotPasswordForm() {
 			navigate({
 				to: "/auth/verify-code",
 				search: {
-					userId: idUser,
-					token,
+					userId: payload?.idUser,
+					token: payload?.token,
 				},
 			});
 		},
@@ -83,24 +76,39 @@ export function ForgotPasswordForm() {
 			}}
 			className="flex flex-col gap-4"
 		>
-			<form.AppField
-				name="username"
-				children={(field) => (
-					<field.TextField
-						label="Correo electrónico o número de usuario"
-						placeholder="Ingresa tu correo electrónico o número de usuario"
-					/>
-				)}
+			<form.Field
+				name="email"
+				children={(field) => {
+					const isInvalid =
+						field.state.meta.isTouched && !field.state.meta.isValid;
+					return (
+						<Field data-invalid={isInvalid}>
+							<FieldLabel htmlFor={field.name}>
+								Correo electrónico o numero de usuario
+							</FieldLabel>
+							<Input
+								id={field.name}
+								value={field.state.value}
+								onBlur={field.handleBlur}
+								onChange={(e) => field.handleChange(e.target.value)}
+								placeholder="Ingresa tu correo electrónico o número de usuario"
+								autoComplete="off"
+							/>
+							{isInvalid && <FieldError errors={field.state.meta.errors} />}
+						</Field>
+					);
+				}}
 			/>
-
-			<form.AppForm>
-				<form.SubmitButton
-					label="Recuperar contraseña"
-					labelLoading="Enviando..."
-					className="w-full text-base h-11.5"
-					size="lg"
-				/>
-			</form.AppForm>
+			<form.Subscribe
+				selector={(state) => [state.canSubmit, state.isSubmitting]}
+			>
+				{([canSubmit, isSubmitting]) => (
+					<Button type="submit" disabled={!canSubmit}>
+						{isSubmitting ? <Spinner /> : null}
+						{isSubmitting ? "Enviando..." : "Enviar correo de recuperación"}
+					</Button>
+				)}
+			</form.Subscribe>
 
 			<Button
 				variant="link"

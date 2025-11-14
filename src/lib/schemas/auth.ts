@@ -23,7 +23,7 @@ class AuthSchemas {
 	});
 
 	forgotPassword = z.object({
-		username: z.email("El correo electrónico o número de usuario no es válido"),
+		email: z.email("El correo electrónico o número de usuario no es válido"),
 	});
 
 	verifyQueries = z.object({
