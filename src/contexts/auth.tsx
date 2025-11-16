@@ -3,7 +3,6 @@ import {
 	useCallback,
 	useContext,
 	useLayoutEffect,
-	useRef,
 	useState,
 } from "react";
 
@@ -33,17 +32,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		getSessionCookie(SESSION_NAME)
 	);
 
-	// Usar ref para tener siempre la última versión sin recrear el interceptor
-	const signInResponseRef = useRef(signInResponse);
-
 	const isAuthenticated = !!signInResponse;
 
-	// Mantener el ref actualizado
-	useLayoutEffect(() => {
-		signInResponseRef.current = signInResponse;
-	}, [signInResponse]);
-
-	// Interceptor para manejar errores y refrescar token
 	useLayoutEffect(() => {
 		const refreshInterceptor = axiosInstance.interceptors.response.use(
 			(response) => response,
@@ -70,7 +60,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 					status: error.response?.status,
 				});
 
-				// Error 401: sesión inválida, hacer logout
 				if (error.response?.status === 401) {
 					console.log("🚪 Error 401 - Logout");
 					setSignInResponse(null);
@@ -78,13 +67,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 					return Promise.reject(error);
 				}
 
-				// Error 403: token expirado, intentar refrescar
 				if (error.response?.status === 403 && !originalRequest._retry) {
 					console.log("🔄 Error 403 - Intentando refrescar token");
 					originalRequest._retry = true;
 
-					const currentRefreshToken = signInResponseRef.current?.refreshToken;
-					console.log("🔑 Refreshing token con:", currentRefreshToken);
+					const currentRefreshToken = signInResponse?.refreshToken;
 
 					if (!currentRefreshToken) {
 						console.error("❌ No refresh token available");
@@ -94,60 +81,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 					}
 
 					try {
-						// Obtener nuevo token usando el refreshToken
-						const response =
-							await authServices.refreshToken(currentRefreshToken);
-						const refreshTokenRequest = response.payload;
+						const refreshReponse = (
+							await authServices.refreshToken(currentRefreshToken)
+						).payload;
 
 						console.log("✅ Token refreshed:", {
-							hasToken: !!refreshTokenRequest?.token,
-							hasRefreshToken: !!refreshTokenRequest?.refreshToken,
-							hasPayload: !!response.payload,
+							hasToken: !!refreshReponse?.token,
+							hasRefreshToken: !!refreshReponse?.refreshToken,
+							hasPayload: !!refreshReponse,
 						});
 
-						if (
-							!refreshTokenRequest?.token ||
-							!refreshTokenRequest?.refreshToken
-						) {
+						if (!refreshReponse?.token || !refreshReponse?.refreshToken) {
 							throw new Error("Invalid refresh token response");
 						}
 
-						// Actualizar el estado y la cookie con los nuevos tokens
 						const updatedResponse: SignInResponse = {
-							...signInResponseRef.current!,
-							token: refreshTokenRequest.token,
-							refreshToken: refreshTokenRequest.refreshToken,
-							// Mantener todos los demás campos del SignInResponse original
+							...signInResponse!,
+							token: refreshReponse.token,
+							refreshToken: refreshReponse.refreshToken,
 							refreshTokenExpiration:
-								refreshTokenRequest.refreshTokenExpiration ||
-								signInResponseRef.current!.refreshTokenExpiration,
-							appToken:
-								refreshTokenRequest.appToken ||
-								signInResponseRef.current!.appToken,
+								refreshReponse.refreshTokenExpiration ||
+								signInResponse!.refreshTokenExpiration,
 						};
 
 						console.log("💾 Actualizando estado y cookie", {
-							newToken: `${refreshTokenRequest.token.substring(0, 20)}...`,
-							newRefreshToken: `${refreshTokenRequest.refreshToken.substring(0, 20)}...`,
+							newToken: refreshReponse.token,
+							newRefreshToken: refreshReponse.refreshToken,
 							expiresAt: updatedResponse.refreshTokenExpiration,
 						});
 
-						// Actualizar ref primero para que esté disponible inmediatamente
-						signInResponseRef.current = updatedResponse;
-						// Luego actualizar estado y cookie
 						setSignInResponse(updatedResponse);
 						setSessionCookie(SESSION_NAME, updatedResponse);
 
-						// Actualizar el header de la petición original con el nuevo token
-						originalRequest.headers.Authorization = `Bearer ${refreshTokenRequest.token}`;
+						originalRequest.headers.Authorization = `Bearer ${refreshReponse.token}`;
 
 						console.log(
 							"🔁 Reintentando petición original a:",
 							originalRequest.url
 						);
 
-						// IMPORTANTE: Reintentar la petición original con el nuevo token
-						// Esto debe retornar la promesa directamente
 						return axiosInstance(originalRequest);
 					} catch (refreshError) {
 						console.error("💥 Token refresh failed:", refreshError);
@@ -163,7 +135,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		);
 
 		return () => axiosInstance.interceptors.response.eject(refreshInterceptor);
-	}, []); // Sin dependencias - usa el ref
+	}, [signInResponse]);
 
 	const logout = useCallback(async () => {
 		try {
