@@ -23,3 +23,11 @@ export const Action = {
 } as const;
 
 export type Action = (typeof Action)[keyof typeof Action];
+
+export const ROLES_NAMES = {
+	ADMIN: "Admin",
+	ANALISTA: "Analista",
+	AGENT: "Agent",
+};
+
+export type ROLES_NAMES = (typeof ROLES_NAMES)[keyof typeof ROLES_NAMES];

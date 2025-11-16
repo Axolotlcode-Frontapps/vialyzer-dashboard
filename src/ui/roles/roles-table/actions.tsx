@@ -1,7 +1,7 @@
-import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { CirclePlus, MoreHorizontal, Pencil, Trash } from "lucide-react";
 
+import { ModuleAssign } from "@/ui/modules/module-assign";
 import { Button } from "@/ui/shared/button";
 import {
 	DropdownMenu,
@@ -9,10 +9,12 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/ui/shared/dropdown-menu";
+import { HasPermission } from "@/ui/shared/permissions/has-permission";
 import { RoleDelete } from "../role-delete";
 import { RoleUpdate } from "../role-update";
 
 export function RoleTableActions({ role }: { role: Role }) {
+	const [openAssign, setOpenAssign] = useState(false);
 	const [openUpdate, setOpenUpdate] = useState(false);
 	const [openDelete, setOpenDelete] = useState(false);
 
@@ -26,57 +28,51 @@ export function RoleTableActions({ role }: { role: Role }) {
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end">
-					<DropdownMenuItem asChild>
-						<Link
-							to={`/settings/roles/$roleId`}
-							params={{ roleId: role.id }}
-							className="capitalize hover:bg-accent transition-colors p-2 rounded-md block"
-						>
+					<HasPermission moduleBase="roles" permissionName="associate-modules">
+						<DropdownMenuItem onClick={() => setOpenAssign(true)}>
 							<CirclePlus />
-							Asignar permisos
-						</Link>
-					</DropdownMenuItem>
-					<DropdownMenuItem onClick={() => setOpenUpdate(true)}>
-						<Pencil />
-						Editar
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						variant="destructive"
-						onClick={() => setOpenDelete(true)}
-					>
-						<Trash />
-						Eliminar
-					</DropdownMenuItem>
+							Editar módulos
+						</DropdownMenuItem>
+					</HasPermission>
+					<HasPermission moduleBase="roles" permissionName="update">
+						<DropdownMenuItem onClick={() => setOpenUpdate(true)}>
+							<Pencil />
+							Editar
+						</DropdownMenuItem>
+					</HasPermission>
+					<HasPermission moduleBase="roles" permissionName="delete">
+						<DropdownMenuItem
+							variant="destructive"
+							onClick={() => setOpenDelete(true)}
+						>
+							<Trash />
+							Eliminar
+						</DropdownMenuItem>
+					</HasPermission>
 				</DropdownMenuContent>
 			</DropdownMenu>
 
-			{/* <div className="flex items-center justify-end gap-2">
-				<Button size="icon" onClick={() => setOpenRoleUpdate(true)}>
-					<Pencil />
-				</Button>
-
-				<Button
-					size="icon"
-					variant="destructive"
-					onClick={() => setOpenDelete(true)}
-				>
-					<Trash />
-				</Button>
-
-				<Link
-					to="/settings/roles/$roleId"
-					params={{ roleId: role.id }}
-					className={buttonVariants({
-						variant: "secondary",
-					})}
-				>
-					<KeyRound />
-					Editar permisos
-				</Link>
-			</div> */}
-
-			<RoleUpdate role={role} open={openUpdate} onOpenChange={setOpenUpdate} />
-			<RoleDelete role={role} open={openDelete} onOpenChange={setOpenDelete} />
+			<HasPermission moduleBase="roles" permissionName="associate-modules">
+				<ModuleAssign
+					role={role}
+					open={openAssign}
+					onOpenChange={setOpenAssign}
+				/>
+			</HasPermission>
+			<HasPermission moduleBase="roles" permissionName="update">
+				<RoleUpdate
+					role={role}
+					open={openUpdate}
+					onOpenChange={setOpenUpdate}
+				/>
+			</HasPermission>
+			<HasPermission moduleBase="roles" permissionName="delete">
+				<RoleDelete
+					role={role}
+					open={openDelete}
+					onOpenChange={setOpenDelete}
+				/>
+			</HasPermission>
 		</>
 	);
 }

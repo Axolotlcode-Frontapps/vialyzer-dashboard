@@ -8,6 +8,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/ui/shared/dropdown-menu";
+import { HasPermission } from "@/ui/shared/permissions/has-permission";
 import { UserDelete } from "../user-delete";
 import { UserUpdate } from "../user-update";
 
@@ -25,23 +26,39 @@ export function UserTableActions({ user }: { user: User }) {
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end">
-					<DropdownMenuItem onClick={() => setOpenUpdate(true)}>
-						<Pencil className="mr-2 h-4 w-4" />
-						Editar
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						variant="destructive"
-						onClick={() => setOpenDelete(true)}
-					>
-						<Trash className="mr-2 h-4 w-4" />
-						Eliminar
-					</DropdownMenuItem>
+					<HasPermission permissionName="update-user" moduleBase="users">
+						<DropdownMenuItem onClick={() => setOpenUpdate(true)}>
+							<Pencil className="mr-2 h-4 w-4" />
+							Editar
+						</DropdownMenuItem>
+					</HasPermission>
+					<HasPermission permissionName="delete" moduleBase="users">
+						<DropdownMenuItem
+							variant="destructive"
+							onClick={() => setOpenDelete(true)}
+						>
+							<Trash className="mr-2 h-4 w-4" />
+							Eliminar
+						</DropdownMenuItem>
+					</HasPermission>
 				</DropdownMenuContent>
 			</DropdownMenu>
 
-			<UserUpdate open={openUpdate} onOpenChange={setOpenUpdate} user={user} />
+			<HasPermission permissionName="update-user" moduleBase="users">
+				<UserUpdate
+					open={openUpdate}
+					onOpenChange={setOpenUpdate}
+					user={user}
+				/>
+			</HasPermission>
 
-			<UserDelete open={openDelete} onOpenChange={setOpenDelete} user={user} />
+			<HasPermission permissionName="delete" moduleBase="users">
+				<UserDelete
+					open={openDelete}
+					onOpenChange={setOpenDelete}
+					user={user}
+				/>
+			</HasPermission>
 		</>
 	);
 }

@@ -1,12 +1,12 @@
 import type { AxiosRequestConfig } from "axios";
 
-import axios from "@/lib/utils/axios";
+import axiosInstance from "@/lib/utils/axios";
 
 export const fetcher = async <T>(
 	url: string,
 	options?: AxiosRequestConfig
 ): Promise<T> => {
-	const response = await axios({
+	const response = await axiosInstance({
 		url,
 		...options,
 	});

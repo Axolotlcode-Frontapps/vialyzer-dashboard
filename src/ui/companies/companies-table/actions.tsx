@@ -10,6 +10,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/ui/shared/dropdown-menu";
+import { HasPermission } from "@/ui/shared/permissions/has-permission";
 
 export function CompanyTableActions({ company }: { company: Company }) {
 	const [openUpdate, setOpenUpdate] = useState(false);
@@ -25,30 +26,38 @@ export function CompanyTableActions({ company }: { company: Company }) {
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end">
-					<DropdownMenuItem onClick={() => setOpenUpdate(true)}>
-						<Pencil className="mr-2 h-4 w-4" />
-						Editar
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						variant="destructive"
-						onClick={() => setOpenDelete(true)}
-					>
-						<Trash className="mr-2 h-4 w-4" />
-						Eliminar
-					</DropdownMenuItem>
+					<HasPermission moduleBase="companies" permissionName="update">
+						<DropdownMenuItem onClick={() => setOpenUpdate(true)}>
+							<Pencil className="mr-2 h-4 w-4" />
+							Editar
+						</DropdownMenuItem>
+					</HasPermission>
+					<HasPermission moduleBase="companies" permissionName="delete">
+						<DropdownMenuItem
+							variant="destructive"
+							onClick={() => setOpenDelete(true)}
+						>
+							<Trash className="mr-2 h-4 w-4" />
+							Eliminar
+						</DropdownMenuItem>
+					</HasPermission>
 				</DropdownMenuContent>
 			</DropdownMenu>
 
-			<CompanyUpdate
-				open={openUpdate}
-				onOpenChange={setOpenUpdate}
-				company={company}
-			/>
-			<CompanyDelete
-				open={openDelete}
-				onOpenChange={setOpenDelete}
-				company={company}
-			/>
+			<HasPermission moduleBase="companies" permissionName="update">
+				<CompanyUpdate
+					open={openUpdate}
+					onOpenChange={setOpenUpdate}
+					company={company}
+				/>
+			</HasPermission>
+			<HasPermission moduleBase="companies" permissionName="delete">
+				<CompanyDelete
+					open={openDelete}
+					onOpenChange={setOpenDelete}
+					company={company}
+				/>
+			</HasPermission>
 		</>
 	);
 }
