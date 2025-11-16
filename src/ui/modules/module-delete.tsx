@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -17,24 +18,29 @@ import { Spinner } from "../shared/spinner";
 export function ModuleDelete({
 	open,
 	onOpenChange,
-	moduleId,
+	module,
 }: {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	moduleId: string;
+	module: Module;
 }) {
 	const queryClient = useQueryClient();
+	const isDeleted = useMemo(() => module.active === true, [module.active]);
 
 	const onDeletedMutation = useMutation({
-		mutationFn: async () => await modulesServices.deleteModule(moduleId),
+		mutationFn: async () => await modulesServices.deleteModule(module.id),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["modules"] });
 			onOpenChange(false);
-			toast.success("Módulo eliminado correctamente.");
+			toast.success(
+				`Módulo ${isDeleted ? "desactivado" : "eliminado"} correctamente.`
+			);
 		},
 		onError: (error) => {
 			console.log(error);
-			toast.error("Error al eliminar el módulo.");
+			toast.error(
+				`Error al ${isDeleted ? "desactivar" : "eliminar"} el módulo.`
+			);
 		},
 	});
 
@@ -42,10 +48,12 @@ export function ModuleDelete({
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Eliminar módulo</DialogTitle>
+					<DialogTitle>
+						{isDeleted ? "Desactivar" : "Eliminar"} módulo: {module.name}
+					</DialogTitle>
 					<DialogDescription>
-						Esto eliminará permanentemente tu cuenta y eliminará tus datos de
-						nuestros servidores. Esta acción no se puede deshacer.
+						Esto {isDeleted ? "desactivará" : "eliminará"} permanentemente el
+						módulo y sus permisos. Esta acción no se puede deshacer.
 					</DialogDescription>
 				</DialogHeader>
 				<DialogFooter>
@@ -59,10 +67,12 @@ export function ModuleDelete({
 						{onDeletedMutation.isPending ? (
 							<>
 								<Spinner />
-								<span>Eliminando módulo...</span>
+								<span>
+									{isDeleted ? "Desactivando" : "Eliminando"} módulo...
+								</span>
 							</>
 						) : (
-							<span>Eliminar módulo</span>
+							<span>{isDeleted ? "Desactivar" : "Eliminar"} módulo</span>
 						)}
 					</Button>
 				</DialogFooter>

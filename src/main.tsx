@@ -1,11 +1,9 @@
 import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { StrictMode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ReactDOM from "react-dom/client";
 
 import { AuthProvider, useAuth } from "./contexts/auth";
-import { PermissionsProvider, usePermissions } from "./contexts/permissions";
-import { TokenRefreshProvider } from "./contexts/token-refresh";
+import { PermissionsProvider } from "./contexts/permissions";
 import { routeTree } from "./routeTree.gen";
 
 const queryClient = new QueryClient();
@@ -31,11 +29,12 @@ declare module "@tanstack/react-router" {
 
 function App() {
 	const auth = useAuth();
-	const permissions = usePermissions();
 
 	return (
 		<QueryClientProvider client={queryClient}>
-			<RouterProvider router={router} context={{ auth, permissions }} />
+			<PermissionsProvider>
+				<RouterProvider router={router} context={{ auth }} />
+			</PermissionsProvider>
 		</QueryClientProvider>
 	);
 }
@@ -44,14 +43,8 @@ const rootElement = document.getElementById("app");
 if (rootElement && !rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
 	root.render(
-		<StrictMode>
-			<AuthProvider>
-				<TokenRefreshProvider>
-					<PermissionsProvider>
-						<App />
-					</PermissionsProvider>
-				</TokenRefreshProvider>
-			</AuthProvider>
-		</StrictMode>
+		<AuthProvider>
+			<App />
+		</AuthProvider>
 	);
 }

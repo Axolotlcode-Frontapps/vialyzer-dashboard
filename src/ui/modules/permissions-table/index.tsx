@@ -10,12 +10,19 @@ import { DataTable } from "@/ui/shared/data-table";
 import { DataTableHeader } from "@/ui/shared/data-table/table-header";
 import { useColumns } from "./columns";
 
-export function PermissionsTable() {
+export function PermissionsTable({
+	moduleData,
+	isLoadingModule,
+}: {
+	moduleData: Module;
+	isLoadingModule: boolean;
+}) {
 	const queryClient = useQueryClient();
 	const { columns, selectedPermissionsIds, setSelectedPermissionsIds } =
-		useColumns();
-	const { _splat: moduleId } = useParams({
-		from: "/_dashboard/settings/roles/$roleId/_roleLayout/$",
+		useColumns(moduleData);
+
+	const { moduleId } = useParams({
+		from: "/_dashboard/settings/modules/$moduleId",
 	});
 
 	const { data: permissions = [], isLoading: isLoadingPermissions } = useQuery({
@@ -24,19 +31,12 @@ export function PermissionsTable() {
 		select: (data) => data.payload,
 	});
 
-	const { data: moduleData, isLoading: isLoadingModule } = useQuery({
-		queryKey: ["module-by-id", moduleId],
-		enabled: !!moduleId,
-		queryFn: async () => await modulesServices.getModuleById(moduleId!),
-		select: (data) => data.payload,
-	});
-
 	const permissionswithAssigned = useMemo(() => {
 		if (!moduleData) return permissions;
 
 		return permissions.map((permission) => ({
 			...permission,
-			assigned: moduleData.permissions.some(
+			assigned: moduleData?.permissions.some(
 				(modulePermission) => modulePermission.id === permission.id
 			),
 		}));
