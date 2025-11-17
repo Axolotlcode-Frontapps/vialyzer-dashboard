@@ -1,15 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { toast } from "sonner";
 
+import type { AxiosDefaults } from "axios";
 import type { VerifyCodeValues } from "@/lib/schemas/auth";
 
 import { authSchemas } from "@/lib/schemas/auth";
 import { authServices } from "@/lib/services/auth";
-import { Button, buttonVariants } from "@/ui/shared/button";
+import { Button } from "@/ui/shared/button";
 import {
 	Card,
 	CardContent,
@@ -29,42 +29,29 @@ import { Spinner } from "@/ui/shared/spinner";
 
 export const Route = createFileRoute("/auth/verify-code")({
 	component: VerifyCode,
-	validateSearch: zodValidator(authSchemas.verifyQueries),
+	validateSearch: zodValidator(authSchemas.verifyToken),
+	beforeLoad: async ({ search }) => {
+		const { token, userId } = search;
+
+		if (!token || !userId) {
+			throw redirect({
+				to: "/auth",
+			});
+		}
+	},
 });
 
 function VerifyCode() {
 	const navigate = Route.useNavigate();
-	const search = Route.useSearch();
-
-	const [persistedParams, setPersistedParams] = useState({
-		userId: search.userId || null,
-		token: search.token || null,
-	});
-
-	useEffect(() => {
-		if (search.userId && search.token) {
-			setPersistedParams((prev) => ({
-				userId: search.userId || prev.userId,
-				token: search.token || prev.token,
-			}));
-
-			navigate({
-				search: undefined,
-			});
-		}
-	}, [search, navigate]);
+	const { token, userId } = Route.useSearch();
 
 	const mutation = useMutation({
 		mutationFn: async (values: VerifyCodeValues) => {
-			const response = await authServices.verifyCode(
-				values,
-				persistedParams.userId!,
-				persistedParams.token!
-			);
-
-			return { ...response };
+			form.state.isSubmitting = true;
+			form.state.canSubmit = false;
+			return await authServices.verifyCode(values, userId!, token!);
 		},
-		onSuccess: ({ id, token }) => {
+		onSuccess: ({ payload }) => {
 			toast.success(`¡Se ha verificado tu código!`, {
 				position: "bottom-right",
 				description: "Ahora puedes actualizar tu contraseña.",
@@ -73,8 +60,8 @@ function VerifyCode() {
 			navigate({
 				to: "/auth/update-password",
 				search: {
-					userId: id,
-					token,
+					userId: payload?.id,
+					token: payload?.token,
 				},
 			});
 		},
@@ -97,6 +84,24 @@ function VerifyCode() {
 			onChange: authSchemas.verifyCode,
 		},
 		onSubmit: ({ value }) => mutation.mutate(value),
+	});
+
+	const resendCode = useMutation({
+		mutationFn: async () => await authServices.resendCode(token!),
+		onSuccess: () => {
+			toast.success("¡Código reenviado!", {
+				description:
+					"Por favor, revisa tu correo electrónico para el nuevo código de verificación.",
+			});
+		},
+		onError: (error: AxiosDefaults) => {
+			toast.error("Error al reenviar el código", {
+				description:
+					error instanceof Error
+						? error.message
+						: "Por favor, inténtalo de nuevo.",
+			});
+		},
 	});
 
 	return (
@@ -169,15 +174,24 @@ function VerifyCode() {
 						)}
 					</form.Subscribe>
 				</form>
-				<Link
-					to="/auth"
-					className={buttonVariants({
-						variant: "link",
-						className: "w-full cursor-pointer text-muted-foreground mt-4",
-					})}
+				<Button
+					type="button"
+					className="w-full my-4 bg-[#6c6a6a] dark:bg-[#04163d] dark:text-white"
+					onClick={() => resendCode.mutate()}
+					disabled={resendCode.isPending}
 				>
-					Iniciar sesión
-				</Link>
+					{resendCode.isPending ? <Spinner /> : null}
+					{resendCode.isPending ? "Reenviando código..." : "Reenviar código"}
+				</Button>
+				<span className="inline-block w-full text-center text-muted-foreground text-sm mt-4">
+					Ya tienes una cuenta?{" "}
+					<Link
+						to="/auth"
+						className="font-semibold hover:underline underline-offset-4"
+					>
+						Iniciar sesión
+					</Link>
+				</span>
 			</CardContent>
 		</Card>
 	);

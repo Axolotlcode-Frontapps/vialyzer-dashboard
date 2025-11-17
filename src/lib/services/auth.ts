@@ -48,21 +48,29 @@ class AuthServices {
 		});
 	}
 
-	async verifyCode(values: VerifyCodeValues, userId: string, token: string) {
-		const response = await fetcher<
-			GeneralResponse<{ id: string; token: string }>
-		>("/users/validate-code", {
+	async resendCode(token: string) {
+		return await fetcher<GeneralResponse<void>>(`/users/resend-code`, {
 			method: "POST",
-			data: {
-				...values,
-				id: userId,
-			},
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
 		});
+	}
 
-		return response.payload;
+	async verifyCode(values: VerifyCodeValues, userId: string, token: string) {
+		return await fetcher<GeneralResponse<{ id: string; token: string }>>(
+			"/users/validate-code",
+			{
+				method: "POST",
+				data: {
+					...values,
+					id: userId,
+				},
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			}
+		);
 	}
 
 	async updateUser(
@@ -71,7 +79,7 @@ class AuthServices {
 		token: string
 	) {
 		return await fetcher<GeneralResponse<void>>(
-			`/users/update-user?userId=${userId}`,
+			`/users/update-user/${userId}`,
 			{
 				method: "PATCH",
 				data: {
