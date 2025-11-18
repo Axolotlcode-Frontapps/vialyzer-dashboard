@@ -42,9 +42,12 @@ function ForgotPassword() {
 		mutationFn: async (values: ForgotPasswordValues) => {
 			form.state.isSubmitting = true;
 			form.state.canSubmit = false;
-			return await authServices.forgotPassword(values);
+			return {
+				data: await authServices.forgotPassword(values),
+				email: values.email,
+			};
 		},
-		onSuccess: ({ payload }) => {
+		onSuccess: ({ data: { payload }, email }) => {
 			form.reset();
 			toast.success(`¡Se ha enviado un correo electrónico de recuperación!`, {
 				position: "bottom-right",
@@ -54,8 +57,9 @@ function ForgotPassword() {
 			navigate({
 				to: "/auth/verify-code",
 				search: {
-					token: payload?.token,
+					email: email,
 					userId: payload?.idUser,
+					token: payload?.token,
 				},
 			});
 		},

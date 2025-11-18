@@ -48,9 +48,17 @@ class AuthServices {
 		});
 	}
 
-	async resendCode(token: string) {
-		return await fetcher<GeneralResponse<void>>(`/users/resend-code`, {
+	async resendCode(email: string, token: string) {
+		return await fetcher<
+			GeneralResponse<{
+				token: string;
+				idUser: string;
+			}>
+		>(`/users/resend-code`, {
 			method: "POST",
+			data: {
+				email,
+			},
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},

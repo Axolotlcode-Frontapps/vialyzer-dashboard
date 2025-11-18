@@ -31,9 +31,9 @@ export const Route = createFileRoute("/auth/verify-code")({
 	component: VerifyCode,
 	validateSearch: zodValidator(authSchemas.verifyToken),
 	beforeLoad: async ({ search }) => {
-		const { token, userId } = search;
+		const { token, userId, email } = search;
 
-		if (!token || !userId) {
+		if (!token || !userId || !email) {
 			throw redirect({
 				to: "/auth",
 			});
@@ -43,7 +43,7 @@ export const Route = createFileRoute("/auth/verify-code")({
 
 function VerifyCode() {
 	const navigate = Route.useNavigate();
-	const { token, userId } = Route.useSearch();
+	const { token, userId, email } = Route.useSearch();
 
 	const mutation = useMutation({
 		mutationFn: async (values: VerifyCodeValues) => {
@@ -87,12 +87,23 @@ function VerifyCode() {
 	});
 
 	const resendCode = useMutation({
-		mutationFn: async () => await authServices.resendCode(token!),
-		onSuccess: () => {
+		mutationFn: async () => await authServices.resendCode(email!, token!),
+		onSuccess: ({ payload }) => {
 			toast.success("¡Código reenviado!", {
 				description:
 					"Por favor, revisa tu correo electrónico para el nuevo código de verificación.",
 			});
+
+			if (payload) {
+				navigate({
+					to: "/auth/verify-code",
+					search: {
+						email: email!,
+						userId: payload.idUser,
+						token: payload.token,
+					},
+				});
+			}
 		},
 		onError: (error: AxiosDefaults) => {
 			toast.error("Error al reenviar el código", {

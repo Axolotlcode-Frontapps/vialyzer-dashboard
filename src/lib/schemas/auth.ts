@@ -29,6 +29,7 @@ class AuthSchemas {
 	verifyToken = z.object({
 		userId: z.uuid("El ID de usuario no es válido").optional(),
 		token: z.string().optional(),
+		email: z.string().optional(),
 	});
 
 	verifyCode = z.object({

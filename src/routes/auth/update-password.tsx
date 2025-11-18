@@ -36,6 +36,7 @@ export const Route = createFileRoute("/auth/update-password")({
 });
 
 function UpdatePassword() {
+	const navigate = Route.useNavigate();
 	const { token, userId } = Route.useSearch();
 
 	const form = useForm({
@@ -47,10 +48,7 @@ function UpdatePassword() {
 			onMount: authSchemas.updatePassword,
 			onChange: authSchemas.updatePassword,
 		},
-		onSubmit: ({ value }) => {
-			console.log(value);
-			mutation.mutate(value);
-		},
+		onSubmit: ({ value }) => mutation.mutate(value),
 	});
 
 	const mutation = useMutation({
@@ -64,6 +62,7 @@ function UpdatePassword() {
 			toast.success("¡Contraseña actualizada!", {
 				description: "Ya puedes iniciar sesión con tu nueva contraseña.",
 			});
+			navigate({ to: "/auth" });
 		},
 		onError: (error) => {
 			form.state.canSubmit = true;
