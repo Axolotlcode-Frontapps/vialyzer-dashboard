@@ -4,11 +4,6 @@ import { STATUS_TYPES } from "../utils/statuses";
 import { sharedSchemas } from "./shared";
 
 class Settings {
-	role = z.object({
-		name: z.string().min(1, { error: "El nombre es obligatorio" }),
-		description: z.string().min(1, { error: "La descripción es obligatoria" }),
-	});
-
 	user = z.object({
 		name: z.string().min(1, { error: "El nombre es obligatorio" }),
 		lastname: z.string().min(1, { error: "El apellido es obligatorio" }),
@@ -49,6 +44,5 @@ class Settings {
 
 export const settingsSchemas = new Settings();
 
-export type RoleValues = z.infer<typeof settingsSchemas.role>;
 export type UserValues = z.infer<typeof settingsSchemas.user>;
 export type CompanyValues = z.infer<typeof settingsSchemas.company>;

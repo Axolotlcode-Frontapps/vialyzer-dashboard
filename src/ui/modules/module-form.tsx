@@ -2,87 +2,80 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import type { RoleValues } from "@/lib/schemas/roles";
+import type { ModuleValues } from "@/lib/schemas/modules";
 
-import { rolesSchemas } from "@/lib/schemas/roles";
+import { modulesSchemas } from "@/lib/schemas/modules";
 import { rolesService } from "@/lib/services/roles";
 import { Button } from "@/ui/shared/button";
 import { Field, FieldError, FieldLabel } from "@/ui/shared/field";
 import { Input } from "@/ui/shared/input";
-import { SheetClose, SheetFooter } from "@/ui/shared/sheet";
 import { Spinner } from "@/ui/shared/spinner";
-import { Textarea } from "@/ui/shared/textarea";
+import { SheetClose, SheetFooter } from "../shared/sheet";
 
-interface Props {
-	onSuccess: (open: boolean) => void;
-	update?: boolean;
-	role?: Role;
-}
-
-export function RoleForm({ onSuccess, update, role }: Props) {
+export function ModuleForm({
+	onSuccess,
+	module,
+	isUpdate = false,
+}: {
+	isUpdate?: boolean;
+	onSuccess?: () => void;
+	module?: Module;
+}) {
 	const queryClient = useQueryClient();
 
 	const form = useForm({
 		defaultValues: {
-			name: update && role ? role.name : "",
-			description: update && role ? role.description : "",
+			name: isUpdate ? (module?.name ?? "") : "",
+			description: isUpdate ? (module?.description ?? "") : "",
 		},
 		validators: {
-			onMount: rolesSchemas.role,
-			onChange: rolesSchemas.role,
+			onMount: modulesSchemas.module,
+			onChange: modulesSchemas.module,
 		},
-		onSubmit: ({ value }) => roleMutation.mutate(value),
+		onSubmit: ({ value }) => createModuleMutation.mutate(value),
 	});
 
-	const roleMutation = useMutation({
-		mutationFn: async (values: RoleValues) => {
+	const createModuleMutation = useMutation({
+		mutationFn: async (values: ModuleValues) => {
 			form.state.isSubmitting = true;
+			if (!isUpdate) {
+				return await rolesService.createModule(values);
+			}
 
-			update && role?.id
-				? await rolesService.updateRole(role?.id, values)
-				: await rolesService.createRole(values);
-
-			return values;
+			if (!module?.id) throw new Error("Module ID is required");
+			return await rolesService.updateModule(module.id, values);
 		},
-		onSuccess: ({ name }) => {
+		onSuccess: () => {
 			form.reset();
-			queryClient.invalidateQueries({ queryKey: ["roles"] });
-			toast.success(`Rol creado correctamente`, {
-				description: `Se ha creado el rol "${name}" correctamente.`,
-			});
-			onSuccess(false);
+			toast.success("Módulo actualizado con éxito");
+			queryClient.invalidateQueries({ queryKey: ["modules"] });
+			onSuccess?.();
 		},
-		onError: (error) => {
-			form.state.canSubmit = true;
-			toast.error(`Error al crear el rol`, {
-				description:
-					error instanceof Error
-						? error.message
-						: "Por favor, inténtalo de nuevo.",
-			});
+		onError: () => {
+			toast.error("Error al actualizar el módulo");
 		},
 		onSettled: () => {
 			form.state.isSubmitting = false;
+			form.state.canSubmit = false;
 		},
 	});
 
 	return (
 		<>
 			<form
-				id="role-form"
-				className="px-4 space-y-2"
+				id="module-form"
 				onSubmit={(e) => {
 					e.preventDefault();
 					e.stopPropagation();
 					form.handleSubmit();
 				}}
+				className="px-4 space-y-4"
 			>
 				<form.Field
 					name="name"
 					children={(field) => {
 						const isInvalid =
 							field.state.meta.isTouched && !field.state.meta.isValid;
-
 						return (
 							<Field data-invalid={isInvalid}>
 								<FieldLabel htmlFor={field.name}>Nombre</FieldLabel>
@@ -93,7 +86,7 @@ export function RoleForm({ onSuccess, update, role }: Props) {
 									onBlur={field.handleBlur}
 									onChange={(e) => field.handleChange(e.target.value)}
 									aria-invalid={isInvalid}
-									placeholder="Ejemplo: Administrador"
+									placeholder="Ingrese el nombre del módulo"
 									autoComplete="off"
 								/>
 								{isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -106,18 +99,17 @@ export function RoleForm({ onSuccess, update, role }: Props) {
 					children={(field) => {
 						const isInvalid =
 							field.state.meta.isTouched && !field.state.meta.isValid;
-
 						return (
 							<Field data-invalid={isInvalid}>
 								<FieldLabel htmlFor={field.name}>Descripción</FieldLabel>
-								<Textarea
+								<Input
 									id={field.name}
 									name={field.name}
 									value={field.state.value}
 									onBlur={field.handleBlur}
 									onChange={(e) => field.handleChange(e.target.value)}
 									aria-invalid={isInvalid}
-									placeholder="Ejemplo: Rol con todos los permisos"
+									placeholder="Ingrese la descripción del módulo"
 									autoComplete="off"
 								/>
 								{isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -126,24 +118,20 @@ export function RoleForm({ onSuccess, update, role }: Props) {
 					}}
 				/>
 			</form>
+
 			<SheetFooter>
 				<form.Subscribe
 					selector={(state) => [state.canSubmit, state.isSubmitting]}
 				>
-					{([canSubmit, isSubmitting]) => {
-						return (
-							<Button type="submit" disabled={!canSubmit} form="role-form">
-								{isSubmitting ? <Spinner /> : null}
-								{isSubmitting ? "Confirmando rol" : "Confirmar rol"}
-							</Button>
-						);
-					}}
+					{([canSubmit, isSubmitting]) => (
+						<Button type="submit" disabled={!canSubmit} form="module-form">
+							{isSubmitting ? <Spinner /> : null}
+							{isSubmitting ? "Confirmando módulo" : "Confirmar módulo"}
+						</Button>
+					)}
 				</form.Subscribe>
-
 				<SheetClose asChild>
-					<Button variant="destructive" onClick={() => form.reset()}>
-						Cancelar
-					</Button>
+					<Button variant="outline">Cancelar</Button>
 				</SheetClose>
 			</SheetFooter>
 		</>

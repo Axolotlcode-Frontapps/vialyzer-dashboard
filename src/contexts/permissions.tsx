@@ -1,63 +1,29 @@
-import {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useState,
-} from "react";
+import { createContext, useContext } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import type { ReactNode } from "react";
 
 import { usersService } from "@/lib/services/users";
-import { USER_PERMISSIONS } from "@/lib/utils/contants";
-import {
-	getSessionStorage,
-	setSessionStorage,
-} from "@/lib/utils/session-storage";
 import { useAuth } from "./auth";
 
 export interface PermissionsContext {
 	user: User | null;
-	updateUser: (user: User) => void;
-	clearPermissions: () => void;
 }
 
 const PermissionsContext = createContext<PermissionsContext | null>(null);
 
 export function PermissionsProvider({ children }: { children: ReactNode }) {
 	const { signInResponse } = useAuth();
-	const [userState, setUserState] = useState<User | null>(
-		getSessionStorage(USER_PERMISSIONS)
-	);
 
-	const updateUser = useCallback((user: User) => {
-		setSessionStorage(USER_PERMISSIONS, user);
-		setUserState(user);
-	}, []);
-
-	function clearPermissions() {
-		setSessionStorage(USER_PERMISSIONS, null);
-		setUserState(null);
-	}
-
-	const setPermissions = useCallback(async () => {
-		const user = await usersService.getMeUser();
-
-		if (user) {
-			updateUser(user.payload!);
-		}
-	}, [updateUser]);
-
-	useEffect(() => {
-		if (!userState && signInResponse?.token) {
-			setPermissions();
-		}
-	}, [userState, signInResponse, setPermissions]);
+	const { data: userState = null } = useQuery({
+		queryKey: ["get-me"],
+		queryFn: async () => await usersService.getMeUser(),
+		enabled: !!signInResponse?.token,
+		select: (data) => data.payload,
+	});
 
 	return (
-		<PermissionsContext.Provider
-			value={{ user: userState, updateUser, clearPermissions }}
-		>
+		<PermissionsContext.Provider value={{ user: userState }}>
 			{children}
 		</PermissionsContext.Provider>
 	);
