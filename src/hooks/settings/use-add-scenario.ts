@@ -1,15 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
-import type { LineElement } from "@/lib/services/settings/add-scenario";
+import type { LineElement } from "@/lib/services/settings";
 
-import {
-	addDatasource,
-	addScenarioLine,
-} from "@/lib/services/settings/add-scenario";
-
-const instance = axios.create();
+import { settings } from "@/lib/services/settings";
 
 interface UseAddScenarioLineReturn {
 	// biome-ignore lint/suspicious/noExplicitAny: Necessary
@@ -19,12 +13,8 @@ interface UseAddScenarioLineReturn {
 }
 
 export function useAddScenarioLine(): UseAddScenarioLineReturn {
-	// const { appToken, api } = useLoaderData<AuthLoaderData>();
-
 	const { mutateAsync, isPending, error } = useMutation({
 		mutationFn: async (lines: LineElement[]) => {
-			// const instance = createAuthInstance(appToken ?? '', api);
-
 			const all = await Promise.allSettled(
 				lines.map(async (element) => {
 					const {
@@ -39,18 +29,18 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 					} = element;
 
 					if (element.type === "DETECTION") {
-						const entry = await addScenarioLine(instance, {
+						const entry = await settings.addScenarioLine({
 							...line,
 							name: `${line.name} - Entrada`,
 							coordinates: detection_entry,
 						});
-						const exit = await addScenarioLine(instance, {
+						const exit = await settings.addScenarioLine({
 							...line,
 							name: `${line.name} - Salida`,
 							coordinates: detection_exit,
 						});
 
-						const source = await addDatasource(instance, {
+						const source = await settings.addDatasource({
 							scenery_id: entry.id,
 							vehicle_id: layer.category,
 							description: layer.description,
@@ -62,12 +52,12 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 					}
 
 					if (element.type === "CONFIGURATION") {
-						const config = await addScenarioLine(instance, {
+						const config = await settings.addScenarioLine({
 							...line,
 							coordinates,
 						});
 
-						const source = await addDatasource(instance, {
+						const source = await settings.addDatasource({
 							scenery_id: config.id,
 							vehicle_id: layer.category,
 							description: layer.description,

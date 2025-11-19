@@ -1,12 +1,9 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 
-import type { SourceLine } from "@/lib/services/settings/get-scenario-lines";
+import type { SourceLine } from "@/lib/services/settings";
 
-import { getScenarioLines } from "@/lib/services/settings/get-scenario-lines";
-
-const instance = axios.create({});
+import { settings } from "@/lib/services/settings";
 
 interface UseGetScenarioLinesReturn {
 	data: SourceLine[];
@@ -26,11 +23,7 @@ export function useGetScenarioLines(): UseGetScenarioLinesReturn {
 		refetch,
 	} = useQuery({
 		queryKey: ["scenario-lines"],
-		queryFn: async (): Promise<SourceLine[]> => {
-			const response = await getScenarioLines(instance);
-
-			return response.payload ?? [];
-		},
+		queryFn: settings.getScenarioLines,
 	});
 
 	const loading = useMemo(

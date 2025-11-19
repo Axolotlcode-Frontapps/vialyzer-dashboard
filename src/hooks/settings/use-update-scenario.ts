@@ -1,15 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 
-import type { LineElement } from "@/lib/services/settings/add-scenario";
-import type { SourceLine } from "@/lib/services/settings/get-scenario-lines";
+import type { LineElement, SourceLine } from "@/lib/services/settings";
 
-import {
-	updateDatasource,
-	updateScenarioLine,
-} from "@/lib/services/settings/update-scenario";
-
-const instance = axios.create({});
+import { settings } from "@/lib/services/settings";
 
 export function useUpdateScenarioLine() {
 	const { mutateAsync, isPending, error } = useMutation({
@@ -38,8 +31,7 @@ export function useUpdateScenarioLine() {
 						throw new Error("Línea de escenario no encontrada en el servidor");
 
 					if (element.type === "DETECTION") {
-						const entry = await updateScenarioLine(
-							instance,
+						const entry = await settings.updateScenarioLine(
 							{
 								...line,
 								name: `${line.name} - Entrada`,
@@ -47,8 +39,7 @@ export function useUpdateScenarioLine() {
 							},
 							server.scenery.id
 						);
-						const exit = await updateScenarioLine(
-							instance,
+						const exit = await settings.updateScenarioLine(
 							{
 								...line,
 								name: `${line.name} - Salida`,
@@ -57,8 +48,7 @@ export function useUpdateScenarioLine() {
 							server.second_scenery!.id
 						);
 
-						const source = await updateDatasource(
-							instance,
+						const source = await settings.updateDatasource(
 							{
 								scenery_id: entry.id,
 								vehicle_id: layer.category,
@@ -73,14 +63,12 @@ export function useUpdateScenarioLine() {
 					}
 
 					if (element.type === "CONFIGURATION") {
-						const config = await updateScenarioLine(
-							instance,
+						const config = await settings.updateScenarioLine(
 							{ ...line, coordinates },
 							server.scenery.id
 						);
 
-						const source = await updateDatasource(
-							instance,
+						const source = await settings.updateDatasource(
 							{
 								scenery_id: config.id,
 								vehicle_id: layer.category,

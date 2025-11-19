@@ -1,10 +1,9 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 
-import type { VehicleLine } from "@/lib/services/settings/load-vehicles";
+import type { VehicleLine } from "@/lib/services/settings";
 
-import { loadVehicles } from "@/lib/services/settings/load-vehicles";
+import { settings } from "@/lib/services/settings";
 
 interface UseGetScenarioLinesReturn {
 	data: VehicleLine[];
@@ -12,8 +11,6 @@ interface UseGetScenarioLinesReturn {
 	refetch: () => void;
 	loading: boolean;
 }
-
-const instance = axios.create();
 
 export function useLoadVehicles(): UseGetScenarioLinesReturn {
 	const {
@@ -26,11 +23,7 @@ export function useLoadVehicles(): UseGetScenarioLinesReturn {
 		refetch,
 	} = useQuery({
 		queryKey: ["scenario-vehicles"],
-		queryFn: async (): Promise<VehicleLine[]> => {
-			const response = await loadVehicles(instance);
-
-			return response.payload ?? [];
-		},
+		queryFn: settings.loadVehicles,
 		refetchOnWindowFocus: false,
 	});
 

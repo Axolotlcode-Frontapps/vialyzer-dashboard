@@ -1,32 +1,26 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 
-import type { SourceLine } from "@/lib/services/settings/get-scenario-lines";
+import type { SourceLine } from "@/lib/services/settings";
 
-import {
-	removeDatasource,
-	removeScenarioLine,
-} from "@/lib/services/settings/remove-scenario";
-
-const instance = axios.create({});
+import { settings } from "@/lib/services/settings";
 
 export function useRemoveScenarioLine() {
 	const { mutateAsync, isPending, error } = useMutation({
 		mutationFn: async (sources: SourceLine[]) => {
 			const all = await Promise.allSettled(
 				sources.map(async (source) => {
-					const first = await removeScenarioLine(instance, {
+					const first = await settings.removeScenarioLine({
 						id: source.scenery.id,
 					});
 					// biome-ignore lint/suspicious/noExplicitAny: Necessary
 					let second: any = null;
 					if (source.second_scenery) {
-						second = await removeScenarioLine(instance, {
+						second = await settings.removeScenarioLine({
 							id: source.second_scenery.id,
 						});
 					}
 
-					const removed = await removeDatasource(instance, { id: source.id });
+					const removed = await settings.removeDatasource({ id: source.id });
 
 					return { first, second, source: removed };
 				})

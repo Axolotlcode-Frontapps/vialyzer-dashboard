@@ -1,4 +1,4 @@
-import type { LineElement } from "@/lib/services/settings/add-scenario";
+import type { LineElement } from "@/lib/services/settings";
 import type {
 	DrawingElement,
 	LayerInfo,
