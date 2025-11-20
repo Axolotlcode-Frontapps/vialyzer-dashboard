@@ -10,4 +10,5 @@ interface User {
 	active?: boolean;
 	createdAt?: Date;
 	lastLogin?: Date;
+	firstLogin?: boolean;
 }
