@@ -97,7 +97,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 											{
 												icon: Camera,
 												title: "Agentes",
-												to: "/monitoring" as const,
+												to: "/movility" as const,
 											},
 										]),
 							],

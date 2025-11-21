@@ -17,13 +17,18 @@ import { Stats } from "@/ui/monitoring/stats";
 import { Button } from "@/ui/shared/button";
 import { Maps } from "@/ui/shared/maps";
 import { MapDetails } from "@/ui/shared/maps/map-details";
+import { HasPermission } from "@/ui/shared/permissions/has-permission";
 
-export const Route = createFileRoute("/_dashboard/monitoring")({
+export const Route = createFileRoute("/_dashboard/monitoring/$cameraId")({
 	component: Monitoring,
 	validateSearch: zodValidator(movilitySchemas.filters),
 });
 
 function Monitoring() {
+	const { cameraId } = Route.useParams();
+
+	console.log(cameraId);
+
 	return (
 		<div className="monitoring">
 			<div className="flex items-center justify-between mb-5">
@@ -34,7 +39,9 @@ function Monitoring() {
 				</Button>
 			</div>
 			<div className="monitoring__content">
-				<Stats />
+				<HasPermission moduleBase="kpis" permissionName="dashboard-kpis">
+					<Stats />
+				</HasPermission>
 				<Notifications />
 				<div className="monitoring__map">
 					<div className="h-[400px] @5xl/graphs:h-full">

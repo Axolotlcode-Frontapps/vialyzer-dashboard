@@ -1,9 +1,9 @@
 import { useHasRole } from "@/hooks/use-permissions";
 
-import type { ROLES_NAMES } from "@/types/enums";
+import type { MODULE_BASE_NAME } from "@/types/enums";
 
 export interface HasRoleProps {
-	roleName: keyof typeof ROLES_NAMES;
+	roleName: MODULE_BASE_NAME;
 	children: React.ReactNode;
 	fallback?: React.ReactNode;
 }
