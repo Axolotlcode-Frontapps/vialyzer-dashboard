@@ -1,13 +1,35 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
 import { useCameras } from "@/hooks/use-cameras";
 
+import { hasModule } from "@/lib/utils/permissions";
 import { Camera } from "@/ui/settings/camera";
 import { buttonVariants } from "@/ui/shared/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/ui/shared/tooltip";
 
 export const Route = createFileRoute("/_dashboard/settings/cameras/$camera")({
 	component: ConfigCamera,
+	beforeLoad: async ({
+		context: {
+			permissions: { user },
+		},
+	}) => {
+		if (!user) {
+			throw redirect({
+				to: "/",
+				replace: true,
+			});
+		}
+
+		const hasRoleModule = hasModule("configuracion-camaras", user);
+
+		if (!hasRoleModule) {
+			throw redirect({
+				to: "/",
+				replace: true,
+			});
+		}
+	},
 });
 
 function ConfigCamera() {

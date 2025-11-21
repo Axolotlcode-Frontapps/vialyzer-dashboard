@@ -34,44 +34,25 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
 	(response) => response,
 	async (error: AxiosError) => {
-		console.log("🔴 Error interceptado:", {
-			status: error.response?.status,
-			message: error.message,
-			hasConfig: !!error.config,
-			url: error.config?.url,
-		});
-
 		const originalRequest = error.config as typeof error.config & {
 			_retry?: boolean;
 		};
 
 		if (!originalRequest) {
-			console.log("❌ No hay originalRequest");
 			return Promise.reject(error);
 		}
 
-		console.log("📋 Request info:", {
-			url: originalRequest.url,
-			retry: originalRequest._retry,
-			status: error.response?.status,
-		});
-
 		if (error.response?.status === 401) {
-			console.log("🚪 Error 401 - Logout");
-
 			removeSessionCookie(SESSION_NAME);
 			return Promise.reject(error);
 		}
 
-		if (error.response?.status === 403 && !originalRequest._retry) {
-			console.log("🔄 Error 403 - Intentando refrescar token");
+		if (error.response?.status === 401 && !originalRequest._retry) {
 			originalRequest._retry = true;
 
 			const currentRefreshToken = getSessionCookie(SESSION_NAME)?.refreshToken;
 
 			if (!currentRefreshToken) {
-				console.error("❌ No refresh token available");
-
 				removeSessionCookie(SESSION_NAME);
 				return Promise.reject(new Error("No refresh token available"));
 			}
@@ -80,12 +61,6 @@ axiosInstance.interceptors.response.use(
 				const refreshReponse = (
 					await authServices.refreshToken(currentRefreshToken)
 				).payload;
-
-				console.log("✅ Token refreshed:", {
-					hasToken: !!refreshReponse?.token,
-					hasRefreshToken: !!refreshReponse?.refreshToken,
-					hasPayload: !!refreshReponse,
-				});
 
 				if (!refreshReponse?.token || !refreshReponse?.refreshToken) {
 					throw new Error("Invalid refresh token response");
@@ -100,20 +75,8 @@ axiosInstance.interceptors.response.use(
 						getSessionCookie(SESSION_NAME)!.refreshTokenExpiration,
 				};
 
-				console.log("💾 Actualizando estado y cookie", {
-					newToken: refreshReponse.token,
-					newRefreshToken: refreshReponse.refreshToken,
-					expiresAt: updatedResponse.refreshTokenExpiration,
-				});
-
 				setSessionCookie(SESSION_NAME, updatedResponse);
-
 				originalRequest.headers.Authorization = `Bearer ${refreshReponse.token}`;
-
-				console.log(
-					"🔁 Reintentando petición original a:",
-					originalRequest.url
-				);
 
 				return axiosInstance(originalRequest);
 			} catch (refreshError) {
@@ -123,7 +86,6 @@ axiosInstance.interceptors.response.use(
 			}
 		}
 
-		console.log("⚠️ Error no manejado, rechazando");
 		return Promise.reject(error);
 	}
 );
