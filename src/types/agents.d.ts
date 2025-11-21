@@ -26,3 +26,15 @@ interface NotificationItem {
 	hours_pending: number;
 	minutes_pending: number;
 }
+
+interface KPIs {
+	available_agents: number;
+	unavailable_agents: number;
+	average_hours: number;
+	average_minutes: number;
+	peak_day: string;
+	peak_hour: number;
+	total_tickets: number;
+	unattended_alerts: number;
+	effectiveness_percent: number;
+}

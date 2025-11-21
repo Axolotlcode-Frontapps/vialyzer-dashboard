@@ -1,9 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { SearchIcon } from "lucide-react";
 import { GoogleMapsProvider } from "@/contexts/maps";
 
 import { settingsSchemas } from "@/lib/schemas/settings";
+import { hasModule } from "@/lib/utils/permissions";
 import { DetailsCard } from "@/ui/settings/details-card";
 import { LocationFilter } from "@/ui/settings/location-filter";
 import { Locations } from "@/ui/settings/locations";
@@ -18,6 +19,27 @@ import { MapLegend } from "@/ui/shared/maps/map-legend";
 export const Route = createFileRoute("/_dashboard/settings/cameras/")({
 	component: Cameras,
 	validateSearch: zodValidator(settingsSchemas.cameras),
+	beforeLoad: async ({
+		context: {
+			permissions: { user },
+		},
+	}) => {
+		if (!user) {
+			throw redirect({
+				to: "/",
+				replace: true,
+			});
+		}
+
+		const hasRoleModule = hasModule("configuracion-camaras", user);
+
+		if (!hasRoleModule) {
+			throw redirect({
+				to: "/",
+				replace: true,
+			});
+		}
+	},
 });
 
 function Cameras() {

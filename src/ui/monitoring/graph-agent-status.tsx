@@ -1,3 +1,4 @@
+import { useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
 	Bar,
@@ -11,7 +12,7 @@ import {
 import type { ContentType } from "recharts/types/component/Label";
 import type { ChartConfig } from "../shared/chart";
 
-import { agentsService } from "@/lib/services/agents";
+import { kpiServices } from "@/lib/services/kpis";
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/card";
 import {
 	ChartContainer,
@@ -34,8 +35,16 @@ const config = {
 	},
 } satisfies ChartConfig;
 
+const today = new Date();
+const sevenDaysAgo = new Date();
+sevenDaysAgo.setDate(today.getDate() - 7);
+
+const startDate = sevenDaysAgo.toISOString().split("T")[0];
+const endDate = today.toISOString().split("T")[0];
+
 const media: ContentType = ({ x, y, width }) => {
 	const radius = 6;
+
 	return (
 		<g>
 			<circle
@@ -49,9 +58,17 @@ const media: ContentType = ({ x, y, width }) => {
 };
 
 export function GraphAgentStatus() {
-	const { data: mockData, isLoading: loading } = useQuery({
-		queryKey: ["monitoring-agent-status"],
-		queryFn: () => agentsService.getAgentStatus(),
+	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+
+	const { data: agentStatus, isLoading: loading } = useQuery<
+		AgentStatusGraphData[]
+	>({
+		queryKey: ["monitoring-agent-status", cameraId, startDate, endDate],
+		queryFn: async () =>
+			cameraId
+				? await kpiServices.getAgentStatus(cameraId, startDate, endDate)
+				: [],
+		enabled: !!cameraId,
 	});
 
 	return (
@@ -86,10 +103,10 @@ export function GraphAgentStatus() {
 					</p>
 				) : (
 					<ChartContainer config={config} className="w-full max-h-[212px]">
-						<BarChart accessibilityLayer data={mockData}>
+						<BarChart accessibilityLayer data={agentStatus}>
 							<CartesianGrid vertical={false} />
 							<YAxis
-								dataKey="max"
+								dataKey="average_minutes"
 								tickLine={false}
 								axisLine={false}
 								type="number"
@@ -115,17 +132,22 @@ export function GraphAgentStatus() {
 								content={<ChartTooltipContent indicator="line" />}
 							/>
 							<Bar
-								dataKey="time"
+								dataKey="total_time_minutes"
 								fill="var(--color-time)"
 								xAxisId="top"
 								radius={4}
 							/>
-							<Bar dataKey="max" fill="transparent" radius={4} xAxisId="bottom">
+							<Bar
+								dataKey="average_minutes"
+								fill="transparent"
+								radius={4}
+								xAxisId="bottom"
+							>
 								<LabelList
-									dataKey="max"
+									dataKey="average_minutes"
 									position="top"
 									// offset={8}
-									fill="var(--color-max)"
+									fill="var(--color-minutes)"
 									fontSize={12}
 									content={media}
 								/>

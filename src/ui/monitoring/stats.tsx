@@ -1,6 +1,7 @@
+import { useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
-import { agentsService } from "@/lib/services/agents";
+import { kpiServices } from "@/lib/services/kpis";
 import { Alerts } from "@/ui/monitoring/alerts";
 import { AverageTime } from "@/ui/monitoring/average-time";
 import { Effectivity } from "@/ui/monitoring/effectivity";
@@ -9,10 +10,15 @@ import { RejectedAlerts } from "@/ui/monitoring/rejected-alerts";
 import { ScrollArea, ScrollBar } from "../shared/scroll-area";
 
 export function Stats() {
+	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+
 	const { data, isLoading } = useQuery({
-		queryKey: ["monitoring-kpis-info"],
-		queryFn: () => agentsService.getKpis(),
+		queryKey: ["monitoring-kpis-info", cameraId],
+		queryFn: async () =>
+			cameraId ? await kpiServices.getKpis(cameraId) : undefined,
+		enabled: !!cameraId,
 	});
+
 	const kpisData = data?.data;
 	const derivedMetrics = data?.derivedMetrics;
 
