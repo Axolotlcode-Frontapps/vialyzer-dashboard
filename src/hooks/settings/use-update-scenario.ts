@@ -3,8 +3,11 @@ import { useMutation } from "@tanstack/react-query";
 import type { LineElement, SourceLine } from "@/lib/services/settings";
 
 import { settings } from "@/lib/services/settings";
+import { Route } from "@/routes/_dashboard/settings/cameras/$camera";
 
 export function useUpdateScenarioLine() {
+	const { camera } = Route.useParams();
+
 	const { mutateAsync, isPending, error } = useMutation({
 		mutationFn: async ({
 			lines,
@@ -36,6 +39,7 @@ export function useUpdateScenarioLine() {
 								...line,
 								name: `${line.name} - Entrada`,
 								coordinates: detection_entry,
+								camera,
 							},
 							server.scenery.id
 						);
@@ -44,6 +48,7 @@ export function useUpdateScenarioLine() {
 								...line,
 								name: `${line.name} - Salida`,
 								coordinates: detection_exit,
+								camera,
 							},
 							server.second_scenery!.id
 						);
@@ -55,6 +60,7 @@ export function useUpdateScenarioLine() {
 								description: layer.description,
 								second_scenery: exit.id,
 								visual_coordinates,
+								camera,
 							},
 							server.id
 						);
@@ -64,7 +70,7 @@ export function useUpdateScenarioLine() {
 
 					if (element.type === "CONFIGURATION") {
 						const config = await settings.updateScenarioLine(
-							{ ...line, coordinates },
+							{ ...line, coordinates, camera },
 							server.scenery.id
 						);
 
@@ -74,6 +80,7 @@ export function useUpdateScenarioLine() {
 								vehicle_id: layer.category,
 								description: layer.description,
 								visual_coordinates,
+								camera,
 							},
 							server.id
 						);

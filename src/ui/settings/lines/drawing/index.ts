@@ -1305,10 +1305,6 @@ export class DrawingEngine implements DrawingEngineInterface {
 
 		// Clear existing layers and add new ones
 		if (layers.size > 0) {
-			console.log(
-				`[DrawingEngine] Replacing existing layers with ${layers.size} imported layers`
-			);
-
 			// Clear existing layers
 			this.#state.layers.clear();
 			this.#state.layerOrder = [];
@@ -1341,14 +1337,6 @@ export class DrawingEngine implements DrawingEngineInterface {
 			"addElements",
 			`Added ${elements.length} element${elements.length !== 1 ? "s" : ""}`,
 			beforeState
-		);
-
-		console.log(
-			`[DrawingEngine] Added ${elements.length} element(s) to ${layers.size} layer(s)`,
-			{
-				elements: this.#state.elements,
-				layers: Array.from(this.#state.layers.values()),
-			}
 		);
 
 		// Trigger redraw
@@ -1595,7 +1583,6 @@ export class DrawingEngine implements DrawingEngineInterface {
 	}
 
 	get elements(): DrawingElement[] {
-		console.log("[DrawingEngine] Getting elements:", this.#state.elements);
 		return this.#state.elements;
 	}
 

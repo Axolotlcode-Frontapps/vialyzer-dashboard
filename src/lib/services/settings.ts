@@ -81,6 +81,7 @@ export interface LineElement {
 }
 
 export interface CreateScenarioLineBody {
+	camera: string;
 	name: string;
 	description: string;
 	coordinates: [number, number][];
@@ -94,6 +95,7 @@ export interface CreateScenarioLineBody {
 }
 
 export interface CreateDatasourceBody {
+	camera: string;
 	scenery_id: string;
 	vehicle_id: string;
 	description?: string;
@@ -101,21 +103,51 @@ export interface CreateDatasourceBody {
 	visual_coordinates?: LineElement["visual_coordinates"];
 }
 
+export interface ScenarioCreated {
+	id: string;
+	name: string;
+	coordinates: [number, number][];
+	distance: number;
+	description: string;
+	color: [number, number, number];
+	maps_coordinates: [number, number];
+	location: string;
+	type: string;
+	createAt: string;
+	active: boolean;
+	visibility: boolean;
+	allowed_directions: string;
+}
+
+export interface DataSourceCreated {
+	id: string;
+	scenery_id: string;
+	vehicle_id: string;
+	description: string;
+	second_scenery: string;
+	visual_coordinates: {
+		type: string;
+		fontSize: number;
+		layer_id: string;
+		fontFamily: string;
+		coordinates: [number, number][];
+		backgroundColor: string;
+		backgroundOpacity: number;
+	};
+	createAt: string;
+	active: boolean;
+}
+
 export interface IdLine {
 	id: string;
 }
 
 class SettingsService {
-	async getScenarioLines(): Promise<SourceLine[]> {
-		const response = await fetcher<SourceLine[]>("/data-sources/get-all");
-
-		return response;
-	}
-
-	async loadVehicles(): Promise<VehicleLine[]> {
+	async getScenarioLines(camera: IdLine): Promise<SourceLine[]> {
 		try {
-			const response =
-				await fetcher<GeneralResponse<VehicleLine[]>>("/vehicles/get-all");
+			const response = await fetcher<GeneralResponse<SourceLine[]>>(
+				`/camera/${camera.id}/data-sources/get-all`
+			);
 
 			return response.payload ?? [];
 		} catch {
@@ -123,54 +155,93 @@ class SettingsService {
 		}
 	}
 
-	async addScenarioLine(data: CreateScenarioLineBody) {
-		const response = await fetcher<IdLine>("/scenarios/create", {
-			data,
-			method: "POST",
-		});
+	async loadVehicles(camera: IdLine): Promise<VehicleLine[]> {
+		try {
+			const response = await fetcher<GeneralResponse<VehicleLine[]>>(
+				`/camera/${camera.id}/vehicles/get-all`
+			);
+
+			return response.payload ?? [];
+		} catch {
+			return [];
+		}
+	}
+
+	async addScenarioLine({
+		camera,
+		...data
+	}: CreateScenarioLineBody): Promise<ScenarioCreated | undefined> {
+		const response = await fetcher<GeneralResponse<ScenarioCreated>>(
+			`/camera/${camera}/scenarios/create`,
+			{
+				data,
+				method: "POST",
+			}
+		);
+
+		return response.payload;
+	}
+
+	async addDatasource({ camera, ...data }: CreateDatasourceBody) {
+		const response = await fetcher<GeneralResponse<DataSourceCreated>>(
+			`/camera/${camera}/data-sources/create`,
+			{
+				data,
+				method: "POST",
+			}
+		);
 
 		return response;
 	}
 
-	async addDatasource(data: CreateDatasourceBody) {
-		const response = await fetcher("/data-sources/create", {
-			data,
-			method: "POST",
-		});
+	async updateScenarioLine(
+		{ camera, ...data }: CreateScenarioLineBody,
+		id: string
+	) {
+		const response = await fetcher<IdLine>(
+			`/camera/${camera}/scenarios/update/${id}`,
+			{
+				data,
+				method: "PUT",
+			}
+		);
 
 		return response;
 	}
 
-	async updateScenarioLine(data: CreateScenarioLineBody, id: string) {
-		const response = await fetcher<IdLine>(`/scenarios/put/${id}`, {
-			data,
-			method: "PUT",
-		});
+	async updateDatasource(
+		{ camera, ...data }: CreateDatasourceBody,
+		id: string
+	) {
+		const response = await fetcher<IdLine>(
+			`/camera/${camera}/data-sources/update/${id}`,
+			{
+				data,
+				method: "PUT",
+			}
+		);
 
 		return response;
 	}
 
-	async updateDatasource(data: CreateDatasourceBody, id: string) {
-		const response = await fetcher<IdLine>(`/data-sources/update/${id}`, {
-			data,
-			method: "PUT",
-		});
+	async removeDatasource(body: IdLine, camera: IdLine) {
+		const response = await fetcher(
+			`/camera/${camera.id}/data-sources/delete/${body.id}`,
+			{
+				method: "DELETE",
+			}
+		);
 
 		return response;
 	}
 
-	async removeDatasource(body: IdLine) {
-		const response = await fetcher(`/data-sources/delete/${body.id}`, {
-			method: "DELETE",
-		});
-
-		return response;
-	}
-
-	async removeScenarioLine(body: IdLine) {
-		const response = await fetcher(`/scenarios/delete/${body.id}`, {
-			method: "DELETE",
-		});
+	async removeScenarioLine(body: IdLine, camera: IdLine) {
+		const response = await fetcher(
+			`/camera/${camera.id}/scenarios/delete/${body.id}`,
+			{
+				method: "DELETE",
+			}
+		);
 
 		return response;
 	}

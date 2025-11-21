@@ -95,8 +95,6 @@ export function Camera() {
 		refetch,
 	} = useGetScenarioLines();
 
-	console.log({ serverLines });
-
 	const handleDrawingComplete = (data: MediaMatrix) => {
 		console.log("Drawing complete, matrix data:", data);
 	};

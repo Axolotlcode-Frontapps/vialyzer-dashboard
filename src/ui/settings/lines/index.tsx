@@ -108,9 +108,6 @@ export function Lines({
 				case "mediaLoaded":
 					// Guard: prevent onLoad from executing multiple times
 					if (onLoadExecutedRef.current) {
-						console.log(
-							"[Lines] onLoad already executed, skipping duplicate mediaLoaded event"
-						);
 						return;
 					}
 
@@ -148,12 +145,6 @@ export function Lines({
 				case "annotation":
 					break;
 				case "importComplete":
-					// Import completed - elements and layers have been added to the engine
-					// This event is triggered after initial import from backend
-					console.log("[Lines] Import complete", {
-						elementsCount: stateChange.elements.length,
-						layersCount: stateChange.layers.length,
-					});
 					break;
 				case "action":
 					if (stateChange.action === "export") {
