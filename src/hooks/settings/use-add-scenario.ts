@@ -4,6 +4,7 @@ import type { UseMutateAsyncFunction } from "@tanstack/react-query";
 import type { LineElement } from "@/lib/services/settings";
 
 import { settings } from "@/lib/services/settings";
+import { Route } from "@/routes/_dashboard/settings/cameras/$camera";
 
 interface UseAddScenarioLineReturn {
 	// biome-ignore lint/suspicious/noExplicitAny: Necessary
@@ -13,6 +14,8 @@ interface UseAddScenarioLineReturn {
 }
 
 export function useAddScenarioLine(): UseAddScenarioLineReturn {
+	const { camera } = Route.useParams();
+
 	const { mutateAsync, isPending, error } = useMutation({
 		mutationFn: async (lines: LineElement[]) => {
 			const all = await Promise.allSettled(
@@ -33,12 +36,17 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 							...line,
 							name: `${line.name} - Entrada`,
 							coordinates: detection_entry,
+							camera,
 						});
+						if (!entry) throw new Error("Error al crear la línea de entrada");
+
 						const exit = await settings.addScenarioLine({
 							...line,
 							name: `${line.name} - Salida`,
 							coordinates: detection_exit,
+							camera,
 						});
+						if (!exit) throw new Error("Error al crear la línea de salida");
 
 						const source = await settings.addDatasource({
 							scenery_id: entry.id,
@@ -46,6 +54,7 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 							description: layer.description,
 							second_scenery: exit.id,
 							visual_coordinates,
+							camera,
 						});
 
 						return source;
@@ -55,13 +64,17 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 						const config = await settings.addScenarioLine({
 							...line,
 							coordinates,
+							camera,
 						});
+						if (!config)
+							throw new Error("Error al crear la línea de configuración");
 
 						const source = await settings.addDatasource({
 							scenery_id: config.id,
 							vehicle_id: layer.category,
 							description: layer.description,
 							visual_coordinates,
+							camera,
 						});
 
 						return source;

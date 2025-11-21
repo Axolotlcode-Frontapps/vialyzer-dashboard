@@ -173,9 +173,6 @@ export class DrawingEvents {
 	#handleMediaLoaded(): void {
 		// Guard: prevent mediaLoaded from firing multiple times
 		if (this.#state.isMediaLoaded) {
-			console.log(
-				"[DrawingEvents] Media already loaded, ignoring duplicate mediaLoaded event"
-			);
 			return;
 		}
 

@@ -437,11 +437,6 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			}
 		});
 
-		console.log(
-			`[Bridge] Import complete: ${validElements.length} elements in ${layers.size} layers`,
-			{ elements: validElements, layers: Array.from(layers.values()) }
-		);
-
 		return { elements: validElements, layers };
 	}
 
@@ -791,10 +786,6 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 				validLayerMap.set(layerId, layer);
 			}
 		});
-
-		console.log(
-			`[Bridge] Processed ${data.length} items: ${validLayerMap.size} valid layers, ${skippedItems} skipped (no ID), ${duplicateLayerIds} duplicates`
-		);
 
 		return validLayerMap;
 	}

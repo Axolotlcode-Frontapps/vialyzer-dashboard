@@ -49,7 +49,7 @@ export function Panel({ drawingEngine }: PanelProps) {
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent className="w-64 p-4" align="end">
-				<Card className="border-none p-0">
+				<Card className="border-none p-0 bg-transparent">
 					<CardHeader className="p-0 flex items-center justify-between">
 						<CardTitle className="text-sm font-medium flex items-center gap-2">
 							<BarChart3 className="size-4" />

@@ -290,7 +290,7 @@ export function LayerPanel({ drawingEngine, vehicles }: LayerPanelProps) {
 			</PopoverTrigger>
 			<PopoverContent className="w-80 p-4" align="end">
 				{/* Layer Panel */}
-				<Card className="border-none p-0">
+				<Card className="border-none p-0 bg-transparent">
 					<CardHeader className="p-0 flex items-center justify-between">
 						<CardTitle className="text-sm font-medium flex items-center gap-2">
 							<Move className="size-4" />

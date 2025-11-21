@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { SourceLine } from "@/lib/services/settings";
 
 import { settings } from "@/lib/services/settings";
+import { Route } from "@/routes/_dashboard/settings/cameras/$camera";
 
 interface UseGetScenarioLinesReturn {
 	data: SourceLine[];
@@ -13,6 +14,8 @@ interface UseGetScenarioLinesReturn {
 }
 
 export function useGetScenarioLines(): UseGetScenarioLinesReturn {
+	const { camera } = Route.useParams();
+
 	const {
 		data = [],
 		isLoading,
@@ -23,7 +26,7 @@ export function useGetScenarioLines(): UseGetScenarioLinesReturn {
 		refetch,
 	} = useQuery({
 		queryKey: ["scenario-lines"],
-		queryFn: settings.getScenarioLines,
+		queryFn: async () => settings.getScenarioLines({ id: camera }),
 	});
 
 	const loading = useMemo(
