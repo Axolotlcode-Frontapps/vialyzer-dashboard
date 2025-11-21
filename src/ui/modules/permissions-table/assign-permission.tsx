@@ -1,6 +1,6 @@
 import { useParams } from "@tanstack/react-router";
 import { useMemo } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { modulesServices } from "@/lib/services/modules";
@@ -8,16 +8,16 @@ import { Label } from "@/ui/shared/label";
 import { Spinner } from "@/ui/shared/spinner";
 import { Switch } from "@/ui/shared/switch";
 
-export function AssignPermission({ permission }: { permission: Permission }) {
+export function AssignPermission({
+	permission,
+	permissionsData,
+}: {
+	permission: Permission;
+	permissionsData?: Permission[];
+}) {
 	const queryClient = useQueryClient();
-	const { _splat: moduleId } = useParams({
-		from: "/_dashboard/settings/roles/$roleId/_roleLayout/$",
-	});
-
-	const { data: permissionsData } = useQuery({
-		queryKey: ["module-by-id", moduleId],
-		queryFn: async () => await modulesServices.getModuleById(moduleId!),
-		select: (data) => data.payload?.permissions,
+	const { moduleId } = useParams({
+		from: "/_dashboard/settings/modules/$moduleId",
 	});
 
 	const permissionsIds = useMemo(() => {
@@ -32,6 +32,7 @@ export function AssignPermission({ permission }: { permission: Permission }) {
 		onSuccess: () => {
 			toast.success("Permiso actualizado correctamente");
 			queryClient.invalidateQueries({ queryKey: ["module-by-id", moduleId] });
+			queryClient.invalidateQueries({ queryKey: ["get-me"] });
 		},
 		onError: () => {
 			toast.error("Error al actualizar el permiso");

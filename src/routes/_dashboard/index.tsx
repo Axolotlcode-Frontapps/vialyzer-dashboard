@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 
-import { homeService } from "@/lib/services/home";
-import { CamerasPreview } from "@/ui/home/cameras-preview";
+// import { homeService } from "@/lib/services/home";
+// import { CamerasPreview } from "@/ui/home/cameras-preview";
 // import { Maps } from "@/ui/shared/maps";
 // import { MapDetails } from "@/ui/shared/maps/map-details";
 
@@ -12,11 +12,11 @@ export const Route = createFileRoute("/_dashboard/")({
 });
 
 function Home() {
-	useQuery({
-		queryKey: ["get-cameras"],
-		queryFn: async () => await homeService.getCameras(),
-		select: (data) => data.payload || [],
-	});
+	// useQuery({
+	// 	queryKey: ["get-cameras"],
+	// 	queryFn: async () => await homeService.getCameras(),
+	// 	select: (data) => data.payload || [],
+	// });
 
 	return (
 		<div className="space-y-4">
@@ -29,7 +29,7 @@ function Home() {
 			</div>
 
 			<h2 className="text-xl lg:text-2xl font-medium">Previews de Cámaras</h2>
-			<CamerasPreview />
+			{/* <CamerasPreview /> */}
 		</div>
 	);
 }
