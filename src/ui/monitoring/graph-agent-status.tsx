@@ -1,3 +1,4 @@
+import { useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
 	Bar,
@@ -11,7 +12,7 @@ import {
 import type { ContentType } from "recharts/types/component/Label";
 import type { ChartConfig } from "../shared/chart";
 
-import { agentsService } from "@/lib/services/agents";
+import { kpiServices } from "@/lib/services/kpis";
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/card";
 import {
 	ChartContainer,
@@ -57,11 +58,17 @@ const media: ContentType = ({ x, y, width }) => {
 };
 
 export function GraphAgentStatus() {
+	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+
 	const { data: agentStatus, isLoading: loading } = useQuery<
 		AgentStatusGraphData[]
 	>({
-		queryKey: ["monitoring-agent-status", startDate, endDate],
-		queryFn: () => agentsService.getAgentStatus(startDate, endDate),
+		queryKey: ["monitoring-agent-status", cameraId, startDate, endDate],
+		queryFn: async () =>
+			cameraId
+				? await kpiServices.getAgentStatus(cameraId, startDate, endDate)
+				: [],
+		enabled: !!cameraId,
 	});
 
 	return (

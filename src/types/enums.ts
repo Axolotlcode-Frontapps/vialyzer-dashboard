@@ -65,21 +65,25 @@ export const Action = {
 
 export type ACTION_NAME = (typeof Action)[keyof typeof Action];
 
-export const ROLES_NAMES = {
+export const rolesNames = {
 	ADMIN: "admin",
 	ANALISTA: "analista",
 	AGENT: "agent",
-};
+} as const;
 
-export type ROLES_NAMES = (typeof ROLES_NAMES)[keyof typeof ROLES_NAMES];
+export type ROLES_NAMES = (typeof rolesNames)[keyof typeof rolesNames];
 
 export const Module = {
 	DASHBOARD: "dashboard",
 	USERS: "usuarios",
+	PROFILE: "perfil",
 	COMPANIES: "empresas",
 	ROLES: "roles",
 	CAT_MODULES: "modulos",
-
 	AGENTS: "agentes",
-};
+	TRANSIT: "transito",
+	CONFIG_CAMERAS: "configuracion-camaras",
+	MOVILITY: "movilidad",
+} as const;
+
 export type MODULE_NAME = (typeof Module)[keyof typeof Module];

@@ -38,14 +38,3 @@ interface KPIs {
 	unattended_alerts: number;
 	effectiveness_percent: number;
 }
-
-interface AgentStatusResponse {
-	status: string;
-	total_time_minutes: number;
-	average_minutes: number;
-}
-
-interface AgentStatusGraphData extends AgentStatusResponse {
-	time: number;
-	max: number;
-}

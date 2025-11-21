@@ -1,8 +1,9 @@
+import { useSearch } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-import { agentsService } from "@/lib/services/agents";
+import { kpiServices } from "@/lib/services/kpis";
 import { chartConfig } from "@/lib/utils/charts";
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/card";
 import {
@@ -24,9 +25,15 @@ const startDate = sevenDaysAgo.toISOString().split("T")[0];
 const endDate = today.toISOString().split("T")[0];
 
 export function GraphVolumeHour() {
+	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+
 	const { data } = useQuery({
-		queryKey: ["monitoring-volume-hour", startDate, endDate],
-		queryFn: () => agentsService.getVolumeHour(startDate, endDate),
+		queryKey: ["monitoring-volume-hour", cameraId, startDate, endDate],
+		queryFn: async () =>
+			cameraId
+				? await kpiServices.getVolumeHour(cameraId, startDate, endDate)
+				: [],
+		enabled: !!cameraId,
 	});
 
 	const chartData = useMemo(() => data ?? [], [data]);

@@ -1,3 +1,4 @@
+import { useSearch } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -11,7 +12,7 @@ import {
 
 import type { ChartConfig } from "../shared/chart";
 
-import { agentsService } from "@/lib/services/agents";
+import { kpiServices } from "@/lib/services/kpis";
 import {
 	Card,
 	CardContent,
@@ -43,9 +44,14 @@ const startDate = sevenDaysAgo.toISOString().split("T")[0];
 const endDate = today.toISOString().split("T")[0];
 
 export function GraphTopReasons() {
+	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+
 	const { data, isLoading, isRefetching, isFetching, isPending } = useQuery({
-		queryKey: ["monitoring-top-reasons", startDate, endDate],
-		queryFn: () => agentsService.getTopReasons(startDate, endDate),
+		queryKey: ["monitoring-top-reasons", cameraId, startDate, endDate],
+		queryFn: async () =>
+			cameraId
+				? await kpiServices.getTopReasons(cameraId, startDate, endDate)
+				: [],
 	});
 
 	const loading = useMemo(

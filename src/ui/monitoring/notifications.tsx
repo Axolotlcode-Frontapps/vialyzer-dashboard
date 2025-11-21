@@ -1,28 +1,37 @@
+import { useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
-import { agentsService } from "@/lib/services/agents";
+import { kpiServices } from "@/lib/services/kpis";
 import { AvailableAgents } from "@/ui/monitoring/available-agents";
 import { Notification } from "@/ui/monitoring/notification";
 import { ScrollArea } from "@/ui/shared/scroll-area";
 import { Skeleton } from "@/ui/shared/skeleton";
 
 export function Notifications() {
+	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+
 	const { data: kpisData, isLoading: loadingAgents } = useQuery({
-		queryKey: ["monitoring-kpis-info"],
-		queryFn: () => agentsService.getKpis(),
+		queryKey: ["monitoring-kpis-info", cameraId],
+		queryFn: async () =>
+			cameraId ? await kpiServices.getKpis(cameraId) : undefined,
+		enabled: !!cameraId,
 	});
 
 	const { data: notifications = [], isLoading: loading } = useQuery({
-		queryKey: ["monitoring-notifications"],
-		queryFn: () => agentsService.getNotifications(),
+		queryKey: ["monitoring-notifications", cameraId],
+		queryFn: async () =>
+			cameraId
+				? await kpiServices.getNotifications(cameraId)
+				: Promise.resolve([]),
+		enabled: !!cameraId,
 	});
 
 	if (loading) {
 		return (
 			<div className="monitoring__notifications">
 				<AvailableAgents
-					available={kpisData?.data.available_agents}
-					unavailable={kpisData?.data.unavailable_agents}
+					available={kpisData?.data?.available_agents}
+					unavailable={kpisData?.data?.unavailable_agents}
 					loading={loadingAgents}
 				/>
 				<ScrollArea className="size-full">
@@ -52,8 +61,8 @@ export function Notifications() {
 	return (
 		<div className="monitoring__notifications">
 			<AvailableAgents
-				available={kpisData?.data.available_agents}
-				unavailable={kpisData?.data.unavailable_agents}
+				available={kpisData?.data?.available_agents}
+				unavailable={kpisData?.data?.unavailable_agents}
 				loading={loadingAgents}
 			/>
 			<ScrollArea className="size-full">

@@ -24,7 +24,7 @@ export const Route = createFileRoute("/_dashboard/settings/companies")({
 			});
 		}
 
-		const hasRoleModule = hasModule("", user);
+		const hasRoleModule = hasModule("empresas", user);
 
 		if (!hasRoleModule) {
 			throw redirect({

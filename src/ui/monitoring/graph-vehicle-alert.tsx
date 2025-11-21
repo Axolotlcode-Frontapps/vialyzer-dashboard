@@ -1,3 +1,4 @@
+import { useSearch } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -11,7 +12,7 @@ import {
 
 import type { ChartConfig } from "../shared/chart";
 
-import { agentsService } from "@/lib/services/agents";
+import { kpiServices } from "@/lib/services/kpis";
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/card";
 import {
 	ChartContainer,
@@ -37,9 +38,14 @@ const startDate = sevenDaysAgo.toISOString().split("T")[0];
 const endDate = today.toISOString().split("T")[0];
 
 export function GraphVehicleAlert() {
+	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+
 	const { data, isLoading, error } = useQuery({
-		queryKey: ["monitoring-vehicle-alerts", startDate, endDate],
-		queryFn: () => agentsService.getVehicleAlert(startDate, endDate),
+		queryKey: ["monitoring-vehicle-alerts", cameraId, startDate, endDate],
+		queryFn: async () =>
+			cameraId
+				? await kpiServices.getVehicleAlert(cameraId, startDate, endDate)
+				: [],
 	});
 
 	const chartData = useMemo(() => {

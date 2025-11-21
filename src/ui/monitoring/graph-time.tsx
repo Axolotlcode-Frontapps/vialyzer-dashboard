@@ -1,4 +1,6 @@
 // import axios from 'axios';
+
+import { useSearch } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 // import { useLoaderData } from 'react-router';
@@ -14,9 +16,8 @@ import {
 import type { ContentType } from "recharts/types/component/Label";
 import type { ChartConfig } from "../shared/chart";
 
-import { agentsService } from "@/lib/services/agents";
+import { kpiServices } from "@/lib/services/kpis";
 import { chartConfig } from "@/lib/utils/charts";
-// import { getTimePermanence } from '@/lib/services/monitoring/get-time-permanence';
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/card";
 import {
 	ChartContainer,
@@ -56,13 +57,21 @@ const media: ContentType = ({ x, y, width, height }) => {
 };
 
 export function GraphTime() {
+	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+
 	const { data } = useQuery({
-		queryKey: ["monitoring-time-permanence", startDate, endDate],
-		queryFn: () => agentsService.getTime(startDate, endDate),
+		queryKey: ["monitoring-time-permanence", cameraId, startDate, endDate],
+		queryFn: async () =>
+			cameraId
+				? await kpiServices.getTime(cameraId, startDate, endDate)
+				: undefined,
+		enabled: !!cameraId,
 	});
 
 	const chartData = useMemo(() => {
-		return data?.map((item) => ({
+		if (!data) return [];
+		const dataArray = Array.isArray(data) ? data : [data];
+		return dataArray.map((item) => ({
 			vehicle: chartConfig[item.name]?.label ?? item.name,
 			time: item.avg_minutes,
 		}));

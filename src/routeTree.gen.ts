@@ -20,13 +20,13 @@ import { Route as DashboardVariablesRouteImport } from './routes/_dashboard/vari
 import { Route as DashboardUpdatePasswordRouteImport } from './routes/_dashboard/update-password'
 import { Route as DashboardSecurityRouteImport } from './routes/_dashboard/security'
 import { Route as DashboardProfileRouteImport } from './routes/_dashboard/profile'
+import { Route as DashboardMonitoringRouteImport } from './routes/_dashboard/monitoring'
 import { Route as DashboardForecastRouteImport } from './routes/_dashboard/forecast'
 import { Route as DashboardMovilityIndexRouteImport } from './routes/_dashboard/movility/index'
 import { Route as DashboardSettingsUsersRouteImport } from './routes/_dashboard/settings/users'
 import { Route as DashboardSettingsRolesRouteImport } from './routes/_dashboard/settings/roles'
 import { Route as DashboardSettingsCompaniesRouteImport } from './routes/_dashboard/settings/companies'
 import { Route as DashboardMovilityCameraIdRouteImport } from './routes/_dashboard/movility/$cameraId'
-import { Route as DashboardMonitoringCameraIdRouteImport } from './routes/_dashboard/monitoring.$cameraId'
 import { Route as DashboardSettingsModulesIndexRouteImport } from './routes/_dashboard/settings/modules/index'
 import { Route as DashboardSettingsCamerasIndexRouteImport } from './routes/_dashboard/settings/cameras/index'
 import { Route as DashboardSettingsModulesModuleIdRouteImport } from './routes/_dashboard/settings/modules/$moduleId'
@@ -86,6 +86,11 @@ const DashboardProfileRoute = DashboardProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardMonitoringRoute = DashboardMonitoringRouteImport.update({
+  id: '/monitoring',
+  path: '/monitoring',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardForecastRoute = DashboardForecastRouteImport.update({
   id: '/forecast',
   path: '/forecast',
@@ -118,12 +123,6 @@ const DashboardMovilityCameraIdRoute =
     path: '/movility/$cameraId',
     getParentRoute: () => DashboardRoute,
   } as any)
-const DashboardMonitoringCameraIdRoute =
-  DashboardMonitoringCameraIdRouteImport.update({
-    id: '/monitoring/$cameraId',
-    path: '/monitoring/$cameraId',
-    getParentRoute: () => DashboardRoute,
-  } as any)
 const DashboardSettingsModulesIndexRoute =
   DashboardSettingsModulesIndexRouteImport.update({
     id: '/settings/modules/',
@@ -152,6 +151,7 @@ const DashboardSettingsCamerasCameraRoute =
 export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
   '/forecast': typeof DashboardForecastRoute
+  '/monitoring': typeof DashboardMonitoringRoute
   '/profile': typeof DashboardProfileRoute
   '/security': typeof DashboardSecurityRoute
   '/update-password': typeof DashboardUpdatePasswordRoute
@@ -161,7 +161,6 @@ export interface FileRoutesByFullPath {
   '/auth/verify-code': typeof AuthVerifyCodeRoute
   '/': typeof DashboardIndexRoute
   '/auth/': typeof AuthIndexRoute
-  '/monitoring/$cameraId': typeof DashboardMonitoringCameraIdRoute
   '/movility/$cameraId': typeof DashboardMovilityCameraIdRoute
   '/settings/companies': typeof DashboardSettingsCompaniesRoute
   '/settings/roles': typeof DashboardSettingsRolesRoute
@@ -174,6 +173,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/forecast': typeof DashboardForecastRoute
+  '/monitoring': typeof DashboardMonitoringRoute
   '/profile': typeof DashboardProfileRoute
   '/security': typeof DashboardSecurityRoute
   '/update-password': typeof DashboardUpdatePasswordRoute
@@ -183,7 +183,6 @@ export interface FileRoutesByTo {
   '/auth/verify-code': typeof AuthVerifyCodeRoute
   '/': typeof DashboardIndexRoute
   '/auth': typeof AuthIndexRoute
-  '/monitoring/$cameraId': typeof DashboardMonitoringCameraIdRoute
   '/movility/$cameraId': typeof DashboardMovilityCameraIdRoute
   '/settings/companies': typeof DashboardSettingsCompaniesRoute
   '/settings/roles': typeof DashboardSettingsRolesRoute
@@ -199,6 +198,7 @@ export interface FileRoutesById {
   '/_dashboard': typeof DashboardRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/_dashboard/forecast': typeof DashboardForecastRoute
+  '/_dashboard/monitoring': typeof DashboardMonitoringRoute
   '/_dashboard/profile': typeof DashboardProfileRoute
   '/_dashboard/security': typeof DashboardSecurityRoute
   '/_dashboard/update-password': typeof DashboardUpdatePasswordRoute
@@ -208,7 +208,6 @@ export interface FileRoutesById {
   '/auth/verify-code': typeof AuthVerifyCodeRoute
   '/_dashboard/': typeof DashboardIndexRoute
   '/auth/': typeof AuthIndexRoute
-  '/_dashboard/monitoring/$cameraId': typeof DashboardMonitoringCameraIdRoute
   '/_dashboard/movility/$cameraId': typeof DashboardMovilityCameraIdRoute
   '/_dashboard/settings/companies': typeof DashboardSettingsCompaniesRoute
   '/_dashboard/settings/roles': typeof DashboardSettingsRolesRoute
@@ -224,6 +223,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/auth'
     | '/forecast'
+    | '/monitoring'
     | '/profile'
     | '/security'
     | '/update-password'
@@ -233,7 +233,6 @@ export interface FileRouteTypes {
     | '/auth/verify-code'
     | '/'
     | '/auth/'
-    | '/monitoring/$cameraId'
     | '/movility/$cameraId'
     | '/settings/companies'
     | '/settings/roles'
@@ -246,6 +245,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/forecast'
+    | '/monitoring'
     | '/profile'
     | '/security'
     | '/update-password'
@@ -255,7 +255,6 @@ export interface FileRouteTypes {
     | '/auth/verify-code'
     | '/'
     | '/auth'
-    | '/monitoring/$cameraId'
     | '/movility/$cameraId'
     | '/settings/companies'
     | '/settings/roles'
@@ -270,6 +269,7 @@ export interface FileRouteTypes {
     | '/_dashboard'
     | '/auth'
     | '/_dashboard/forecast'
+    | '/_dashboard/monitoring'
     | '/_dashboard/profile'
     | '/_dashboard/security'
     | '/_dashboard/update-password'
@@ -279,7 +279,6 @@ export interface FileRouteTypes {
     | '/auth/verify-code'
     | '/_dashboard/'
     | '/auth/'
-    | '/_dashboard/monitoring/$cameraId'
     | '/_dashboard/movility/$cameraId'
     | '/_dashboard/settings/companies'
     | '/_dashboard/settings/roles'
@@ -375,6 +374,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardProfileRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_dashboard/monitoring': {
+      id: '/_dashboard/monitoring'
+      path: '/monitoring'
+      fullPath: '/monitoring'
+      preLoaderRoute: typeof DashboardMonitoringRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/_dashboard/forecast': {
       id: '/_dashboard/forecast'
       path: '/forecast'
@@ -417,13 +423,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardMovilityCameraIdRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/monitoring/$cameraId': {
-      id: '/_dashboard/monitoring/$cameraId'
-      path: '/monitoring/$cameraId'
-      fullPath: '/monitoring/$cameraId'
-      preLoaderRoute: typeof DashboardMonitoringCameraIdRouteImport
-      parentRoute: typeof DashboardRoute
-    }
     '/_dashboard/settings/modules/': {
       id: '/_dashboard/settings/modules/'
       path: '/settings/modules'
@@ -457,12 +456,12 @@ declare module '@tanstack/react-router' {
 
 interface DashboardRouteChildren {
   DashboardForecastRoute: typeof DashboardForecastRoute
+  DashboardMonitoringRoute: typeof DashboardMonitoringRoute
   DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardSecurityRoute: typeof DashboardSecurityRoute
   DashboardUpdatePasswordRoute: typeof DashboardUpdatePasswordRoute
   DashboardVariablesRoute: typeof DashboardVariablesRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
-  DashboardMonitoringCameraIdRoute: typeof DashboardMonitoringCameraIdRoute
   DashboardMovilityCameraIdRoute: typeof DashboardMovilityCameraIdRoute
   DashboardSettingsCompaniesRoute: typeof DashboardSettingsCompaniesRoute
   DashboardSettingsRolesRoute: typeof DashboardSettingsRolesRoute
@@ -476,12 +475,12 @@ interface DashboardRouteChildren {
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardForecastRoute: DashboardForecastRoute,
+  DashboardMonitoringRoute: DashboardMonitoringRoute,
   DashboardProfileRoute: DashboardProfileRoute,
   DashboardSecurityRoute: DashboardSecurityRoute,
   DashboardUpdatePasswordRoute: DashboardUpdatePasswordRoute,
   DashboardVariablesRoute: DashboardVariablesRoute,
   DashboardIndexRoute: DashboardIndexRoute,
-  DashboardMonitoringCameraIdRoute: DashboardMonitoringCameraIdRoute,
   DashboardMovilityCameraIdRoute: DashboardMovilityCameraIdRoute,
   DashboardSettingsCompaniesRoute: DashboardSettingsCompaniesRoute,
   DashboardSettingsRolesRoute: DashboardSettingsRolesRoute,

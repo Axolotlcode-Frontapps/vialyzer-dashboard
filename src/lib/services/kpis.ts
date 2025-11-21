@@ -1,5 +1,18 @@
 import { fetcher } from "../utils/fetch-api";
 
+const allowedStatuses = ["PENDING", "IN_PROGRESS", "RESOLVED"] as const;
+
+function normalizeStatus(raw: string): "PENDING" | "IN_PROGRESS" | "RESOLVED" {
+	const upper = raw.toUpperCase();
+
+	// biome-ignore lint/suspicious/noExplicitAny: type assertion needed for array includes check
+	if (allowedStatuses.includes(upper as any)) {
+		return upper as "PENDING" | "IN_PROGRESS" | "RESOLVED";
+	}
+
+	return "PENDING";
+}
+
 class KpiServices {
 	async getKpis(cameraId: string) {
 		const response = await fetcher<GeneralResponse<DashboardKpis>>(
@@ -26,6 +39,116 @@ class KpiServices {
 		};
 
 		return { data, derivedMetrics };
+	}
+
+	async getNotifications(cameraId: string) {
+		const start = new Date(Date.now() - 7 * 86400000)
+			.toISOString()
+			.split("T")[0];
+		const end = new Date().toISOString().split("T")[0];
+
+		const response = await fetcher<GeneralResponse<ActiveTickets>>(
+			`/camera/${cameraId}/kpis/active-tickets?star_date=${start}&end_date=${end}`
+		);
+
+		const tickets = response.payload?.active_tickets ?? [];
+
+		const normalized = tickets.map((t) => ({
+			...t,
+			ticket_status: normalizeStatus(t.ticket_status),
+		}));
+
+		return normalized;
+	}
+
+	async getVehicleAlert(cameraId: string, start: string, end: string) {
+		const response = await fetcher<
+			GeneralResponse<{ name: string; total: string; porcentaje: string }[]>
+		>(
+			`/camera/${cameraId}/kpis/alert-percentage?start_date=${start}&end_date=${end}`
+		);
+
+		const data = response.payload ?? [];
+
+		return data.map((item) => ({
+			name: item.name,
+			porcentaje: Number(item.porcentaje),
+		}));
+	}
+
+	async getTime(cameraId: string, startDate: string, endDate: string) {
+		const response = await fetcher<
+			GeneralResponse<{ name: string; avg_minutes: number }>
+		>(
+			`
+			/camera/${cameraId}/kpis/time-spent-on-site?start_date=${startDate}&end_date=${endDate}`
+		);
+
+		const data = response.payload ?? [];
+		return data;
+	}
+
+	async getTopReasons(cameraId: string, startDate?: string, endDate?: string) {
+		const query =
+			startDate && endDate
+				? `?start_date=${startDate}&end_date=${endDate}`
+				: "";
+
+		const response = await fetcher<
+			GeneralResponse<
+				{ reason: string; total: number } | { reason: string; total: number }[]
+			>
+		>(`/camera/${cameraId}/kpis/top-reasons-tickets-rejected${query}`);
+
+		const data = response.payload ?? [];
+		return Array.isArray(data) ? data : [data];
+	}
+
+	async getVolumeHour(cameraId: string, startDate: string, endDate: string) {
+		const response = await fetcher<
+			GeneralResponse<{
+				metadata: {
+					vehicle_id: string;
+					name: string;
+					color: string;
+				}[];
+				data: {
+					hour: number;
+					count: number;
+				}[];
+			}>
+		>(
+			`
+			/camera/${cameraId}/kpis/vehicle-volume-by-hour?start_date=${startDate}&end_date=${endDate}`
+		);
+
+		const data = response.payload?.data ?? [];
+
+		return data.map((item) => ({
+			hour: `${item.hour.toString().padStart(2, "0")}:00`,
+			count: item.count,
+		}));
+	}
+
+	async getAgentStatus(
+		cameraId: string,
+		startDate: string,
+		endDate: string
+	): Promise<AgentStatusGraphData[]> {
+		const response = await fetcher<GeneralResponse<AgentStatusResponse[]>>(
+			`
+			/camera/${cameraId}/kpis/all-alert-agent?start_date=${startDate}&end_date=${endDate}`
+		);
+
+		const data = response.payload ?? [];
+
+		const normalized: AgentStatusGraphData[] = data.map((d) => ({
+			...d,
+			time: d.average_minutes,
+			max: d.total_time_minutes,
+		}));
+
+		return normalized;
 	}
 }
 

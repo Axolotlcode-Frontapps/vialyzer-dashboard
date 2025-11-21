@@ -11,5 +11,5 @@ export type TNavItem = {
 
 export interface INavSection {
 	group: string;
-	items: TNavItem[] | [];
+	items: TNavItem[];
 }
