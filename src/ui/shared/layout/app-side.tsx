@@ -1,9 +1,7 @@
+import { Activity } from "react";
 import {
 	Camera,
-	FileChartColumnIncreasing,
-	FileChartLine,
 	House,
-	Megaphone,
 	MonitorCog,
 	Package,
 	Settings,
@@ -39,45 +37,73 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	const metricsMenu: INavSection = {
 		group: "Métricas",
 		items: [
-			{
-				title: "Movilidad",
-				icon: Video,
-				defaultOpen: true,
-				items: [
-					{
-						icon: Camera,
-						title: "Transito",
-						to: "/movility",
-					},
-					{
-						icon: Megaphone,
-						title: "Seguridad vial",
-						to: "/security",
-					},
-					{
-						icon: FileChartColumnIncreasing,
-						title: "Pronostico",
-						to: "/forecast",
-					},
-					{
-						icon: FileChartLine,
-						title: "Cruce de variables",
-						to: "/variables",
-					},
-				],
-			},
-			{
-				title: "Monitoreo",
-				icon: Video,
-				defaultOpen: true,
-				items: [
-					{
-						icon: Camera,
-						title: "Agentes",
-						to: "/monitoring",
-					},
-				],
-			},
+			...(!hasModule("movilidad")
+				? []
+				: [
+						{
+							title: "Movilidad",
+							icon: Video,
+							defaultOpen: true,
+							items: [
+								...(!hasModule("transito")
+									? []
+									: [
+											{
+												icon: Camera,
+												title: "Transito",
+												to: "/movility" as const,
+											},
+										]),
+								// ...(!hasModule("transito")
+								// 	? []
+								// 	: [
+								// 			{
+								// 				icon: Megaphone,
+								// 				title: "Seguridad vial",
+								// 				to: "/security" as const,
+								// 			},
+								// 		]),
+								// ...(!hasModule("transito")
+								// 	? []
+								// 	: [
+								// 			{
+								// 				icon: FileChartColumnIncreasing,
+								// 				title: "Pronostico",
+								// 				to: "/forecast" as const,
+								// 			},
+								// 		]),
+								// ...(!hasModule("transito")
+								// 	? []
+								// 	: [
+								// 			{
+								// 				icon: FileChartLine,
+								// 				title: "Cruce de variables",
+								// 				to: "/variables" as const,
+								// 			},
+								// 		]),
+							],
+						},
+					]),
+			...(!hasModule("agentes")
+				? []
+				: [
+						{
+							title: "Monitoreo",
+							icon: Video,
+							defaultOpen: true,
+							items: [
+								...(!hasModule("agentes")
+									? []
+									: [
+											{
+												icon: Camera,
+												title: "Agentes",
+												to: "/monitoring" as const,
+											},
+										]),
+							],
+						},
+					]),
 		],
 	};
 
@@ -156,13 +182,29 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				</a>
 			</SidebarHeader>
 			<SidebarContent>
-				{/* {!isLoading ? (
-					<> */}
 				<NavSection group={principalMenu.group} items={principalMenu.items} />
-				<NavSection group={metricsMenu.group} items={metricsMenu.items} />
-				<NavSection group={settingsMenu.group} items={settingsMenu.items} />
-				{/* </>
-				) : null} */}
+
+				<Activity
+					mode={
+						hasModule("movilidad") || hasModule("agentes")
+							? "visible"
+							: "hidden"
+					}
+				>
+					<NavSection group={metricsMenu.group} items={metricsMenu.items} />
+				</Activity>
+				<Activity
+					mode={
+						hasModule("usuarios") ||
+						hasModule("roles") ||
+						hasModule("modulos") ||
+						hasModule("empresas")
+							? "visible"
+							: "hidden"
+					}
+				>
+					<NavSection group={settingsMenu.group} items={settingsMenu.items} />
+				</Activity>
 			</SidebarContent>
 		</Sidebar>
 	);
