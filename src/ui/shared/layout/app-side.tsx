@@ -2,6 +2,7 @@ import { Activity } from "react";
 import {
 	Camera,
 	House,
+	MonitorCog,
 	Package,
 	Settings,
 	Shield,
@@ -148,6 +149,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 									title: "Empresas",
 									icon: Settings,
 									to: "/settings/companies" as const,
+								},
+							]),
+					...(!hasModule("empresas")
+						? []
+						: [
+								{
+									title: "Configuración",
+									icon: MonitorCog,
+									to: "/settings/cameras" as const,
 								},
 							]),
 				],

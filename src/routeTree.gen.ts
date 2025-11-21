@@ -28,7 +28,9 @@ import { Route as DashboardSettingsRolesRouteImport } from './routes/_dashboard/
 import { Route as DashboardSettingsCompaniesRouteImport } from './routes/_dashboard/settings/companies'
 import { Route as DashboardMovilityCameraIdRouteImport } from './routes/_dashboard/movility/$cameraId'
 import { Route as DashboardSettingsModulesIndexRouteImport } from './routes/_dashboard/settings/modules/index'
+import { Route as DashboardSettingsCamerasIndexRouteImport } from './routes/_dashboard/settings/cameras/index'
 import { Route as DashboardSettingsModulesModuleIdRouteImport } from './routes/_dashboard/settings/modules/$moduleId'
+import { Route as DashboardSettingsCamerasCameraRouteImport } from './routes/_dashboard/settings/cameras/$camera'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -127,10 +129,22 @@ const DashboardSettingsModulesIndexRoute =
     path: '/settings/modules/',
     getParentRoute: () => DashboardRoute,
   } as any)
+const DashboardSettingsCamerasIndexRoute =
+  DashboardSettingsCamerasIndexRouteImport.update({
+    id: '/settings/cameras/',
+    path: '/settings/cameras/',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 const DashboardSettingsModulesModuleIdRoute =
   DashboardSettingsModulesModuleIdRouteImport.update({
     id: '/settings/modules/$moduleId',
     path: '/settings/modules/$moduleId',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardSettingsCamerasCameraRoute =
+  DashboardSettingsCamerasCameraRouteImport.update({
+    id: '/settings/cameras/$camera',
+    path: '/settings/cameras/$camera',
     getParentRoute: () => DashboardRoute,
   } as any)
 
@@ -152,7 +166,9 @@ export interface FileRoutesByFullPath {
   '/settings/roles': typeof DashboardSettingsRolesRoute
   '/settings/users': typeof DashboardSettingsUsersRoute
   '/movility': typeof DashboardMovilityIndexRoute
+  '/settings/cameras/$camera': typeof DashboardSettingsCamerasCameraRoute
   '/settings/modules/$moduleId': typeof DashboardSettingsModulesModuleIdRoute
+  '/settings/cameras': typeof DashboardSettingsCamerasIndexRoute
   '/settings/modules': typeof DashboardSettingsModulesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -172,7 +188,9 @@ export interface FileRoutesByTo {
   '/settings/roles': typeof DashboardSettingsRolesRoute
   '/settings/users': typeof DashboardSettingsUsersRoute
   '/movility': typeof DashboardMovilityIndexRoute
+  '/settings/cameras/$camera': typeof DashboardSettingsCamerasCameraRoute
   '/settings/modules/$moduleId': typeof DashboardSettingsModulesModuleIdRoute
+  '/settings/cameras': typeof DashboardSettingsCamerasIndexRoute
   '/settings/modules': typeof DashboardSettingsModulesIndexRoute
 }
 export interface FileRoutesById {
@@ -195,7 +213,9 @@ export interface FileRoutesById {
   '/_dashboard/settings/roles': typeof DashboardSettingsRolesRoute
   '/_dashboard/settings/users': typeof DashboardSettingsUsersRoute
   '/_dashboard/movility/': typeof DashboardMovilityIndexRoute
+  '/_dashboard/settings/cameras/$camera': typeof DashboardSettingsCamerasCameraRoute
   '/_dashboard/settings/modules/$moduleId': typeof DashboardSettingsModulesModuleIdRoute
+  '/_dashboard/settings/cameras/': typeof DashboardSettingsCamerasIndexRoute
   '/_dashboard/settings/modules/': typeof DashboardSettingsModulesIndexRoute
 }
 export interface FileRouteTypes {
@@ -218,7 +238,9 @@ export interface FileRouteTypes {
     | '/settings/roles'
     | '/settings/users'
     | '/movility'
+    | '/settings/cameras/$camera'
     | '/settings/modules/$moduleId'
+    | '/settings/cameras'
     | '/settings/modules'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -238,7 +260,9 @@ export interface FileRouteTypes {
     | '/settings/roles'
     | '/settings/users'
     | '/movility'
+    | '/settings/cameras/$camera'
     | '/settings/modules/$moduleId'
+    | '/settings/cameras'
     | '/settings/modules'
   id:
     | '__root__'
@@ -260,7 +284,9 @@ export interface FileRouteTypes {
     | '/_dashboard/settings/roles'
     | '/_dashboard/settings/users'
     | '/_dashboard/movility/'
+    | '/_dashboard/settings/cameras/$camera'
     | '/_dashboard/settings/modules/$moduleId'
+    | '/_dashboard/settings/cameras/'
     | '/_dashboard/settings/modules/'
   fileRoutesById: FileRoutesById
 }
@@ -404,11 +430,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsModulesIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_dashboard/settings/cameras/': {
+      id: '/_dashboard/settings/cameras/'
+      path: '/settings/cameras'
+      fullPath: '/settings/cameras'
+      preLoaderRoute: typeof DashboardSettingsCamerasIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/_dashboard/settings/modules/$moduleId': {
       id: '/_dashboard/settings/modules/$moduleId'
       path: '/settings/modules/$moduleId'
       fullPath: '/settings/modules/$moduleId'
       preLoaderRoute: typeof DashboardSettingsModulesModuleIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/settings/cameras/$camera': {
+      id: '/_dashboard/settings/cameras/$camera'
+      path: '/settings/cameras/$camera'
+      fullPath: '/settings/cameras/$camera'
+      preLoaderRoute: typeof DashboardSettingsCamerasCameraRouteImport
       parentRoute: typeof DashboardRoute
     }
   }
@@ -427,7 +467,9 @@ interface DashboardRouteChildren {
   DashboardSettingsRolesRoute: typeof DashboardSettingsRolesRoute
   DashboardSettingsUsersRoute: typeof DashboardSettingsUsersRoute
   DashboardMovilityIndexRoute: typeof DashboardMovilityIndexRoute
+  DashboardSettingsCamerasCameraRoute: typeof DashboardSettingsCamerasCameraRoute
   DashboardSettingsModulesModuleIdRoute: typeof DashboardSettingsModulesModuleIdRoute
+  DashboardSettingsCamerasIndexRoute: typeof DashboardSettingsCamerasIndexRoute
   DashboardSettingsModulesIndexRoute: typeof DashboardSettingsModulesIndexRoute
 }
 
@@ -444,7 +486,9 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardSettingsRolesRoute: DashboardSettingsRolesRoute,
   DashboardSettingsUsersRoute: DashboardSettingsUsersRoute,
   DashboardMovilityIndexRoute: DashboardMovilityIndexRoute,
+  DashboardSettingsCamerasCameraRoute: DashboardSettingsCamerasCameraRoute,
   DashboardSettingsModulesModuleIdRoute: DashboardSettingsModulesModuleIdRoute,
+  DashboardSettingsCamerasIndexRoute: DashboardSettingsCamerasIndexRoute,
   DashboardSettingsModulesIndexRoute: DashboardSettingsModulesIndexRoute,
 }
 
