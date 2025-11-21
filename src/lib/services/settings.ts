@@ -142,7 +142,37 @@ export interface IdLine {
 	id: string;
 }
 
+export interface Camera {
+	id: string;
+	name: string;
+	state: string;
+	clientZone: string;
+	location: {
+		latitude: number;
+		longitude: number;
+		timezone: string;
+	};
+	mongoHost: string;
+	mongoPort: string;
+	mongoUsername: string;
+	mongoPassword: string;
+	mongoDbName: string;
+	previewImageUrl: string;
+	active: boolean;
+	createdAt: string;
+	updatedAt: string;
+	deletedAt: string;
+}
+
 class SettingsService {
+	async preview(camera: string) {
+		const response = await fetcher<GeneralResponse<Camera>>(
+			`/cameras/get-camera/${camera}`
+		);
+
+		return response.payload;
+	}
+
 	async getScenarioLines(camera: IdLine): Promise<SourceLine[]> {
 		try {
 			const response = await fetcher<GeneralResponse<SourceLine[]>>(
