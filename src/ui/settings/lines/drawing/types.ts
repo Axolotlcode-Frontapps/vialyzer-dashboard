@@ -384,6 +384,11 @@ export interface ExportAction {
 	data: MediaMatrix;
 }
 
+export interface SaveAction {
+	type: "action";
+	action: "saveRequested";
+}
+
 export type ActionEvent =
 	| AddElementsAction
 	| UpdateElementsAction
@@ -391,7 +396,8 @@ export type ActionEvent =
 	| UpdateSelectionAction
 	| ClearAllAction
 	| UndoAction
-	| ExportAction;
+	| ExportAction
+	| SaveAction;
 
 // Annotation Events
 export interface OpenTextEditorAnnotation {

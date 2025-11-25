@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
 	ArrowDown,
 	ArrowLeft,
@@ -9,6 +9,7 @@ import {
 	Copy,
 	// Download,
 	Eraser,
+	Loader2,
 	// Group,
 	MousePointer2,
 	MoveUpLeft,
@@ -60,6 +61,47 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 	const [hoveredTool, setHoveredTool] = useState<DrawingMode | null>(null);
 	const [unsyncedCount, setUnsyncedCount] = useState(0);
 
+	const handleSave = useCallback(async () => {
+		if (!onSave || !drawingEngine || drawingEngine.elements.length === 0)
+			return;
+
+		// Get sync state stats before saving
+		const syncStats = drawingEngine.getSyncStateStats();
+		const unsyncedCount = syncStats.new + syncStats.edited + syncStats.deleted;
+
+		if (unsyncedCount === 0) {
+			drawingEngine.setFeedback("No hay cambios para guardar", 2000);
+			return;
+		}
+
+		try {
+			setIsSaving(true);
+			const layers = drawingEngine.getLayers();
+			await onSave(drawingEngine.elements, layers as any);
+
+			// Mark all elements as saved after successful save
+			drawingEngine.markAllElementsAsSaved();
+
+			const feedbackParts = [];
+			if (syncStats.new > 0) feedbackParts.push(`${syncStats.new} nuevos`);
+			if (syncStats.edited > 0)
+				feedbackParts.push(`${syncStats.edited} editados`);
+			if (syncStats.deleted > 0)
+				feedbackParts.push(`${syncStats.deleted} eliminados`);
+
+			drawingEngine.setFeedback(
+				`Guardados ${unsyncedCount} elemento(s) (${feedbackParts.join(", ")})`,
+				3000
+			);
+		} catch (error) {
+			const errorMessage =
+				error instanceof Error ? error.message : "Error desconocido";
+			drawingEngine.setFeedback(`Error al guardar: ${errorMessage}`, 5000);
+		} finally {
+			setIsSaving(false);
+		}
+	}, [drawingEngine, onSave]);
+
 	// Subscribe to drawing engine state changes
 	useEffect(() => {
 		if (!drawingEngine) return;
@@ -70,6 +112,10 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 					setDrawingMode(stateChange.drawingMode as DrawingMode);
 					break;
 				case "action": {
+					if (stateChange.action === "saveRequested") {
+						handleSave();
+						return;
+					}
 					// Update elements and selection when actions occur
 					setElements(drawingEngine.elements);
 					setSelectedElements(drawingEngine.selectedElements);
@@ -99,61 +145,7 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 		});
 
 		return unsubscribe;
-	}, [drawingEngine]);
-
-	// Initialize local state when drawing engine becomes available
-	useEffect(() => {
-		if (drawingEngine) {
-			setDrawingMode(drawingEngine.drawingMode);
-			setSelectedElements(drawingEngine.selectedElements);
-			setElements(drawingEngine.elements);
-			setIsMediaLoaded(drawingEngine.isInitialized);
-
-			// Initialize unsynced count
-			const stats = drawingEngine.getSyncStateStats();
-			setUnsyncedCount(stats.new + stats.edited + stats.deleted);
-		}
-	}, [drawingEngine]);
-
-	const handleSave = async () => {
-		if (!onSave || !drawingEngine || elements.length === 0) return;
-
-		// Get sync state stats before saving
-		const syncStats = drawingEngine.getSyncStateStats();
-		const unsyncedCount = syncStats.new + syncStats.edited + syncStats.deleted;
-
-		if (unsyncedCount === 0) {
-			drawingEngine.setFeedback("No hay cambios para guardar", 2000);
-			return;
-		}
-
-		try {
-			setIsSaving(true);
-			const layers = drawingEngine.getLayers();
-			await onSave(elements, layers);
-
-			// Mark all elements as saved after successful save
-			drawingEngine.markAllElementsAsSaved();
-
-			const feedbackParts = [];
-			if (syncStats.new > 0) feedbackParts.push(`${syncStats.new} nuevos`);
-			if (syncStats.edited > 0)
-				feedbackParts.push(`${syncStats.edited} editados`);
-			if (syncStats.deleted > 0)
-				feedbackParts.push(`${syncStats.deleted} eliminados`);
-
-			drawingEngine.setFeedback(
-				`Guardados ${unsyncedCount} elemento(s) (${feedbackParts.join(", ")})`,
-				3000
-			);
-		} catch (error) {
-			const errorMessage =
-				error instanceof Error ? error.message : "Error desconocido";
-			drawingEngine.setFeedback(`Error al guardar: ${errorMessage}`, 5000);
-		} finally {
-			setIsSaving(false);
-		}
-	};
+	}, [drawingEngine, handleSave]);
 
 	const getStatusMessage = (mode?: DrawingMode) => {
 		if (!isMediaLoaded) return "Cargando medio...";
@@ -199,7 +191,11 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 								onClick={handleSave}
 								disabled={!isMediaLoaded || elements.length === 0 || isSaving}
 							>
-								<Save className="w-4 h-4" />
+								{isSaving ? (
+									<Loader2 className="w-4 h-4 animate-spin" />
+								) : (
+									<Save className="w-4 h-4" />
+								)}
 								{isSaving ? "Guardando..." : "Guardar"}
 								<MenubarShortcut>Ctrl+S</MenubarShortcut>
 							</MenubarItem>
@@ -643,7 +639,11 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 						disabled={!isMediaLoaded || isSaving || unsyncedCount === 0}
 						title={isSaving ? "Guardando..." : "Guardar elementos (Ctrl+S)"}
 					>
-						<Save className="size-4" />
+						{isSaving ? (
+							<Loader2 className="size-4 animate-spin" />
+						) : (
+							<Save className="size-4" />
+						)}
 					</Button>
 				)}
 			</div>

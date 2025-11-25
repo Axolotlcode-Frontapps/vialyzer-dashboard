@@ -578,7 +578,10 @@ export class DrawingEngine implements DrawingEngineInterface {
 				}
 				break;
 			case "save":
-				this.#config.on.feedback("Save functionality coming soon");
+				this.#on.stateChange({
+					type: "action",
+					action: "saveRequested",
+				});
 				break;
 			case "open":
 				this.#config.on.feedback("Open functionality coming soon");
