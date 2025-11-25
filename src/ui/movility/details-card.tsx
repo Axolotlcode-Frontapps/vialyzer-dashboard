@@ -52,8 +52,8 @@ export function DetailsCard() {
 			</section>
 
 			<Link
-				to="/movility/$cameraId"
-				params={{ cameraId: location.id }}
+				to="/movility/$camera/volume"
+				params={{ camera: location.id }}
 				className={buttonVariants({
 					className:
 						"mt-4 bg-secondary text-white rounded-lg py-3 px-6 font-bold text-lg shadow hover:bg-secondary/90 transition-colors hover:cursor-pointer",

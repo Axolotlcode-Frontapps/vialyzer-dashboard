@@ -25,11 +25,13 @@ import { Route as DashboardMovilityIndexRouteImport } from './routes/_dashboard/
 import { Route as DashboardSettingsUsersRouteImport } from './routes/_dashboard/settings/users'
 import { Route as DashboardSettingsRolesRouteImport } from './routes/_dashboard/settings/roles'
 import { Route as DashboardSettingsCompaniesRouteImport } from './routes/_dashboard/settings/companies'
-import { Route as DashboardMovilityCameraIdRouteImport } from './routes/_dashboard/movility/$cameraId'
+import { Route as DashboardMovilityCameraRouteRouteImport } from './routes/_dashboard/movility/$camera/route'
 import { Route as DashboardSettingsModulesIndexRouteImport } from './routes/_dashboard/settings/modules/index'
 import { Route as DashboardSettingsCamerasIndexRouteImport } from './routes/_dashboard/settings/cameras/index'
 import { Route as DashboardSettingsModulesModuleIdRouteImport } from './routes/_dashboard/settings/modules/$moduleId'
 import { Route as DashboardSettingsCamerasCameraRouteImport } from './routes/_dashboard/settings/cameras/$camera'
+import { Route as DashboardMovilityCameraVolumeRouteImport } from './routes/_dashboard/movility/$camera/volume'
+import { Route as DashboardMovilityCameraVelocityRouteImport } from './routes/_dashboard/movility/$camera/velocity'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -111,10 +113,10 @@ const DashboardSettingsCompaniesRoute =
     path: '/settings/companies',
     getParentRoute: () => DashboardRoute,
   } as any)
-const DashboardMovilityCameraIdRoute =
-  DashboardMovilityCameraIdRouteImport.update({
-    id: '/movility/$cameraId',
-    path: '/movility/$cameraId',
+const DashboardMovilityCameraRouteRoute =
+  DashboardMovilityCameraRouteRouteImport.update({
+    id: '/movility/$camera',
+    path: '/movility/$camera',
     getParentRoute: () => DashboardRoute,
   } as any)
 const DashboardSettingsModulesIndexRoute =
@@ -141,6 +143,18 @@ const DashboardSettingsCamerasCameraRoute =
     path: '/settings/cameras/$camera',
     getParentRoute: () => DashboardRoute,
   } as any)
+const DashboardMovilityCameraVolumeRoute =
+  DashboardMovilityCameraVolumeRouteImport.update({
+    id: '/volume',
+    path: '/volume',
+    getParentRoute: () => DashboardMovilityCameraRouteRoute,
+  } as any)
+const DashboardMovilityCameraVelocityRoute =
+  DashboardMovilityCameraVelocityRouteImport.update({
+    id: '/velocity',
+    path: '/velocity',
+    getParentRoute: () => DashboardMovilityCameraRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
@@ -154,11 +168,13 @@ export interface FileRoutesByFullPath {
   '/auth/verify-code': typeof AuthVerifyCodeRoute
   '/': typeof DashboardIndexRoute
   '/auth/': typeof AuthIndexRoute
-  '/movility/$cameraId': typeof DashboardMovilityCameraIdRoute
+  '/movility/$camera': typeof DashboardMovilityCameraRouteRouteWithChildren
   '/settings/companies': typeof DashboardSettingsCompaniesRoute
   '/settings/roles': typeof DashboardSettingsRolesRoute
   '/settings/users': typeof DashboardSettingsUsersRoute
   '/movility': typeof DashboardMovilityIndexRoute
+  '/movility/$camera/velocity': typeof DashboardMovilityCameraVelocityRoute
+  '/movility/$camera/volume': typeof DashboardMovilityCameraVolumeRoute
   '/settings/cameras/$camera': typeof DashboardSettingsCamerasCameraRoute
   '/settings/modules/$moduleId': typeof DashboardSettingsModulesModuleIdRoute
   '/settings/cameras': typeof DashboardSettingsCamerasIndexRoute
@@ -175,11 +191,13 @@ export interface FileRoutesByTo {
   '/auth/verify-code': typeof AuthVerifyCodeRoute
   '/': typeof DashboardIndexRoute
   '/auth': typeof AuthIndexRoute
-  '/movility/$cameraId': typeof DashboardMovilityCameraIdRoute
+  '/movility/$camera': typeof DashboardMovilityCameraRouteRouteWithChildren
   '/settings/companies': typeof DashboardSettingsCompaniesRoute
   '/settings/roles': typeof DashboardSettingsRolesRoute
   '/settings/users': typeof DashboardSettingsUsersRoute
   '/movility': typeof DashboardMovilityIndexRoute
+  '/movility/$camera/velocity': typeof DashboardMovilityCameraVelocityRoute
+  '/movility/$camera/volume': typeof DashboardMovilityCameraVolumeRoute
   '/settings/cameras/$camera': typeof DashboardSettingsCamerasCameraRoute
   '/settings/modules/$moduleId': typeof DashboardSettingsModulesModuleIdRoute
   '/settings/cameras': typeof DashboardSettingsCamerasIndexRoute
@@ -199,11 +217,13 @@ export interface FileRoutesById {
   '/auth/verify-code': typeof AuthVerifyCodeRoute
   '/_dashboard/': typeof DashboardIndexRoute
   '/auth/': typeof AuthIndexRoute
-  '/_dashboard/movility/$cameraId': typeof DashboardMovilityCameraIdRoute
+  '/_dashboard/movility/$camera': typeof DashboardMovilityCameraRouteRouteWithChildren
   '/_dashboard/settings/companies': typeof DashboardSettingsCompaniesRoute
   '/_dashboard/settings/roles': typeof DashboardSettingsRolesRoute
   '/_dashboard/settings/users': typeof DashboardSettingsUsersRoute
   '/_dashboard/movility/': typeof DashboardMovilityIndexRoute
+  '/_dashboard/movility/$camera/velocity': typeof DashboardMovilityCameraVelocityRoute
+  '/_dashboard/movility/$camera/volume': typeof DashboardMovilityCameraVolumeRoute
   '/_dashboard/settings/cameras/$camera': typeof DashboardSettingsCamerasCameraRoute
   '/_dashboard/settings/modules/$moduleId': typeof DashboardSettingsModulesModuleIdRoute
   '/_dashboard/settings/cameras/': typeof DashboardSettingsCamerasIndexRoute
@@ -223,11 +243,13 @@ export interface FileRouteTypes {
     | '/auth/verify-code'
     | '/'
     | '/auth/'
-    | '/movility/$cameraId'
+    | '/movility/$camera'
     | '/settings/companies'
     | '/settings/roles'
     | '/settings/users'
     | '/movility'
+    | '/movility/$camera/velocity'
+    | '/movility/$camera/volume'
     | '/settings/cameras/$camera'
     | '/settings/modules/$moduleId'
     | '/settings/cameras'
@@ -244,11 +266,13 @@ export interface FileRouteTypes {
     | '/auth/verify-code'
     | '/'
     | '/auth'
-    | '/movility/$cameraId'
+    | '/movility/$camera'
     | '/settings/companies'
     | '/settings/roles'
     | '/settings/users'
     | '/movility'
+    | '/movility/$camera/velocity'
+    | '/movility/$camera/volume'
     | '/settings/cameras/$camera'
     | '/settings/modules/$moduleId'
     | '/settings/cameras'
@@ -267,11 +291,13 @@ export interface FileRouteTypes {
     | '/auth/verify-code'
     | '/_dashboard/'
     | '/auth/'
-    | '/_dashboard/movility/$cameraId'
+    | '/_dashboard/movility/$camera'
     | '/_dashboard/settings/companies'
     | '/_dashboard/settings/roles'
     | '/_dashboard/settings/users'
     | '/_dashboard/movility/'
+    | '/_dashboard/movility/$camera/velocity'
+    | '/_dashboard/movility/$camera/volume'
     | '/_dashboard/settings/cameras/$camera'
     | '/_dashboard/settings/modules/$moduleId'
     | '/_dashboard/settings/cameras/'
@@ -397,11 +423,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsCompaniesRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/movility/$cameraId': {
-      id: '/_dashboard/movility/$cameraId'
-      path: '/movility/$cameraId'
-      fullPath: '/movility/$cameraId'
-      preLoaderRoute: typeof DashboardMovilityCameraIdRouteImport
+    '/_dashboard/movility/$camera': {
+      id: '/_dashboard/movility/$camera'
+      path: '/movility/$camera'
+      fullPath: '/movility/$camera'
+      preLoaderRoute: typeof DashboardMovilityCameraRouteRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_dashboard/settings/modules/': {
@@ -432,8 +458,38 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsCamerasCameraRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_dashboard/movility/$camera/volume': {
+      id: '/_dashboard/movility/$camera/volume'
+      path: '/volume'
+      fullPath: '/movility/$camera/volume'
+      preLoaderRoute: typeof DashboardMovilityCameraVolumeRouteImport
+      parentRoute: typeof DashboardMovilityCameraRouteRoute
+    }
+    '/_dashboard/movility/$camera/velocity': {
+      id: '/_dashboard/movility/$camera/velocity'
+      path: '/velocity'
+      fullPath: '/movility/$camera/velocity'
+      preLoaderRoute: typeof DashboardMovilityCameraVelocityRouteImport
+      parentRoute: typeof DashboardMovilityCameraRouteRoute
+    }
   }
 }
+
+interface DashboardMovilityCameraRouteRouteChildren {
+  DashboardMovilityCameraVelocityRoute: typeof DashboardMovilityCameraVelocityRoute
+  DashboardMovilityCameraVolumeRoute: typeof DashboardMovilityCameraVolumeRoute
+}
+
+const DashboardMovilityCameraRouteRouteChildren: DashboardMovilityCameraRouteRouteChildren =
+  {
+    DashboardMovilityCameraVelocityRoute: DashboardMovilityCameraVelocityRoute,
+    DashboardMovilityCameraVolumeRoute: DashboardMovilityCameraVolumeRoute,
+  }
+
+const DashboardMovilityCameraRouteRouteWithChildren =
+  DashboardMovilityCameraRouteRoute._addFileChildren(
+    DashboardMovilityCameraRouteRouteChildren,
+  )
 
 interface DashboardRouteChildren {
   DashboardForecastRoute: typeof DashboardForecastRoute
@@ -442,7 +498,7 @@ interface DashboardRouteChildren {
   DashboardSecurityRoute: typeof DashboardSecurityRoute
   DashboardVariablesRoute: typeof DashboardVariablesRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
-  DashboardMovilityCameraIdRoute: typeof DashboardMovilityCameraIdRoute
+  DashboardMovilityCameraRouteRoute: typeof DashboardMovilityCameraRouteRouteWithChildren
   DashboardSettingsCompaniesRoute: typeof DashboardSettingsCompaniesRoute
   DashboardSettingsRolesRoute: typeof DashboardSettingsRolesRoute
   DashboardSettingsUsersRoute: typeof DashboardSettingsUsersRoute
@@ -460,7 +516,8 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardSecurityRoute: DashboardSecurityRoute,
   DashboardVariablesRoute: DashboardVariablesRoute,
   DashboardIndexRoute: DashboardIndexRoute,
-  DashboardMovilityCameraIdRoute: DashboardMovilityCameraIdRoute,
+  DashboardMovilityCameraRouteRoute:
+    DashboardMovilityCameraRouteRouteWithChildren,
   DashboardSettingsCompaniesRoute: DashboardSettingsCompaniesRoute,
   DashboardSettingsRolesRoute: DashboardSettingsRolesRoute,
   DashboardSettingsUsersRoute: DashboardSettingsUsersRoute,
