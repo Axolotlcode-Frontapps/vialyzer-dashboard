@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { modulesServices } from "@/lib/services/modules";
 import { ModuleAdd } from "@/ui/modules/module-add";
@@ -15,18 +15,11 @@ export const Route = createFileRoute("/_dashboard/settings/modules/")({
 });
 
 function Modules() {
-	const queryClient = useQueryClient();
 	const [openAdd, setOpenAdd] = useState(false);
-
-	const moduleCache = queryClient.getQueryData<GeneralResponse<Module[]>>([
-		"modules",
-	]);
 
 	const { data: modules = [] } = useQuery({
 		queryKey: ["modules"],
 		queryFn: async () => await modulesServices.getAllModules(),
-		initialData: moduleCache,
-		enabled: !moduleCache,
 		select: (data) => data.payload,
 	});
 

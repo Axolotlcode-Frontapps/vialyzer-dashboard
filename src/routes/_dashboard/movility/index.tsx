@@ -1,9 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { SearchIcon } from "lucide-react";
 import { GoogleMapsProvider } from "@/contexts/maps";
 
 import { movilitySchemas } from "@/lib/schemas/movility";
+import { hasModule } from "@/lib/utils/permissions";
 import { DetailsCard } from "@/ui/movility/details-card";
 import { LocationFilter } from "@/ui/movility/location-filter";
 import { Locations } from "@/ui/movility/locations";
@@ -18,6 +19,27 @@ import { MapLegend } from "@/ui/shared/maps/map-legend";
 export const Route = createFileRoute("/_dashboard/movility/")({
 	component: Mobility,
 	validateSearch: zodValidator(movilitySchemas.filters),
+	beforeLoad: async ({
+		context: {
+			permissions: { user },
+		},
+	}) => {
+		if (!user) {
+			throw redirect({
+				to: "/",
+				replace: true,
+			});
+		}
+
+		const hasRoleModule = hasModule("movilidad", user);
+
+		if (!hasRoleModule) {
+			throw redirect({
+				to: "/",
+				replace: true,
+			});
+		}
+	},
 });
 
 function Mobility() {

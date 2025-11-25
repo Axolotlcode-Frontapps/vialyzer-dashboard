@@ -1,9 +1,9 @@
 import { useHasModule } from "@/hooks/use-permissions";
 
-import type { Module } from "@/types/enums";
+import type { MODULE_NAME } from "@/types/enums";
 
 export interface HasModuleProps {
-	moduleName: keyof typeof Module;
+	moduleName: MODULE_NAME;
 	children: React.ReactNode;
 	fallback?: React.ReactNode;
 }

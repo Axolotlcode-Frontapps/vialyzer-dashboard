@@ -1,6 +1,11 @@
 import { usePermissions } from "@/contexts/permissions";
 
-import type { ROLES_NAMES } from "@/types/enums";
+import type {
+	ACTION_NAME,
+	MODULE_BASE_NAME,
+	MODULE_NAME,
+	ROLES_NAMES,
+} from "@/types/enums";
 
 import {
 	hasAnyMultiplePermissions,
@@ -13,32 +18,34 @@ import {
 export const useHasRole = () => {
 	const { user } = usePermissions();
 
-	const hasVerifyRole = (role: keyof typeof ROLES_NAMES) =>
-		hasRole(role, user!);
+	const hasVerifyRole = (role: ROLES_NAMES) => hasRole(role, user!);
 	return { hasRole: hasVerifyRole };
 };
 
 export const useHasModule = () => {
 	const { user } = usePermissions();
 
-	const hasModuleVerify = (moduleName: string) => hasModule(moduleName, user!);
+	const hasModuleVerify = (moduleName: MODULE_NAME) =>
+		hasModule(moduleName, user!);
 	return { hasModule: hasModuleVerify };
 };
 
 export const useHasPermission = () => {
 	const { user } = usePermissions();
 
-	const hasPermissionVerify = (moduleBase: string, permissionName: string) =>
-		hasPermission(moduleBase, permissionName, user!);
+	const hasPermissionVerify = (
+		moduleBase: MODULE_BASE_NAME,
+		permissionName: ACTION_NAME
+	) => hasPermission(moduleBase, permissionName, user!);
 
 	const hasAnyMultiplePermissionsVerify = (
-		moduleBase: string,
-		permissionNames: string[]
+		moduleBase: MODULE_BASE_NAME,
+		permissionNames: ACTION_NAME[]
 	) => hasAnyMultiplePermissions(moduleBase, permissionNames, user!);
 
 	const hasMultiplePermissionsVerify = (
-		moduleBase: string,
-		permissionNames: string[]
+		moduleBase: MODULE_BASE_NAME,
+		permissionNames: ACTION_NAME[]
 	) => hasMultiplePermissions(moduleBase, permissionNames, user!);
 
 	return {

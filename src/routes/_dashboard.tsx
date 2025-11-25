@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { queryOptions } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { queryOptions, useQueryClient } from "@tanstack/react-query";
 
 import { usersService } from "@/lib/services/users";
 import { Header } from "@/ui/shared/header";
@@ -32,6 +33,19 @@ export const Route = createFileRoute("/_dashboard")({
 });
 
 function PrivateLayout() {
+	const queryClient = useQueryClient();
+	const navigate = Route.useNavigate();
+	const user = queryClient.getQueryData<GeneralResponse<User>>(
+		getMeQuery.queryKey
+	)?.payload;
+
+	useEffect(() => {
+		if (user?.firstLogin) {
+			navigate({ to: "/update-password" });
+			usersService.updateCurrentUser();
+		}
+	}, [user, navigate]);
+
 	return (
 		<SidebarProvider
 			style={

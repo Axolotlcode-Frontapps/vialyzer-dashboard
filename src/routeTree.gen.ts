@@ -17,6 +17,7 @@ import { Route as AuthVerifyCodeRouteImport } from './routes/auth/verify-code'
 import { Route as AuthUpdatePasswordRouteImport } from './routes/auth/update-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
 import { Route as DashboardVariablesRouteImport } from './routes/_dashboard/variables'
+import { Route as DashboardUpdatePasswordRouteImport } from './routes/_dashboard/update-password'
 import { Route as DashboardSecurityRouteImport } from './routes/_dashboard/security'
 import { Route as DashboardProfileRouteImport } from './routes/_dashboard/profile'
 import { Route as DashboardMonitoringRouteImport } from './routes/_dashboard/monitoring'
@@ -68,6 +69,11 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
 const DashboardVariablesRoute = DashboardVariablesRouteImport.update({
   id: '/variables',
   path: '/variables',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardUpdatePasswordRoute = DashboardUpdatePasswordRouteImport.update({
+  id: '/update-password',
+  path: '/update-password',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardSecurityRoute = DashboardSecurityRouteImport.update({
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/monitoring': typeof DashboardMonitoringRoute
   '/profile': typeof DashboardProfileRoute
   '/security': typeof DashboardSecurityRoute
+  '/update-password': typeof DashboardUpdatePasswordRoute
   '/variables': typeof DashboardVariablesRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/update-password': typeof AuthUpdatePasswordRoute
@@ -169,6 +176,7 @@ export interface FileRoutesByTo {
   '/monitoring': typeof DashboardMonitoringRoute
   '/profile': typeof DashboardProfileRoute
   '/security': typeof DashboardSecurityRoute
+  '/update-password': typeof DashboardUpdatePasswordRoute
   '/variables': typeof DashboardVariablesRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/update-password': typeof AuthUpdatePasswordRoute
@@ -193,6 +201,7 @@ export interface FileRoutesById {
   '/_dashboard/monitoring': typeof DashboardMonitoringRoute
   '/_dashboard/profile': typeof DashboardProfileRoute
   '/_dashboard/security': typeof DashboardSecurityRoute
+  '/_dashboard/update-password': typeof DashboardUpdatePasswordRoute
   '/_dashboard/variables': typeof DashboardVariablesRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/update-password': typeof AuthUpdatePasswordRoute
@@ -217,6 +226,7 @@ export interface FileRouteTypes {
     | '/monitoring'
     | '/profile'
     | '/security'
+    | '/update-password'
     | '/variables'
     | '/auth/forgot-password'
     | '/auth/update-password'
@@ -238,6 +248,7 @@ export interface FileRouteTypes {
     | '/monitoring'
     | '/profile'
     | '/security'
+    | '/update-password'
     | '/variables'
     | '/auth/forgot-password'
     | '/auth/update-password'
@@ -261,6 +272,7 @@ export interface FileRouteTypes {
     | '/_dashboard/monitoring'
     | '/_dashboard/profile'
     | '/_dashboard/security'
+    | '/_dashboard/update-password'
     | '/_dashboard/variables'
     | '/auth/forgot-password'
     | '/auth/update-password'
@@ -339,6 +351,13 @@ declare module '@tanstack/react-router' {
       path: '/variables'
       fullPath: '/variables'
       preLoaderRoute: typeof DashboardVariablesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/update-password': {
+      id: '/_dashboard/update-password'
+      path: '/update-password'
+      fullPath: '/update-password'
+      preLoaderRoute: typeof DashboardUpdatePasswordRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_dashboard/security': {
@@ -440,6 +459,7 @@ interface DashboardRouteChildren {
   DashboardMonitoringRoute: typeof DashboardMonitoringRoute
   DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardSecurityRoute: typeof DashboardSecurityRoute
+  DashboardUpdatePasswordRoute: typeof DashboardUpdatePasswordRoute
   DashboardVariablesRoute: typeof DashboardVariablesRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardMovilityCameraIdRoute: typeof DashboardMovilityCameraIdRoute
@@ -458,6 +478,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardMonitoringRoute: DashboardMonitoringRoute,
   DashboardProfileRoute: DashboardProfileRoute,
   DashboardSecurityRoute: DashboardSecurityRoute,
+  DashboardUpdatePasswordRoute: DashboardUpdatePasswordRoute,
   DashboardVariablesRoute: DashboardVariablesRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardMovilityCameraIdRoute: DashboardMovilityCameraIdRoute,

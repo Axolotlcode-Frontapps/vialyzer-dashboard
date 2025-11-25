@@ -1,9 +1,8 @@
-import { useNavigate, useRouter } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
+import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth";
-import { useAppForm } from "@/contexts/form";
 
 import type { SignInValues } from "@/lib/schemas/auth";
 
@@ -14,7 +13,11 @@ import {
 	getRememberMeEmail,
 	setRememberMeData,
 } from "@/lib/utils/remember-me-cookie";
-import { Button } from "@/ui/shared/button";
+import { Button, buttonVariants } from "../shared/button";
+import { Field, FieldError, FieldLabel } from "../shared/field";
+import { ForgotPasswordInput } from "../shared/forgot-password-input";
+import { Input } from "../shared/input";
+import { Spinner } from "../shared/spinner";
 
 export function SignInForm() {
 	const auth = useAuth();
@@ -22,27 +25,23 @@ export function SignInForm() {
 	const navigate = useNavigate();
 	const initialEmail = getRememberMeEmail();
 
-	const form = useAppForm({
+	const form = useForm({
 		defaultValues: {
 			username: initialEmail || "",
 			password: "",
 			rememberMe: !!initialEmail,
 		},
 		validators: {
-			onMount: ({ formApi }) => {
-				formApi.state.canSubmit = false;
-				return authSchemas.signIn;
-			},
+			onMount: authSchemas.signIn,
 			onChange: authSchemas.signIn,
-			onSubmitAsync: async ({ formApi }) => {
-				formApi.state.isSubmitting = true;
-			},
 		},
 		onSubmit: ({ value }) => loginMutation.mutate(value),
 	});
 
 	const loginMutation = useMutation({
 		mutationFn: async (values: SignInValues) => {
+			form.state.isSubmitting = true;
+			form.state.canSubmit = false;
 			const data = await authServices.signIn(values);
 
 			if (!data.payload?.token) return;
@@ -78,13 +77,6 @@ export function SignInForm() {
 		},
 	});
 
-	useEffect(() => {
-		if (loginMutation.isPending) {
-			form.state.isSubmitting = true;
-			form.state.canSubmit = false;
-		}
-	}, [loginMutation.isPending, form.state]);
-
 	return (
 		<form
 			onSubmit={(e) => {
@@ -93,44 +85,72 @@ export function SignInForm() {
 			}}
 			className="flex flex-col gap-4"
 		>
-			<form.AppField
+			<form.Field
 				name="username"
-				children={(field) => (
-					<field.TextField
-						label="Correo electrónico"
-						placeholder="Correo electrónico"
-					/>
-				)}
+				children={(field) => {
+					const isInvalid =
+						field.state.meta.isTouched && !field.state.meta.isValid;
+					return (
+						<Field data-invalid={isInvalid}>
+							<FieldLabel htmlFor={field.name}>
+								Correo electrónico o numero de usuario
+							</FieldLabel>
+							<Input
+								id={field.name}
+								value={field.state.value}
+								onBlur={field.handleBlur}
+								onChange={(e) => field.handleChange(e.target.value)}
+								placeholder="Ingresa tu correo electrónico o número de usuario"
+								autoComplete="off"
+							/>
+							{isInvalid && <FieldError errors={field.state.meta.errors} />}
+						</Field>
+					);
+				}}
 			/>
-			<form.AppField
+			<form.Field
 				name="password"
-				children={(field) => (
-					<field.PasswordField label="Contraseña" placeholder="Contraseña" />
-				)}
+				children={(field) => {
+					const isInvalid =
+						field.state.meta.isTouched && !field.state.meta.isValid;
+					return (
+						<ForgotPasswordInput
+							isInvalid={isInvalid}
+							handleBlur={field.handleBlur}
+							handleChange={field.handleChange}
+							value={field.state.value}
+							name={field.name}
+							label="Contraseña"
+							placeholder="Ingresa tu contraseña"
+							children={() =>
+								isInvalid && <FieldError errors={field.state.meta.errors} />
+							}
+						/>
+					);
+				}}
 			/>
 
-			<div className="flex flex-col gap-4">
-				<form.AppField
-					name="rememberMe"
-					children={(field) => <field.Switchfield label="Recordar sesión" />}
-				/>
+			<Link
+				to="/auth/forgot-password"
+				className={buttonVariants({
+					variant: "link",
+					className:
+						"w-full cursor-pointer text-muted-foreground! mt-10 justify-end px-0!",
+				})}
+			>
+				¿Olvidaste tu contraseña?
+			</Link>
 
-				<Button
-					variant="link"
-					onClick={() => navigate({ to: "/auth/forgot-password" })}
-					className="cursor-pointer text-muted-foreground p-0 self-end"
-				>
-					¿Olvidaste tu contraseña?
-				</Button>
-			</div>
-			<form.AppForm>
-				<form.SubmitButton
-					label="Iniciar sesión"
-					labelLoading="Iniciando sesión..."
-					className="w-full text-base h-11.5"
-					size="lg"
-				/>
-			</form.AppForm>
+			<form.Subscribe
+				selector={(state) => [state.canSubmit, state.isSubmitting]}
+			>
+				{([canSubmit, isSubmitting]) => (
+					<Button type="submit" disabled={!canSubmit}>
+						{isSubmitting ? <Spinner /> : null}
+						{isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
+					</Button>
+				)}
+			</form.Subscribe>
 		</form>
 	);
 }
