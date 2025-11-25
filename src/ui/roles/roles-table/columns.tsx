@@ -34,7 +34,7 @@ export const useRolesColumns = () => {
 				),
 				cell: ({ row }) => (
 					<Badge variant="secondary" className="capitalize">
-						{row.original.modules.length} Módulos
+						{row.original.modules?.length ?? 0} Módulos
 					</Badge>
 				),
 			},
@@ -45,7 +45,7 @@ export const useRolesColumns = () => {
 				),
 				cell: ({ row }) => (
 					<Badge variant="secondary" className="capitalize">
-						{row.original.permissions.length} Permisos
+						{row.original.permissions?.length ?? 0} Permisos
 					</Badge>
 				),
 			},
