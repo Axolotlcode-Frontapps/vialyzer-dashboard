@@ -1,23 +1,23 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-import type { SourceLine } from "@/lib/services/settings";
+import type { Camera } from "@/lib/services/settings";
 
 import { settings } from "@/lib/services/settings";
 import { Route } from "@/routes/_dashboard/settings/cameras/$camera";
 
 interface UseGetScenarioLinesReturn {
-	data: SourceLine[];
+	data?: Camera;
 	error: Error | null;
 	refetch: () => void;
 	loading: boolean;
 }
 
-export function useGetScenarioLines(): UseGetScenarioLinesReturn {
+export function useGetPreview(): UseGetScenarioLinesReturn {
 	const { camera } = Route.useParams();
 
 	const {
-		data = [],
+		data,
 		isLoading,
 		isRefetching,
 		isFetching,
@@ -25,8 +25,8 @@ export function useGetScenarioLines(): UseGetScenarioLinesReturn {
 		error,
 		refetch,
 	} = useQuery({
-		queryKey: ["scenario-lines", camera],
-		queryFn: async () => settings.getScenarioLines({ id: camera }),
+		queryKey: ["scenario-line-camera", camera],
+		queryFn: async () => settings.preview(camera),
 	});
 
 	const loading = useMemo(

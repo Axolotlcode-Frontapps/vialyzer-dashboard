@@ -25,7 +25,7 @@ export function useLoadVehicles(): UseGetScenarioLinesReturn {
 		error,
 		refetch,
 	} = useQuery({
-		queryKey: ["scenario-vehicles"],
+		queryKey: ["scenario-vehicles", camera],
 		queryFn: async () => settings.loadVehicles({ id: camera }),
 		refetchOnWindowFocus: false,
 	});

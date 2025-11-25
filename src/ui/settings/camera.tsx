@@ -7,6 +7,7 @@ import type {
 
 import Image from "@/assets/images/config-mock.png";
 import { useAddScenarioLine } from "@/hooks/settings/use-add-scenario";
+import { useGetPreview } from "@/hooks/settings/use-get-previewy";
 import { useGetScenarioLines } from "@/hooks/settings/use-get-scenario-lines";
 import { useLoadVehicles } from "@/hooks/settings/use-load-vehicles";
 import { useRemoveScenarioLine } from "@/hooks/settings/use-remove-scenario";
@@ -84,6 +85,7 @@ const bridge = new DrawingBridge({
 });
 
 export function Camera() {
+	const { data: preview } = useGetPreview();
 	const { data: vehicles, loading } = useLoadVehicles();
 	const { add } = useAddScenarioLine();
 	const { remove } = useRemoveScenarioLine();
@@ -186,7 +188,7 @@ export function Camera() {
 	return (
 		<div className="relative">
 			<Lines
-				src={Image}
+				src={preview?.previewImageUrl || Image}
 				type="image"
 				onDrawingComplete={handleDrawingComplete}
 				onSave={handleSaveElements}
