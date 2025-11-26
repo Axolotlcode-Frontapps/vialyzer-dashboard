@@ -3,8 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 
 // import { getSpeedTable } from '@/logic/services/movility/get-speed-table';
 
+// import { getSpeedTable } from '@/logic/services/movility/get-speed-table';
+
 import type { ColumnDef } from "@tanstack/react-table";
-import type { VehicleType } from "@/types/movility";
+import type { VehicleType } from "@/types/agents";
 
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
 import { GraphsTable } from "../shared/data-table/graphs-table";
@@ -17,6 +19,7 @@ type Row = {
 	total: number | string;
 };
 
+// biome-ignore lint/suspicious/noExplicitAny: temporary mock function with flexible params
 function getSpeedTable(_camera: string, _params: any) {
 	return Promise.resolve({
 		payload: [

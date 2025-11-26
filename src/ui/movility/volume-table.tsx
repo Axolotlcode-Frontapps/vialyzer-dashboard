@@ -3,8 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 
 // import { getVolumeTable } from "@/logic/services/movility/get-volumne-table";
 
+// import { getVolumeTable } from "@/logic/services/movility/get-volumne-table";
+
 import type { ColumnDef } from "@tanstack/react-table";
-import type { VehicleType } from "@/types/movility";
+import type { VehicleType } from "@/types/agents";
 
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
 import { GraphsTable } from "../shared/data-table/graphs-table";

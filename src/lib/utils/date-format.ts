@@ -6,7 +6,18 @@ import {
 	weekStart,
 } from "@formkit/tempo";
 
-import type { RangeDates, TimeRange } from "@/types/movility";
+export interface TimeRange {
+	startDate: string;
+	endDate: string;
+}
+
+export type RangeDates = "7d" | "30d" | "custom";
+
+export type RangeInterval = {
+	date: string;
+	startInterval: string;
+	endInterval: string;
+};
 
 export const formatDate = (date: string) => {
 	return format({

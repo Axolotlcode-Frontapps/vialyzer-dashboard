@@ -1,4 +1,4 @@
-import type { Status, StatusType } from "@/types/movility";
+export type StatusType = "normal" | "warning" | "error";
 
 export const STATUS_STYLES = {
 	normal: {
@@ -22,52 +22,31 @@ export const STATUS_STYLES = {
 };
 
 export const STATUS: Record<
-	Status,
+	TCameraStatus,
 	{ label: string; color: string; dot: string }
 > = {
-	// normal statuses
 	PROCESSING: { ...STATUS_STYLES.normal, label: "Procesando" },
-	// warning statuses
-	PROVISIONING: { ...STATUS_STYLES.warning, label: "Provisionando" },
-	VALIDATION: { ...STATUS_STYLES.warning, label: "Validación" },
 	WAITING_FOR_CONFIGURATION: {
 		...STATUS_STYLES.warning,
 		label: "Esperando configuración",
 	},
-	VIEW_CHANGED: { ...STATUS_STYLES.warning, label: "Vista cambiada" },
-	// error statuses
-	UNIT_DISCONNECTED: { ...STATUS_STYLES.error, label: "Unidad desconectada" },
-	UNIT_IMPAIRED: { ...STATUS_STYLES.error, label: "Unidad con problemas" },
-	PROVISIONING_FAILED: {
-		...STATUS_STYLES.error,
-		label: "Provisionamiento fallido",
-	},
-	VALIDATION_FAILED: { ...STATUS_STYLES.error, label: "Validación fallida" },
 	PROCESSING_STOPPED: {
 		...STATUS_STYLES.error,
 		label: "Procesamiento detenido",
 	},
 	CAMERA_DISCONNECTED: { ...STATUS_STYLES.error, label: "Cámara desconectada" },
-	CAMERA_ERROR: { ...STATUS_STYLES.error, label: "Error de cámara" },
 };
 
-export const STATUS_ORDER: Record<StatusType, Status[]> = {
-	normal: ["PROCESSING"],
-	warning: [
-		"PROVISIONING",
-		"VALIDATION",
-		"WAITING_FOR_CONFIGURATION",
-		"VIEW_CHANGED",
-	],
-	error: [
-		"UNIT_DISCONNECTED",
-		"UNIT_IMPAIRED",
-		"PROVISIONING_FAILED",
-		"VALIDATION_FAILED",
-		"PROCESSING_STOPPED",
-		"CAMERA_ERROR",
-		"CAMERA_DISCONNECTED",
-	],
-};
+export const STATUS_ORDER: Record<keyof typeof STATUS_STYLES, TCameraStatus[]> =
+	{
+		normal: ["PROCESSING"],
+		warning: ["WAITING_FOR_CONFIGURATION"],
+		error: ["PROCESSING_STOPPED", "CAMERA_DISCONNECTED"],
+	};
 
-export const STATUS_TYPES: StatusType[] = ["normal", "warning", "error"];
+export const STATUS_TYPES: TCameraStatus[] = [
+	"PROCESSING",
+	"CAMERA_DISCONNECTED",
+	"WAITING_FOR_CONFIGURATION",
+	"PROCESSING_STOPPED",
+];

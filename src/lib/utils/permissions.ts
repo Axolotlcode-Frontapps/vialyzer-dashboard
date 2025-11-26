@@ -1,11 +1,16 @@
-import type { ROLES_NAMES } from "@/types/enums";
+import type {
+	ACTION_NAME,
+	MODULE_BASE_NAME,
+	MODULE_NAME,
+	ROLES_NAMES,
+} from "@/types/enums";
 
-export const hasRole = (role: keyof typeof ROLES_NAMES, user: User) => {
+export const hasRole = (role: ROLES_NAMES, user: User) => {
 	if (!user || !role) return false;
 	return user.role.name.toLowerCase() === role.toLowerCase();
 };
 
-export const hasModule = (moduleName: string, user: User) => {
+export const hasModule = (moduleName: MODULE_NAME, user: User) => {
 	if (!user || !moduleName) return false;
 	return user.role.modules.some(
 		(module) => module.name.toLowerCase() === moduleName.toLowerCase()
@@ -13,8 +18,8 @@ export const hasModule = (moduleName: string, user: User) => {
 };
 
 export const hasPermission = (
-	moduleBase: string,
-	permissionName: string,
+	moduleBase: MODULE_BASE_NAME,
+	permissionName: ACTION_NAME,
 	user: User
 ) => {
 	if (!user || !permissionName || !moduleBase) return false;
@@ -26,8 +31,8 @@ export const hasPermission = (
 };
 
 export const hasMultiplePermissions = (
-	moduleBase: string,
-	permissionNames: string[],
+	moduleBase: MODULE_BASE_NAME,
+	permissionNames: ACTION_NAME[],
 	user: User
 ) => {
 	if (!user || !permissionNames || permissionNames.length === 0 || !moduleBase)
@@ -42,8 +47,8 @@ export const hasMultiplePermissions = (
 };
 
 export const hasAnyMultiplePermissions = (
-	moduleBase: string,
-	permissionNames: string[],
+	moduleBase: MODULE_BASE_NAME,
+	permissionNames: ACTION_NAME[],
 	user: User
 ) => {
 	if (!user || !permissionNames || permissionNames.length === 0 || !moduleBase)
