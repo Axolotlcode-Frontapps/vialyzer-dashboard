@@ -47,7 +47,12 @@ axiosInstance.interceptors.response.use(
 			return Promise.reject(error);
 		}
 
-		if (error.response?.status === 401 && !originalRequest._retry) {
+		if (
+			error.response?.status === 403 &&
+			(error.response.data as GeneralResponse<unknown>).message ===
+				"Token expired" &&
+			!originalRequest._retry
+		) {
 			originalRequest._retry = true;
 
 			const currentRefreshToken = getSessionCookie(SESSION_NAME)?.refreshToken;
