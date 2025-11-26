@@ -23,12 +23,13 @@ class AuthSchemas {
 	});
 
 	forgotPassword = z.object({
-		username: z.email("El correo electrónico o número de usuario no es válido"),
+		email: z.email("El correo electrónico o número de usuario no es válido"),
 	});
 
-	verifyQueries = z.object({
+	verifyToken = z.object({
 		userId: z.uuid("El ID de usuario no es válido").optional(),
 		token: z.string().optional(),
+		email: z.string().optional(),
 	});
 
 	verifyCode = z.object({
@@ -54,6 +55,6 @@ export const authSchemas = new AuthSchemas();
 
 export type SignInValues = z.infer<typeof authSchemas.signIn>;
 export type ForgotPasswordValues = z.infer<typeof authSchemas.forgotPassword>;
-export type VerifyCodeQueries = z.infer<typeof authSchemas.verifyQueries>;
+export type VerifyTokenQueries = z.infer<typeof authSchemas.verifyToken>;
 export type VerifyCodeValues = z.infer<typeof authSchemas.verifyCode>;
 export type UpdatePasswordValues = z.infer<typeof authSchemas.updatePassword>;

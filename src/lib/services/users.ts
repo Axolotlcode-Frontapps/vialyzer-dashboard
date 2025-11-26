@@ -1,3 +1,4 @@
+import type { UpdatePasswordValues } from "../schemas/auth";
 import type { UserValues } from "../schemas/settings";
 
 import { fetcher } from "../utils/fetch-api";
@@ -25,14 +26,22 @@ class UsersService {
 
 	async updateUser(id: string, values: UserValues) {
 		const { role, company, ...rest } = values;
-		const parseData = {
-			...rest,
-			idRole: role,
-			idCompany: company,
-		};
+
 		return await fetcher<GeneralResponse<User>>(`/users/update-user/${id}`, {
 			method: "PATCH",
-			data: { ...parseData },
+			data: { ...rest, idRole: role, idCompany: company },
+		});
+	}
+
+	async updateCurrentUser(values?: UpdatePasswordValues) {
+		const { password } = values ?? {};
+
+		return await fetcher<GeneralResponse<User>>(`/users/update`, {
+			method: "PUT",
+			data: {
+				...(password ? { password } : {}),
+				firstLogin: false,
+			},
 		});
 	}
 

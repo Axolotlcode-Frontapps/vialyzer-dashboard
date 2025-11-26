@@ -1,20 +1,12 @@
 import { getRouteApi } from "@tanstack/react-router";
 import { useCameras } from "@/hooks/use-cameras";
 
-import type { StatusType } from "@/types/movility";
+import type { StatusType } from "@/lib/utils/statuses";
 
 import { cn } from "@/lib/utils/cn";
-import {
-	STATUS_ORDER,
-	STATUS_STYLES,
-	STATUS_TYPES,
-} from "@/lib/utils/statuses";
+import { STATUS_ORDER, STATUS_STYLES } from "@/lib/utils/statuses";
 import { Button } from "../shared/button";
 import { ScrollArea, ScrollBar } from "../shared/scroll-area";
-
-function isStatusType(key: StatusType): key is StatusType {
-	return STATUS_TYPES.includes(key);
-}
 
 const Route = getRouteApi("/_dashboard/settings/cameras/");
 
@@ -36,7 +28,7 @@ export function LocationFilter() {
 	return (
 		<ScrollArea className="w-full pb-2.5">
 			<div className="flex gap-3 mb-2">
-				{(["all", ...STATUS_TYPES] as const).map((category) => (
+				{(["all", "normal", "warning", "error"] as const).map((category) => (
 					<Button
 						key={category}
 						type="button"
@@ -48,23 +40,25 @@ export function LocationFilter() {
 								? "bg-accent border-accent-foreground text-accent-foreground"
 								: "hover:bg-accent/50"
 						)}
-						onClick={() => onFilter(category === "all" ? null : category)}
+						onClick={() =>
+							onFilter(category === "all" ? null : (category as StatusType))
+						}
 					>
-						{category !== "all" && isStatusType(category) && (
+						{category !== "all" && (
 							<span
-								className={`w-3 h-3 rounded-full ${STATUS_STYLES[category].color} inline-block`}
+								className={`w-3 h-3 rounded-full ${STATUS_STYLES[category as keyof typeof STATUS_STYLES].color} inline-block`}
 							/>
 						)}
 						{category === "all"
 							? "Todos"
-							: isStatusType(category)
-								? STATUS_STYLES[category].label
-								: ""}
+							: STATUS_STYLES[category as keyof typeof STATUS_STYLES].label}
 						<span className="ml-2 text-base font-bold">
 							{category === "all"
 								? cameras?.length
 								: cameras?.filter((l) =>
-										STATUS_ORDER[category].includes(l.state)
+										STATUS_ORDER[
+											category as keyof typeof STATUS_STYLES
+										].includes(l.state)
 									).length}
 						</span>
 					</Button>

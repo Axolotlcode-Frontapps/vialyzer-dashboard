@@ -2,7 +2,7 @@ interface Camera {
 	id: string;
 	name: string;
 	externalId: string;
-	state: TStatus;
+	state: TCameraStatus;
 	location: {
 		latitude: string;
 		longitude: string;

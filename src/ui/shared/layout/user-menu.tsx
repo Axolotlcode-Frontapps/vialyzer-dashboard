@@ -14,6 +14,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "../dropdown-menu";
+import { HasModule } from "../permissions/has-module";
 
 export function UserMenu() {
 	const user = {
@@ -79,10 +80,14 @@ export function UserMenu() {
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					<DropdownMenuItem onClick={() => router.navigate({ to: "/profile" })}>
-						<BadgeCheck />
-						Mi cuenta
-					</DropdownMenuItem>
+					<HasModule moduleName="perfil">
+						<DropdownMenuItem
+							onClick={() => router.navigate({ to: "/profile" })}
+						>
+							<BadgeCheck />
+							Mi cuenta
+						</DropdownMenuItem>
+					</HasModule>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem onClick={handleLogout}>
