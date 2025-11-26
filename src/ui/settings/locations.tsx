@@ -17,14 +17,6 @@ export function Locations() {
 			const matchesSearch = camera.name
 				.toLowerCase()
 				.includes(search?.toLowerCase() ?? "");
-
-			// const filterStatis = camera.
-
-			// console.log(filter);
-
-			// if (filter) {
-			// 	return matchesSearch;
-			// }
 			return matchesSearch;
 		});
 	}, [cameras, search]);
@@ -37,13 +29,23 @@ export function Locations() {
 						Cargando ubicaciones...
 					</li>
 				</Activity>
-				<Activity mode={filteredCameras.length === 0 ? "hidden" : "visible"}>
+				<Activity
+					mode={filteredCameras.length === 0 || loading ? "hidden" : "visible"}
+				>
 					{filteredCameras.map((loc) => (
 						<li
 							key={loc.id}
-							onClick={() => onSelect(loc.id)}
+							aria-disabled={loc.state === "CAMERA_DISCONNECTED"}
+							onClick={() =>
+								loc.state === "CAMERA_DISCONNECTED"
+									? undefined
+									: onSelect(loc.id)
+							}
 							onKeyDown={(e) => {
-								if (e.key === "Enter" || e.key === " ") {
+								if (
+									(e.key === "Enter" || e.key === " ") &&
+									loc.state !== "CAMERA_DISCONNECTED"
+								) {
 									e.preventDefault();
 									onSelect(loc.id);
 								}
@@ -53,7 +55,12 @@ export function Locations() {
 								selected === loc.id
 									? "border-primary ring-2 ring-primary/30 bg-primary/10"
 									: (STATUS[loc.state] ?? "border-muted")
-							}`}
+							}${
+								loc.state === "CAMERA_DISCONNECTED"
+									? "hover:cursor-not-allowed opacity-60"
+									: ""
+							}
+							`}
 						>
 							<div className="flex items-center justify-between">
 								<span className="font-bold text-lg">{loc.name}</span>
