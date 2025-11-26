@@ -50,7 +50,7 @@ axiosInstance.interceptors.response.use(
 		if (
 			error.response?.status === 403 &&
 			(error.response.data as GeneralResponse<unknown>).message ===
-				"Token expired" &&
+				"REFRESH_TOKEN_EXPIRED" &&
 			!originalRequest._retry
 		) {
 			originalRequest._retry = true;
