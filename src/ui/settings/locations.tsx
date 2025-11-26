@@ -52,9 +52,17 @@ export function Locations() {
 					filteredCameras.map((loc) => (
 						<li
 							key={loc.id}
-							onClick={() => onSelect(loc.id)}
+							aria-disabled={loc.state === "CAMERA_DISCONNECTED"}
+							onClick={() =>
+								loc.state === "CAMERA_DISCONNECTED"
+									? undefined
+									: onSelect(loc.id)
+							}
 							onKeyDown={(e) => {
-								if (e.key === "Enter" || e.key === " ") {
+								if (
+									(e.key === "Enter" || e.key === " ") &&
+									loc.state !== "CAMERA_DISCONNECTED"
+								) {
 									e.preventDefault();
 									onSelect(loc.id);
 								}
