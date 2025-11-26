@@ -71,7 +71,6 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 
 						const source = await settings.addDatasource({
 							scenery_id: config.id,
-							vehicle_id: layer.category,
 							description: layer.description,
 							visual_coordinates,
 							camera,

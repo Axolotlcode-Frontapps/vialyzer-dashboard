@@ -97,7 +97,7 @@ export interface CreateScenarioLineBody {
 export interface CreateDatasourceBody {
 	camera: string;
 	scenery_id: string;
-	vehicle_id: string;
+	vehicle_id?: string;
 	description?: string;
 	second_scenery?: string;
 	visual_coordinates?: LineElement["visual_coordinates"];
