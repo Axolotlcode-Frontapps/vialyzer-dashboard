@@ -17,8 +17,9 @@ const cameraPinSvg = `data:image/svg+xml;utf8,<svg width='48' height='64' viewBo
 
 export function Maps() {
 	const { isLoaded } = useGoogleMaps();
+
 	const { data: previewCamerasData } = useQuery({
-		queryKey: ["get-cameras"],
+		queryKey: ["cameras"],
 		queryFn: async () => await homeService.getCameras(),
 		select: (data) => data.payload || [],
 	});
