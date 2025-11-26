@@ -48,8 +48,8 @@ function Mobility() {
 
 	function handleSearchChange(newValue: string) {
 		navigate({
-			...search,
 			search: {
+				...search,
 				search: newValue === "" ? undefined : newValue,
 			},
 		});

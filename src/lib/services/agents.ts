@@ -1,3 +1,5 @@
+import type { Agent } from "@/types/agents";
+
 import { fetcher } from "../utils/fetch-api";
 
 class AgentsServices {
