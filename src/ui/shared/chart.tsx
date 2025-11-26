@@ -1,6 +1,8 @@
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 
+import type { Payload } from "recharts/types/component/DefaultLegendContent";
+
 import { cn } from "@/lib/utils/cn";
 
 // Format: { THEME_NAME: CSS_SELECTOR }
@@ -256,10 +258,17 @@ function ChartLegendContent({
 	payload,
 	verticalAlign = "bottom",
 	nameKey,
+	showValue = false,
+	formatterValue,
+	itemClassName,
 }: React.ComponentProps<"div"> &
 	Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
 		hideIcon?: boolean;
 		nameKey?: string;
+		showValue?: boolean;
+		// biome-ignore lint/suspicious/noExplicitAny: Needed for formatter
+		formatterValue?: (value: any, item: Payload) => React.ReactNode;
+		itemClassName?: string;
 	}) {
 	const { config } = useChart();
 
@@ -285,7 +294,8 @@ function ChartLegendContent({
 						<div
 							key={item.value}
 							className={cn(
-								"[&>svg]:text-muted-foreground flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3"
+								"[&>svg]:text-muted-foreground flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3",
+								itemClassName
 							)}
 						>
 							{itemConfig?.icon && !hideIcon ? (
@@ -299,6 +309,10 @@ function ChartLegendContent({
 								/>
 							)}
 							{itemConfig?.label}
+							{showValue
+								? (formatterValue?.(item.payload?.value, item) ??
+									item.payload?.value)
+								: null}
 						</div>
 					);
 				})}

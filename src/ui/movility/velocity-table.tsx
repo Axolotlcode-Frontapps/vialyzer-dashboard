@@ -1,0 +1,210 @@
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+
+// import { getSpeedTable } from '@/logic/services/movility/get-speed-table';
+
+// import { getSpeedTable } from '@/logic/services/movility/get-speed-table';
+
+import type { ColumnDef } from "@tanstack/react-table";
+import type { VehicleType } from "@/types/agents";
+
+import { Route } from "@/routes/_dashboard/movility/$camera/route";
+import { GraphsTable } from "../shared/data-table/graphs-table";
+import { Skeleton } from "../shared/skeleton";
+import { useGraphFilters, vehicles } from "./filters/use-graph-filters";
+
+type Row = {
+	vehicle: VehicleType | "Total";
+	[sceario: string]: number | string;
+	total: number | string;
+};
+
+// biome-ignore lint/suspicious/noExplicitAny: temporary mock function with flexible params
+function getSpeedTable(_camera: string, _params: any) {
+	return Promise.resolve({
+		payload: [
+			{
+				vehiclename: "Auto",
+				total: 35.5,
+				scenariodata: [
+					{ scenarioName: "Scenario 1", volAcumulate: 32.0 },
+					{ scenarioName: "Scenario 2", volAcumulate: 39.0 },
+				],
+			},
+			{
+				vehiclename: "Moto",
+				total: 28.3,
+				scenariodata: [
+					{ scenarioName: "Scenario 1", volAcumulate: 25.5 },
+					{ scenarioName: "Scenario 2", volAcumulate: 31.1 },
+				],
+			},
+			{
+				vehiclename: "Bus",
+				total: 42.7,
+				scenariodata: [
+					{ scenarioName: "Scenario 1", volAcumulate: 41.2 },
+					{ scenarioName: "Scenario 2", volAcumulate: 44.2 },
+				],
+			},
+		],
+	});
+}
+
+function CellColor({ value: original }: { value?: number | string }) {
+	const value =
+		typeof original === "number"
+			? original
+			: Number.parseFloat(`${original ?? 0}`);
+
+	const green = value >= 0 && value < 30;
+	const yellow = value >= 30 && value < 40;
+	const orange = value >= 40 && value < 50;
+	const red = value >= 50;
+
+	const color = green
+		? "text-green-400"
+		: yellow
+			? "text-yellow-400"
+			: orange
+				? "text-orange-400"
+				: red
+					? "text-red-400"
+					: "";
+
+	return (
+		<span className={color}>
+			{Number.parseFloat(value.toFixed(2)).toLocaleString()}
+		</span>
+	);
+}
+
+export function VelocityTable() {
+	const { camera } = Route.useParams();
+	const { initialValues } = useGraphFilters();
+
+	const {
+		data: speedTable,
+		isLoading,
+		isRefetching,
+		isFetching,
+		isPending,
+	} = useQuery({
+		queryKey: ["speed-table-mobility", camera, initialValues],
+		queryFn: async () => {
+			const table = await getSpeedTable(camera, {
+				endDate: initialValues.endDate,
+				scenarioIds: initialValues.zones,
+				startDate: initialValues.startDate,
+				vehicleIds: initialValues.actors,
+				dayOfWeek: initialValues.dayOfWeek,
+				hour: initialValues.hour,
+				minuteInterval: initialValues.minuteInterval,
+			});
+
+			return table.payload;
+		},
+	});
+
+	const loading = useMemo(
+		() => isLoading || isRefetching || isFetching || isPending,
+		[isLoading, isRefetching, isFetching, isPending]
+	);
+
+	const columns: ColumnDef<Row>[] = useMemo(() => {
+		if (!speedTable) return [];
+
+		const scenarios = [
+			...new Set(
+				speedTable.flatMap(({ scenariodata }) =>
+					scenariodata
+						.sort((a, b) => b.volAcumulate - a.volAcumulate)
+						.map((scenario) => scenario.scenarioName)
+				)
+			),
+		];
+
+		return [
+			{
+				accessorKey: "vehicle",
+				header: "Actor vial / Movimiento",
+				cell: ({ row }) =>
+					vehicles?.[
+						row.original.vehicle.replaceAll(" ", "_") as keyof typeof vehicles
+					] ?? row.original.vehicle,
+			},
+			...(scenarios.map((sceario) => ({
+				accessorKey: sceario,
+				header: sceario,
+				cell: ({ row }) => <CellColor value={row.original[sceario]} />,
+				//   cell: ({ row }) => typeof row.original[sceario] === "number"
+				//   	? row.original[sceario].toFixed(2)
+				// : Number.parseFloat(`${row.original[sceario]}`).toFixed(2),
+			})) satisfies ColumnDef<Row>[]),
+			{
+				accessorKey: "total",
+				header: "Total Avg",
+				cell: ({ row }) => <CellColor value={row.original.total} />,
+			} satisfies ColumnDef<Row>,
+		];
+	}, [speedTable]);
+
+	const data: Row[] = useMemo(() => {
+		if (!speedTable) return [];
+
+		const rows = speedTable
+			.map(({ scenariodata, vehiclename, total }) => {
+				const scenarios = scenariodata.reduce(
+					(acc, scenario) => {
+						acc[scenario.scenarioName] = scenario.volAcumulate;
+
+						return acc;
+					},
+					{} as Record<string, number>
+				);
+
+				return {
+					vehicle: vehiclename as Row["vehicle"],
+					...scenarios,
+					total,
+				};
+			})
+			?.sort(
+				(a, b) =>
+					Number.parseFloat(`${b.total}`) - Number.parseFloat(`${a.total}`)
+			);
+
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const totalCols = rows.reduce((acc, { total, vehicle, ...scenarios }) => {
+			Object.entries(scenarios).forEach(([scenario, value]) => {
+				if (!acc[scenario]) {
+					acc[scenario] = 0;
+				}
+
+				if (typeof acc[scenario] === "number") {
+					acc[scenario] +=
+						typeof value === "number" ? value : Number.parseFloat(`${value}`);
+				}
+			});
+
+			if (!acc.total) {
+				acc.total = 0;
+			}
+
+			if (typeof acc.total === "number") {
+				acc.total +=
+					typeof total === "number" ? total : Number.parseFloat(`${total}`);
+			}
+
+			return acc;
+		}, {} as Row);
+
+		return [...rows, { ...totalCols, vehicle: "Total" }];
+	}, [speedTable]);
+
+	if (loading) {
+		return <Skeleton className="h-[300px]" />;
+	}
+
+	return <GraphsTable data={data} columns={columns} pining={["vehicle"]} />;
+}
