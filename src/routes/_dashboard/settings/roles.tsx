@@ -1,6 +1,8 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { zodValidator } from "@tanstack/zod-adapter";
 
+import { sharedSchemas } from "@/lib/schemas/shared";
 import { rolesService } from "@/lib/services/roles";
 import { hasModule } from "@/lib/utils/permissions";
 import { RoleAdd } from "@/ui/roles/role-add";
@@ -11,6 +13,7 @@ import { HasPermission } from "@/ui/shared/permissions/has-permission";
 
 export const Route = createFileRoute("/_dashboard/settings/roles")({
 	component: Roles,
+	validateSearch: zodValidator(sharedSchemas.genericTableSearchSchema),
 	beforeLoad: async ({
 		context: {
 			permissions: { user },
@@ -58,6 +61,7 @@ function Roles() {
 						table={table}
 						searchBy="name"
 						searchPlaceholder="Busqueda por nombre"
+						hasSearchUrl
 					/>
 				)}
 			</DataTable>

@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { zodValidator } from "@tanstack/zod-adapter";
 
+import { sharedSchemas } from "@/lib/schemas/shared";
 import { modulesServices } from "@/lib/services/modules";
 import { ModuleAdd } from "@/ui/modules/module-add";
 import { columns } from "@/ui/modules/modules-table/columns";
@@ -12,6 +14,7 @@ import { HasPermission } from "@/ui/shared/permissions/has-permission";
 
 export const Route = createFileRoute("/_dashboard/settings/modules/")({
 	component: Modules,
+	validateSearch: zodValidator(sharedSchemas.genericTableSearchSchema),
 });
 
 function Modules() {
@@ -46,6 +49,7 @@ function Modules() {
 							table={table}
 							searchBy="name"
 							searchPlaceholder="Busqueda por nombre..."
+							hasSearchUrl
 						/>
 					)}
 				</DataTable>

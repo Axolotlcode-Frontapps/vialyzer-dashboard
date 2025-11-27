@@ -33,6 +33,8 @@ class Settings {
 		address: z.string().min(1, { error: "La dirección es obligatoria" }),
 		department: z.string().min(1, { error: "El departamento es obligatorio" }),
 		city: z.string().min(1, { error: "La ciudad es obligatoria" }),
+		// active: z.boolean().default(true),
+		active: z.boolean(),
 	});
 
 	cameras = z.object({

@@ -9,7 +9,7 @@ import { settingsSchemas } from "@/lib/schemas/settings";
 import { companiesService } from "@/lib/services/companies";
 import { departmentsServices } from "@/lib/services/deparments";
 import { Button } from "@/ui/shared/button";
-import { Field, FieldError, FieldLabel } from "@/ui/shared/field";
+import { Field, FieldContent, FieldError, FieldLabel } from "@/ui/shared/field";
 import { Input } from "@/ui/shared/input";
 import {
 	Select,
@@ -20,6 +20,7 @@ import {
 } from "@/ui/shared/select";
 import { SheetClose, SheetFooter } from "@/ui/shared/sheet";
 import { Spinner } from "@/ui/shared/spinner";
+import { Switch } from "../shared/switch";
 
 interface Props {
 	onSuccess: (open: boolean) => void;
@@ -39,6 +40,7 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 			address: update && company ? company.address : "",
 			department: update && company ? company.department : "",
 			city: update && company ? company.city : "",
+			active: update && company ? company.active : true,
 		},
 		validators: {
 			onMount: settingsSchemas.company,
@@ -59,6 +61,7 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 	const companyMutation = useMutation({
 		mutationFn: async (values: CompanyValues) => {
 			form.state.isSubmitting = true;
+			form.state.canSubmit = false;
 
 			update && company?.id
 				? await companiesService.updateCompany(company?.id, values)
@@ -305,6 +308,37 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 									</SelectContent>
 								</Select>
 								{isInvalid && <FieldError errors={field.state.meta.errors} />}
+							</Field>
+						);
+					}}
+				/>
+
+				<form.Field
+					name="active"
+					children={(field) => {
+						const isInvalid =
+							field.state.meta.isTouched && !field.state.meta.isValid;
+
+						return (
+							<Field
+								orientation="horizontal"
+								data-invalid={isInvalid}
+								className="line-flex justify-start mt-3"
+							>
+								<FieldContent>
+									<FieldLabel htmlFor="form-tanstack-switch-twoFactor">
+										Activo
+									</FieldLabel>
+
+									{isInvalid && <FieldError errors={field.state.meta.errors} />}
+								</FieldContent>
+								<Switch
+									id="form-tanstack-switch-twoFactor"
+									name={field.name}
+									checked={field.state.value}
+									onCheckedChange={field.handleChange}
+									aria-invalid={isInvalid}
+								/>
 							</Field>
 						);
 					}}

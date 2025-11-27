@@ -38,7 +38,9 @@ export function Locations() {
 	return (
 		<ScrollArea className="max-h-[600px]">
 			<ul className="flex-1 mt-4 pr-2">
-				<Activity mode={loading && !filteredCameras ? "visible" : "hidden"}>
+				<Activity
+					mode={loading && !filteredCameras.length ? "visible" : "hidden"}
+				>
 					<li className="text-center text-muted-foreground text-lg py-12">
 						Cargando ubicaciones...
 					</li>

@@ -7,7 +7,7 @@ interface Company {
 	department: string;
 	city: string;
 	description: string;
-	active: string;
+	active: boolean;
 	users: User[];
 	createdAt: Date;
 	updatedAt: Date | null;

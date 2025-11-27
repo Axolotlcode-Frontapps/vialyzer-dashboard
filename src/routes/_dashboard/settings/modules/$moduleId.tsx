@@ -1,13 +1,16 @@
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { Activity } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { zodValidator } from "@tanstack/zod-adapter";
 
+import { sharedSchemas } from "@/lib/schemas/shared";
 import { modulesServices } from "@/lib/services/modules";
 import { PermissionsTable } from "@/ui/modules/permissions-table";
 import { Skeleton } from "@/ui/shared/skeleton";
 
 export const Route = createFileRoute("/_dashboard/settings/modules/$moduleId")({
 	component: ModulePermisions,
+	validateSearch: zodValidator(sharedSchemas.genericTableSearchSchema),
 });
 
 function ModulePermisions() {

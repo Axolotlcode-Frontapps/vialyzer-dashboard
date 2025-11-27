@@ -97,6 +97,7 @@ export function PermissionsTable({
 					table={table}
 					searchBy="action"
 					searchPlaceholder="Busqueda por acción..."
+					hasSearchUrl
 				>
 					<Button
 						disabled={selectedPermissionsIds.length === 0}

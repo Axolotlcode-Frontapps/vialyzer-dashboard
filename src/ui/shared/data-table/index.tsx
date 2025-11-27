@@ -64,10 +64,12 @@ export function DataTable<TData, TValue>({
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
+	const totalRowsNumber = totalRows ?? data.length;
+
 	const table = useReactTable({
 		data,
 		columns,
-		pageCount: totalRows ? Math.ceil(totalRows / filters.limit) : -1,
+		pageCount: totalRowsNumber,
 		onSortingChange: setSorting,
 		onColumnFiltersChange: setColumnFilters,
 		getCoreRowModel: getCoreRowModel(),
@@ -172,7 +174,7 @@ export function DataTable<TData, TValue>({
 						<Skeleton className="h-8 sm:h-9 w-full sm:w-2/6" />
 					</div>
 				) : (
-					<DataTablePagination totalRows={totalRows} table={table} />
+					<DataTablePagination totalRows={totalRowsNumber} table={table} />
 				)}
 			</CardFooter>
 		</Card>
