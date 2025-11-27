@@ -27,6 +27,7 @@ export function useGetPreview(): UseGetScenarioLinesReturn {
 	} = useQuery({
 		queryKey: ["scenario-line-camera", camera],
 		queryFn: async () => settings.preview(camera),
+		refetchOnWindowFocus: false,
 	});
 
 	const loading = useMemo(
