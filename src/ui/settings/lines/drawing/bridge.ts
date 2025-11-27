@@ -564,6 +564,11 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 		const inputData = item as Record<string, unknown>;
 		const element = {} as Partial<DrawingElement>;
 
+		// Track which nested fields were successfully set
+		const nestedFieldsSet: Record<string, Set<string>> = {};
+		// Track which nested fields were attempted
+		const nestedFieldsAttempted: Record<string, Set<string>> = {};
+
 		// Process each field mapping from the input configuration
 		for (const [sourceMapping, destinationConfig] of Object.entries(
 			this.#config.input.elements
@@ -603,8 +608,27 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 					sourcePath as string
 				);
 
+				// Track attempted nested fields
+				const parentPath = destinationPath.split(".").slice(0, -1).join(".");
+				if (parentPath) {
+					const childField = destinationPath.split(".").pop()!;
+					if (!nestedFieldsAttempted[parentPath]) {
+						nestedFieldsAttempted[parentPath] = new Set();
+					}
+					nestedFieldsAttempted[parentPath].add(childField);
+				}
+
 				if (sourceValue === undefined) {
 					continue;
+				}
+
+				// Track successfully set nested fields
+				if (parentPath) {
+					const childField = destinationPath.split(".").pop()!;
+					if (!nestedFieldsSet[parentPath]) {
+						nestedFieldsSet[parentPath] = new Set();
+					}
+					nestedFieldsSet[parentPath].add(childField);
 				}
 
 				// Apply transformation if any
@@ -639,6 +663,28 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 				console.warn(
 					`[Bridge] Failed to process input mapping for "${sourceMapping}":`,
 					error
+				);
+			}
+		}
+
+		// Clean up incomplete optional nested objects
+		// If not ALL attempted fields were successfully set, remove the parent object
+		for (const [parentPath, attemptedFields] of Object.entries(
+			nestedFieldsAttempted
+		)) {
+			const setFields = nestedFieldsSet[parentPath] || new Set();
+
+			// Check if all attempted fields were successfully set
+			const allFieldsSet = Array.from(attemptedFields).every((field) =>
+				setFields.has(field)
+			);
+
+			// If not all fields were set, remove the entire parent object
+			if (!allFieldsSet) {
+				this.#setNestedValue(
+					element as unknown as Record<string, unknown>,
+					parentPath,
+					undefined
 				);
 			}
 		}
