@@ -86,7 +86,6 @@ export function useUpdateScenarioLine() {
 						const source = await settings.updateDatasource(
 							{
 								scenery_id: config.id,
-								vehicle_id: layer.category,
 								description: layer.description,
 								visual_coordinates,
 								camera,
