@@ -1,3 +1,5 @@
+import type { DrawingElementType } from "@/ui/settings/lines/types";
+
 import { fetcher } from "@/lib/utils/fetch-api";
 
 export interface Scenario {
@@ -65,7 +67,7 @@ export interface LineElement {
 	visual_coordinates: {
 		layer_id: string;
 		// group_id: string;
-		type: string;
+		type: DrawingElementType;
 		fontSize: number;
 		fontFamily: string;
 		backgroundColor?: string;

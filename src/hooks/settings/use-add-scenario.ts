@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 
 import type { UseMutateAsyncFunction } from "@tanstack/react-query";
-import type { LineElement } from "@/lib/services/settings";
+import type { LineElement, ScenarioCreated } from "@/lib/services/settings";
 
 import { settings } from "@/lib/services/settings";
 import { Route } from "@/routes/_dashboard/settings/cameras/$camera";
@@ -32,27 +32,36 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 					} = element;
 
 					if (element.type === "DETECTION") {
+						const isLine =
+							element.visual_coordinates.type === "line" ||
+							element.visual_coordinates.type === "curve";
+
 						const entry = await settings.addScenarioLine({
 							...line,
-							name: `${line.name} - Entrada`,
-							coordinates: detection_entry,
+							name: isLine ? `${line.name} - Entrada` : line.name,
+							coordinates: isLine ? detection_entry : coordinates,
 							camera,
 						});
 						if (!entry) throw new Error("Error al crear la línea de entrada");
 
-						const exit = await settings.addScenarioLine({
-							...line,
-							name: `${line.name} - Salida`,
-							coordinates: detection_exit,
-							camera,
-						});
-						if (!exit) throw new Error("Error al crear la línea de salida");
+						let exit: undefined | ScenarioCreated;
+
+						if (isLine) {
+							exit = await settings.addScenarioLine({
+								...line,
+								name: `${line.name} - Salida`,
+								coordinates: detection_exit,
+								camera,
+							});
+
+							if (!exit) throw new Error("Error al crear la línea de salida");
+						}
 
 						const source = await settings.addDatasource({
 							scenery_id: entry.id,
 							vehicle_id: layer.category,
 							description: layer.description,
-							second_scenery: exit.id,
+							second_scenery: exit?.id,
 							visual_coordinates,
 							camera,
 						});

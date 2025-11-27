@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 
-import type { LineElement, SourceLine } from "@/lib/services/settings";
+import type { IdLine, LineElement, SourceLine } from "@/lib/services/settings";
 
 import { settings } from "@/lib/services/settings";
 import { Route } from "@/routes/_dashboard/settings/cameras/$camera";
@@ -34,31 +34,40 @@ export function useUpdateScenarioLine() {
 						throw new Error("Línea de escenario no encontrada en el servidor");
 
 					if (element.type === "DETECTION") {
+						const isLine =
+							element.visual_coordinates.type === "line" ||
+							element.visual_coordinates.type === "curve";
+
 						const entry = await settings.updateScenarioLine(
 							{
 								...line,
-								name: `${line.name} - Entrada`,
-								coordinates: detection_entry,
+								name: isLine ? `${line.name} - Entrada` : line.name,
+								coordinates: isLine ? detection_entry : coordinates,
 								camera,
 							},
 							server.scenery.id
 						);
-						const exit = await settings.updateScenarioLine(
-							{
-								...line,
-								name: `${line.name} - Salida`,
-								coordinates: detection_exit,
-								camera,
-							},
-							server.second_scenery!.id
-						);
+
+						let exit: undefined | IdLine;
+
+						if (isLine) {
+							exit = await settings.updateScenarioLine(
+								{
+									...line,
+									name: `${line.name} - Salida`,
+									coordinates: detection_exit,
+									camera,
+								},
+								server.second_scenery!.id
+							);
+						}
 
 						const source = await settings.updateDatasource(
 							{
 								scenery_id: entry.id,
 								vehicle_id: layer.category,
 								description: layer.description,
-								second_scenery: exit.id,
+								second_scenery: exit?.id,
 								visual_coordinates,
 								camera,
 							},

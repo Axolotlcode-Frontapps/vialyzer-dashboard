@@ -398,12 +398,15 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 	 * Import multiple elements with automatic reverse transformation
 	 * The bridge is responsible for building and populating layers with their elementIds
 	 */
-	import(data: TSource[]): {
+	import(data: TSource[] | Record<string, TSource>): {
 		elements: DrawingElement[];
 		layers: Map<string, LayerInfo>;
 	} {
+		// Normalize data: handle both array and object with numeric keys
+		const dataArray = Array.isArray(data) ? data : Object.values(data);
+
 		// Step 1: Import and transform all elements
-		const importedElements = data.map((item) => {
+		const importedElements = dataArray.map((item) => {
 			return this.#importSingle(item);
 		});
 
@@ -414,7 +417,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 		});
 
 		// Step 3: Import and build layers
-		const layers = this.#importLayers(data);
+		const layers = this.#importLayers(dataArray);
 
 		// Step 4: Populate elementIds in layers based on valid elements
 		// This is the responsibility of the bridge - to prepare complete, ready-to-use layers
@@ -465,14 +468,17 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			item.info.name.trim() !== "";
 		const hasValidInfoDescription =
 			!hasInfo ||
+			typeof item.info.description === "undefined" ||
 			(typeof item.info.description === "string" &&
-				item.info.description.trim() !== "") ||
-			typeof item.info.description === "undefined";
+				item.info.description.trim() !== "");
 		const hasInfoType =
 			hasInfo &&
 			typeof item.info.type === "string" &&
 			item.info.type.trim() !== "";
-		// const hasInfoDirection = typeof item.info.direction === 'string' && item.info.direction.trim() !== '';
+		const hasInfoDirection =
+			hasInfo &&
+			typeof item.info.direction === "string" &&
+			item.info.direction.trim() !== "";
 		const hasInfoDistance =
 			hasInfo &&
 			typeof item.info.distance === "number" &&
@@ -487,15 +493,36 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			item.info.fontFamily.trim() !== "";
 		const hasValidInfoBackgroundColor =
 			!hasInfo ||
+			typeof item.info.backgroundColor === "undefined" ||
 			(typeof item.info.backgroundColor === "string" &&
-				item.info.backgroundColor.trim() !== "") ||
-			typeof item.info.backgroundColor === "undefined";
+				item.info.backgroundColor.trim() !== "");
 		const hasInfoBackgroundOpacity =
 			hasInfo &&
 			typeof item.info.backgroundOpacity === "number" &&
 			!Number.isNaN(item.info.backgroundOpacity);
 
-		return (
+		const validations = {
+			hasId,
+			hasType,
+			hasPoints,
+			hasValidDetection,
+			hasColor,
+			hasCompleted,
+			hasValidLayerId,
+			hasValidGroupId,
+			hasInfo,
+			hasInfoName,
+			hasValidInfoDescription,
+			hasInfoType,
+			hasInfoDirection,
+			hasInfoDistance,
+			hasInfoFontSize,
+			hasInfoFontFamily,
+			hasValidInfoBackgroundColor,
+			hasInfoBackgroundOpacity,
+		};
+
+		const isValid =
 			hasId &&
 			hasType &&
 			hasPoints &&
@@ -508,13 +535,24 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			hasInfoName &&
 			hasValidInfoDescription &&
 			hasInfoType &&
-			// hasInfoDirection &&
+			hasInfoDirection &&
 			hasInfoDistance &&
 			hasInfoFontSize &&
 			hasInfoFontFamily &&
 			hasValidInfoBackgroundColor &&
-			hasInfoBackgroundOpacity
-		);
+			hasInfoBackgroundOpacity;
+
+		if (!isValid) {
+			console.warn("[Bridge] Validation failed for item:", item.id, {
+				item,
+				validations,
+				failedChecks: Object.entries(validations)
+					.filter(([, value]) => !value)
+					.map(([key]) => key),
+			});
+		}
+
+		return isValid;
 	}
 
 	#validLayer(layer: LayerInfo): boolean {
@@ -568,6 +606,8 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 		const nestedFieldsSet: Record<string, Set<string>> = {};
 		// Track which nested fields were attempted
 		const nestedFieldsAttempted: Record<string, Set<string>> = {};
+		// Define which parent paths are truly optional (should be removed if incomplete)
+		const optionalNestedObjects = new Set(["detection", "direction"]);
 
 		// Process each field mapping from the input configuration
 		for (const [sourceMapping, destinationConfig] of Object.entries(
@@ -618,23 +658,10 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 					nestedFieldsAttempted[parentPath].add(childField);
 				}
 
-				if (sourceValue === undefined) {
-					continue;
-				}
-
-				// Track successfully set nested fields
-				if (parentPath) {
-					const childField = destinationPath.split(".").pop()!;
-					if (!nestedFieldsSet[parentPath]) {
-						nestedFieldsSet[parentPath] = new Set();
-					}
-					nestedFieldsSet[parentPath].add(childField);
-				}
-
 				// Apply transformation if any
 				let transformedValue: unknown = sourceValue;
 
-				// First check for custom transform function
+				// First check for custom transform function (runs even if sourceValue is undefined)
 				if (isCustomMapping) {
 					const customTransform = (destinationConfig as CustomFieldMapping)
 						.transform;
@@ -653,6 +680,20 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 					}
 				}
 
+				// Skip if transformed value is still undefined and no custom transform was used
+				if (transformedValue === undefined && !isCustomMapping) {
+					continue;
+				}
+
+				// Track successfully set nested fields
+				if (parentPath && transformedValue !== undefined) {
+					const childField = destinationPath.split(".").pop()!;
+					if (!nestedFieldsSet[parentPath]) {
+						nestedFieldsSet[parentPath] = new Set();
+					}
+					nestedFieldsSet[parentPath].add(childField);
+				}
+
 				// Set the value on the element object
 				this.#setNestedValue(
 					element as unknown as Record<string, unknown>,
@@ -667,11 +708,32 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			}
 		}
 
+		// Remove detection and direction based on element type and info.type
+		const elementType = (element as Partial<DrawingElement>).type;
+		const infoType = (element as Partial<DrawingElement>).info?.type;
+
+		// Remove detection and direction for non-line/curve types
+		if (elementType && !["line", "curve"].includes(elementType)) {
+			delete (element as Partial<DrawingElement>).detection;
+			delete (element as Partial<DrawingElement>).direction;
+		}
+
+		// Remove detection if info.type is not DETECTION
+		if (infoType && infoType !== "DETECTION") {
+			delete (element as Partial<DrawingElement>).detection;
+		}
+
 		// Clean up incomplete optional nested objects
-		// If not ALL attempted fields were successfully set, remove the parent object
+		// Only remove parent objects that are truly optional (like detection, direction)
+		// Don't remove required objects like info that just have some optional fields
 		for (const [parentPath, attemptedFields] of Object.entries(
 			nestedFieldsAttempted
 		)) {
+			// Only apply cleanup logic to truly optional nested objects
+			if (!optionalNestedObjects.has(parentPath)) {
+				continue;
+			}
+
 			const setFields = nestedFieldsSet[parentPath] || new Set();
 
 			// Check if all attempted fields were successfully set
