@@ -1,6 +1,8 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { zodValidator } from "@tanstack/zod-adapter";
 
+import { sharedSchemas } from "@/lib/schemas/shared";
 import { companiesService } from "@/lib/services/companies";
 import { hasModule } from "@/lib/utils/permissions";
 import { useCompanyColumns } from "@/ui/companies/companies-table/columns";
@@ -11,7 +13,7 @@ import { HasPermission } from "@/ui/shared/permissions/has-permission";
 
 export const Route = createFileRoute("/_dashboard/settings/companies")({
 	component: Companies,
-	// validateSearch: zodValidator(genericTableSearchSchema),
+	validateSearch: zodValidator(sharedSchemas.genericTableSearchSchema),
 	beforeLoad: async ({
 		context: {
 			permissions: { user },
@@ -58,6 +60,7 @@ function Companies() {
 						table={table}
 						searchBy="name"
 						searchPlaceholder="Busqueda por nombre"
+						hasSearchUrl
 					/>
 				)}
 			</DataTable>

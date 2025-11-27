@@ -65,6 +65,7 @@ export function UserDelete({
 					<Button
 						variant="destructive"
 						onClick={() => userDeleteMutation.mutate()}
+						disabled={userDeleteMutation.isPending}
 					>
 						{userDeleteMutation.isPending ? (
 							<>

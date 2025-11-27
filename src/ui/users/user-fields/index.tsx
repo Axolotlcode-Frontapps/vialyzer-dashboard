@@ -61,6 +61,7 @@ export function UserFields({ onSuccess, update = false, user }: Props) {
 	const userMutation = useMutation({
 		mutationFn: async (values: UserValues) => {
 			form.state.isSubmitting = true;
+			form.state.canSubmit = false;
 
 			update && user?.id
 				? await usersService.updateUser(user.id, values)
@@ -203,6 +204,7 @@ export function UserFields({ onSuccess, update = false, user }: Props) {
 								<Select
 									value={field.state.value}
 									onValueChange={(val) => field.handleChange(val)}
+									disabled={companiesData.length === 0}
 								>
 									<SelectTrigger>
 										<SelectValue placeholder="Selecciona un rol" />
@@ -231,6 +233,7 @@ export function UserFields({ onSuccess, update = false, user }: Props) {
 								<Select
 									value={field.state.value}
 									onValueChange={(val) => field.handleChange(val)}
+									disabled={companiesData.length === 0}
 								>
 									<SelectTrigger>
 										<SelectValue placeholder="Selecciona una empresa" />

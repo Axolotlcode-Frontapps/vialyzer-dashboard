@@ -44,6 +44,7 @@ axiosInstance.interceptors.response.use(
 
 		if (error.response?.status === 401) {
 			removeSessionCookie(SESSION_NAME);
+			window.location.href = "/";
 			return Promise.reject(error);
 		}
 
