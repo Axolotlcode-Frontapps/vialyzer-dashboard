@@ -59,13 +59,14 @@ const bridge = new DrawingBridge({
 			"endPoint(visual_coordinates.coordinates)": "direction.end",
 			"scenery.name": {
 				key: "info.name",
-				transform: (value) => {
-					return (value as string).replace(" - Entrada", "");
-				},
+				transform: (value) => (value as string).replace(" - Entrada", ""),
 			},
 			"scenery.description": "info.description",
 			"scenery.type": "info.type",
-			// "visual_coordinates.direction": "info.direction",
+			"visual_coordinates.direction": {
+				key: "info.direction",
+				transform: (value) => value ?? "bottom",
+			},
 			"scenery.distance": "info.distance",
 			"visual_coordinates.fontSize": "info.fontSize",
 			"visual_coordinates.fontFamily": "info.fontFamily",
