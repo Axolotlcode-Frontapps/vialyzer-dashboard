@@ -769,7 +769,19 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 		let skippedItems = 0;
 		let duplicateLayerIds = 0;
 
-		data.forEach((item) => {
+		// Sort data to prioritize items with non-null vehicle data
+		const sortedData = [...data].sort((a, b) => {
+			const aHasVehicle =
+				this.#getNestedValue(a as Record<string, unknown>, "vehicle") !== null;
+			const bHasVehicle =
+				this.#getNestedValue(b as Record<string, unknown>, "vehicle") !== null;
+			// Items with vehicle come first
+			if (aHasVehicle && !bHasVehicle) return -1;
+			if (!aHasVehicle && bHasVehicle) return 1;
+			return 0;
+		});
+
+		sortedData.forEach((item) => {
 			const inputData = item as Record<string, unknown>;
 			const layerObj = {} as Partial<LayerInfo>;
 
@@ -864,6 +876,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			}
 
 			// Only create layer if it doesn't exist yet (deduplicate by ID)
+			// This means the first item with valid vehicle data will set the layer properties
 			if (!layerMap.has(layerId)) {
 				const layer: LayerInfo = {
 					id: layerId,
