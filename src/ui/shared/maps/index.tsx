@@ -1,133 +1,267 @@
 import {
-	Circle,
-	GoogleMap,
-	Marker,
-	TrafficLayer,
+    Circle,
+    GoogleMap,
+    Polygon,
+    TrafficLayer,
 } from "@react-google-maps/api";
-import { useQuery } from "@tanstack/react-query";
-import { useGoogleMaps } from "@/contexts/maps";
-import { useSelectedLocation } from "@/hooks/use-selected-location";
+import {useQuery} from "@tanstack/react-query";
+import {useGoogleMaps} from "@/contexts/maps";
+import {useSelectedLocation} from "@/hooks/use-selected-location";
 
-import { homeService } from "@/lib/services/home";
-import { mapContainerStyle, mapOptions } from "@/lib/utils/map-options";
-import { MapLegend } from "./map-legend";
+import {homeService} from "@/lib/services/home";
+import {
+    mapContainerStyle,
+    shouldUseMapId,
+    type MapStyleId,
+    getMapStyles,
+    getMapId, getCloudStyleId
+} from "@/lib/utils/map-options";
+import {MapLegend} from "./map-legend";
+import {useNeighborhoods} from "@/hooks/use-neighborhoods.ts";
+import {useCallback, useMemo, useState} from "react";
+import type {NeighborhoodFeature} from "@/types/neighborhood.ts";
+import {type HeatmapType} from "@/lib/utils/heatmap-config";
+import {MapStyleSelector} from "@/ui/movility/map-style-selector.tsx";
+import {ZoneControls} from "@/ui/movility/zone-controls.tsx";
+import {HeatmapControls} from "@/ui/movility/heatmap-control.tsx";
+import {convertGeoJSONToGoogleMapsPath} from "@/lib/utils/neighborhood-tools.ts";
+import {AdvancedMarker} from "@/ui/movility/advanced-marker.tsx";
 
 const center = { lat: 3.4516, lng: -76.532 };
-const cameraPinSvg = `data:image/svg+xml;utf8,<svg width='48' height='64' viewBox='0 0 48 64' fill='none' xmlns='http://www.w3.org/2000/svg'><defs><filter id='shadow' x='0' y='0' width='48' height='64'><feDropShadow dx='0' dy='4' stdDeviation='4' flood-color='rgba(0,0,0,0.3)'/></filter></defs><g filter='url(%23shadow)'><path d='M24 64C24 64 48 40.8 48 24C48 10.7452 37.2548 0 24 0C10.7452 0 0 10.7452 0 24C0 40.8 24 64 24 64Z' fill='%232563eb'/><circle cx='24' cy='24' r='12' fill='white'/><g><rect x='18' y='20' width='12' height='8' rx='2' fill='%232563eb'/><circle cx='24' cy='24' r='2' fill='white'/></g></g></svg>`;
 
 export function Maps() {
-	const { isLoaded } = useGoogleMaps();
+    const {isLoaded} = useGoogleMaps();
+    const {zones, caliBoundary} = useNeighborhoods();
+    const {onSelect, selectedLocation, selected} = useSelectedLocation();
 
-	const { data: previewCamerasData } = useQuery({
-		queryKey: ["cameras"],
-		queryFn: async () => await homeService.getCameras(),
-		select: (data) => data.payload || [],
-	});
+    const {data: previewCamerasData} = useQuery({
+        queryKey: ["get-cameras"],
+        queryFn: async () => await homeService.getCameras(),
+        select: (data) => data.payload || [],
+    });
 
-	const { onSelect, selectedLocation } = useSelectedLocation();
+    const [mapStyle, setMapStyle] = useState<MapStyleId>('default');
+    const [activeHeatmap, setActiveHeatmap] = useState<HeatmapType | null>(null);
+    const [map, setMap] = useState<google.maps.Map | null>(null);
+    const [mapZoom, setMapZoom] = useState<number>(13);
+    const [selectedZone, setSelectedZone] = useState<string | null>(null);
+    const [selectedNeighborhood, setSelectedNeighborhood] =
+        useState<NeighborhoodFeature | null>(null);
+    const [showCaliBoundary, setShowCaliBoundary] = useState(false);
 
-	if (!isLoaded) return null;
+    const onUnmount = useCallback(() => setMap(null), []);
+    const onLoad = useCallback((map: google.maps.Map) => {
+        setMap(map);
+        setMapZoom(map.getZoom() || 13);
+        console.log(mapZoom);
 
-	return (
-		<div className="relative w-full h-full">
-			<GoogleMap
-				mapContainerStyle={mapContainerStyle}
-				center={selectedLocation ? selectedLocation.location : center}
-				zoom={13}
-				options={
-					{
-						...mapOptions,
-						styles: [
-							{
-								featureType: "all",
-								elementType: "geometry",
-								stylers: [{ color: "#f8fafc" }],
-							},
-							{
-								featureType: "road",
-								elementType: "geometry.stroke",
-								stylers: [{ color: "#3b82f6" }, { weight: 1.5 }],
-							},
-							{
-								featureType: "water",
-								elementType: "geometry",
-								stylers: [{ color: "#bfdbfe" }],
-							},
-							{
-								featureType: "poi",
-								elementType: "geometry",
-								stylers: [{ color: "#f1f5f9" }],
-							},
-							{
-								featureType: "transit",
-								elementType: "geometry",
-								stylers: [{ color: "#bfdbfe" }],
-							},
-							{
-								featureType: "road",
-								elementType: "labels.text.fill",
-								stylers: [{ color: "#1e293b" }, { visibility: "on" }],
-							},
-							{
-								featureType: "poi",
-								elementType: "labels",
-								stylers: [{ visibility: "off" }],
-							},
-							{
-								featureType: "transit",
-								elementType: "labels",
-								stylers: [{ visibility: "off" }],
-							},
-							{
-								featureType: "administrative.locality",
-								elementType: "labels.text.fill",
-								stylers: [{ color: "#3b82f6" }, { weight: 2 }],
-							},
-							{
-								featureType: "administrative.locality",
-								elementType: "labels.text.stroke",
-								stylers: [{ color: "#fff" }, { weight: 4 }],
-							},
-						],
-					} as google.maps.MapOptions
-				}
-			>
-				<TrafficLayer />
+        map.addListener('zoom_changed', () => {
+            setMapZoom(map.getZoom() || 13);
+        });
+    }, []);
 
-				{previewCamerasData?.map((loc) => (
-					<Circle
-						key={`${loc.id}-circle`}
-						center={{
-							lat: parseFloat(loc.location.latitude),
-							lng: parseFloat(loc.location.longitude),
-						}}
-						radius={120}
-						options={{
-							fillColor: "#3b82f6",
-							fillOpacity: 0.15,
-							strokeColor: "#3b82f6",
-							strokeOpacity: 0.2,
-							strokeWeight: 1,
-						}}
-					/>
-				))}
+    const mapOptions = useMemo(() => {
+        const useMapId = shouldUseMapId(mapStyle);
+        const styles = getMapStyles(mapStyle);
+        const mapId = getMapId();
+        const cloudStyleId = getCloudStyleId(mapStyle);
 
-				{previewCamerasData?.map((loc) => (
-					<Marker
-						key={loc.id}
-						position={{
-							lat: parseFloat(loc.location.latitude),
-							lng: parseFloat(loc.location.longitude),
-						}}
-						onClick={() => onSelect(loc.id)}
-						icon={{
-							url: cameraPinSvg,
-							scaledSize: new window.google.maps.Size(48, 64),
-						}}
-					/>
-				))}
-			</GoogleMap>
-			<MapLegend />
-		</div>
-	);
+        const baseOptions: google.maps.MapOptions = {
+            disableDefaultUI: true,
+            zoomControl: true,
+        };
+
+        if (useMapId && mapId && cloudStyleId) {
+            return {
+                ...baseOptions,
+                mapId: cloudStyleId,
+            };
+        }
+
+        if (useMapId && mapId) {
+            return {
+                ...baseOptions,
+                mapId: mapId,
+            };
+        }
+
+        return {
+            ...baseOptions,
+            styles: styles,
+        };
+    }, [mapStyle]);
+
+    // Preparar datos de heatmap según el tipo activo
+    /*
+    const heatmapData = useMemo(() => {
+        if (!activeHeatmap || !window.google?.maps) return [];
+
+        switch (activeHeatmap) {
+            case 'accidents':
+                return convertToHeatmapData(accidents, 3);
+            case 'construction':
+                return convertToHeatmapData(construction, 2);
+            case 'traffic':
+                return payload ? generateTrafficHeatmapData(payload, 4) : [];
+            case 'combined':
+                const accidentPoints = convertToHeatmapData(accidents, 3);
+                const constructionPoints = convertToHeatmapData(construction, 2);
+                const trafficPoints = payload
+                    ? generateTrafficHeatmapData(payload, 1.5)
+                    : [];
+                return [...accidentPoints, ...constructionPoints, ...trafficPoints];
+            default:
+                return [];
+        }
+    }, [activeHeatmap, accidents, construction, payload]);
+
+    // Opciones del heatmap según el tipo
+    const heatmapOptions = useMemo(() => {
+        if (!activeHeatmap) return undefined;
+        const config = HEATMAP_CONFIGS[activeHeatmap];
+
+        // Calcular radius dinámico basado en zoom
+        const minZoom = 8;
+        const maxZoom = 18;
+        const zoomFactor = Math.max(
+            0,
+            Math.min(1, (mapZoom - minZoom) / (maxZoom - minZoom))
+        );
+        const dynamicRadius = Math.round(config.radius * (0.3 + zoomFactor * 1.2));
+
+        return {
+            radius: dynamicRadius,
+            opacity: config.opacity,
+            gradient: config.gradient,
+            maxIntensity: config.maxIntensity,
+            dissipating: config.dissipating,
+        };
+    }, [activeHeatmap, mapZoom]);
+    */
+
+    if (!isLoaded) return null;
+
+    return (
+        <div className="relative w-full h-full">
+            <div className="absolute top-2 left-2 @sm/map:top-4 @sm/map:left-4 z-50 flex flex-col gap-2">
+                <MapStyleSelector onStyleChange={setMapStyle} currentStyle={mapStyle}/>
+                <ZoneControls
+                    zones={zones}
+                    selectedZone={selectedZone}
+                    selectedNeighborhood={selectedNeighborhood?.properties['@id'] || null}
+                    showCaliBoundary={showCaliBoundary}
+                    onZoneSelect={setSelectedZone}
+                    onNeighborhoodSelect={setSelectedNeighborhood}
+                    onToggleCaliBoundary={() => setShowCaliBoundary(!showCaliBoundary)}
+                />
+                <HeatmapControls
+                    activeHeatmap={activeHeatmap}
+                    onHeatmapChange={setActiveHeatmap}
+                />
+            </div>
+            <GoogleMap
+                key={mapStyle}
+                mapContainerStyle={mapContainerStyle}
+                center={selectedLocation ? selectedLocation.location : center}
+                zoom={13}
+                onLoad={onLoad}
+                onUnmount={onUnmount}
+                options={mapOptions}
+            >
+                <TrafficLayer/>
+
+                {/*
+                activeHeatmap && heatmapData.length > 0 && (
+                    <HeatmapLayer data={heatmapData} options={heatmapOptions} />
+                )
+                */}
+
+                {showCaliBoundary && caliBoundary && (
+                    <Polygon
+                        paths={convertGeoJSONToGoogleMapsPath(
+                            caliBoundary.geometry.coordinates
+                        )}
+                        options={{
+                            fillColor: '#8b5cf6',
+                            fillOpacity: 0.05,
+                            strokeColor: '#7c3aed',
+                            strokeOpacity: 0.9,
+                            strokeWeight: 4,
+                        }}
+                    />
+                )}
+
+                {/* Polígonos de Barrios */}
+                {selectedNeighborhood && (
+                    <Polygon
+                        paths={convertGeoJSONToGoogleMapsPath(
+                            selectedNeighborhood.geometry.coordinates
+                        )}
+                        options={{
+                            fillColor: '#3b82f6',
+                            fillOpacity: 0.2,
+                            strokeColor: '#2563eb',
+                            strokeOpacity: 0.8,
+                            strokeWeight: 3,
+                        }}
+                    />
+                )}
+
+                {/* Polígonos de Zona (todos los barrios de la zona) */}
+                {selectedZone &&
+                    !selectedNeighborhood &&
+                    zones
+                        .find((z) => z.id === selectedZone)
+                        ?.neighborhoods.map((neighborhood) => (
+                        <Polygon
+                            key={neighborhood.properties['@id']}
+                            paths={convertGeoJSONToGoogleMapsPath(
+                                neighborhood.geometry.coordinates
+                            )}
+                            options={{
+                                fillColor: '#10b981',
+                                fillOpacity: 0.15,
+                                strokeColor: '#059669',
+                                strokeOpacity: 0.6,
+                                strokeWeight: 2,
+                            }}
+                        />
+                    ))
+                }
+
+                {previewCamerasData?.map((loc) => (
+                    <Circle
+                        key={`${loc.id}-circle`}
+                        center={{
+                            lat: parseFloat(loc.location.latitude),
+                            lng: parseFloat(loc.location.longitude),
+                        }}
+                        radius={120}
+                        options={{
+                            fillColor: "#3b82f6",
+                            fillOpacity: 0.15,
+                            strokeColor: "#3b82f6",
+                            strokeOpacity: 0.2,
+                            strokeWeight: 1,
+                        }}
+                    />
+                ))}
+
+                {previewCamerasData?.map((loc) => (
+                    <AdvancedMarker
+                        key={loc.id}
+                        map={map}
+                        position={{
+                            lat: parseFloat(loc.location.latitude),
+                            lng: parseFloat(loc.location.longitude),
+                        }}
+                        onClick={() => onSelect(loc.id)}
+                        isSelected={selected === loc.id}
+                        color="#0f3227"
+                    />
+                ))}
+            </GoogleMap>
+            <MapLegend/>
+        </div>
+    );
 }

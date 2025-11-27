@@ -1,4 +1,5 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { GoogleMapsProvider } from "@/contexts/maps";
 import { useEffect } from "react";
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 
@@ -13,21 +14,16 @@ const getMeQuery = queryOptions({
 });
 
 export const Route = createFileRoute("/_dashboard")({
-	beforeLoad: async ({ context: { queryClient, auth } }) => {
-		if (!auth.isAuthenticated) {
+	beforeLoad: async ({ context }) => {
+		if (!context.auth.isAuthenticated) {
 			throw redirect({
 				to: "/auth",
 				replace: true,
 			});
 		}
-
-		const { payload: user } = await queryClient.ensureQueryData(getMeQuery);
-
-		return {
-			permissions: {
-				user,
-			},
-		};
+	},
+	loader: async ({ context: { queryClient } }) => {
+		await queryClient.ensureQueryData(getMeQuery);
 	},
 	component: PrivateLayout,
 });
@@ -55,12 +51,14 @@ function PrivateLayout() {
 				} as React.CSSProperties
 			}
 		>
-			<AppSidebar variant="sidebar" />
+			<AppSidebar />
 			<SidebarInset>
 				<Header />
 				<div className="flex flex-1 flex-col">
 					<div className="@container/main flex flex-1 flex-col gap-2 p-4">
-						<Outlet />
+                        <GoogleMapsProvider>
+                            <Outlet />
+                        </GoogleMapsProvider>
 					</div>
 				</div>
 			</SidebarInset>
