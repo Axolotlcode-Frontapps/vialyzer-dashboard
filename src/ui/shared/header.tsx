@@ -12,7 +12,6 @@ export function Header() {
 			)}
 		>
 			<SidebarTrigger />
-
 			<div className="flex items-center justify-between gap-2.5">
 				<ModeToggle />
 				<UserMenu />
