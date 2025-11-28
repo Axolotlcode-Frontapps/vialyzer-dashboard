@@ -32,14 +32,14 @@ export function useUpdateScenarioLine() {
 						? layer.category
 						: [layer.category];
 
-					const primaryServer = serverLines.find((item) => item.id === id);
+					const elementDatasources = serverLines.filter(
+						(item) => item.scenery.id === id
+					);
 
-					if (!primaryServer)
+					if (elementDatasources.length === 0)
 						throw new Error("Línea de escenario no encontrada en el servidor");
 
-					const elementDatasources = serverLines.filter(
-						(item) => item.scenery.id === primaryServer.scenery.id
-					);
+					const primaryServer = elementDatasources[0];
 
 					if (element.type === "DETECTION") {
 						const isLine =
@@ -74,6 +74,20 @@ export function useUpdateScenarioLine() {
 							(ds) => ds.vehicle.id
 						);
 
+						const newVehicleIds = vehicleIds.filter(
+							(vid) => !existingVehicleIds.includes(vid)
+						);
+						const removedVehicleIds = existingVehicleIds.filter(
+							(vid) => !vehicleIds.includes(vid)
+						);
+
+						const hasVehicleChanges =
+							newVehicleIds.length > 0 || removedVehicleIds.length > 0;
+
+						if (!hasVehicleChanges) {
+							return { entry, exit };
+						}
+
 						const updatePromises = elementDatasources
 							.filter((ds) => vehicleIds.includes(ds.vehicle.id))
 							.map((ds) =>
@@ -90,9 +104,6 @@ export function useUpdateScenarioLine() {
 								)
 							);
 
-						const newVehicleIds = vehicleIds.filter(
-							(vid) => !existingVehicleIds.includes(vid)
-						);
 						const addPromises = newVehicleIds.map((vehicleId) =>
 							settings.addDatasource({
 								scenery_id: entry.id,
@@ -104,9 +115,6 @@ export function useUpdateScenarioLine() {
 							})
 						);
 
-						const removedVehicleIds = existingVehicleIds.filter(
-							(vid) => !vehicleIds.includes(vid)
-						);
 						const removePromises = elementDatasources
 							.filter((ds) => removedVehicleIds.includes(ds.vehicle.id))
 							.map((ds) =>
@@ -132,6 +140,20 @@ export function useUpdateScenarioLine() {
 							(ds) => ds.vehicle.id
 						);
 
+						const newVehicleIds = vehicleIds.filter(
+							(vid) => !existingVehicleIds.includes(vid)
+						);
+						const removedVehicleIds = existingVehicleIds.filter(
+							(vid) => !vehicleIds.includes(vid)
+						);
+
+						const hasVehicleChanges =
+							newVehicleIds.length > 0 || removedVehicleIds.length > 0;
+
+						if (!hasVehicleChanges) {
+							return { config };
+						}
+
 						const updatePromises = elementDatasources
 							.filter((ds) => vehicleIds.includes(ds.vehicle.id))
 							.map((ds) =>
@@ -147,9 +169,6 @@ export function useUpdateScenarioLine() {
 								)
 							);
 
-						const newVehicleIds = vehicleIds.filter(
-							(vid) => !existingVehicleIds.includes(vid)
-						);
 						const addPromises = newVehicleIds.map((vehicleId) =>
 							settings.addDatasource({
 								scenery_id: config.id,
@@ -160,9 +179,6 @@ export function useUpdateScenarioLine() {
 							})
 						);
 
-						const removedVehicleIds = existingVehicleIds.filter(
-							(vid) => !vehicleIds.includes(vid)
-						);
 						const removePromises = elementDatasources
 							.filter((ds) => removedVehicleIds.includes(ds.vehicle.id))
 							.map((ds) =>

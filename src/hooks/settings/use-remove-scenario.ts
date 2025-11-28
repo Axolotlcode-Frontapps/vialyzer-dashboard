@@ -1,15 +1,28 @@
 import { useMutation } from "@tanstack/react-query";
 
 import type { SourceLine } from "@/lib/services/settings";
+import type { DrawingElement } from "@/ui/settings/lines";
 
 import { settings } from "@/lib/services/settings";
 import { Route } from "@/routes/_dashboard/settings/cameras/$camera";
+
+interface RemoveScenarioParams {
+	elements: DrawingElement[];
+	serverLines: SourceLine[];
+}
 
 export function useRemoveScenarioLine() {
 	const { camera } = Route.useParams();
 
 	const { mutateAsync, isPending, error } = useMutation({
-		mutationFn: async (sources: SourceLine[]) => {
+		mutationFn: async ({ elements, serverLines }: RemoveScenarioParams) => {
+			const sources = serverLines.filter((line) =>
+				elements.some((element) => line.scenery.id === element.id)
+			);
+
+			if (sources.length === 0) {
+				return [];
+			}
 			const all = await Promise.allSettled(
 				sources.map(async (source) => {
 					const first = await settings.removeScenarioLine(
