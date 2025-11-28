@@ -24,3 +24,13 @@ export const actionsTranslate = {
 	"associate-permissions": "Asociar permisos",
 	"get-owner-permissions": "Obtener permisos de propietario",
 };
+
+export const vehiculesTranslate = {
+	person: "persona",
+	van: "camioneta",
+	motorcycle: "motocicleta",
+	bicycle: "bicicleta",
+	bus: "autobús",
+	car: "automóvil",
+	"heavy truck": "camión pesado",
+};

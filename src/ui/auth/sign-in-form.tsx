@@ -1,6 +1,6 @@
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth";
 
@@ -20,6 +20,7 @@ import { Input } from "../shared/input";
 import { Spinner } from "../shared/spinner";
 
 export function SignInForm() {
+	const queryClient = useQueryClient();
 	const auth = useAuth();
 	const router = useRouter();
 	const navigate = useNavigate();
@@ -54,6 +55,7 @@ export function SignInForm() {
 
 			await auth.login(data.payload);
 			await router.invalidate();
+			await queryClient.invalidateQueries();
 			await navigate({ to: "/" });
 		},
 		onSuccess: () => {

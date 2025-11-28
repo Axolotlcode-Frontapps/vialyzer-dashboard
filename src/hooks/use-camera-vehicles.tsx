@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { camerasService } from "@/lib/services/cameras";
+import { vehiculesTranslate } from "@/lib/utils/translates";
 
 export function useCameraVehicles(camera: string) {
 	const {
@@ -17,6 +18,9 @@ export function useCameraVehicles(camera: string) {
 			data.payload?.map((item) => ({
 				...item,
 				occurrence: 123,
+				name:
+					vehiculesTranslate[item.name as keyof typeof vehiculesTranslate] ||
+					item.name,
 			})),
 	});
 
