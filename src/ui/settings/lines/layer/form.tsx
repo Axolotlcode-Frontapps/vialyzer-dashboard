@@ -224,11 +224,15 @@ export const LayerForm = memo(function LayerForm({
 										))}
 									</DropdownMenuContent>
 								</DropdownMenu>
-								{field.state.meta.errors && (
+								{field.state.meta.errors ? (
 									<p className="text-sm text-destructive mt-1">
-										{field.state.meta.errors.join(", ")}
+										{field.state.meta.errors.length > 0
+											? typeof field.state.meta.errors?.[0] === "string"
+												? field.state.meta.errors?.[0]
+												: field.state.meta.errors?.[0]?.message
+											: null}
 									</p>
-								)}
+								) : null}
 							</div>
 						)}
 					</form.Field>

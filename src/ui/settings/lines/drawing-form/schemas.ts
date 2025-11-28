@@ -60,7 +60,7 @@ export const layerFormSchema = z.object({
 		.min(1, "El nombre es requerido")
 		.max(100, "El nombre debe tener menos de 100 caracteres"),
 	vehicleIds: z
-		.array(z.string())
+		.array(z.string("ID de vehículo no válido"))
 		.min(1, "Debe seleccionar al menos un vehículo"),
 	description: z
 		.string()

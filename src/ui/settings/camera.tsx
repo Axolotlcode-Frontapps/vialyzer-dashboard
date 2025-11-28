@@ -118,8 +118,6 @@ export function Camera() {
 			return;
 		}
 
-		console.log({ deleted });
-
 		const layerMap = new Map(layers.map((layer) => [layer.id, layer]));
 
 		if (added.length > 0) {
