@@ -1,5 +1,5 @@
 import { getRouteApi, useLocation } from "@tanstack/react-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	flexRender,
 	getCoreRowModel,
@@ -63,15 +63,18 @@ export function DataTable<TData, TValue>({
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+	const [globalFilter, setGlobalFilter] = useState<string>(search.search || "");
 
-	const totalRowsNumber = totalRows ?? data.length;
+	useEffect(() => {
+		setGlobalFilter(search.search || "");
+	}, [search.search]);
 
 	const table = useReactTable({
 		data,
 		columns,
-		pageCount: totalRowsNumber,
 		onSortingChange: setSorting,
 		onColumnFiltersChange: setColumnFilters,
+		onGlobalFilterChange: setGlobalFilter,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -107,8 +110,14 @@ export function DataTable<TData, TValue>({
 			sorting,
 			columnFilters,
 			columnVisibility,
+			globalFilter,
 		},
 	});
+
+	// Calcular totalRows basándose en si hay filtro activo
+	const totalRowsNumber = globalFilter
+		? table.getFilteredRowModel().rows.length
+		: (totalRows ?? data.length);
 
 	return (
 		<Card>

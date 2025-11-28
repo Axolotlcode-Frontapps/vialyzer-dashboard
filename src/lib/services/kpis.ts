@@ -136,8 +136,7 @@ class KpiServices {
 		endDate: string
 	): Promise<AgentStatusGraphData[]> {
 		const response = await fetcher<GeneralResponse<AgentStatusResponse[]>>(
-			`
-			/camera/${cameraId}/kpis/all-alert-agent?start_date=${startDate}&end_date=${endDate}`
+			`/camera/${cameraId}/kpis/all-alert-agent?start_date=${startDate}&end_date=${endDate}`
 		);
 
 		const data = response.payload ?? [];

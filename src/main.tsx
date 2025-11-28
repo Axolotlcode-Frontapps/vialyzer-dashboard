@@ -6,7 +6,13 @@ import { AuthProvider, useAuth } from "./contexts/auth";
 import { PermissionsProvider } from "./contexts/permissions";
 import { routeTree } from "./routeTree.gen";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			retry: 1,
+		},
+	},
+});
 
 const router = createRouter({
 	routeTree,
