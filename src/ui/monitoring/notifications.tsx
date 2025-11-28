@@ -8,22 +8,22 @@ import { ScrollArea } from "@/ui/shared/scroll-area";
 import { Skeleton } from "@/ui/shared/skeleton";
 
 export function Notifications() {
-	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+	const { selected } = useSearch({ from: "/_dashboard/monitoring" });
 
 	const { data: kpisData, isLoading: loadingAgents } = useQuery({
-		queryKey: ["monitoring-kpis-info", cameraId],
+		queryKey: ["monitoring-kpis-info", selected],
 		queryFn: async () =>
-			cameraId ? await kpiServices.getKpis(cameraId) : undefined,
-		enabled: !!cameraId,
+			selected ? await kpiServices.getKpis(selected) : undefined,
+		enabled: !!selected,
 	});
 
 	const { data: notifications = [], isLoading: loading } = useQuery({
-		queryKey: ["monitoring-notifications", cameraId],
+		queryKey: ["monitoring-notifications", selected],
 		queryFn: async () =>
-			cameraId
-				? await kpiServices.getNotifications(cameraId)
+			selected
+				? await kpiServices.getNotifications(selected)
 				: Promise.resolve([]),
-		enabled: !!cameraId,
+		enabled: !!selected,
 	});
 
 	if (loading) {

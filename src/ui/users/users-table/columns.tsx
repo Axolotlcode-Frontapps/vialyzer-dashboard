@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { isValid, parseISO } from "date-fns";
 import { useHasPermission } from "@/hooks/use-permissions";
 
 import type { ColumnDef } from "@tanstack/react-table";
@@ -10,8 +11,6 @@ import { UserTableActions } from "./actions";
 
 export const useUsersColumns = () => {
 	const { hasAnyMultiplePermissions } = useHasPermission();
-
-	console.log(hasAnyMultiplePermissions("users", ["delete", "update-user"]));
 
 	const columns = useMemo(() => {
 		return [
@@ -25,7 +24,7 @@ export const useUsersColumns = () => {
 				),
 			},
 			{
-				accessorKey: "lastName",
+				accessorKey: "lastname",
 				header: ({ column }) => (
 					<DataTableColumnHeader column={column} title="Apellidos" />
 				),
@@ -53,6 +52,14 @@ export const useUsersColumns = () => {
 				cell: ({ row }) => (
 					<Badge className="capitalize">{row.original.role.name}</Badge>
 				),
+				sortingFn: (rowA, rowB) => {
+					const roleA = rowA.original.role.name.toLowerCase();
+					const roleB = rowB.original.role.name.toLowerCase();
+
+					if (roleA < roleB) return -1;
+					if (roleA > roleB) return 1;
+					return 0;
+				},
 			},
 			{
 				accessorKey: "createdAt",
@@ -64,6 +71,29 @@ export const useUsersColumns = () => {
 						{formatDate(row.getValue("createdAt"))}
 					</span>
 				),
+				sortingFn: (rowA, rowB) => {
+					const valueA = rowA.getValue("createdAt") as
+						| string
+						| null
+						| undefined;
+					const valueB = rowB.getValue("createdAt") as
+						| string
+						| null
+						| undefined;
+
+					if (!valueA && !valueB) return 0;
+					if (!valueA) return 1;
+					if (!valueB) return -1;
+
+					const dateA = parseISO(valueA);
+					const dateB = parseISO(valueB);
+
+					if (!isValid(dateA) && !isValid(dateB)) return 0;
+					if (!isValid(dateA)) return 1;
+					if (!isValid(dateB)) return -1;
+
+					return dateA.getTime() - dateB.getTime();
+				},
 			},
 			{
 				accessorKey: "lastLogin",
@@ -78,6 +108,30 @@ export const useUsersColumns = () => {
 						{formatDate(row.getValue("lastLogin"))}
 					</span>
 				),
+				sortingFn: (rowA, rowB) => {
+					const valueA = rowA.getValue("lastLogin") as
+						| string
+						| null
+						| undefined;
+					const valueB = rowB.getValue("lastLogin") as
+						| string
+						| null
+						| undefined;
+
+					if (!valueA && !valueB) return 0;
+					if (!valueA) return 1;
+					if (!valueB) return -1;
+
+					const dateA = parseISO(valueA);
+					const dateB = parseISO(valueB);
+
+					// Verificar que las fechas sean válidas
+					if (!isValid(dateA) && !isValid(dateB)) return 0;
+					if (!isValid(dateA)) return 1;
+					if (!isValid(dateB)) return -1;
+
+					return dateA.getTime() - dateB.getTime();
+				},
 			},
 			{
 				accessorKey: "active",

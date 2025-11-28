@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_dashboard/settings/modules/")({
 function Modules() {
 	const [openAdd, setOpenAdd] = useState(false);
 
-	const { data: modules = [] } = useQuery({
+	const { data: modules = [], isLoading } = useQuery({
 		queryKey: ["modules"],
 		queryFn: async () => await modulesServices.getAllModules(),
 		select: (data) => data.payload,
@@ -40,9 +40,9 @@ function Modules() {
 
 				<DataTable
 					columns={columns}
-					data={modules || []}
-					isLoading={!modules}
-					totalRows={modules ? modules.length : 0}
+					data={modules}
+					isLoading={isLoading}
+					totalRows={modules.length}
 				>
 					{({ table }) => (
 						<DataTableHeader

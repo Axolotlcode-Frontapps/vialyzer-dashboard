@@ -5,6 +5,8 @@ class SharedSchemas {
 		page: z.number().default(1),
 		limit: z.number().default(10),
 		search: z.string().optional(),
+		sortBy: z.string().optional(),
+		sortOrder: z.enum(["asc", "desc"]).optional(),
 	});
 
 	searchParamsSchema = z.object({

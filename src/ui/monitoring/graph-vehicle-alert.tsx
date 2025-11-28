@@ -38,13 +38,13 @@ const startDate = sevenDaysAgo.toISOString().split("T")[0];
 const endDate = today.toISOString().split("T")[0];
 
 export function GraphVehicleAlert() {
-	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+	const { selected } = useSearch({ from: "/_dashboard/monitoring" });
 
 	const { data, isLoading, error } = useQuery({
-		queryKey: ["monitoring-vehicle-alerts", cameraId, startDate, endDate],
+		queryKey: ["monitoring-vehicle-alerts", selected, startDate, endDate],
 		queryFn: async () =>
-			cameraId
-				? await kpiServices.getVehicleAlert(cameraId, startDate, endDate)
+			selected
+				? await kpiServices.getVehicleAlert(selected, startDate, endDate)
 				: [],
 	});
 

@@ -14,7 +14,6 @@ import {
 	InputGroupInput,
 } from "@/ui/shared/input-group";
 import { Maps } from "@/ui/shared/maps";
-import { MapLegend } from "@/ui/shared/maps/map-legend";
 
 export const Route = createFileRoute("/_dashboard/settings/cameras/")({
 	component: Cameras,
@@ -80,7 +79,6 @@ function Cameras() {
 					<GoogleMapsProvider>
 						<Maps />
 					</GoogleMapsProvider>
-					<MapLegend />
 					<DetailsCard />
 				</section>
 			</div>

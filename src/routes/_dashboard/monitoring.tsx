@@ -25,7 +25,6 @@ import { Stats } from "@/ui/monitoring/stats";
 import { Card, CardContent } from "@/ui/shared/card";
 import { Field, FieldError, FieldLabel } from "@/ui/shared/field";
 import { Maps } from "@/ui/shared/maps";
-import { MapDetails } from "@/ui/shared/maps/map-details";
 import { HasPermission } from "@/ui/shared/permissions/has-permission";
 import {
 	Select,
@@ -43,7 +42,7 @@ export const Route = createFileRoute("/_dashboard/monitoring")({
 			queryClient,
 			permissions: { user },
 		},
-		search: { cameraId },
+		search: { selected },
 	}) => {
 		if (!user) {
 			throw redirect({
@@ -66,10 +65,10 @@ export const Route = createFileRoute("/_dashboard/monitoring")({
 			queryFn: async () => await camerasService.getAllCameras(),
 		});
 
-		if (cameras && cameras.length > 0 && !cameraId) {
+		if (cameras && cameras.length > 0 && !selected) {
 			throw redirect({
 				search: {
-					cameraId: cameras[0].id,
+					selected: cameras[0].id,
 				},
 			});
 		}
@@ -78,7 +77,7 @@ export const Route = createFileRoute("/_dashboard/monitoring")({
 
 function Monitoring() {
 	const navigate = useNavigate();
-	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+	const { selected } = useSearch({ from: "/_dashboard/monitoring" });
 
 	const { data: cameras } = useSuspenseQuery({
 		queryKey: ["cameras"],
@@ -88,7 +87,7 @@ function Monitoring() {
 
 	const form = useForm({
 		defaultValues: {
-			cameraId: cameraId ?? "",
+			selected: selected ?? "",
 		},
 		validators: {
 			onMount: agentsSchemas.query,
@@ -98,7 +97,7 @@ function Monitoring() {
 			navigate({
 				to: "/monitoring",
 				search: {
-					cameraId: value.cameraId,
+					selected: value.selected,
 				},
 			});
 		},
@@ -107,7 +106,7 @@ function Monitoring() {
 	return (
 		<div className="monitoring">
 			<div className="flex items-center justify-between mb-5">
-				<h1 className="text-2xl font-bold">Monitoring</h1>
+				<h1 className="text-2xl font-bold">Agentes</h1>
 				{/* <Button size="sm">
 					<FileDown className="size-4" />
 					Descargar reporte
@@ -123,14 +122,14 @@ function Monitoring() {
 						}}
 					>
 						<form.Field
-							name="cameraId"
+							name="selected"
 							children={(field) => {
 								const isInvalid =
 									field.state.meta.isTouched && !field.state.meta.isValid;
 								return (
 									<Field data-invalid={isInvalid}>
 										<div className="flex gap-2 items-center w-full">
-											<FieldLabel htmlFor={field.name}>Empresa:</FieldLabel>
+											<FieldLabel htmlFor={field.name}>Camara:</FieldLabel>
 											<Select
 												value={field.state.value}
 												onValueChange={(val) => {
@@ -172,7 +171,6 @@ function Monitoring() {
 						<GoogleMapsProvider>
 							<Maps />
 						</GoogleMapsProvider>
-						<MapDetails />
 					</div>
 				</div>
 				{/* Graphs */}

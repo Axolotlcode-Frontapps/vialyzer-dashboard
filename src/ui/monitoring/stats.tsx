@@ -10,13 +10,13 @@ import { RejectedAlerts } from "@/ui/monitoring/rejected-alerts";
 import { ScrollArea, ScrollBar } from "../shared/scroll-area";
 
 export function Stats() {
-	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+	const { selected } = useSearch({ from: "/_dashboard/monitoring" });
 
 	const { data, isLoading } = useQuery({
-		queryKey: ["monitoring-kpis-info", cameraId],
+		queryKey: ["monitoring-kpis-info", selected],
 		queryFn: async () =>
-			cameraId ? await kpiServices.getKpis(cameraId) : undefined,
-		enabled: !!cameraId,
+			selected ? await kpiServices.getKpis(selected) : undefined,
+		enabled: !!selected,
 	});
 
 	const kpisData = data?.data;

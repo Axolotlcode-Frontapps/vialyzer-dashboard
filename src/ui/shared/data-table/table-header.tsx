@@ -1,5 +1,4 @@
 import { getRouteApi, useLocation } from "@tanstack/react-router";
-import { useEffect } from "react";
 import { Search } from "lucide-react";
 
 import type { Table } from "@tanstack/react-table";
@@ -29,14 +28,6 @@ export function DataTableHeader<TData>({
 	const searchValues = Route.useSearch() as GenericSearchParams;
 	const navigate = Route.useNavigate();
 
-	useEffect(() => {
-		if (hasSearchUrl) {
-			table
-				.getColumn(String(searchBy))
-				?.setFilterValue(searchValues.search || "");
-		}
-	}, [hasSearchUrl, searchValues.search, table, searchBy]);
-
 	function onChangeSearch(value: string) {
 		if (!hasSearchUrl) {
 			table.getColumn(String(searchBy))?.setFilterValue(value || "");
@@ -57,11 +48,7 @@ export function DataTableHeader<TData>({
 			<div className="w-full md:max-w-1/3 relative">
 				<Input
 					placeholder={searchPlaceholder}
-					value={
-						searchValues.search ||
-						(table.getColumn(String(searchBy))?.getFilterValue() as string) ||
-						""
-					}
+					value={searchValues.search || ""}
 					onChange={(event) => onChangeSearch(event.target.value)}
 					className="pl-9 py-2 max-h-9 placeholder:text-sm"
 				/>

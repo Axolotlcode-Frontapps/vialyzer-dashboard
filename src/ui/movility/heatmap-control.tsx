@@ -3,6 +3,7 @@ import { Car, Construction, Flame, Layers } from "lucide-react";
 
 import type { HeatmapType } from "@/lib/utils/heatmap-config";
 
+import { cn } from "@/lib/utils/cn";
 import { Button } from "../shared/button";
 
 interface HeatmapOption {
@@ -68,14 +69,8 @@ export function HeatmapControls({
 
 	return (
 		<div className="relative">
-			<Button
-				type="button"
-				onClick={() => setIsOpen(!isOpen)}
-				className={`rounded-lg shadow-lg border p-3 transition-all flex items-center gap-2 ${
-					activeHeatmap
-						? "bg-primary text-white border-primary"
-						: "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
-				}`}
+			<section
+				className={`rounded-lg shadow-lg border transition-all flex items-center gap-2`}
 				aria-label="Controles de mapa de calor"
 			>
 				{activeHeatmap ? (
@@ -86,14 +81,21 @@ export function HeatmapControls({
 						</span>
 					</>
 				) : (
-					<Button>
+					<Button
+						onClick={() => setIsOpen(!isOpen)}
+						className={cn(
+							activeHeatmap
+								? "bg-primary text-white border-primary"
+								: "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+						)}
+					>
 						<Flame className="w-5 h-5" />
 						<span className="text-sm font-medium hidden sm:inline">
 							Mapa de Calor
 						</span>
 					</Button>
 				)}
-			</Button>
+			</section>
 
 			{isOpen && (
 				<>
