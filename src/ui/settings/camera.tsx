@@ -114,7 +114,12 @@ export function Camera() {
 
 		const editedLayers = layers.filter((layer) => layer.syncState === "edited");
 
-		if (added.length === 0 && updated.length === 0 && deleted.length === 0) {
+		if (
+			added.length === 0 &&
+			updated.length === 0 &&
+			deleted.length === 0 &&
+			editedLayers.length === 0
+		) {
 			return;
 		}
 
