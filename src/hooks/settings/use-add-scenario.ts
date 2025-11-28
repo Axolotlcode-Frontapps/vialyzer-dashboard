@@ -36,6 +36,10 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 							element.visual_coordinates.type === "line" ||
 							element.visual_coordinates.type === "curve";
 
+						const vehicleIds = Array.isArray(layer.category)
+							? layer.category
+							: [layer.category];
+
 						const entry = await settings.addScenarioLine({
 							...line,
 							name: isLine ? `${line.name} - Entrada` : line.name,
@@ -57,19 +61,27 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 							if (!exit) throw new Error("Error al crear la línea de salida");
 						}
 
-						const source = await settings.addDatasource({
-							scenery_id: entry.id,
-							vehicle_id: layer.category,
-							description: layer.description,
-							second_scenery: exit?.id,
-							visual_coordinates,
-							camera,
-						});
+						const datasources = await Promise.all(
+							vehicleIds.map((vehicleId) =>
+								settings.addDatasource({
+									scenery_id: entry.id,
+									vehicle_id: vehicleId,
+									description: layer.description,
+									second_scenery: exit?.id,
+									visual_coordinates,
+									camera,
+								})
+							)
+						);
 
-						return source;
+						return datasources;
 					}
 
 					if (element.type === "CONFIGURATION") {
+						const vehicleIds = Array.isArray(layer.category)
+							? layer.category
+							: [layer.category];
+
 						const config = await settings.addScenarioLine({
 							...line,
 							coordinates,
@@ -78,14 +90,19 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 						if (!config)
 							throw new Error("Error al crear la línea de configuración");
 
-						const source = await settings.addDatasource({
-							scenery_id: config.id,
-							description: layer.description,
-							visual_coordinates,
-							camera,
-						});
+						const datasources = await Promise.all(
+							vehicleIds.map((vehicleId) =>
+								settings.addDatasource({
+									scenery_id: config.id,
+									vehicle_id: vehicleId,
+									description: layer.description,
+									visual_coordinates,
+									camera,
+								})
+							)
+						);
 
-						return source;
+						return datasources;
 					}
 
 					return null;
@@ -100,7 +117,7 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 
 			const results = all
 				.filter((item) => item.status === "fulfilled")
-				.map((item) => item.value);
+				.flatMap((item) => item.value);
 
 			return results;
 		},

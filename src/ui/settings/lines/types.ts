@@ -49,18 +49,18 @@ export interface LayerFormProps {
 	onCreateLayer: (layerData: {
 		name: string;
 		description?: string;
-		category?: string;
+		category: string[];
 		opacity: number;
-		color: string;
+		color?: string;
 	}) => void;
 	onUpdateLayer?: (
 		layerId: string,
 		layerData: {
 			name: string;
 			description?: string;
-			category?: string;
+			category: string[];
 			opacity: number;
-			color: string;
+			color?: string;
 		}
 	) => void;
 	layerToEdit?: LayerInfo | null;

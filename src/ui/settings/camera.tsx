@@ -10,6 +10,7 @@ import { useAddScenarioLine } from "@/hooks/settings/use-add-scenario";
 import { useGetPreview } from "@/hooks/settings/use-get-previewy";
 import { useGetScenarioLines } from "@/hooks/settings/use-get-scenario-lines";
 import { useLoadVehicles } from "@/hooks/settings/use-load-vehicles";
+import { useModifyDatasources } from "@/hooks/settings/use-modify-datasources";
 import { useRemoveScenarioLine } from "@/hooks/settings/use-remove-scenario";
 import { useUpdateScenarioLine } from "@/hooks/settings/use-update-scenario";
 import { Lines } from "@/ui/settings/lines";
@@ -47,7 +48,7 @@ const bridge = new DrawingBridge({
 	},
 	input: {
 		elements: {
-			id: "id",
+			"scenery.id": "id",
 			"visual_coordinates.type": "type",
 			"points(visual_coordinates.coordinates)": "points",
 			"points(scenery.coordinates)": "detection.entry",
@@ -75,7 +76,7 @@ const bridge = new DrawingBridge({
 		},
 		layers: {
 			"visual_coordinates.layer_id": "id",
-			"vehicle.name": "name",
+			"visual_coordinates.layer_name": "name",
 			description: "description",
 			"vehicle.id": "category",
 			"hex(vehicle.color)": "color",
@@ -91,6 +92,7 @@ export function Camera() {
 	const { add } = useAddScenarioLine();
 	const { remove } = useRemoveScenarioLine();
 	const { update } = useUpdateScenarioLine();
+	const { modifyDatasources } = useModifyDatasources();
 
 	const {
 		data: serverLines,
@@ -110,7 +112,16 @@ export function Camera() {
 		const updated = elements.filter((el) => el.syncState === "edited");
 		const deleted = elements.filter((el) => el.syncState === "deleted");
 
-		if (added.length === 0 && updated.length === 0 && deleted.length === 0) {
+		const newLayers = layers.filter((layer) => layer.syncState === "new");
+		const editedLayers = layers.filter((layer) => layer.syncState === "edited");
+
+		if (
+			added.length === 0 &&
+			updated.length === 0 &&
+			deleted.length === 0 &&
+			newLayers.length === 0 &&
+			editedLayers.length === 0
+		) {
 			return;
 		}
 
@@ -121,28 +132,43 @@ export function Camera() {
 				Omit<LineElement, "layer"> & { layer_id: string }
 			>(added);
 
-			const toAdd: LineElement[] = lines.flatMap(({ layer_id, ...line }) => {
-				const layer = layerMap.get(layer_id);
+			const toAdd = lines
+				.map(({ layer_id, ...line }) => {
+					const layer = layerMap.get(layer_id);
 
-				if (!layer) return [];
+					if (!layer) return null;
 
-				return {
-					...line,
-					layer: {
-						id: layer.id,
-						name: layer.name,
-						description: layer.description,
-						category: layer.category,
-					},
-				};
-			});
+					return {
+						...line,
+						visual_coordinates: {
+							...line.visual_coordinates,
+							layer_name: layer.name, // Save layer name in visual_coordinates
+						},
+						layer: {
+							id: layer.id,
+							name: layer.name,
+							description: layer.description,
+							category: layer.category, // Pass full array of vehicle IDs
+						},
+					};
+				})
+				.filter((item): item is NonNullable<typeof item> => item !== null);
 
 			await add(toAdd);
 		}
 
 		if (deleted.length > 0) {
 			const toRemove = serverLines.filter((line) =>
-				deleted.some((deletion) => deletion.id === line.id)
+				deleted.some((deletion) => {
+					const deletedDatasource = serverLines.find(
+						(ds) => ds.id === deletion.id
+					);
+
+					return (
+						deletedDatasource &&
+						line.scenery.id === deletedDatasource.scenery.id
+					);
+				})
 			);
 
 			await remove(toRemove);
@@ -160,6 +186,10 @@ export function Camera() {
 
 				return {
 					...line,
+					visual_coordinates: {
+						...line.visual_coordinates,
+						layer_name: layer.name,
+					},
 					layer: {
 						id: layer.id,
 						name: layer.name,
@@ -172,6 +202,10 @@ export function Camera() {
 			await update({ lines: toUpdate, serverLines });
 		}
 
+		if (editedLayers.length > 0) {
+			await modifyDatasources({ layers: editedLayers, serverLines });
+		}
+
 		refetch();
 	};
 
@@ -179,7 +213,18 @@ export function Camera() {
 		elements: DrawingElement[];
 		layers: Map<string, LayerInfo>;
 	}> => {
-		return bridge.import(serverLines);
+		const { elements, layers } = bridge.import(serverLines);
+
+		const elementMap = new Map<string, DrawingElement>();
+		elements.forEach((element) => {
+			if (!elementMap.has(element.id)) {
+				elementMap.set(element.id, element);
+			}
+		});
+
+		const uniqueElements = Array.from(elementMap.values());
+
+		return { elements: uniqueElements, layers };
 	};
 
 	if (loading || linesLoading) {

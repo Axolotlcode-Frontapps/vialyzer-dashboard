@@ -13,7 +13,7 @@ describe("LayerItem Component", () => {
 		locked: false,
 		opacity: 0.8,
 		color: "#ff0000",
-		category: "vehicle-1",
+		category: ["vehicle-1"],
 		zIndex: 1,
 		elementIds: ["elem-1", "elem-2", "elem-3"],
 		description: "Test layer description",

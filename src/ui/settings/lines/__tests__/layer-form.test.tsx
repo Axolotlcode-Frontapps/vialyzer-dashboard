@@ -21,7 +21,7 @@ describe("LayerForm Component", () => {
 	const mockLayerToEdit = {
 		id: "layer-1",
 		name: "Car",
-		category: "vehicle-1",
+		category: ["vehicle-1"],
 		description: "Car layer",
 		opacity: 0.8,
 		color: "#ff0000",
@@ -200,7 +200,7 @@ describe("LayerForm Component", () => {
 					"layer-1",
 					expect.objectContaining({
 						name: "Car",
-						category: "vehicle-1",
+						category: ["vehicle-1"],
 					})
 				);
 			});
@@ -538,7 +538,7 @@ describe("LayerForm Component", () => {
 		it("should handle vehicle not found in list", () => {
 			const layerWithInvalidVehicle = {
 				...mockLayerToEdit,
-				category: "invalid-vehicle",
+				category: ["invalid-vehicle"],
 			};
 
 			expect(() =>

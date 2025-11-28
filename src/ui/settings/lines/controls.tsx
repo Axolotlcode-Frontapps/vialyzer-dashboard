@@ -65,22 +65,30 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 		if (!onSave || !drawingEngine || drawingEngine.elements.length === 0)
 			return;
 
-		// Get sync state stats before saving
+		// Get sync state stats before saving (both elements and layers)
 		const syncStats = drawingEngine.getSyncStateStats();
-		const unsyncedCount = syncStats.new + syncStats.edited + syncStats.deleted;
+		const layerStats = drawingEngine.getLayerSyncStateStats();
+		const unsyncedElementCount =
+			syncStats.new + syncStats.edited + syncStats.deleted;
+		const unsyncedLayerCount = layerStats.new + layerStats.edited;
+		const totalUnsyncedCount = unsyncedElementCount + unsyncedLayerCount;
 
-		if (unsyncedCount === 0) {
+		if (totalUnsyncedCount === 0) {
 			drawingEngine.setFeedback("No hay cambios para guardar", 2000);
 			return;
 		}
 
 		try {
 			setIsSaving(true);
-			const layers = drawingEngine.getLayers();
+
+			// Capture layer tracking state BEFORE save (deep copy to preserve tracking arrays)
+			const layers = structuredClone(drawingEngine.getLayers());
+
 			await onSave(drawingEngine.elements, layers as any);
 
-			// Mark all elements as saved after successful save
+			// Mark all elements and layers as saved after successful save
 			drawingEngine.markAllElementsAsSaved();
+			drawingEngine.markAllLayersAsSaved();
 
 			const feedbackParts = [];
 			if (syncStats.new > 0) feedbackParts.push(`${syncStats.new} nuevos`);
@@ -88,9 +96,13 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 				feedbackParts.push(`${syncStats.edited} editados`);
 			if (syncStats.deleted > 0)
 				feedbackParts.push(`${syncStats.deleted} eliminados`);
+			if (layerStats.new > 0)
+				feedbackParts.push(`${layerStats.new} capas nuevas`);
+			if (layerStats.edited > 0)
+				feedbackParts.push(`${layerStats.edited} capas editadas`);
 
 			drawingEngine.setFeedback(
-				`Guardados ${unsyncedCount} elemento(s) (${feedbackParts.join(", ")})`,
+				`Guardados ${totalUnsyncedCount} cambio(s) (${feedbackParts.join(", ")})`,
 				3000
 			);
 		} catch (error) {
@@ -105,6 +117,17 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 	// Subscribe to drawing engine state changes
 	useEffect(() => {
 		if (!drawingEngine) return;
+
+		// Initial sync of unsynced count when engine changes
+		const initialElementStats = drawingEngine.getSyncStateStats();
+		const initialLayerStats = drawingEngine.getLayerSyncStateStats();
+		const initialUnsyncedCount =
+			initialElementStats.new +
+			initialElementStats.edited +
+			initialElementStats.deleted +
+			initialLayerStats.new +
+			initialLayerStats.edited;
+		setUnsyncedCount(initialUnsyncedCount);
 
 		const unsubscribe = drawingEngine.subscribeToStateChanges((stateChange) => {
 			switch (stateChange.type) {
@@ -128,6 +151,20 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 				case "mediaLoaded":
 					setIsMediaLoaded(true);
 					break;
+				case "layerAction": {
+					// Update unsynced count when layers change
+					const stats = drawingEngine.getSyncStateStats();
+					const layerStats = drawingEngine.getLayerSyncStateStats();
+					const newUnsyncedCount =
+						stats.new +
+						stats.edited +
+						stats.deleted +
+						layerStats.new +
+						layerStats.edited;
+
+					setUnsyncedCount(newUnsyncedCount);
+					break;
+				}
 				default: {
 					// Update all state for other changes
 					setDrawingMode(drawingEngine.drawingMode);
@@ -135,10 +172,15 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 					setElements(drawingEngine.elements);
 					setIsMediaLoaded(drawingEngine.isInitialized);
 
-					// Update unsynced count
+					// Update unsynced count (include both elements and layers)
 					const syncStats = drawingEngine.getSyncStateStats();
+					const layerStats = drawingEngine.getLayerSyncStateStats();
 					setUnsyncedCount(
-						syncStats.new + syncStats.edited + syncStats.deleted
+						syncStats.new +
+							syncStats.edited +
+							syncStats.deleted +
+							layerStats.new +
+							layerStats.edited
 					);
 				}
 			}

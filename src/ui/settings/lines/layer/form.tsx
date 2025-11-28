@@ -1,8 +1,9 @@
-import { memo, useCallback, useEffect } from "react";
-import { Layers } from "lucide-react";
+import { memo, useCallback, useEffect, useState } from "react";
+import { ChevronDown, Layers, X } from "lucide-react";
 
 import type { LayerFormProps } from "../types";
 
+import { Badge } from "@/ui/shared/badge";
 import { Button } from "@/ui/shared/button";
 import {
 	Dialog,
@@ -12,12 +13,11 @@ import {
 	DialogTitle,
 } from "@/ui/shared/dialog";
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/ui/shared/select";
+	DropdownMenu,
+	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
+	DropdownMenuTrigger,
+} from "@/ui/shared/dropdown-menu";
 import { useDrawingForm } from "../drawing-form/hook";
 import { layerFormDefaults, layerFormSchema } from "../drawing-form/schemas";
 
@@ -30,11 +30,13 @@ export const LayerForm = memo(function LayerForm({
 	vehicles = [],
 }: LayerFormProps) {
 	const isEditing = !!layerToEdit;
+	const [selectedVehicles, setSelectedVehicles] = useState<string[]>([]);
 
 	const form = useDrawingForm({
 		defaultValues: layerToEdit
 			? {
-					vehicleId: layerToEdit.category || "",
+					name: layerToEdit.name || "",
+					vehicleIds: layerToEdit.category || [],
 					description: layerToEdit.description || "",
 					opacity: layerToEdit.opacity * 100,
 				}
@@ -43,16 +45,14 @@ export const LayerForm = memo(function LayerForm({
 			onSubmit: layerFormSchema,
 		},
 		onSubmit: async ({ value }) => {
-			const selectedVehicle = vehicles.find((v) => v.id === value.vehicleId);
-			if (!selectedVehicle) {
-				console.error("No vehicle selected");
+			if (value.vehicleIds.length === 0) {
+				console.error("No vehicles selected");
 				return;
 			}
 
 			const layerData = {
-				name: selectedVehicle.name,
-				category: selectedVehicle.id,
-				color: selectedVehicle.color,
+				name: value.name,
+				category: value.vehicleIds,
 				description: value.description,
 				opacity: value.opacity / 100,
 			};
@@ -66,21 +66,49 @@ export const LayerForm = memo(function LayerForm({
 		},
 	});
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: form methods are stable and including form in deps causes infinite loops
 	useEffect(() => {
 		if (isOpen) {
 			if (layerToEdit) {
-				form.setFieldValue("vehicleId", layerToEdit.category || "");
+				form.setFieldValue("name", layerToEdit.name || "");
+				form.setFieldValue("vehicleIds", layerToEdit.category || []);
 				form.setFieldValue("description", layerToEdit.description || "");
 				form.setFieldValue("opacity", layerToEdit.opacity * 100);
+				setSelectedVehicles(layerToEdit.category || []);
 			} else {
 				form.reset();
+				setSelectedVehicles([]);
 			}
+		} else {
+			form.reset();
+			setSelectedVehicles([]);
 		}
-	}, [isOpen, layerToEdit, form]);
+	}, [isOpen, layerToEdit]);
 
 	const handleCancel = useCallback(() => {
+		setSelectedVehicles([]);
 		onClose();
 	}, [onClose]);
+
+	const handleToggleVehicle = useCallback(
+		(vehicleId: string, checked: boolean) => {
+			const newSelection = checked
+				? [...selectedVehicles, vehicleId]
+				: selectedVehicles.filter((id) => id !== vehicleId);
+			setSelectedVehicles(newSelection);
+			form.setFieldValue("vehicleIds", newSelection);
+		},
+		[selectedVehicles, form]
+	);
+
+	const handleRemoveVehicle = useCallback(
+		(vehicleId: string) => {
+			const newSelection = selectedVehicles.filter((id) => id !== vehicleId);
+			setSelectedVehicles(newSelection);
+			form.setFieldValue("vehicleIds", newSelection);
+		},
+		[selectedVehicles, form]
+	);
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && handleCancel()}>
@@ -100,25 +128,91 @@ export const LayerForm = memo(function LayerForm({
 					}}
 					className="space-y-4"
 				>
-					<form.Field
-						name="vehicleId"
+					<form.AppField
+						name="name"
 						validators={{
-							onChange: layerFormSchema.shape.vehicleId,
+							onChange: layerFormSchema.shape.name,
+						}}
+					>
+						{(field) => (
+							<field.TextField
+								label="Nombre de la capa"
+								placeholder="Nombre de la capa..."
+							/>
+						)}
+					</form.AppField>
+
+					<form.Field
+						name="vehicleIds"
+						validators={{
+							onChange: layerFormSchema.shape.vehicleIds,
 						}}
 					>
 						{(field) => (
 							<div>
-								<label htmlFor="vehicle">Actor víal</label>
-								<Select
-									value={field.state.value}
-									onValueChange={(val) => field.handleChange(val)}
-								>
-									<SelectTrigger className="w-full" id="vehicle">
-										<SelectValue placeholder="Selecciona un vehículo..." />
-									</SelectTrigger>
-									<SelectContent>
+								<label htmlFor="vehicles">Actores viales</label>
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<button
+											type="button"
+											className="border-input data-placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-full items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 min-h-10 h-auto"
+											id="vehicles"
+										>
+											<div className="h-full flex flex-wrap gap-1 flex-1">
+												{selectedVehicles.length === 0 ? (
+													<span className="text-muted-foreground">
+														Agregar vehículo...
+													</span>
+												) : (
+													selectedVehicles.map((vehicleId) => {
+														const vehicle = vehicles.find(
+															(v) => v.id === vehicleId
+														);
+														if (!vehicle) return null;
+														return (
+															<Badge
+																key={vehicleId}
+																variant="secondary"
+																className="flex items-center gap-1"
+															>
+																<span
+																	className="w-3 h-3 rounded-full block"
+																	style={{ backgroundColor: vehicle.color }}
+																/>
+																{vehicle.name}
+																<button
+																	type="button"
+																	onPointerDown={(e) => {
+																		e.stopPropagation();
+																		e.preventDefault();
+																		handleRemoveVehicle(vehicleId);
+																	}}
+																	onClick={(e) => {
+																		e.stopPropagation();
+																		e.preventDefault();
+																	}}
+																	className="ml-1 hover:bg-destructive/20 rounded-full p-0.5"
+																>
+																	<X className="w-3 h-3" />
+																</button>
+															</Badge>
+														);
+													})
+												)}
+											</div>
+											<ChevronDown className="size-4 opacity-50 shrink-0" />
+										</button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent className="w-80" align="center">
 										{vehicles.map((vehicle) => (
-											<SelectItem key={vehicle.id} value={vehicle.id}>
+											<DropdownMenuCheckboxItem
+												key={vehicle.id}
+												checked={selectedVehicles.includes(vehicle.id)}
+												onCheckedChange={(checked) =>
+													handleToggleVehicle(vehicle.id, checked)
+												}
+												onSelect={(e) => e.preventDefault()}
+											>
 												<div className="flex items-center gap-2">
 													<div
 														className="w-4 h-4 rounded-full"
@@ -126,10 +220,10 @@ export const LayerForm = memo(function LayerForm({
 													/>
 													{vehicle.name}
 												</div>
-											</SelectItem>
+											</DropdownMenuCheckboxItem>
 										))}
-									</SelectContent>
-								</Select>
+									</DropdownMenuContent>
+								</DropdownMenu>
 								{field.state.meta.errors && (
 									<p className="text-sm text-destructive mt-1">
 										{field.state.meta.errors.join(", ")}

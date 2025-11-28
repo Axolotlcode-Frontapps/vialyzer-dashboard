@@ -127,7 +127,7 @@ export function setupTestContext(): TestContext {
 					locked: layerData.locked ?? false,
 					opacity: layerData.opacity ?? 1,
 					color: layerData.color || "#000000",
-					category: layerData.category || "default",
+					category: layerData.category || [],
 					description: layerData.description || "",
 					zIndex: layerData.zIndex ?? state.layers.size,
 					elementIds: layerData.elementIds || [],

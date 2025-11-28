@@ -107,7 +107,7 @@ describe("DrawingEngine - Layers", () => {
 			const result = engine.createLayer({
 				name: "Complex Layer",
 				description: "A complex layer",
-				category: "test",
+				category: ["test"],
 				opacity: 0.8,
 				visibility: "visible",
 				color: "rgb(100, 150, 200)",
