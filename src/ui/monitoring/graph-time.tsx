@@ -57,15 +57,15 @@ const media: ContentType = ({ x, y, width, height }) => {
 };
 
 export function GraphTime() {
-	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+	const { selected } = useSearch({ from: "/_dashboard/monitoring" });
 
 	const { data } = useQuery({
-		queryKey: ["monitoring-time-permanence", cameraId, startDate, endDate],
+		queryKey: ["monitoring-time-permanence", selected, startDate, endDate],
 		queryFn: async () =>
-			cameraId
-				? await kpiServices.getTime(cameraId, startDate, endDate)
+			selected
+				? await kpiServices.getTime(selected, startDate, endDate)
 				: undefined,
-		enabled: !!cameraId,
+		enabled: !!selected,
 	});
 
 	const chartData = useMemo(() => {

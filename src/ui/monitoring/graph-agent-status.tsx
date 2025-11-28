@@ -58,17 +58,17 @@ const media: ContentType = ({ x, y, width }) => {
 };
 
 export function GraphAgentStatus() {
-	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+	const { selected } = useSearch({ from: "/_dashboard/monitoring" });
 
 	const { data: agentStatus, isLoading: loading } = useQuery<
 		AgentStatusGraphData[]
 	>({
-		queryKey: ["monitoring-agent-status", cameraId, startDate, endDate],
+		queryKey: ["monitoring-agent-status", selected, startDate, endDate],
 		queryFn: async () =>
-			cameraId
-				? await kpiServices.getAgentStatus(cameraId, startDate, endDate)
+			selected
+				? await kpiServices.getAgentStatus(selected, startDate, endDate)
 				: [],
-		enabled: !!cameraId,
+		enabled: !!selected,
 	});
 
 	return (

@@ -44,13 +44,13 @@ const startDate = sevenDaysAgo.toISOString().split("T")[0];
 const endDate = today.toISOString().split("T")[0];
 
 export function GraphTopReasons() {
-	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+	const { selected } = useSearch({ from: "/_dashboard/monitoring" });
 
 	const { data, isLoading, isRefetching, isFetching, isPending } = useQuery({
-		queryKey: ["monitoring-top-reasons", cameraId, startDate, endDate],
+		queryKey: ["monitoring-top-reasons", selected, startDate, endDate],
 		queryFn: async () =>
-			cameraId
-				? await kpiServices.getTopReasons(cameraId, startDate, endDate)
+			selected
+				? await kpiServices.getTopReasons(selected, startDate, endDate)
 				: [],
 	});
 

@@ -2,7 +2,7 @@ import z from "zod";
 
 class AgentsSchema {
 	query = z.object({
-		cameraId: z.string(),
+		selected: z.string(),
 	});
 }
 

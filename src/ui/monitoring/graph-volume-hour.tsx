@@ -25,15 +25,15 @@ const startDate = sevenDaysAgo.toISOString().split("T")[0];
 const endDate = today.toISOString().split("T")[0];
 
 export function GraphVolumeHour() {
-	const { cameraId } = useSearch({ from: "/_dashboard/monitoring" });
+	const { selected } = useSearch({ from: "/_dashboard/monitoring" });
 
 	const { data } = useQuery({
-		queryKey: ["monitoring-volume-hour", cameraId, startDate, endDate],
+		queryKey: ["monitoring-volume-hour", selected, startDate, endDate],
 		queryFn: async () =>
-			cameraId
-				? await kpiServices.getVolumeHour(cameraId, startDate, endDate)
+			selected
+				? await kpiServices.getVolumeHour(selected, startDate, endDate)
 				: [],
-		enabled: !!cameraId,
+		enabled: !!selected,
 	});
 
 	const chartData = useMemo(() => data ?? [], [data]);
