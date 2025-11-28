@@ -39,11 +39,15 @@ export function NavSection({ group, items }: INavSection) {
 								tooltip={item.title}
 								className="cursor-pointer"
 								isActive={pathname === item.to}
-								onClick={() =>
-									navigate({
-										to: item.to,
-									})
-								}
+								onClick={() => {
+									if (item.to?.includes("http")) {
+										window.open(item.to, "_blank");
+									} else {
+										navigate({
+											to: item.to,
+										});
+									}
+								}}
 							>
 								{item.icon && <item.icon />}
 								<span>{item.title}</span>
@@ -58,11 +62,15 @@ export function NavSection({ group, items }: INavSection) {
 								tooltip={subItem.title}
 								className="cursor-pointer"
 								isActive={pathname === subItem.to}
-								onClick={() =>
-									navigate({
-										to: subItem.to,
-									})
-								}
+								onClick={() => {
+									if (subItem.to?.includes("http")) {
+										window.open(subItem.to, "_blank");
+									} else {
+										navigate({
+											to: subItem.to,
+										});
+									}
+								}}
 							>
 								{subItem.icon && <subItem.icon />}
 								<span>{subItem.title}</span>
@@ -96,11 +104,15 @@ export function NavSection({ group, items }: INavSection) {
 												<SidebarMenuSubButton
 													className="cursor-pointer"
 													isActive={subItem.to === pathname}
-													onClick={() =>
-														navigate({
-															to: subItem.to,
-														})
-													}
+													onClick={() => {
+														if (subItem.to?.includes("http")) {
+															window.open(subItem.to, "_blank");
+														} else {
+															navigate({
+																to: subItem.to,
+															});
+														}
+													}}
 												>
 													{subItem.icon && <subItem.icon />}
 													<span>{subItem.title}</span>

@@ -1,11 +1,15 @@
 import { Activity } from "react";
 import {
 	Camera,
+	Car,
+	FileSliders,
 	House,
+	LayoutDashboard,
 	MonitorCog,
 	Package,
 	Settings,
 	Shield,
+	TowerControl,
 	User,
 	Video,
 } from "lucide-react";
@@ -28,7 +32,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 		items: [
 			{
 				icon: House,
-				title: "Dashboard",
+				title: "Inicio",
 				to: "/",
 			},
 		],
@@ -42,14 +46,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				: [
 						{
 							title: "Movilidad",
-							icon: Video,
+							icon: TowerControl,
 							defaultOpen: true,
 							items: [
 								...(!hasModule("transito")
 									? []
 									: [
 											{
-												icon: Camera,
+												icon: Car,
 												title: "Transito",
 												to: "/movility" as const,
 											},
@@ -99,6 +103,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 												icon: Camera,
 												title: "Agentes",
 												to: "/monitoring" as const,
+											},
+										]),
+							],
+						},
+					]),
+
+			...(!hasModule("dashboard")
+				? []
+				: [
+						{
+							title: "Integrador",
+							icon: LayoutDashboard,
+							defaultOpen: true,
+							items: [
+								...(!hasModule("dashboard")
+									? []
+									: [
+											{
+												icon: FileSliders,
+												title: "Dashboard",
+												to: "https://us-east-2.quicksight.aws.amazon.com/sn/auth/signin?redirect_uri=https%3A%2F%2Fus-east-2.quicksight.aws.amazon.com%2Fsn%2Faccount%2Fvialyzer-integrador%2Fanalyses%2F3ccfe251-f327-4d99-8428-ad8165276c80%3Fstate%3DhashArgs%2523%26isauthcode%3Dtrue" as const,
 											},
 										]),
 							],
@@ -186,7 +211,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
 				<Activity
 					mode={
-						hasModule("movilidad") || hasModule("agentes")
+						hasModule("movilidad") ||
+						hasModule("agentes") ||
+						hasModule("dashboard")
 							? "visible"
 							: "hidden"
 					}
