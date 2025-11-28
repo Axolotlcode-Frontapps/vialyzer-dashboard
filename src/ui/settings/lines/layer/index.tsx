@@ -110,9 +110,9 @@ export function LayerPanel({ drawingEngine, vehicles }: LayerPanelProps) {
 	const handleCreateLayer = (layerData: {
 		name: string;
 		description?: string;
-		category?: string;
+		category: string[];
 		opacity: number;
-		color: string;
+		color?: string;
 	}) => {
 		if (!drawingEngine) {
 			return;
@@ -142,9 +142,9 @@ export function LayerPanel({ drawingEngine, vehicles }: LayerPanelProps) {
 		layerData: {
 			name: string;
 			description?: string;
-			category?: string;
+			category: string[];
 			opacity: number;
-			color: string;
+			color?: string;
 		}
 	) => {
 		if (!drawingEngine) {

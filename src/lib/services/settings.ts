@@ -1,5 +1,6 @@
 import type { DrawingElementType } from "@/ui/settings/lines/types";
 
+import { chartConfig } from "@/lib/utils/charts";
 import { fetcher } from "@/lib/utils/fetch-api";
 
 export interface Scenario {
@@ -66,6 +67,7 @@ export interface LineElement {
 	allowed_directions: string;
 	visual_coordinates: {
 		layer_id: string;
+		layer_name?: string;
 		// group_id: string;
 		type: DrawingElementType;
 		fontSize: number;
@@ -78,7 +80,7 @@ export interface LineElement {
 		id: string;
 		name: string;
 		description?: string;
-		category: string;
+		category: string | string[]; // Single vehicle ID or array for multiple vehicles
 	};
 }
 
@@ -193,7 +195,16 @@ class SettingsService {
 				`/camera/${camera.id}/vehicles/get-all`
 			);
 
-			return response.payload ?? [];
+			const vehicles = response.payload ?? [];
+
+			const formatted = vehicles.map((vehicle) => ({
+				...vehicle,
+				name:
+					(chartConfig[vehicle.name.replace(" ", "_")]?.label as string) ??
+					vehicle.name,
+			}));
+
+			return formatted;
 		} catch {
 			return [];
 		}

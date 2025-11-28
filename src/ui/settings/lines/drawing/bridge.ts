@@ -559,7 +559,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 		const hasId = typeof layer.id === "string" && layer.id.trim() !== "";
 		const hasName = typeof layer.name === "string" && layer.name.trim() !== "";
 		const hasDescription = typeof layer.description === "string"; // Can be empty
-		const hasCategory = typeof layer.category === "string"; // Can be empty
+		const hasCategory = Array.isArray(layer.category); // Array of vehicle IDs
 		const hasVisibility =
 			layer.visibility === "visible" ||
 			layer.visibility === "hidden" ||
@@ -766,6 +766,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 	 */
 	#importLayers(data: TSource[]): Map<string, LayerInfo> {
 		const layerMap = new Map<string, LayerInfo>();
+		const layerVehicles = new Map<string, Set<string>>(); // Track unique vehicle IDs per layer
 		let skippedItems = 0;
 		let duplicateLayerIds = 0;
 
@@ -866,35 +867,59 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			// Get layer ID - skip if no valid ID could be extracted
 			const layerId = layerObj.id;
 
-			if (!layerId || typeof layerId !== "string" || layerId.trim() === "") {
+			if (layerId && typeof layerId === "string" && layerId.trim() !== "") {
+				// Track vehicle IDs for this layer - normalize to array
+				const categoryValue = layerObj.category;
+				if (categoryValue) {
+					if (!layerVehicles.has(layerId)) {
+						layerVehicles.set(layerId, new Set());
+					}
+					// Handle both string and array
+					if (Array.isArray(categoryValue)) {
+						for (const id of categoryValue) {
+							layerVehicles.get(layerId)!.add(id);
+						}
+					} else if (typeof categoryValue === "string") {
+						layerVehicles.get(layerId)!.add(categoryValue);
+					}
+				}
+
+				// Only create layer if it doesn't exist yet (deduplicate by ID)
+				// This means the first item with valid vehicle data will set the layer properties
+				if (!layerMap.has(layerId)) {
+					const layer: LayerInfo = {
+						id: layerId,
+						name: layerObj.name || `Layer ${layerMap.size + 1}`,
+						description: layerObj.description || "",
+						category: [], // Will be populated after processing all items
+						visibility: layerObj.visibility || "visible",
+						opacity: layerObj.opacity ?? 1.0,
+						zIndex: layerMap.size, // Use map size for sequential zIndex
+						elementIds: [], // Empty - DrawingEngine will populate this
+						color: layerObj.color,
+						createdAt: layerObj.createdAt || Date.now(),
+						updatedAt: layerObj.updatedAt || Date.now(),
+						syncState: "saved", // Mark as saved since it came from backend
+					};
+
+					layerMap.set(layerId, layer);
+				} else {
+					duplicateLayerIds++;
+				}
+			} else {
 				skippedItems++;
 				console.warn(
 					`[Bridge] Skipping element - no valid layer ID. Extracted:`,
 					layerId
 				);
-				return; // Skip this item - no valid layer ID
 			}
+		});
 
-			// Only create layer if it doesn't exist yet (deduplicate by ID)
-			// This means the first item with valid vehicle data will set the layer properties
-			if (!layerMap.has(layerId)) {
-				const layer: LayerInfo = {
-					id: layerId,
-					name: layerObj.name || `Layer ${layerMap.size + 1}`,
-					description: layerObj.description || "",
-					category: layerObj.category || "",
-					visibility: layerObj.visibility || "visible",
-					opacity: layerObj.opacity ?? 1.0,
-					zIndex: layerMap.size, // Use map size for sequential zIndex
-					elementIds: [], // Empty - DrawingEngine will populate this
-					color: layerObj.color,
-					createdAt: layerObj.createdAt || Date.now(),
-					updatedAt: layerObj.updatedAt || Date.now(),
-				};
-
-				layerMap.set(layerId, layer);
-			} else {
-				duplicateLayerIds++;
+		// Populate category arrays with all unique vehicle IDs
+		layerMap.forEach((layer, layerId) => {
+			const vehicleIds = layerVehicles.get(layerId);
+			if (vehicleIds && vehicleIds.size > 0) {
+				layer.category = Array.from(vehicleIds);
 			}
 		});
 

@@ -196,9 +196,9 @@ export type LayerVisibility = "visible" | "hidden" | "locked";
 
 export interface LayerInfo {
 	id: string;
-	name: string; // vehicle name
+	name: string; // layer name (user-defined)
 	description: string;
-	category: string; // vehicle id
+	category: string[]; // vehicle ids (1..n)
 	visibility: LayerVisibility;
 	opacity: number; // 0.0 to 1.0
 	zIndex: number;
@@ -206,6 +206,9 @@ export interface LayerInfo {
 	color?: string; // vehicle color
 	createdAt: number;
 	updatedAt: number;
+	syncState?: ElementSyncState; // Track sync state with backend
+	addedCategories?: string[]; // Vehicle IDs that were added (for sync)
+	removedCategories?: string[]; // Vehicle IDs that were removed (for sync)
 }
 
 export interface HistoryState {
@@ -790,7 +793,7 @@ export interface DrawingEngineInterface {
 	createLayer(options: {
 		name: string;
 		description?: string;
-		category?: string;
+		category?: string[];
 		opacity?: number;
 		visibility?: "visible" | "hidden" | "locked";
 		color?: string;
@@ -869,6 +872,16 @@ export interface DrawingEngineInterface {
 	readonly isInitialized: boolean;
 	readonly feedbackMessage: string | null;
 	readonly showFeedback: boolean;
+
+	// Sync state methods
+	markAllLayersAsSaved(): void;
+	getLayerSyncStateStats(): {
+		new: number;
+		edited: number;
+		saved: number;
+		total: number;
+	};
+	getUnsyncedLayers(): LayerInfo[];
 
 	// Feedback methods
 	setFeedback(message: string, duration?: number): void;

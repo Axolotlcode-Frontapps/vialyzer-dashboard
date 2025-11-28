@@ -285,9 +285,26 @@ export class DrawingEngine implements DrawingEngineInterface {
 				this.#state.elements
 			);
 			if (elementId) {
-				this.#state.elements = this.#state.elements.filter(
-					(element) => element.id !== elementId
-				);
+				// Mark element as deleted instead of removing it immediately
+				const element = this.#state.elements.find((el) => el.id === elementId);
+				if (element) {
+					// If element is new (not yet saved), remove it completely
+					if (element.syncState === "new") {
+						this.#state.elements = this.#state.elements.filter(
+							(el) => el.id !== elementId
+						);
+					} else {
+						// Otherwise mark as deleted so it can be synced with backend
+						element.syncState = "deleted";
+					}
+
+					// Emit state change to update UI
+					this.#on.stateChange({
+						type: "action",
+						action: "deleteElements",
+						elementIds: [elementId],
+					});
+				}
 			}
 			return;
 		}
@@ -1756,7 +1773,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 	createLayer(options: {
 		name: string;
 		description?: string;
-		category?: string;
+		category?: string[];
 		opacity?: number;
 		visibility?: LayerVisibility;
 		color?: string;
@@ -1765,7 +1782,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		return this.#layers?.createLayer({
 			...options,
 			description: options.description ?? "",
-			category: options.category ?? "",
+			category: options.category ?? [],
 		});
 	}
 
@@ -2055,9 +2072,51 @@ export class DrawingEngine implements DrawingEngineInterface {
 		};
 	}
 
+	markAllLayersAsSaved(): void {
+		// Mark new/edited layers as saved and clear tracking arrays
+		this.#layers.getLayers().forEach((layer) => {
+			if (layer.syncState === "new" || layer.syncState === "edited") {
+				layer.syncState = "saved";
+				// Clear tracking arrays after successful sync
+				layer.addedCategories = [];
+				layer.removedCategories = [];
+			}
+		});
+	}
+
+	getLayerSyncStateStats(): {
+		new: number;
+		edited: number;
+		saved: number;
+		total: number;
+	} {
+		const layers = this.#layers.getLayers();
+		const newCount = layers.filter((layer) => layer.syncState === "new").length;
+		const editedCount = layers.filter(
+			(layer) => layer.syncState === "edited"
+		).length;
+		const savedCount = layers.filter(
+			(layer) => layer.syncState === "saved"
+		).length;
+
+		return {
+			new: newCount,
+			edited: editedCount,
+			saved: savedCount,
+			total: layers.length,
+		};
+	}
+
+	getUnsyncedLayers(): LayerInfo[] {
+		return this.#layers
+			.getLayers()
+			.filter(
+				(layer) => layer.syncState === "new" || layer.syncState === "edited"
+			);
+	}
+
 	/**
-	 * Get elements that have been marked as deleted
-	 * These need to be sent to backend for deletion
+	 * Get elements marked as deleted (for sync purposes)
 	 */
 	getDeletedElements(): DrawingElement[] {
 		return this.#state.elements.filter((el) => el.syncState === "deleted");

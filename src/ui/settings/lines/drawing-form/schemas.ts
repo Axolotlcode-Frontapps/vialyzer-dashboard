@@ -55,7 +55,13 @@ export const labelFormSchema = z
 
 // Layer form schema for layer creation
 export const layerFormSchema = z.object({
-	vehicleId: z.string().min(1, "Debe seleccionar un vehículo"),
+	name: z
+		.string()
+		.min(1, "El nombre es requerido")
+		.max(100, "El nombre debe tener menos de 100 caracteres"),
+	vehicleIds: z
+		.array(z.string())
+		.min(1, "Debe seleccionar al menos un vehículo"),
 	description: z
 		.string()
 		.min(1, "La descripción es requerida")
@@ -88,7 +94,8 @@ export const labelFormDefaults: LabelFormValues = {
 };
 
 export const layerFormDefaults: LayerFormValues = {
-	vehicleId: "",
+	name: "",
+	vehicleIds: [],
 	description: "",
 	opacity: 100,
 };

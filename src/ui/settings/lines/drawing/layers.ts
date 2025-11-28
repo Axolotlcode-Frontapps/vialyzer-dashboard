@@ -69,7 +69,7 @@ interface LayerFilter {
 	opacity?: { min?: number; max?: number };
 	hasElements?: boolean;
 	namePattern?: RegExp;
-	category?: string;
+	category?: string[];
 }
 
 /**
@@ -106,7 +106,7 @@ export class DrawingLayers {
 	createLayer(options: {
 		name: string;
 		description: string;
-		category: string;
+		category: string[];
 		opacity?: number;
 		visibility?: LayerVisibility;
 		color?: string;
@@ -137,6 +137,9 @@ export class DrawingLayers {
 			color: options.color || this.#getNextLayerColor(),
 			createdAt: Date.now(),
 			updatedAt: Date.now(),
+			syncState: "new",
+			addedCategories: [],
+			removedCategories: [],
 		};
 
 		this.#state.layers.set(layerId, layer);
@@ -353,6 +356,11 @@ export class DrawingLayers {
 		layer.visibility = newVisibility;
 		layer.updatedAt = Date.now();
 
+		// Mark layer as edited if it was previously saved
+		if (layer.syncState === "saved") {
+			layer.syncState = "edited";
+		}
+
 		this.#triggerStateChange("layerAction", {
 			action: "layerVisibilityChanged",
 			layerId,
@@ -394,6 +402,11 @@ export class DrawingLayers {
 		const clampedOpacity = Math.max(0, Math.min(1, opacity));
 		layer.opacity = clampedOpacity;
 		layer.updatedAt = Date.now();
+
+		// Mark layer as edited if it was previously saved
+		if (layer.syncState === "saved") {
+			layer.syncState = "edited";
+		}
 
 		this.#triggerStateChange("layerAction", {
 			action: "layerOpacityChanged",
@@ -513,7 +526,7 @@ export class DrawingLayers {
 			id: newLayerId,
 			name: `${sourceLayer.name} Copy`,
 			description: sourceLayer.description,
-			category: sourceLayer.category,
+			category: [...sourceLayer.category],
 			visibility: sourceLayer.visibility,
 			opacity: sourceLayer.opacity,
 			zIndex: sourceLayer.zIndex,
@@ -521,6 +534,9 @@ export class DrawingLayers {
 			color: sourceLayer.color,
 			createdAt: Date.now(),
 			updatedAt: Date.now(),
+			syncState: "new",
+			addedCategories: [],
+			removedCategories: [],
 		};
 
 		this.#state.layers.set(newLayerId, duplicatedLayer);
@@ -590,6 +606,11 @@ export class DrawingLayers {
 		layer.name = trimmedName;
 		layer.updatedAt = Date.now();
 
+		// Mark layer as edited if it was previously saved
+		if (layer.syncState === "saved") {
+			layer.syncState = "edited";
+		}
+
 		this.#triggerStateChange("layerAction", {
 			action: "layerRenamed",
 			layerId,
@@ -631,12 +652,55 @@ export class DrawingLayers {
 			};
 		}
 
+		// Track category changes if category is being updated
+		if (updates.category) {
+			const oldCategories = new Set(layer.category);
+			const newCategories = new Set(updates.category);
+
+			// Initialize tracking arrays if they don't exist
+			if (!layer.addedCategories) layer.addedCategories = [];
+			if (!layer.removedCategories) layer.removedCategories = [];
+
+			// Track added categories (in new but not in old)
+			newCategories.forEach((cat) => {
+				if (!oldCategories.has(cat) && !layer.addedCategories!.includes(cat)) {
+					layer.addedCategories!.push(cat);
+				}
+			});
+
+			// Track removed categories (in old but not in new)
+			oldCategories.forEach((cat) => {
+				if (
+					!newCategories.has(cat) &&
+					!layer.removedCategories!.includes(cat)
+				) {
+					layer.removedCategories!.push(cat);
+				}
+			});
+
+			// Remove from addedCategories if it was re-removed
+			layer.addedCategories = layer.addedCategories.filter((cat) =>
+				newCategories.has(cat)
+			);
+
+			// Remove from removedCategories if it was re-added
+			layer.removedCategories = layer.removedCategories.filter(
+				(cat) => !newCategories.has(cat)
+			);
+		}
+
 		Object.assign(layer, updates, { updatedAt: Date.now() });
+
+		// Mark layer as edited if it was previously saved
+		if (layer.syncState === "saved") {
+			layer.syncState = "edited";
+		}
 
 		this.#triggerStateChange("layerAction", {
 			action: "layerUpdated",
 			layer,
 		});
+
 		this.#provideFeedback(`Updated layer: ${layer.name}`);
 
 		this.#recordHistory("updateLayer", `Updated layer: ${layer.name}`);
@@ -805,7 +869,10 @@ export class DrawingLayers {
 			if (filter.namePattern && !filter.namePattern.test(layer.name)) {
 				return false;
 			}
-			if (filter.category && layer.category !== filter.category) {
+			if (
+				filter.category &&
+				!filter.category.some((cat) => layer.category.includes(cat))
+			) {
 				return false;
 			}
 			return true;
@@ -859,7 +926,7 @@ export class DrawingLayers {
 				defaultLayerConfig?.name || `${this.#config.layers.defaultPrefix} 1`,
 			description:
 				defaultLayerConfig?.description || "Default layer description",
-			category: defaultLayerConfig?.category || "",
+			category: defaultLayerConfig?.category || [],
 			visibility: defaultLayerConfig?.visibility || "visible",
 			opacity:
 				defaultLayerConfig?.opacity ?? this.#config.layers.defaultOpacity,

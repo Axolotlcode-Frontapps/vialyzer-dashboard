@@ -171,6 +171,7 @@ export function Lines({
 
 		if (canvas && media && !drawingEngineRef.current) {
 			try {
+				const vehicle = vehicles.at(0);
 				drawingEngineRef.current = new DrawingEngine(canvas, media, {
 					resolution: {
 						target: {
@@ -179,11 +180,11 @@ export function Lines({
 						},
 					},
 					layers: {
-						defaultLayer: vehicles[0]
+						defaultLayer: vehicle
 							? {
-									name: vehicles[0].name,
-									category: vehicles[0].id,
-									color: vehicles[0].color,
+									name: vehicle.name,
+									category: [vehicle.id],
+									color: vehicle.color,
 									description: "Capa por defecto",
 								}
 							: undefined,
