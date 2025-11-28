@@ -2,6 +2,7 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+import type { AxiosError } from "axios";
 import type { ModuleValues } from "@/lib/schemas/modules";
 
 import { modulesSchemas } from "@/lib/schemas/modules";
@@ -38,6 +39,8 @@ export function ModuleForm({
 	const createModuleMutation = useMutation({
 		mutationFn: async (values: ModuleValues) => {
 			form.state.isSubmitting = true;
+			form.state.canSubmit = false;
+
 			if (!isUpdate) {
 				return await rolesService.createModule(values);
 			}
@@ -51,8 +54,18 @@ export function ModuleForm({
 			queryClient.invalidateQueries({ queryKey: ["modules"] });
 			onSuccess?.();
 		},
-		onError: () => {
-			toast.error("Error al actualizar el módulo");
+		onError: (error: AxiosError) => {
+			form.state.canSubmit = true;
+			const message = (error.response?.data as GeneralResponse<unknown>)
+				?.message;
+
+			const capitalizedMessage =
+				message &&
+				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+
+			toast.error(`Error al crear módulo`, {
+				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
+			});
 		},
 		onSettled: () => {
 			form.state.isSubmitting = false;

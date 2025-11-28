@@ -2,6 +2,7 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+import type { AxiosError } from "axios";
 import type { RoleValues } from "@/lib/schemas/roles";
 
 import { rolesSchemas } from "@/lib/schemas/roles";
@@ -37,6 +38,7 @@ export function RoleForm({ onSuccess, update, role }: Props) {
 	const roleMutation = useMutation({
 		mutationFn: async (values: RoleValues) => {
 			form.state.isSubmitting = true;
+			form.state.canSubmit = false;
 
 			update && role?.id
 				? await rolesService.updateRole(role?.id, values)
@@ -52,13 +54,17 @@ export function RoleForm({ onSuccess, update, role }: Props) {
 			});
 			onSuccess(false);
 		},
-		onError: (error) => {
+		onError: (error: AxiosError) => {
 			form.state.canSubmit = true;
-			toast.error(`Error al crear el rol`, {
-				description:
-					error instanceof Error
-						? error.message
-						: "Por favor, inténtalo de nuevo.",
+			const message = (error.response?.data as GeneralResponse<unknown>)
+				?.message;
+
+			const capitalizedMessage =
+				message &&
+				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+
+			toast.error(`Error al ${update ? "actualizar" : "crear"} el rol`, {
+				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
 			});
 		},
 		onSettled: () => {
