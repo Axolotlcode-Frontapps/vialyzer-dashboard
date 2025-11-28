@@ -112,18 +112,13 @@ export function Camera() {
 		const updated = elements.filter((el) => el.syncState === "edited");
 		const deleted = elements.filter((el) => el.syncState === "deleted");
 
-		const newLayers = layers.filter((layer) => layer.syncState === "new");
 		const editedLayers = layers.filter((layer) => layer.syncState === "edited");
 
-		if (
-			added.length === 0 &&
-			updated.length === 0 &&
-			deleted.length === 0 &&
-			newLayers.length === 0 &&
-			editedLayers.length === 0
-		) {
+		if (added.length === 0 && updated.length === 0 && deleted.length === 0) {
 			return;
 		}
+
+		console.log({ deleted });
 
 		const layerMap = new Map(layers.map((layer) => [layer.id, layer]));
 
@@ -158,20 +153,7 @@ export function Camera() {
 		}
 
 		if (deleted.length > 0) {
-			const toRemove = serverLines.filter((line) =>
-				deleted.some((deletion) => {
-					const deletedDatasource = serverLines.find(
-						(ds) => ds.id === deletion.id
-					);
-
-					return (
-						deletedDatasource &&
-						line.scenery.id === deletedDatasource.scenery.id
-					);
-				})
-			);
-
-			await remove(toRemove);
+			await remove({ elements: deleted, serverLines });
 		}
 
 		if (updated.length > 0) {
