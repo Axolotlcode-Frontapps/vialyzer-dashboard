@@ -8,8 +8,8 @@ import type { AssignModuleValues } from "@/lib/schemas/roles";
 import { rolesSchemas } from "@/lib/schemas/roles";
 import { modulesServices } from "@/lib/services/modules";
 import { rolesService } from "@/lib/services/roles";
-import { Button } from "../shared/button";
-import { Checkbox } from "../shared/checkbox";
+import { Button } from "@/ui/shared/button";
+import { Checkbox } from "@/ui/shared/checkbox";
 import {
 	Field,
 	FieldContent,
@@ -19,8 +19,8 @@ import {
 	FieldLabel,
 	FieldSet,
 	FieldTitle,
-} from "../shared/field";
-import { ScrollArea } from "../shared/scroll-area";
+} from "@/ui/shared/field";
+import { ScrollArea } from "@/ui/shared/scroll-area";
 import {
 	Sheet,
 	SheetClose,
@@ -29,8 +29,8 @@ import {
 	SheetFooter,
 	SheetHeader,
 	SheetTitle,
-} from "../shared/sheet";
-import { Spinner } from "../shared/spinner";
+} from "@/ui/shared/sheet";
+import { Spinner } from "@/ui/shared/spinner";
 
 export function ModuleAssign({
 	role,

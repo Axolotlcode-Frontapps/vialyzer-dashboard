@@ -2,6 +2,7 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+import type { AxiosError } from "axios";
 import type { UserValues } from "@/lib/schemas/settings";
 
 import { settingsSchemas } from "@/lib/schemas/settings";
@@ -80,13 +81,18 @@ export function UserFields({ onSuccess, update = false, user }: Props) {
 			);
 			onSuccess(false);
 		},
-		onError: (error) => {
-			form.state.canSubmit = false;
+		onError: (error: AxiosError) => {
+			form.state.canSubmit = true;
+
+			const message = (error.response?.data as GeneralResponse<unknown>)
+				?.message;
+
+			const capitalizedMessage =
+				message &&
+				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+
 			toast.error(`Error al ${update ? "actualizar" : "crear"} el usuario`, {
-				description:
-					error instanceof Error
-						? error.message
-						: "Por favor, inténtalo de nuevo.",
+				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
 			});
 		},
 		onSettled: () => {

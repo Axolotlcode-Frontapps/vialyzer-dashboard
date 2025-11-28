@@ -10,8 +10,8 @@ import { rolesService } from "@/lib/services/roles";
 import { Button } from "@/ui/shared/button";
 import { Field, FieldError, FieldLabel } from "@/ui/shared/field";
 import { Input } from "@/ui/shared/input";
+import { SheetClose, SheetFooter } from "@/ui/shared/sheet";
 import { Spinner } from "@/ui/shared/spinner";
-import { SheetClose, SheetFooter } from "../shared/sheet";
 
 export function ModuleForm({
 	onSuccess,

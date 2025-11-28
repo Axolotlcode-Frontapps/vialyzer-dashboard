@@ -5,7 +5,7 @@ import { zodValidator } from "@tanstack/zod-adapter";
 
 import { sharedSchemas } from "@/lib/schemas/shared";
 import { modulesServices } from "@/lib/services/modules";
-import { PermissionsTable } from "@/ui/modules/permissions-table";
+import { PermissionsTable } from "@/ui/settings/modules/permissions-table";
 import { Skeleton } from "@/ui/shared/skeleton";
 
 export const Route = createFileRoute("/_dashboard/settings/modules/$moduleId")({

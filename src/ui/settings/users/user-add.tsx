@@ -10,7 +10,7 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/ui/shared/sheet";
-import { UserFields } from "./user-fields";
+import { UserFields } from "./user-form";
 
 export function UserAdd() {
 	const [open, setOpen] = useState(false);

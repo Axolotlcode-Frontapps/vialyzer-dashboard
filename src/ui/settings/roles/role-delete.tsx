@@ -1,7 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+import type { AxiosError } from "axios";
+
 import { rolesService } from "@/lib/services/roles";
+import { Button } from "@/ui/shared/button";
 import {
 	Dialog,
 	DialogClose,
@@ -11,8 +14,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/ui/shared/dialog";
-import { Button } from "../shared/button";
-import { Spinner } from "../shared/spinner";
+import { Spinner } from "@/ui/shared/spinner";
 
 export function RoleDelete({
 	role,
@@ -36,12 +38,16 @@ export function RoleDelete({
 			queryClient.invalidateQueries({ queryKey: ["roles"] });
 			onOpenChange(false);
 		},
-		onError: (error) => {
+		onError: (error: AxiosError) => {
+			const message = (error.response?.data as GeneralResponse<unknown>)
+				?.message;
+
+			const capitalizedMessage =
+				message &&
+				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+
 			toast.error(`Error al eliminar el rol "${role.name}"`, {
-				description:
-					error instanceof Error
-						? error.message
-						: "Por favor, inténtalo de nuevo.",
+				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
 			});
 		},
 	});

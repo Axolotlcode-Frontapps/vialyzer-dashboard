@@ -5,11 +5,11 @@ import { zodValidator } from "@tanstack/zod-adapter";
 import { sharedSchemas } from "@/lib/schemas/shared";
 import { usersService } from "@/lib/services/users";
 import { hasModule } from "@/lib/utils/permissions";
+import { UserAdd } from "@/ui/settings/users/user-add";
+import { useUsersColumns } from "@/ui/settings/users/users-table/columns";
 import { DataTable } from "@/ui/shared/data-table";
 import { DataTableHeader } from "@/ui/shared/data-table/table-header";
 import { HasPermission } from "@/ui/shared/permissions/has-permission";
-import { UserAdd } from "@/ui/users/user-add";
-import { useUsersColumns } from "@/ui/users/users-table/columns";
 
 export const Route = createFileRoute("/_dashboard/settings/users")({
 	component: Users,

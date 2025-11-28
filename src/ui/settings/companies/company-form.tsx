@@ -21,7 +21,7 @@ import {
 } from "@/ui/shared/select";
 import { SheetClose, SheetFooter } from "@/ui/shared/sheet";
 import { Spinner } from "@/ui/shared/spinner";
-import { Switch } from "../shared/switch";
+import { Switch } from "@/ui/shared/switch";
 
 interface Props {
 	onSuccess: (open: boolean) => void;
