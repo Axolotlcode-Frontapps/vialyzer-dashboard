@@ -3,7 +3,7 @@ import type { LucideIcon } from "lucide-react";
 
 export type TNavItem = {
 	title: string;
-	to?: LinkComponentProps<Route>["to"];
+	to?: LinkComponentProps<Route>["to"] | string;
 	icon?: LucideIcon;
 	defaultOpen?: boolean;
 	items?: TNavItem[];

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { MoreHorizontal, Pencil, Trash } from "lucide-react";
 
-import { CompanyDelete } from "@/ui/companies/company-delete";
-import { CompanyUpdate } from "@/ui/companies/company-update";
+import { CompanyDelete } from "@/ui/settings/companies/company-delete";
+import { CompanyUpdate } from "@/ui/settings/companies/company-update";
 import { Button } from "@/ui/shared/button";
 import {
 	DropdownMenu,

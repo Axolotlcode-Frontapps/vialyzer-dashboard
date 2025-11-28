@@ -2,7 +2,10 @@ import { useMemo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+import type { AxiosError } from "axios";
+
 import { modulesServices } from "@/lib/services/modules";
+import { Button } from "@/ui/shared/button";
 import {
 	Dialog,
 	DialogClose,
@@ -12,8 +15,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/ui/shared/dialog";
-import { Button } from "../shared/button";
-import { Spinner } from "../shared/spinner";
+import { Spinner } from "@/ui/shared/spinner";
 
 export function ModuleDelete({
 	open,
@@ -36,10 +38,19 @@ export function ModuleDelete({
 				`Módulo ${isDeleted ? "desactivado" : "eliminado"} correctamente.`
 			);
 		},
-		onError: (error) => {
-			console.log(error);
+		onError: (error: AxiosError) => {
+			const message = (error.response?.data as GeneralResponse<unknown>)
+				?.message;
+
+			const capitalizedMessage =
+				message &&
+				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+
 			toast.error(
-				`Error al ${isDeleted ? "desactivar" : "eliminar"} el módulo.`
+				`Error al ${isDeleted ? "desactivar" : "eliminar"} el módulo.`,
+				{
+					description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
+				}
 			);
 		},
 	});
