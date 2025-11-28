@@ -44,7 +44,7 @@ export function Maps() {
 	const [mapStyle, setMapStyle] = useState<MapStyleId>("default");
 	const [activeHeatmap, setActiveHeatmap] = useState<HeatmapType | null>(null);
 	const [map, setMap] = useState<google.maps.Map | null>(null);
-	const [, setMapZoom] = useState<number>(13);
+	const [mapZoom, setMapZoom] = useState<number>(13);
 	const [selectedZone, setSelectedZone] = useState<string | null>(null);
 	const [selectedNeighborhood, setSelectedNeighborhood] =
 		useState<NeighborhoodFeature | null>(null);
@@ -58,7 +58,7 @@ export function Maps() {
 		map.addListener("zoom_changed", () => {
 			setMapZoom(map.getZoom() || 13);
 		});
-	}, []);
+	}, [mapZoom]);
 
 	const mapOptions = useMemo(() => {
 		const useMapId = shouldUseMapId(mapStyle);
