@@ -42,10 +42,11 @@ axiosInstance.interceptors.response.use(
 			return Promise.reject(error);
 		}
 
+		const errorData = error.response?.data as GeneralResponse<unknown>;
+
 		if (
-			error.response?.status === 403 &&
-			(error.response.data as GeneralResponse<unknown>).message ===
-				"REFRESH_TOKEN_EXPIRED" &&
+			error.response?.status === 401 &&
+			errorData.message === "TOKEN EXPIRADO" &&
 			!originalRequest._retry
 		) {
 			originalRequest._retry = true;
@@ -86,7 +87,12 @@ axiosInstance.interceptors.response.use(
 			}
 		}
 
-		if (error.response?.status === 401) {
+		if (
+			(error.response?.status === 403 &&
+				errorData.message === "TOKEN INVALIDO") ||
+			errorData.message === "SESION NO ENCONTRADA" ||
+			errorData.message === "TOKEN NO ENCONTRADO"
+		) {
 			removeSessionCookie(SESSION_NAME);
 			window.location.href = "/";
 			return Promise.reject(error);
