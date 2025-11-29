@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { Label, Pie, PieChart } from "recharts";
-import { useCameraVehicles } from "@/hooks/use-camera-vehicles";
 
+import { movility } from "@/lib/services/movility";
 import { chartConfig } from "@/lib/utils/charts";
-// import { getTrafficTotal } from "@/logic/services/movility/get-traffic-total";
-// import { getVehiclesDistribution } from "@/logic/services/movility/get-vehicles-distribution";
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
 import { Badge } from "../shared/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/card";
@@ -19,74 +17,9 @@ import {
 import { Skeleton } from "../shared/skeleton";
 import { useGraphFilters } from "./filters/use-graph-filters";
 
-// Mock implementations
-function getTrafficTotal(_camera: string, _filters: any) {
-	// Mocked API call
-	return new Promise<{ payload: { byVehicleType: Record<string, number> } }>(
-		(resolve) => {
-			setTimeout(() => {
-				resolve({
-					payload: {
-						byVehicleType: {
-							car: 1200,
-							bus: 300,
-							truck: 150,
-							motorcycle: 450,
-						},
-					},
-				});
-			}, 1000);
-		}
-	);
-}
-
-function getVehiclesDistribution(_camera: string, _filters: any) {
-	// Mocked API call
-	return new Promise<{
-		payload: Array<{
-			vehicleId: string;
-			vehicleType: string;
-			percentage: number;
-			occurrence: number;
-		}>;
-	}>((resolve) => {
-		setTimeout(() => {
-			resolve({
-				payload: [
-					{
-						vehicleId: "car",
-						vehicleType: "Car",
-						percentage: 60,
-						occurrence: 1200,
-					},
-					{
-						vehicleId: "bus",
-						vehicleType: "Bus",
-						percentage: 15,
-						occurrence: 300,
-					},
-					{
-						vehicleId: "truck",
-						vehicleType: "Truck",
-						percentage: 7.5,
-						occurrence: 150,
-					},
-					{
-						vehicleId: "motorcycle",
-						vehicleType: "Motorcycle",
-						percentage: 22.5,
-						occurrence: 450,
-					},
-				],
-			});
-		}, 1000);
-	});
-}
-
 export function GraphDistribution() {
 	const { camera } = Route.useParams();
 	const { initialValues } = useGraphFilters();
-	const { vehicles, loading: loadingVehicles } = useCameraVehicles(camera);
 
 	const filters = {
 		endDate: initialValues.endDate,
@@ -106,21 +39,27 @@ export function GraphDistribution() {
 			{
 				queryKey: ["total-traffic-volume", camera, filters],
 				queryFn: async () => {
-					const traffic = await getTrafficTotal(camera, filters);
+					const traffic = await movility.totalTraffic(camera, {
+						endDate: filters.endDate ?? "",
+						startDate: filters.startDate ?? "",
+						rawScenarioIds: filters.scenarioIds?.join(","),
+						rawVehicleIds: filters.vehicleIds?.join(","),
+					});
 
-					const total = Object.values(traffic.payload?.byVehicleType ?? {})
-						.reduce((acc, value) => acc + value, 0)
-						.toLocaleString();
-
-					return total;
+					return traffic;
 				},
 			},
 			{
 				queryKey: ["vehicle-distribution-volume", camera, filters],
 				queryFn: async () => {
-					const distribution = await getVehiclesDistribution(camera, filters);
+					const distribution = await movility.vehicleDistribution(camera, {
+						endDate: filters.endDate ?? "",
+						startDate: filters.startDate ?? "",
+						rawScenarioIds: filters.scenarioIds?.join(","),
+						rawVehicleIds: filters.vehicleIds?.join(","),
+					});
 
-					return distribution.payload;
+					return distribution;
 				},
 			},
 		],
@@ -190,9 +129,9 @@ export function GraphDistribution() {
 		return () => {
 			observer.disconnect();
 		};
-	}, [loadingTotal || loadingDistribution || loadingVehicles]);
+	}, [loadingTotal || loadingDistribution]);
 
-	if (loadingTotal || loadingDistribution || loadingVehicles) {
+	if (loadingTotal || loadingDistribution) {
 		return <Skeleton className="h-[300px]" />;
 	}
 
@@ -232,7 +171,7 @@ export function GraphDistribution() {
 													y={viewBox.cy}
 													className="fill-foreground text-3xl font-bold"
 												>
-													{totalTraffic}
+													{totalTraffic?.totalCount.toLocaleString()}
 												</tspan>
 											</text>
 										);
@@ -247,15 +186,16 @@ export function GraphDistribution() {
 									showValue
 									formatterValue={(value, item) => {
 										const percentage = Number.parseFloat(`${value}`).toFixed(2);
-										const vehicle = vehicles.find(
+
+										const occurrence = totalTraffic?.byVehicleType.find(
 											(vehicle) =>
-												vehicle.name.replaceAll(" ", "_").toLowerCase() ===
+												vehicle.type.replaceAll(" ", "_").toLowerCase() ===
 												item.value
 										);
 
 										return (
 											<div className="flex items-center gap-2 justify-end">
-												<span className="block">{vehicle?.occurrence}</span>
+												<span className="block">{occurrence?.count}</span>
 												<Badge variant="secondary" className="block">
 													{percentage}%
 												</Badge>

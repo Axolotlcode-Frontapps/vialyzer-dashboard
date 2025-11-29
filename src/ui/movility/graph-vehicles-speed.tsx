@@ -2,10 +2,9 @@ import { useMemo } from "react";
 import { format } from "@formkit/tempo";
 import { useQuery } from "@tanstack/react-query";
 
-// import { getVehiclesSpeed } from '@/logic/services/movility/get-vehicles-speed';
-
 import type { ChartConfig } from "../shared/chart";
 
+import { movility } from "@/lib/services/movility";
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
 import { GraphBar } from "../shared/graphs/bar";
 import { Skeleton } from "../shared/skeleton";
@@ -30,25 +29,6 @@ const axis = {
 	},
 };
 
-function getVehiclesSpeed(_camera: string, _params: Record<string, any>) {
-	return Promise.resolve({
-		payload: [
-			{
-				query_date: "2024-01-15",
-				average_speed: "45.5",
-			},
-			{
-				query_date: "2024-01-16",
-				average_speed: "52.3",
-			},
-			{
-				query_date: "2024-01-17",
-				average_speed: "48.7",
-			},
-		],
-	});
-}
-
 export function GraphVehiclesSpeed() {
 	const { camera } = Route.useParams();
 	const { initialValues } = useGraphFilters();
@@ -62,17 +42,14 @@ export function GraphVehiclesSpeed() {
 	} = useQuery({
 		queryKey: ["graph-speed-mobility", camera, initialValues],
 		queryFn: async () => {
-			const graph = await getVehiclesSpeed(camera, {
-				endDate: initialValues.endDate,
-				scenarioIds: initialValues.zones,
-				startDate: initialValues.startDate,
-				vehicleIds: initialValues.actors,
-				dayOfWeek: initialValues.dayOfWeek,
-				hour: initialValues.hour,
-				minuteInterval: initialValues.minuteInterval,
+			const graph = await movility.vehicleSpeed(camera, {
+				endDate: initialValues.endDate ?? "",
+				startDate: initialValues.startDate ?? "",
+				rawScenarioIds: initialValues.zones?.join(","),
+				rawVehicleIds: initialValues.actors?.join(","),
 			});
 
-			return graph.payload;
+			return graph;
 		},
 	});
 

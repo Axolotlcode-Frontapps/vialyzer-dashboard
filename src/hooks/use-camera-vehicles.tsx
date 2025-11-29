@@ -17,7 +17,6 @@ export function useCameraVehicles(camera: string) {
 		select: (data) =>
 			data.payload?.map((item) => ({
 				...item,
-				occurrence: 123,
 				name:
 					vehiculesTranslate[item.name as keyof typeof vehiculesTranslate] ||
 					item.name,
