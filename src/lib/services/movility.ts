@@ -67,6 +67,17 @@ export interface VehicleSpeed {
 	average_speed: string;
 }
 
+export interface VelocityTable {
+	vehicleid: string;
+	vehiclename: string;
+	scenariodata: {
+		scenarioId: string;
+		scenarioName: string;
+		volAcumulate: number;
+	}[];
+	total: string;
+}
+
 class MovilityService {
 	async totalTraffic(camera: string, params: MovilityFilters) {
 		const { payload } = await fetcher<GeneralResponse<TotalTrafic>>(
@@ -124,14 +135,14 @@ class MovilityService {
 	}
 
 	async averageSpeed(camera: string, params: MovilityFilters) {
-		const { data } = await fetcher<{ data: AverageSpeed }>(
+		const { payload } = await fetcher<GeneralResponse<AverageSpeed>>(
 			`/camera/${camera}/kpis/get-average-speed`,
 			{
 				params,
 			}
 		);
 
-		return data;
+		return payload;
 	}
 
 	async vehicleSpeedHour(camera: string, params: MovilityFilters) {
@@ -145,15 +156,15 @@ class MovilityService {
 		return payload;
 	}
 
-	// async velocityTable(camera: string, params: MovilityFilters) {
-	// 	const { payload } = await fetcher(
-	// 		`/camera/${camera}/kpis/get-vehicle-scenario-speed-matrix`,
-	// 		{
-	// 			params,
-	// 		}
-	// 	);
-	// 	return payload;
-	// }
+	async velocityTable(camera: string, params: MovilityFilters) {
+		const { payload } = await fetcher<GeneralResponse<VelocityTable[]>>(
+			`/camera/${camera}/kpis/get-vehicle-scenario-speed-matrix`,
+			{
+				params,
+			}
+		);
+		return payload;
+	}
 
 	async vehicleSpeed(camera: string, params: MovilityFilters) {
 		const { payload } = await fetcher<GeneralResponse<VehicleSpeed[]>>(

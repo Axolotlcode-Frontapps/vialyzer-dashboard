@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { GraphAverageSpeed } from "@/ui/movility/graph-average-speed";
 import { GraphVehiclesSpeed } from "@/ui/movility/graph-vehicles-speed";
 import { GraphVehiclesSpeedHour } from "@/ui/movility/graph-vehicles-speed-hour";
-// import { VelocityTable } from "@/ui/movility/velocity-table";
+import { VelocityTable } from "@/ui/movility/velocity-table";
 
 export const Route = createFileRoute("/_dashboard/movility/$camera/velocity")({
 	component: Velocity,
@@ -16,7 +16,7 @@ function Velocity() {
 				<GraphAverageSpeed />
 				<GraphVehiclesSpeedHour />
 			</div>
-			{/*<VelocityTable />*/}
+			<VelocityTable />
 
 			<GraphVehiclesSpeed />
 		</div>

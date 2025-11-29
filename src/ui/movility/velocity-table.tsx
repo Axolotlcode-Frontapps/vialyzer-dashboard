@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { VehicleType } from "@/types/agents";
 
-// import { movility } from "@/lib/services/movility";
+import { movility } from "@/lib/services/movility";
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
 import { GraphsTable } from "../shared/data-table/graphs-table";
 import { Skeleton } from "../shared/skeleton";
@@ -15,38 +15,6 @@ type Row = {
 	[sceario: string]: number | string;
 	total: number | string;
 };
-
-// biome-ignore lint/suspicious/noExplicitAny: temporary mock function with flexible params
-function getSpeedTable(_camera: string, _params: any) {
-	return Promise.resolve({
-		payload: [
-			{
-				vehiclename: "Auto",
-				total: 35.5,
-				scenariodata: [
-					{ scenarioName: "Scenario 1", volAcumulate: 32.0 },
-					{ scenarioName: "Scenario 2", volAcumulate: 39.0 },
-				],
-			},
-			{
-				vehiclename: "Moto",
-				total: 28.3,
-				scenariodata: [
-					{ scenarioName: "Scenario 1", volAcumulate: 25.5 },
-					{ scenarioName: "Scenario 2", volAcumulate: 31.1 },
-				],
-			},
-			{
-				vehiclename: "Bus",
-				total: 42.7,
-				scenariodata: [
-					{ scenarioName: "Scenario 1", volAcumulate: 41.2 },
-					{ scenarioName: "Scenario 2", volAcumulate: 44.2 },
-				],
-			},
-		],
-	});
-}
 
 function CellColor({ value: original }: { value?: number | string }) {
 	const value =
@@ -89,15 +57,14 @@ export function VelocityTable() {
 	} = useQuery({
 		queryKey: ["speed-table-mobility", camera, initialValues],
 		queryFn: async () => {
-			// const table = await movility.velocityTable(camera, {
-			const table = await getSpeedTable(camera, {
+			const table = await movility.velocityTable(camera, {
 				endDate: initialValues.endDate ?? "",
 				startDate: initialValues.startDate ?? "",
 				rawScenarioIds: initialValues.zones?.join(","),
 				rawVehicleIds: initialValues.actors?.join(","),
 			});
 
-			return table.payload;
+			return table;
 		},
 	});
 
