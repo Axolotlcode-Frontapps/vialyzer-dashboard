@@ -1,13 +1,17 @@
 import { useParams } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Delete, PlusCircle } from "lucide-react";
 import { toast } from "sonner";
+
+import type { AxiosError } from "axios";
 
 import { modulesServices } from "@/lib/services/modules";
 import { permissionsServices } from "@/lib/services/permissions";
 import { Button } from "@/ui/shared/button";
 import { DataTable } from "@/ui/shared/data-table";
 import { DataTableHeader } from "@/ui/shared/data-table/table-header";
+import { Spinner } from "@/ui/shared/spinner";
 import { useColumns } from "./columns";
 
 export function PermissionsTable({
@@ -78,10 +82,17 @@ export function PermissionsTable({
 			);
 			setSelectedPermissionsIds([]);
 		},
-		onError: (error) => {
-			toast.error(
-				`Error al ${action.toLowerCase()} permisos: ${error.message}`
-			);
+		onError: (error: AxiosError) => {
+			const message = (error.response?.data as GeneralResponse<unknown>)
+				?.message;
+
+			const capitalizedMessage =
+				message &&
+				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+
+			toast.error(`Error al crear módulo`, {
+				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
+			});
 		},
 	});
 
@@ -100,10 +111,23 @@ export function PermissionsTable({
 					hasSearchUrl
 				>
 					<Button
-						disabled={selectedPermissionsIds.length === 0}
+						disabled={
+							selectedPermissionsIds.length === 0 ||
+							updatePermissionsMutation.isPending
+						}
 						onClick={() => updatePermissionsMutation.mutate()}
 					>
-						{action} permisos
+						{updatePermissionsMutation.isPending ? (
+							<>
+								<Spinner />
+								<span>{`${action === "Asignar" ? "Asignando" : "Removiendo"} permisos...`}</span>
+							</>
+						) : (
+							<>
+								{action === "Asignar" ? <PlusCircle /> : <Delete />}
+								<span>{`${action} permisos`}</span>
+							</>
+						)}
 					</Button>
 				</DataTableHeader>
 			)}

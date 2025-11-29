@@ -69,7 +69,6 @@ export function ModuleForm({
 		},
 		onSettled: () => {
 			form.state.isSubmitting = false;
-			form.state.canSubmit = false;
 		},
 	});
 
