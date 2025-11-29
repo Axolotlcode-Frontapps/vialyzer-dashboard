@@ -45,8 +45,8 @@ axiosInstance.interceptors.response.use(
 		const errorData = error.response?.data as GeneralResponse<unknown>;
 
 		if (
-			error.response?.status === 401 &&
-			errorData.message === "TOKEN EXPIRADO" &&
+			error.response?.status === 403 &&
+			errorData.message === "CREDENCIALES INVALIDAS" &&
 			!originalRequest._retry
 		) {
 			originalRequest._retry = true;
@@ -81,18 +81,12 @@ axiosInstance.interceptors.response.use(
 
 				return axiosInstance(originalRequest);
 			} catch (refreshError) {
-				console.error("💥 Token refresh failed:", refreshError);
 				removeSessionCookie(SESSION_NAME);
 				return Promise.reject(refreshError);
 			}
 		}
 
-		if (
-			(error.response?.status === 403 &&
-				errorData.message === "TOKEN INVALIDO") ||
-			errorData.message === "SESION NO ENCONTRADA" ||
-			errorData.message === "TOKEN NO ENCONTRADO"
-		) {
+		if (error.response?.status === 401) {
 			removeSessionCookie(SESSION_NAME);
 			window.location.href = "/";
 			return Promise.reject(error);

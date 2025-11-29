@@ -3,6 +3,7 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+import type { AxiosError } from "axios";
 import type { AssignModuleValues } from "@/lib/schemas/roles";
 
 import { rolesSchemas } from "@/lib/schemas/roles";
@@ -30,6 +31,7 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@/ui/shared/sheet";
+import { Skeleton } from "@/ui/shared/skeleton";
 import { Spinner } from "@/ui/shared/spinner";
 
 export function ModuleAssign({
@@ -43,7 +45,11 @@ export function ModuleAssign({
 }) {
 	const queryClient = useQueryClient();
 
-	const { data: moduleByRole } = useQuery({
+	const {
+		data: moduleByRole,
+		isLoading: isLoadingModuleByRole,
+		isEnabled,
+	} = useQuery({
 		queryKey: ["role-by-id", role.id],
 		queryFn: async () => await rolesService.getRoleById(role.id),
 		enabled: !!role.id && open,
@@ -54,17 +60,14 @@ export function ModuleAssign({
 		return moduleByRole?.modules?.map((module) => module.id) || [];
 	}, [moduleByRole]);
 
-	const moduleCache = queryClient.getQueryData<GeneralResponse<Module[]>>([
-		"modules",
-	]);
-
-	const { data: modules } = useQuery({
+	const { data: modules, isLoading: isLoadingModules } = useQuery({
 		queryKey: ["modules"],
 		queryFn: async () => await modulesServices.getAllModules(),
-		initialData: moduleCache,
-		enabled: !moduleCache,
 		select: (data) => data.payload,
 	});
+
+	const globalIsLoading =
+		isLoadingModules || (isEnabled && isLoadingModuleByRole);
 
 	const assignMutation = useMutation({
 		mutationFn: async (values: AssignModuleValues) => {
@@ -79,13 +82,21 @@ export function ModuleAssign({
 			queryClient.invalidateQueries({ queryKey: ["get-me"] });
 			onOpenChange(false);
 		},
-		onError: (error) => {
-			console.error(error);
-			toast.error("Error al asignar módulos al rol.");
+		onError: (error: AxiosError) => {
+			form.state.canSubmit = true;
+			const message = (error.response?.data as GeneralResponse<unknown>)
+				?.message;
+
+			const capitalizedMessage =
+				message &&
+				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+
+			toast.error(`Error al crear módulo`, {
+				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
+			});
 		},
 		onSettled: () => {
 			form.state.isSubmitting = false;
-			form.state.canSubmit = false;
 		},
 	});
 
@@ -131,47 +142,51 @@ export function ModuleAssign({
 									</FieldDescription>
 									<ScrollArea className="h-[450px]">
 										<FieldGroup data-slot="checkbox-group">
-											{modules?.map((module) => (
-												<FieldLabel key={module.id} htmlFor={module.id}>
-													<Field
-														orientation="horizontal"
-														data-invalid={isInvalid}
-														className="flex items-center"
-													>
-														<Checkbox
-															id={module.id}
-															name={field.name}
-															aria-invalid={isInvalid}
-															checked={field.state.value.includes(module.id)}
-															onCheckedChange={(checked) => {
-																if (checked) {
-																	field.pushValue(module.id);
-																} else {
-																	const index = field.state.value.indexOf(
-																		module.id
-																	);
-																	if (index > -1) {
-																		field.removeValue(index);
+											{globalIsLoading ? (
+												<Skeleton className="min-h-50" />
+											) : (
+												modules?.map((module) => (
+													<FieldLabel key={module.id} htmlFor={module.id}>
+														<Field
+															orientation="horizontal"
+															data-invalid={isInvalid}
+															className="flex items-center"
+														>
+															<Checkbox
+																id={module.id}
+																name={field.name}
+																aria-invalid={isInvalid}
+																checked={field.state.value.includes(module.id)}
+																onCheckedChange={(checked) => {
+																	if (checked) {
+																		field.pushValue(module.id);
+																	} else {
+																		const index = field.state.value.indexOf(
+																			module.id
+																		);
+																		if (index > -1) {
+																			field.removeValue(index);
+																		}
 																	}
-																}
-															}}
-														/>
-														<FieldContent className="gap-0">
-															<FieldTitle className="capitalize">
-																{module.name}
-															</FieldTitle>
-															<FieldDescription>
-																{module.description}
-															</FieldDescription>
-														</FieldContent>
-														{/* <RadioGroupItem
+																}}
+															/>
+															<FieldContent className="gap-0">
+																<FieldTitle className="capitalize">
+																	{module.name}
+																</FieldTitle>
+																<FieldDescription>
+																	{module.description}
+																</FieldDescription>
+															</FieldContent>
+															{/* <RadioGroupItem
 															value={plan.id}
 															id={`form-tanstack-radiogroup-${plan.id}`}
 															aria-invalid={isInvalid}
 														/> */}
-													</Field>
-												</FieldLabel>
-											))}
+														</Field>
+													</FieldLabel>
+												))
+											)}
 										</FieldGroup>
 									</ScrollArea>
 									{isInvalid && <FieldError errors={field.state.meta.errors} />}
