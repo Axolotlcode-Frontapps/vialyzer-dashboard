@@ -1,71 +1,21 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-// import { getVolumeTable } from "@/logic/services/movility/get-volumne-table";
-
-// import { getVolumeTable } from "@/logic/services/movility/get-volumne-table";
-
 import type { ColumnDef } from "@tanstack/react-table";
 import type { VehicleType } from "@/types/agents";
 
+import { movility } from "@/lib/services/movility";
+import { chartConfig } from "@/lib/utils/charts";
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
 import { GraphsTable } from "../shared/data-table/graphs-table";
 import { Skeleton } from "../shared/skeleton";
-import { useGraphFilters, vehicles } from "./filters/use-graph-filters";
+import { useGraphFilters } from "./filters/use-graph-filters";
 
 type Row = {
 	vehicle: VehicleType | "Total";
 	[sceario: string]: number | string;
 	total: number | string;
 };
-
-function getVolumeTable(
-	_cameraId: string,
-	_params: {
-		startDate?: string | null;
-		endDate?: string | null;
-		scenarioIds?: string[] | null;
-		vehicleIds?: string[] | null;
-		dayOfWeek?: number | null;
-		hour?: number | null;
-		minuteInterval?: number | null;
-	}
-) {
-	// Mock implementation of the API call
-	return new Promise<{
-		payload: Array<{
-			vehiclename: string;
-			total: number;
-			scenariodata: Array<{
-				scenarioName: string;
-				volAcumulate: number;
-			}>;
-		}>;
-	}>((resolve) => {
-		setTimeout(() => {
-			resolve({
-				payload: [
-					{
-						vehiclename: "Car",
-						total: 1500,
-						scenariodata: [
-							{ scenarioName: "Scenario A", volAcumulate: 800 },
-							{ scenarioName: "Scenario B", volAcumulate: 700 },
-						],
-					},
-					{
-						vehiclename: "Truck",
-						total: 500,
-						scenariodata: [
-							{ scenarioName: "Scenario A", volAcumulate: 300 },
-							{ scenarioName: "Scenario B", volAcumulate: 200 },
-						],
-					},
-				],
-			});
-		}, 1000);
-	});
-}
 
 export function VolumeTable() {
 	const { camera } = Route.useParams();
@@ -80,17 +30,14 @@ export function VolumeTable() {
 	} = useQuery({
 		queryKey: ["volume-table-mobility", camera, initialValues],
 		queryFn: async () => {
-			const table = await getVolumeTable(camera, {
-				endDate: initialValues.endDate,
-				scenarioIds: initialValues.zones,
-				startDate: initialValues.startDate,
-				vehicleIds: initialValues.actors,
-				dayOfWeek: initialValues.dayOfWeek,
-				hour: initialValues.hour,
-				minuteInterval: initialValues.minuteInterval,
+			const table = await movility.volumeTable(camera, {
+				endDate: initialValues.endDate ?? "",
+				startDate: initialValues.startDate ?? "",
+				rawScenarioIds: initialValues.zones?.join(","),
+				rawVehicleIds: initialValues.actors?.join(","),
 			});
 
-			return table.payload;
+			return table;
 		},
 	});
 
@@ -117,9 +64,11 @@ export function VolumeTable() {
 				accessorKey: "vehicle",
 				header: "Actor vial / Movimiento",
 				cell: ({ row }) =>
-					vehicles?.[
-						row.original.vehicle.replaceAll(" ", "_") as keyof typeof vehicles
-					] ?? row.original.vehicle,
+					chartConfig[
+						row.original.vehicle
+							.replaceAll(" ", "_")
+							.toLowerCase() as keyof typeof chartConfig
+					]?.label ?? row.original.vehicle,
 			},
 			...(scenarios.map((sceario) => ({
 				accessorKey: sceario,

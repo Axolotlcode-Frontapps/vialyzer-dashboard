@@ -13,11 +13,7 @@ export function useCameraVehicles(camera: string) {
 	} = useQuery({
 		queryKey: ["camera-vehicles"],
 		queryFn: async () => await camerasService.vehicles(camera),
-		select: (data) =>
-			data.payload?.map((item) => ({
-				...item,
-				occurrence: 123,
-			})),
+		select: (data) => data.payload,
 	});
 
 	const loading = useMemo(

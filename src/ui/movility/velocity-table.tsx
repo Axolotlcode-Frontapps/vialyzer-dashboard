@@ -1,13 +1,10 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-// import { getSpeedTable } from '@/logic/services/movility/get-speed-table';
-
-// import { getSpeedTable } from '@/logic/services/movility/get-speed-table';
-
 import type { ColumnDef } from "@tanstack/react-table";
 import type { VehicleType } from "@/types/agents";
 
+// import { movility } from "@/lib/services/movility";
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
 import { GraphsTable } from "../shared/data-table/graphs-table";
 import { Skeleton } from "../shared/skeleton";
@@ -92,14 +89,12 @@ export function VelocityTable() {
 	} = useQuery({
 		queryKey: ["speed-table-mobility", camera, initialValues],
 		queryFn: async () => {
+			// const table = await movility.velocityTable(camera, {
 			const table = await getSpeedTable(camera, {
-				endDate: initialValues.endDate,
-				scenarioIds: initialValues.zones,
-				startDate: initialValues.startDate,
-				vehicleIds: initialValues.actors,
-				dayOfWeek: initialValues.dayOfWeek,
-				hour: initialValues.hour,
-				minuteInterval: initialValues.minuteInterval,
+				endDate: initialValues.endDate ?? "",
+				startDate: initialValues.startDate ?? "",
+				rawScenarioIds: initialValues.zones?.join(","),
+				rawVehicleIds: initialValues.actors?.join(","),
 			});
 
 			return table.payload;

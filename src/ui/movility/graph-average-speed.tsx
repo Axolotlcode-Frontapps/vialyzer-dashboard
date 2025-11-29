@@ -1,21 +1,11 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-// import { getAverageSpeed } from '@/logic/services/movility/get-average-speed';
-
+import { movility } from "@/lib/services/movility";
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/card";
 import { Skeleton } from "../shared/skeleton";
 import { useGraphFilters } from "./filters/use-graph-filters";
-
-function getAverageSpeed(_camera: string, _params: Record<string, any>) {
-	return Promise.resolve({
-		payload: {
-			averageSpeed: 45.5,
-			unit: "km/h",
-		},
-	});
-}
 
 export function GraphAverageSpeed() {
 	const { camera } = Route.useParams();
@@ -24,17 +14,14 @@ export function GraphAverageSpeed() {
 	const { data, isLoading, isRefetching, isFetching, isPending } = useQuery({
 		queryKey: ["average-speed-mobility", camera, initialValues],
 		queryFn: async () => {
-			const average = await getAverageSpeed(camera, {
-				endDate: initialValues.endDate,
-				scenarioIds: initialValues.zones,
-				startDate: initialValues.startDate,
-				vehicleIds: initialValues.actors,
-				dayOfWeek: initialValues.dayOfWeek,
-				hour: initialValues.hour,
-				minuteInterval: initialValues.minuteInterval,
+			const average = await movility.averageSpeed(camera, {
+				endDate: initialValues.endDate ?? "",
+				startDate: initialValues.startDate ?? "",
+				rawScenarioIds: initialValues.zones?.join(","),
+				rawVehicleIds: initialValues.actors?.join(","),
 			});
 
-			return average.payload;
+			return average;
 		},
 	});
 

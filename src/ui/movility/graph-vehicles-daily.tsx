@@ -2,8 +2,7 @@ import { useMemo } from "react";
 import { format } from "@formkit/tempo";
 import { useQuery } from "@tanstack/react-query";
 
-// import { getDailyVehicle } from '@/logic/services/movility/get-daily-vehicle';
-
+import { movility } from "@/lib/services/movility";
 import { chartConfig } from "@/lib/utils/charts";
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
 import { GraphStack } from "../shared/graphs/stack";
@@ -24,52 +23,6 @@ const legends = {
 	left: "",
 };
 
-function getDailyVehicle(_camera: string, _params: Record<string, any>) {
-	return Promise.resolve({
-		payload: [
-			{
-				date: "2024-01-15",
-				metadata: [
-					{ vehicleid: "1", vehiclename: "CAR", vol_acumulate: 150 },
-					{ vehicleid: "2", vehiclename: "BICYCLE", vol_acumulate: 25 },
-					{ vehicleid: "3", vehiclename: "MOTORCYCLE", vol_acumulate: 45 },
-					{ vehicleid: "4", vehiclename: "BUS", vol_acumulate: 12 },
-					{ vehicleid: "5", vehiclename: "VAN", vol_acumulate: 20 },
-					{ vehicleid: "6", vehiclename: "HEAVY_TRUCK", vol_acumulate: 15 },
-					{ vehicleid: "7", vehiclename: "PERSON", vol_acumulate: 85 },
-					{ vehicleid: "8", vehiclename: "TRUCK", vol_acumulate: 30 },
-				],
-			},
-			{
-				date: "2024-01-16",
-				metadata: [
-					{ vehicleid: "1", vehiclename: "CAR", vol_acumulate: 180 },
-					{ vehicleid: "2", vehiclename: "BICYCLE", vol_acumulate: 30 },
-					{ vehicleid: "3", vehiclename: "MOTORCYCLE", vol_acumulate: 52 },
-					{ vehicleid: "4", vehiclename: "BUS", vol_acumulate: 18 },
-					{ vehicleid: "5", vehiclename: "VAN", vol_acumulate: 25 },
-					{ vehicleid: "6", vehiclename: "HEAVY_TRUCK", vol_acumulate: 20 },
-					{ vehicleid: "7", vehiclename: "PERSON", vol_acumulate: 95 },
-					{ vehicleid: "8", vehiclename: "TRUCK", vol_acumulate: 28 },
-				],
-			},
-			{
-				date: "2024-01-17",
-				metadata: [
-					{ vehicleid: "1", vehiclename: "CAR", vol_acumulate: 165 },
-					{ vehicleid: "2", vehiclename: "BICYCLE", vol_acumulate: 28 },
-					{ vehicleid: "3", vehiclename: "MOTORCYCLE", vol_acumulate: 48 },
-					{ vehicleid: "4", vehiclename: "BUS", vol_acumulate: 15 },
-					{ vehicleid: "5", vehiclename: "VAN", vol_acumulate: 22 },
-					{ vehicleid: "6", vehiclename: "HEAVY_TRUCK", vol_acumulate: 18 },
-					{ vehicleid: "7", vehiclename: "PERSON", vol_acumulate: 90 },
-					{ vehicleid: "8", vehiclename: "TRUCK", vol_acumulate: 35 },
-				],
-			},
-		],
-	});
-}
-
 export function GraphVehiclesDaily() {
 	const { camera } = Route.useParams();
 	const { initialValues } = useGraphFilters();
@@ -82,17 +35,14 @@ export function GraphVehiclesDaily() {
 	} = useQuery({
 		queryKey: ["vehicles-daily-graph", camera, initialValues],
 		queryFn: async () => {
-			const daily = await getDailyVehicle(camera, {
-				endDate: initialValues.endDate,
-				scenarioIds: initialValues.zones,
-				startDate: initialValues.startDate,
-				vehicleIds: initialValues.actors,
-				dayOfWeek: initialValues.dayOfWeek,
-				hour: initialValues.hour,
-				minuteInterval: initialValues.minuteInterval,
+			const daily = await movility.dailyVehicle(camera, {
+				endDate: initialValues.endDate ?? "",
+				startDate: initialValues.startDate ?? "",
+				rawScenarioIds: initialValues.zones?.join(","),
+				rawVehicleIds: initialValues.actors?.join(","),
 			});
 
-			return daily.payload;
+			return daily;
 		},
 	});
 
