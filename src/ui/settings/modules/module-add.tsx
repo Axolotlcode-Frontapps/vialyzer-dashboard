@@ -5,14 +5,12 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@/ui/shared/sheet";
-import { UserFields } from "./user-fields";
+import { ModuleForm } from "./module-form";
 
-export function UserUpdate({
-	user,
+export function ModuleAdd({
 	open,
 	onOpenChange,
 }: {
-	user: User;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 }) {
@@ -20,14 +18,11 @@ export function UserUpdate({
 		<Sheet open={open} onOpenChange={onOpenChange}>
 			<SheetContent className="w-full sm:min-w-[600px]">
 				<SheetHeader>
-					<SheetTitle>Actualizar usuario</SheetTitle>
-					<SheetDescription>
-						Vas a actualizar un usuario existente. Completa la información
-						necesaria y guarda para aplicar los cambios.
-					</SheetDescription>
+					<SheetTitle>Agregar modulo</SheetTitle>
+					<SheetDescription>Complete los detalles del módulo.</SheetDescription>
 				</SheetHeader>
 
-				<UserFields onSuccess={onOpenChange} update user={user} />
+				<ModuleForm onSuccess={() => onOpenChange(false)} />
 			</SheetContent>
 		</Sheet>
 	);

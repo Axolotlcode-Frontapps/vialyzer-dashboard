@@ -5,8 +5,8 @@ import { zodValidator } from "@tanstack/zod-adapter";
 
 import { sharedSchemas } from "@/lib/schemas/shared";
 import { modulesServices } from "@/lib/services/modules";
-import { ModuleAdd } from "@/ui/modules/module-add";
-import { columns } from "@/ui/modules/modules-table/columns";
+import { ModuleAdd } from "@/ui/settings/modules/module-add";
+import { columns } from "@/ui/settings/modules/modules-table/columns";
 import { Button } from "@/ui/shared/button";
 import { DataTable } from "@/ui/shared/data-table";
 import { DataTableHeader } from "@/ui/shared/data-table/table-header";

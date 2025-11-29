@@ -2,8 +2,8 @@ import { Link } from "@tanstack/react-router";
 
 import type { ColumnDef } from "@tanstack/react-table";
 
-import { ModuleAction } from "@/ui/modules/modules-table/actions";
 import { DataTableColumnHeader } from "@/ui/shared/data-table/column-header";
+import { ModuleAction } from "./actions";
 
 export const columns: ColumnDef<Module>[] = [
 	{

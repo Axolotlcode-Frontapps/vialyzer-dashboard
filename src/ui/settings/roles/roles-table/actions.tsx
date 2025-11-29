@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { CirclePlus, MoreHorizontal, Pencil, Trash } from "lucide-react";
 
-import { ModuleAssign } from "@/ui/modules/module-assign";
 import { Button } from "@/ui/shared/button";
 import {
 	DropdownMenu,
@@ -10,6 +9,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/ui/shared/dropdown-menu";
 import { HasPermission } from "@/ui/shared/permissions/has-permission";
+import { ModuleAssign } from "../../modules/module-assign";
 import { RoleDelete } from "../role-delete";
 import { RoleUpdate } from "../role-update";
 

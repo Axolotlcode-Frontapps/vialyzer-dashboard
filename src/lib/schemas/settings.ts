@@ -19,9 +19,8 @@ class Settings {
 		nit: z
 			.string()
 			.min(1, { error: "El NIT es obligatorio" })
-			.regex(/^\d{5,13}-\d$/, {
-				message:
-					"El NIT debe tener entre 5 y 13 dígitos, seguido de un guion y un dígito de verificación (ej: 123456789-0)",
+			.regex(/^\d{9}$/, {
+				message: "El NIT debe tener 9 dígitos",
 			}),
 		phone: z
 			.string()

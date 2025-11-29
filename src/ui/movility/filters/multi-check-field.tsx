@@ -54,6 +54,7 @@ export function MultiCheckField({
 									: [...field.state.value, option.value];
 								field.handleChange(selected);
 							}}
+							className="capitalize"
 						>
 							{option.label}
 						</Button>
