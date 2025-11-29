@@ -86,6 +86,7 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 							...line,
 							coordinates,
 							camera,
+							visibility: false,
 						});
 						if (!config)
 							throw new Error("Error al crear la línea de configuración");
