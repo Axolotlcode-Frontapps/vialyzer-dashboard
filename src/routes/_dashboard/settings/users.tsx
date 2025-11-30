@@ -47,8 +47,8 @@ function Users() {
 	});
 
 	return (
-		<div className="space-y-4 w-full">
-			<div className="flex items-center justify-between gap-4">
+		<div className="space-y-4 w-full @container/page container mx-auto">
+			<div className="flex items-center justify-between gap-4 mb-4">
 				<h2 className="text-xl lg:text-2xl font-medium">Usuarios</h2>
 				<HasPermission moduleBase="users" permissionName="create">
 					<UserAdd />

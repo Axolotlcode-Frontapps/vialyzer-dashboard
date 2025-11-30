@@ -8,11 +8,7 @@ import { hasModule } from "@/lib/utils/permissions";
 import { DetailsCard } from "@/ui/movility/details-card";
 import { LocationFilter } from "@/ui/movility/location-filter";
 import { Locations } from "@/ui/movility/locations";
-import {
-	InputGroup,
-	InputGroupAddon,
-	InputGroupInput,
-} from "@/ui/shared/input-group";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/ui/shared/input-group";
 import { Maps } from "@/ui/shared/maps";
 
 export const Route = createFileRoute("/_dashboard/movility/")({
@@ -54,7 +50,7 @@ function Mobility() {
 		});
 	}
 	return (
-		<div className="w-full mx-auto py-8 @container/page">
+		<div className="w-full mx-auto py-8 container @container/page">
 			<h1 className="text-3xl font-bold">Mapa de Puntos de Monitoreo</h1>
 			<p className="text-muted-foreground mb-4 text-lg">
 				Mapa de puntos de monitoreo en tiempo real

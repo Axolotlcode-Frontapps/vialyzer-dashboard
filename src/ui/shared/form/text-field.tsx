@@ -27,7 +27,7 @@ export function TextField({ label, placeholder, ...props }: Props) {
 	}, [errors]);
 
 	return (
-		<Label className="flex-col gap-0 text-sm">
+		<Label className="w-full flex-col gap-0 text-sm">
 			<span className="block w-full mb-2">{label}</span>
 			<Input
 				value={field.state.value}
@@ -38,9 +38,7 @@ export function TextField({ label, placeholder, ...props }: Props) {
 				{...props}
 			/>
 
-			{error ? (
-				<span className="w-full text-sm text-destructive mt-2">{error}</span>
-			) : null}
+			{error ? <span className="w-full text-sm text-destructive mt-2">{error}</span> : null}
 		</Label>
 	);
 }

@@ -15,6 +15,7 @@ import type { VariantProps } from "class-variance-authority";
 import type { ComponentProps } from "react";
 
 import { cn } from "@/lib/utils/cn";
+import { getSidebarState, setSidebarState } from "@/lib/utils/layout-cookie";
 import { Button } from "@/ui/shared/button";
 import { Input } from "@/ui/shared/input";
 import { Separator } from "@/ui/shared/separator";
@@ -33,8 +34,6 @@ import {
 	TooltipTrigger,
 } from "@/ui/shared/tooltip";
 
-const SIDEBAR_COOKIE_NAME = "sidebar_state";
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = "16rem";
 const SIDEBAR_WIDTH_MOBILE = "18rem";
 const SIDEBAR_WIDTH_ICON = "3rem";
@@ -62,7 +61,6 @@ function useSidebar() {
 }
 
 function SidebarProvider({
-	defaultOpen = true,
 	open: openProp,
 	onOpenChange: setOpenProp,
 	className,
@@ -70,31 +68,27 @@ function SidebarProvider({
 	children,
 	...props
 }: ComponentProps<"div"> & {
-	defaultOpen?: boolean;
 	open?: boolean;
 	onOpenChange?: (open: boolean) => void;
 }) {
 	const isMobile = useIsMobile();
 	const [openMobile, setOpenMobile] = useState(false);
 
+	const openState = getSidebarState();
+
 	// This is the internal state of the sidebar.
 	// We use openProp and setOpenProp for control from outside the component.
-	const [_open, _setOpen] = useState(defaultOpen);
+	const [_open, _setOpen] = useState(openState);
 	const open = openProp ?? _open;
+
 	const setOpen = useCallback(
 		(value: boolean | ((value: boolean) => boolean)) => {
 			const openState = typeof value === "function" ? value(open) : value;
-			if (setOpenProp) {
-				setOpenProp(openState);
-			} else {
-				_setOpen(openState);
-			}
 
-			// This sets the cookie to keep the sidebar state.
-			// biome-ignore lint/suspicious/noDocumentCookie: setting sidebar state in cookie
-			document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+			setSidebarState({ state: openState });
+			_setOpen(openState);
 		},
-		[setOpenProp, open]
+		[open]
 	);
 
 	// Helper to toggle the sidebar.

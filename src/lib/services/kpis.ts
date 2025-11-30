@@ -22,10 +22,8 @@ class KpiServices {
 		const data = response.payload;
 
 		const derivedMetrics = {
-			totalAgents:
-				(data?.available_agents ?? 0) + (data?.unavailable_agents ?? 0),
-			attendedAlerts:
-				(data?.total_tickets ?? 0) - (data?.unattended_alerts ?? 0),
+			totalAgents: (data?.available_agents ?? 0) + (data?.unavailable_agents ?? 0),
+			attendedAlerts: (data?.total_tickets ?? 0) - (data?.unattended_alerts ?? 0),
 			rejectedAlertsPercentage:
 				(data?.total_tickets ?? 0) > 0
 					? Math.round(
@@ -42,9 +40,7 @@ class KpiServices {
 	}
 
 	async getNotifications(cameraId: string) {
-		const start = new Date(Date.now() - 7 * 86400000)
-			.toISOString()
-			.split("T")[0];
+		const start = new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0];
 		const end = new Date().toISOString().split("T")[0];
 
 		const response = await fetcher<GeneralResponse<ActiveTickets>>(
@@ -64,9 +60,7 @@ class KpiServices {
 	async getVehicleAlert(cameraId: string, start: string, end: string) {
 		const response = await fetcher<
 			GeneralResponse<{ name: string; total: string; porcentaje: string }[]>
-		>(
-			`/camera/${cameraId}/kpis/alert-percentage?start_date=${start}&end_date=${end}`
-		);
+		>(`/camera/${cameraId}/kpis/alert-percentage?start_date=${start}&end_date=${end}`);
 
 		const data = response.payload ?? [];
 
@@ -77,9 +71,7 @@ class KpiServices {
 	}
 
 	async getTime(cameraId: string, startDate: string, endDate: string) {
-		const response = await fetcher<
-			GeneralResponse<{ name: string; avg_minutes: number }>
-		>(
+		const response = await fetcher<GeneralResponse<{ name: string; avg_minutes: number }>>(
 			`/camera/${cameraId}/kpis/time-spent-on-site?start_date=${startDate}&end_date=${endDate}`
 		);
 
@@ -88,15 +80,10 @@ class KpiServices {
 	}
 
 	async getTopReasons(cameraId: string, startDate?: string, endDate?: string) {
-		const query =
-			startDate && endDate
-				? `?start_date=${startDate}&end_date=${endDate}`
-				: "";
+		const query = startDate && endDate ? `?start_date=${startDate}&end_date=${endDate}` : "";
 
 		const response = await fetcher<
-			GeneralResponse<
-				{ reason: string; total: number } | { reason: string; total: number }[]
-			>
+			GeneralResponse<{ reason: string; total: number } | { reason: string; total: number }[]>
 		>(`/camera/${cameraId}/kpis/top-reasons-tickets-rejected${query}`);
 
 		const data = response.payload ?? [];
@@ -117,8 +104,7 @@ class KpiServices {
 				}[];
 			}>
 		>(
-			`
-			/camera/${cameraId}/kpis/vehicle-volume-by-hour?start_date=${startDate}&end_date=${endDate}`
+			`/camera/${cameraId}/kpis/vehicle-volume-by-hour?start_date=${startDate}&end_date=${endDate}`
 		);
 
 		const data = response.payload?.data ?? [];

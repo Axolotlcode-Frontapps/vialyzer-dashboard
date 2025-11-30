@@ -28,8 +28,8 @@ function Modules() {
 
 	return (
 		<>
-			<div className="space-y-4">
-				<div className="flex items-center justify-between gap-4">
+			<div className="space-y-4 @container/page container mx-auto">
+				<div className="flex items-center justify-between gap-4 mb-4">
 					<h2 className="text-xl lg:text-2xl font-medium">Módulos</h2>
 					<HasPermission moduleBase="cat-modules" permissionName="create">
 						<Button type="button" onClick={() => setOpenAdd(true)}>

@@ -1,4 +1,5 @@
 import type { UpdatePasswordValues } from "../schemas/auth";
+import type { UpdateProfileValues } from "../schemas/profile";
 import type { UserValues } from "../schemas/settings";
 
 import { fetcher } from "../utils/fetch-api";
@@ -42,6 +43,13 @@ class UsersService {
 				...(password ? { password } : {}),
 				firstLogin: false,
 			},
+		});
+	}
+
+	async updateUserProfile(values: UpdateProfileValues) {
+		return await fetcher<GeneralResponse<User>>(`/users/update`, {
+			method: "PUT",
+			data: values,
 		});
 	}
 

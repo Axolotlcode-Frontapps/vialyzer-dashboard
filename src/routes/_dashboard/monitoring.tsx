@@ -1,9 +1,4 @@
-import {
-	createFileRoute,
-	redirect,
-	useNavigate,
-	useSearch,
-} from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate, useSearch } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 
 import "@/ui/monitoring/page.css";
@@ -26,13 +21,7 @@ import { Card, CardContent } from "@/ui/shared/card";
 import { Field, FieldError, FieldLabel } from "@/ui/shared/field";
 import { Maps } from "@/ui/shared/maps";
 import { HasPermission } from "@/ui/shared/permissions/has-permission";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/ui/shared/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/shared/select";
 
 export const Route = createFileRoute("/_dashboard/monitoring")({
 	component: Monitoring,
@@ -104,7 +93,7 @@ function Monitoring() {
 	});
 
 	return (
-		<div className="monitoring">
+		<div className="monitoring @container/page container mx-auto">
 			<div className="flex items-center justify-between mb-5">
 				<h1 className="text-2xl font-bold">Agentes</h1>
 				{/* <Button size="sm">
@@ -124,8 +113,7 @@ function Monitoring() {
 						<form.Field
 							name="selected"
 							children={(field) => {
-								const isInvalid =
-									field.state.meta.isTouched && !field.state.meta.isValid;
+								const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 								return (
 									<Field data-invalid={isInvalid}>
 										<div className="flex gap-2 items-center w-full">
@@ -137,7 +125,7 @@ function Monitoring() {
 													form.handleSubmit();
 												}}
 											>
-												<SelectTrigger className="w-full max-w-sm">
+												<SelectTrigger className="w-full">
 													<SelectValue placeholder="Selecciona una empresa" />
 												</SelectTrigger>
 												<SelectContent>
@@ -149,9 +137,7 @@ function Monitoring() {
 												</SelectContent>
 											</Select>
 										</div>
-										{isInvalid && (
-											<FieldError errors={field.state.meta.errors} />
-										)}
+										{isInvalid && <FieldError errors={field.state.meta.errors} />}
 									</Field>
 								);
 							}}
@@ -189,18 +175,12 @@ function Monitoring() {
 						<GraphTime />
 					</div>
 				</HasPermission>
-				<HasPermission
-					moduleBase="kpis"
-					permissionName="top-reasons-tickets-rejected"
-				>
+				<HasPermission moduleBase="kpis" permissionName="top-reasons-tickets-rejected">
 					<div className="monitoring__graph monitoring__graph--rejects">
 						<GraphTopReasons />
 					</div>
 				</HasPermission>
-				<HasPermission
-					moduleBase="kpis"
-					permissionName="vehicle-volume-by-hour"
-				>
+				<HasPermission moduleBase="kpis" permissionName="vehicle-volume-by-hour">
 					<div className="monitoring__graph monitoring__graph--volume">
 						<GraphVolumeHour />
 					</div>

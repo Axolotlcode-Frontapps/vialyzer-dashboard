@@ -193,6 +193,7 @@
 	},
 	"javascript": {
 		"formatter": {
+			"lineWidth": 100,
 			"jsxQuoteStyle": "double",
 			"quoteProperties": "asNeeded",
 			"trailingCommas": "es5",
