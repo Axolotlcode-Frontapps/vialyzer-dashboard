@@ -17,7 +17,6 @@ import { GraphVehicleAlert } from "@/ui/monitoring/graph-vehicle-alert";
 import { GraphVolumeHour } from "@/ui/monitoring/graph-volume-hour";
 import { Notifications } from "@/ui/monitoring/notifications";
 import { Stats } from "@/ui/monitoring/stats";
-import { Card, CardContent } from "@/ui/shared/card";
 import { Field, FieldError, FieldLabel } from "@/ui/shared/field";
 import { Maps } from "@/ui/shared/maps";
 import { HasPermission } from "@/ui/shared/permissions/has-permission";
@@ -94,57 +93,50 @@ function Monitoring() {
 
 	return (
 		<div className="monitoring @container/page container mx-auto">
-			<div className="flex items-center justify-between mb-5">
+			<div className="flex flex-col md:flex-row md:items-center justify-start gap-4 mb-5">
 				<h1 className="text-2xl font-bold">Agentes</h1>
-				{/* <Button size="sm">
-					<FileDown className="size-4" />
-					Descargar reporte
-				</Button> */}
-			</div>
-			<Card className="mb-6">
-				<CardContent>
-					<form
-						onSubmit={(e) => {
-							e.stopPropagation();
-							e.preventDefault();
-							form.handleSubmit(e);
+				<form
+					onSubmit={(e) => {
+						e.stopPropagation();
+						e.preventDefault();
+						form.handleSubmit(e);
+					}}
+					className="w-full"
+				>
+					<form.Field
+						name="selected"
+						children={(field) => {
+							const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+							return (
+								<Field data-invalid={isInvalid}>
+									<div className="flex gap-2 items-center w-full max-w-xs">
+										<FieldLabel htmlFor={field.name}>Camara:</FieldLabel>
+										<Select
+											value={field.state.value}
+											onValueChange={(val) => {
+												field.handleChange(val);
+												form.handleSubmit();
+											}}
+										>
+											<SelectTrigger className="flex-1">
+												<SelectValue placeholder="Selecciona una empresa" />
+											</SelectTrigger>
+											<SelectContent>
+												{cameras?.map((camera) => (
+													<SelectItem key={camera.id} value={camera.id}>
+														{camera.name}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</div>
+									{isInvalid && <FieldError errors={field.state.meta.errors} />}
+								</Field>
+							);
 						}}
-					>
-						<form.Field
-							name="selected"
-							children={(field) => {
-								const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
-								return (
-									<Field data-invalid={isInvalid}>
-										<div className="flex gap-2 items-center w-full">
-											<FieldLabel htmlFor={field.name}>Camara:</FieldLabel>
-											<Select
-												value={field.state.value}
-												onValueChange={(val) => {
-													field.handleChange(val);
-													form.handleSubmit();
-												}}
-											>
-												<SelectTrigger className="w-full">
-													<SelectValue placeholder="Selecciona una empresa" />
-												</SelectTrigger>
-												<SelectContent>
-													{cameras?.map((camera) => (
-														<SelectItem key={camera.id} value={camera.id}>
-															{camera.name}
-														</SelectItem>
-													))}
-												</SelectContent>
-											</Select>
-										</div>
-										{isInvalid && <FieldError errors={field.state.meta.errors} />}
-									</Field>
-								);
-							}}
-						/>
-					</form>
-				</CardContent>
-			</Card>
+					/>
+				</form>
+			</div>
 			<div className="monitoring__content">
 				<HasPermission moduleBase="kpis" permissionName="dashboard-kpis">
 					<Stats />
