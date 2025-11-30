@@ -47,8 +47,8 @@ function Roles() {
 	});
 
 	return (
-		<div className="space-y-4">
-			<div className="flex items-center justify-between gap-4">
+		<div className="space-y-4 @container/page container mx-auto">
+			<div className="flex items-center justify-between gap-4 mb-4">
 				<h2 className="text-xl lg:text-2xl font-medium">Roles</h2>
 				<HasPermission moduleBase="roles" permissionName="create">
 					<RoleAdd />

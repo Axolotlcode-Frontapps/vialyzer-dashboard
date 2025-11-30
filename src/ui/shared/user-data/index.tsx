@@ -24,7 +24,7 @@ export function UserData({ user }: UserDataProps) {
 		},
 		{
 			title: "Empresa",
-			description: user.company.name,
+			description: user.companie?.name,
 		},
 	];
 

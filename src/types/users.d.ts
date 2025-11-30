@@ -11,4 +11,5 @@ interface User {
 	createdAt?: Date;
 	lastLogin?: Date;
 	firstLogin?: boolean;
+	companie?: Company;
 }

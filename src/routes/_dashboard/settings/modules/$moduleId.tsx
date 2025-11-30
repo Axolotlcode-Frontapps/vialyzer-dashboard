@@ -30,8 +30,8 @@ function ModulePermisions() {
 	});
 
 	return (
-		<>
-			<div className="flex items-center justify-between gap-4">
+		<div className="@container/page container mx-auto">
+			<div className="flex items-center justify-between gap-4 @container/page container mx-auto mb-4">
 				<div>
 					<h2 className="text-xl lg:text-2xl font-medium flex items-center">
 						Permisos por módulo:
@@ -53,11 +53,7 @@ function ModulePermisions() {
 					</p>
 				</div>
 			</div>
-
-			<PermissionsTable
-				moduleData={moduleData!}
-				isLoadingModule={isLoadingModule || isPending}
-			/>
-		</>
+			<PermissionsTable moduleData={moduleData!} isLoadingModule={isLoadingModule || isPending} />
+		</div>
 	);
 }

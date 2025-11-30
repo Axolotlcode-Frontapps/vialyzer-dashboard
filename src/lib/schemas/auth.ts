@@ -12,12 +12,9 @@ class AuthSchemas {
 			.string({
 				error: "El correo electrónico o número de usuario no es válido",
 			})
-			.refine(
-				(value) => /^\S+@\S+\.\S+$/.test(value) || /^\+?\d{7,15}$/.test(value),
-				{
-					message: "El correo electrónico o número de usuario no es válido",
-				}
-			),
+			.refine((value) => /^\S+@\S+\.\S+$/.test(value) || /^\+?\d{7,15}$/.test(value), {
+				message: "El correo electrónico o número de usuario no es válido",
+			}),
 		password: this.passwordSchema,
 		rememberMe: z.boolean(),
 	});
@@ -33,11 +30,7 @@ class AuthSchemas {
 	});
 
 	verifyCode = z.object({
-		code: z
-			.string()
-			.min(6)
-			.max(6)
-			.regex(/^\d+$/, "El código debe ser numérico"),
+		code: z.string().min(6).max(6).regex(/^\d+$/, "El código debe ser numérico"),
 	});
 
 	updatePassword = z

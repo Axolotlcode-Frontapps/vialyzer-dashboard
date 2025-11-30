@@ -39,7 +39,7 @@ function ConfigCamera() {
 	const currectCamera = cameras.find((cam) => cam.id === camera);
 
 	return (
-		<section>
+		<section className="@container/page container mx-auto">
 			<h1 className="mb-6 flex items-center gap-4 text-2xl font-semibold">
 				<Tooltip>
 					<TooltipTrigger asChild>
