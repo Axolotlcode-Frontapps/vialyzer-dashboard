@@ -21,7 +21,7 @@ export default defineConfig({
 		},
 	},
 	preview: {
-		allowedHosts: [".axolotl-code.codes"],
+		allowedHosts: [".axolotl-code.codes", "frontend.vialyzer.co", ".vialyzer.co"],
 	},
 	...{
 		test: {
