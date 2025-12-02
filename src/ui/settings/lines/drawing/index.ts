@@ -600,6 +600,9 @@ export class DrawingEngine implements DrawingEngineInterface {
 					action: "saveRequested",
 				});
 				break;
+			case "snapshot":
+				this.takeSnapshotAndDownload();
+				break;
 			case "open":
 				this.#config.on.feedback("Open functionality coming soon");
 				break;
