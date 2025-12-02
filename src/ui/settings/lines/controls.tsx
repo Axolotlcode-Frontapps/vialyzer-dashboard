@@ -5,6 +5,7 @@ import {
 	ArrowRight,
 	ArrowUp,
 	// BringToFront,
+	Camera,
 	// Circle,
 	Copy,
 	// Download,
@@ -242,6 +243,21 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 								<MenubarShortcut>Ctrl+S</MenubarShortcut>
 							</MenubarItem>
 						)}
+						<MenubarSeparator />
+						<MenubarItem
+							onClick={() => {
+								try {
+									drawingEngine?.takeSnapshotAndDownload();
+								} catch (error) {
+									console.error("[Controls] Snapshot failed:", error);
+									drawingEngine?.setFeedback("Error al tomar la captura", 3000);
+								}
+							}}
+							disabled={!isMediaLoaded}
+						>
+							<Camera className="w-4 h-4" />
+							Tomar captura
+						</MenubarItem>
 					</MenubarContent>
 				</MenubarMenu>
 

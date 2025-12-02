@@ -5,6 +5,7 @@ import {
 	ChevronRightIcon,
 } from "lucide-react";
 import { DayPicker, getDefaultClassNames } from "react-day-picker";
+import { es } from "react-day-picker/locale";
 
 import type { DayButton } from "react-day-picker";
 
@@ -27,6 +28,7 @@ function Calendar({
 
 	return (
 		<DayPicker
+			locale={es}
 			showOutsideDays={showOutsideDays}
 			className={cn(
 				"bg-background group/calendar p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
@@ -62,7 +64,7 @@ function Calendar({
 					defaultClassNames.button_next
 				),
 				month_caption: cn(
-					"flex items-center justify-center h-(--cell-size) w-full px-(--cell-size)",
+					"flex items-center justify-center h-(--cell-size) w-full px-(--cell-size) uppercase",
 					defaultClassNames.month_caption
 				),
 				dropdowns: cn(
@@ -87,7 +89,7 @@ function Calendar({
 				table: "w-full border-collapse",
 				weekdays: cn("flex", defaultClassNames.weekdays),
 				weekday: cn(
-					"text-muted-foreground rounded-md flex-1 font-normal text-[0.8rem] select-none",
+					"text-muted-foreground rounded-md flex-1 font-normal text-[0.8rem] select-none uppercase",
 					defaultClassNames.weekday
 				),
 				week: cn("flex w-full mt-2", defaultClassNames.week),
