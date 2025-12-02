@@ -157,7 +157,10 @@ export function useGraphFilters() {
 
 	const inVelocity = useMemo(() => pathname.includes("velocity"), [pathname]);
 
-	function onChange({ camera: updatedCamera, ...values }: MovilityCameraForm) {
+	function onChange({
+		camera: updatedCamera,
+		...values
+	}: MovilityCameraFilters & Pick<MovilityCameraForm, "camera">) {
 		const params: typeof search = structuredClone(search);
 
 		if (values.actors && values.actors.length > 0) {
@@ -173,7 +176,7 @@ export function useGraphFilters() {
 
 		for (const key in values) {
 			if (key !== "vehicleIds" && key !== "scenarioIds") {
-				const paramKey = key as Exclude<keyof MovilityCameraFilters, "camera">;
+				const paramKey = key as keyof MovilityCameraFilters;
 				const value = values[paramKey];
 				if (value) {
 					// biome-ignore lint/suspicious/noExplicitAny: Needed for dynamic key assignment

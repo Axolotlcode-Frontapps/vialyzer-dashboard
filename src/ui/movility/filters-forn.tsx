@@ -4,7 +4,10 @@ import { useCameraScenarios } from "@/hooks/use-camera-scenarios";
 import { useCameraVehicles } from "@/hooks/use-camera-vehicles";
 import { useCameras } from "@/hooks/use-cameras";
 
-import type { MovilityCameraForm } from "@/lib/schemas/movility";
+import type {
+	MovilityCameraFilters,
+	MovilityCameraForm,
+} from "@/lib/schemas/movility";
 
 import { movilitySchemas } from "@/lib/schemas/movility";
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
@@ -51,15 +54,22 @@ export function FiltersForm() {
 				: defaultScenariosIds,
 		},
 		onSubmit: async ({ value }) => {
-			const valueToSubmit: Partial<MovilityCameraForm> = structuredClone(value);
-			if (value.actors?.length === defaultVehiclesIds.length) {
+			const valueToSubmit: MovilityCameraFilters &
+				Pick<MovilityCameraForm, "camera"> = structuredClone(value);
+			if (
+				value.actors?.length === defaultVehiclesIds.length ||
+				value.camera !== camera
+			) {
 				valueToSubmit.actors = undefined;
 			}
-			if (value.zones?.length === defaultScenariosIds.length) {
+			if (
+				value.zones?.length === defaultScenariosIds.length ||
+				value.camera !== camera
+			) {
 				valueToSubmit.zones = undefined;
 			}
 
-			onChange(value);
+			onChange(valueToSubmit);
 		},
 	});
 

@@ -74,7 +74,7 @@ export function MultiSelectField({
 						<Input
 							value={search}
 							onChange={(event) => setSearch(event.target.value)}
-							className="mb-2 sticky top-0 z-10 bg-background"
+							className="mb-2 sticky top-0 z-10 bg-popover dark:bg-popover"
 							placeholder={props.placeholder}
 						/>
 						<label
