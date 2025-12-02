@@ -48,6 +48,23 @@ export class DrawingCore {
 		};
 	}
 
+	/**
+	 * Converts media coordinates to target resolution coordinates.
+	 * Used for taking snapshots at target resolution.
+	 */
+	mediaToTargetCoords(point: Point): Point {
+		const { target, media } = this.#config.resolution;
+		if (media.width === 0 || media.height === 0) return point;
+
+		const scaleX = target.width / media.width;
+		const scaleY = target.height / media.height;
+
+		return {
+			x: point.x * scaleX,
+			y: point.y * scaleY,
+		};
+	}
+
 	// Drawing creation methods
 	createDrawingElement(
 		drawingMode: DrawingElementType,
@@ -1220,5 +1237,573 @@ export class DrawingCore {
 			entry: entryLine,
 			exit: exitLine,
 		};
+	}
+
+	/**
+	 * Takes a snapshot of the canvas with the media behind and all drawn elements.
+	 * Returns a Promise that resolves to a Blob containing the image data.
+	 *
+	 * @param elements - Array of drawing elements to render
+	 * @param layers - Optional map of layer properties for opacity
+	 * @param format - Image format ('png' or 'jpeg')
+	 * @param quality - Image quality for JPEG format (0 to 1)
+	 * @returns Promise<Blob> - The snapshot as an image blob
+	 */
+	async takeSnapshot(
+		elements: DrawingElement[],
+		layers?: Map<string, { opacity: number }>,
+		format: "png" | "jpeg" = "png",
+		quality: number = 0.92
+	): Promise<Blob> {
+		const { media, canvas } = this.#config;
+		const { display } = this.#config.resolution;
+
+		// Validate display dimensions - use canvas dimensions as fallback
+		let snapshotWidth = display.width;
+		let snapshotHeight = display.height;
+
+		if (snapshotWidth <= 0 || snapshotHeight <= 0) {
+			// Fallback to actual canvas CSS dimensions
+			const canvasRect = canvas.getBoundingClientRect();
+			snapshotWidth = canvasRect.width;
+			snapshotHeight = canvasRect.height;
+		}
+
+		if (snapshotWidth <= 0 || snapshotHeight <= 0) {
+			throw new Error(
+				`Invalid snapshot dimensions: ${snapshotWidth}x${snapshotHeight}`
+			);
+		}
+
+		// Create a temporary canvas for the snapshot
+		const snapshotCanvas = document.createElement("canvas");
+		snapshotCanvas.width = snapshotWidth;
+		snapshotCanvas.height = snapshotHeight;
+
+		const ctx = snapshotCanvas.getContext("2d");
+		if (!ctx) {
+			throw new Error("Failed to get canvas 2d context for snapshot");
+		}
+
+		// Configure context
+		ctx.imageSmoothingEnabled = this.#config.rendering.antiAlias;
+		ctx.imageSmoothingQuality = this.#config.rendering.antiAlias
+			? "high"
+			: "low";
+
+		// Draw the media (video frame or image) first
+		ctx.drawImage(media, 0, 0, snapshotWidth, snapshotHeight);
+
+		// Draw elements on top (without selection/hover highlighting for a clean snapshot)
+		// Create a temporary empty drag state for clean rendering
+		const cleanDragState: DragState = {
+			isDragging: false,
+			elementId: null,
+			pointIndex: null,
+		};
+
+		// Filter out deleted elements
+		const visibleElements = elements.filter((el) => el.syncState !== "deleted");
+
+		// Render elements similar to redrawCanvas but without selection/hover states
+		if (layers && layers.size > 0) {
+			// Group elements by layer
+			const elementsByLayer = new Map<string, DrawingElement[]>();
+			const elementsWithoutLayer: DrawingElement[] = [];
+
+			visibleElements.forEach((element) => {
+				if (element.layerId && layers.has(element.layerId)) {
+					if (!elementsByLayer.has(element.layerId)) {
+						elementsByLayer.set(element.layerId, []);
+					}
+					const layerElements = elementsByLayer.get(element.layerId);
+					if (layerElements) {
+						layerElements.push(element);
+					}
+				} else {
+					elementsWithoutLayer.push(element);
+				}
+			});
+
+			// Render elements without layer
+			elementsWithoutLayer.forEach((element) => {
+				this.drawElement(ctx, element, [], null, cleanDragState);
+			});
+
+			// Render each layer with its properties
+			Array.from(layers.entries())
+				.sort(
+					([, a], [, b]) =>
+						(a as { zIndex?: number }).zIndex ||
+						0 - ((b as { zIndex?: number }).zIndex || 0)
+				)
+				.forEach(([layerId, layerProps]) => {
+					const layerElements = elementsByLayer.get(layerId);
+					if (!layerElements || layerElements.length === 0) return;
+
+					ctx.save();
+					ctx.globalAlpha = layerProps.opacity;
+					ctx.globalCompositeOperation = "source-over";
+
+					layerElements.forEach((element) => {
+						this.drawElement(ctx, element, [], null, cleanDragState);
+					});
+
+					ctx.restore();
+				});
+		} else {
+			// Simple rendering without layer properties
+			visibleElements.forEach((element) => {
+				this.drawElement(ctx, element, [], null, cleanDragState);
+			});
+		}
+
+		// Convert canvas to blob
+		return new Promise<Blob>((resolve, reject) => {
+			const mimeType = format === "jpeg" ? "image/jpeg" : "image/png";
+			try {
+				snapshotCanvas.toBlob(
+					(blob) => {
+						if (blob) {
+							resolve(blob);
+						} else {
+							reject(new Error("Failed to create snapshot blob"));
+						}
+					},
+					mimeType,
+					quality
+				);
+			} catch (error) {
+				reject(
+					new Error(
+						`toBlob failed: ${error instanceof Error ? error.message : String(error)}`
+					)
+				);
+			}
+		});
+	}
+
+	/**
+	 * Takes a snapshot and triggers a download with the specified filename.
+	 * This method is synchronous to preserve the user gesture context for downloads.
+	 * If cross-origin media cannot be captured, falls back to capturing just the drawing canvas.
+	 *
+	 * @param elements - Array of drawing elements to render
+	 * @param layers - Optional map of layer properties
+	 * @param filename - The filename for the downloaded image (without extension)
+	 * @param format - Image format ('png' or 'jpeg')
+	 * @param quality - Image quality for JPEG format (0 to 1)
+	 * @returns Object with success status and whether fallback was used
+	 */
+	takeSnapshotAndDownload(
+		elements: DrawingElement[],
+		layers?: Map<string, { opacity: number }>,
+		filename: string = "snapshot",
+		format: "png" | "jpeg" = "png",
+		quality: number = 1
+	): { success: boolean; fallback: boolean } {
+		const { media } = this.#config;
+		const { target } = this.#config.resolution;
+
+		// Use target resolution for the snapshot
+		const snapshotWidth = target.width;
+		const snapshotHeight = target.height;
+
+		if (snapshotWidth <= 0 || snapshotHeight <= 0) {
+			throw new Error(
+				`Invalid target resolution: ${snapshotWidth}x${snapshotHeight}`
+			);
+		}
+
+		// Create a temporary canvas for the snapshot at target resolution
+		const snapshotCanvas = document.createElement("canvas");
+		snapshotCanvas.width = snapshotWidth;
+		snapshotCanvas.height = snapshotHeight;
+
+		const ctx = snapshotCanvas.getContext("2d");
+		if (!ctx) {
+			throw new Error("Failed to get canvas 2d context for snapshot");
+		}
+
+		// Configure context
+		ctx.imageSmoothingEnabled = this.#config.rendering.antiAlias;
+		ctx.imageSmoothingQuality = this.#config.rendering.antiAlias
+			? "high"
+			: "low";
+
+		// Try to draw the media (video frame or image) first at target resolution
+		let mediaDrawn = false;
+		try {
+			ctx.drawImage(media, 0, 0, snapshotWidth, snapshotHeight);
+			// Test if the canvas is tainted by trying to get image data
+			ctx.getImageData(0, 0, 1, 1);
+			mediaDrawn = true;
+		} catch {
+			// Cross-origin media - clear and use white background instead
+			ctx.fillStyle = "#ffffff";
+			ctx.fillRect(0, 0, snapshotWidth, snapshotHeight);
+		}
+
+		// Draw elements on top using target coordinates
+		const visibleElements = elements.filter((el) => el.syncState !== "deleted");
+
+		// Helper to draw element at target resolution
+		const drawElementAtTarget = (element: DrawingElement) => {
+			this.#drawElementAtTargetResolution(ctx, element);
+		};
+
+		if (layers && layers.size > 0) {
+			const elementsByLayer = new Map<string, DrawingElement[]>();
+			const elementsWithoutLayer: DrawingElement[] = [];
+
+			visibleElements.forEach((element) => {
+				if (element.layerId && layers.has(element.layerId)) {
+					if (!elementsByLayer.has(element.layerId)) {
+						elementsByLayer.set(element.layerId, []);
+					}
+					const layerElements = elementsByLayer.get(element.layerId);
+					if (layerElements) {
+						layerElements.push(element);
+					}
+				} else {
+					elementsWithoutLayer.push(element);
+				}
+			});
+
+			elementsWithoutLayer.forEach(drawElementAtTarget);
+
+			Array.from(layers.entries())
+				.sort(
+					([, a], [, b]) =>
+						(a as { zIndex?: number }).zIndex ||
+						0 - ((b as { zIndex?: number }).zIndex || 0)
+				)
+				.forEach(([layerId, layerProps]) => {
+					const layerElements = elementsByLayer.get(layerId);
+					if (!layerElements || layerElements.length === 0) return;
+
+					ctx.save();
+					ctx.globalAlpha = layerProps.opacity;
+					ctx.globalCompositeOperation = "source-over";
+
+					layerElements.forEach(drawElementAtTarget);
+
+					ctx.restore();
+				});
+		} else {
+			visibleElements.forEach(drawElementAtTarget);
+		}
+
+		// Use toDataURL for download (synchronous)
+		const mimeType = format === "jpeg" ? "image/jpeg" : "image/png";
+		const dataUrl = snapshotCanvas.toDataURL(mimeType, quality);
+
+		// Create and trigger download immediately (synchronous to preserve user gesture)
+		const link = document.createElement("a");
+		link.href = dataUrl;
+		link.download = `${filename}.${format}`;
+		link.style.display = "none";
+
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+
+		return { success: true, fallback: !mediaDrawn };
+	}
+
+	/**
+	 * Draws an element at target resolution coordinates.
+	 * Similar to drawElement but uses mediaToTargetCoords instead of mediaToDisplayCoords.
+	 * Does not draw selection highlights or drag handles (for clean snapshot output).
+	 */
+	#drawElementAtTargetResolution(
+		ctx: CanvasRenderingContext2D,
+		element: DrawingElement
+	): void {
+		if (element.points.length === 0) return;
+
+		// Convert points from media coordinates to target coordinates
+		const targetPoints = element.points.map((point) =>
+			this.mediaToTargetCoords(point)
+		);
+
+		ctx.strokeStyle = element.color;
+		ctx.lineWidth = this.#config.rendering.defaultLineWidth;
+		ctx.beginPath();
+
+		// Draw based on element type (matching drawElement logic)
+		if (element.type === "line") {
+			if (targetPoints.length >= 2) {
+				ctx.moveTo(targetPoints[0].x, targetPoints[0].y);
+				ctx.lineTo(targetPoints[1].x, targetPoints[1].y);
+			} else if (targetPoints.length === 1) {
+				ctx.arc(targetPoints[0].x, targetPoints[0].y, 2, 0, 2 * Math.PI);
+			}
+		} else if (element.type === "area") {
+			if (targetPoints.length > 0) {
+				ctx.moveTo(targetPoints[0].x, targetPoints[0].y);
+				for (let i = 1; i < targetPoints.length; i++) {
+					ctx.lineTo(targetPoints[i].x, targetPoints[i].y);
+				}
+				if (element.completed && targetPoints.length > 2) {
+					ctx.closePath();
+					ctx.fillStyle = element.color + "20";
+					ctx.fill();
+				}
+			}
+		} else if (element.type === "curve") {
+			if (targetPoints.length >= 2) {
+				ctx.moveTo(targetPoints[0].x, targetPoints[0].y);
+				if (targetPoints.length === 2) {
+					ctx.lineTo(targetPoints[1].x, targetPoints[1].y);
+				} else {
+					for (let i = 0; i < targetPoints.length - 1; i++) {
+						const p0 = i > 0 ? targetPoints[i - 1] : targetPoints[i];
+						const p1 = targetPoints[i];
+						const p2 = targetPoints[i + 1];
+						const p3 =
+							i < targetPoints.length - 2
+								? targetPoints[i + 2]
+								: targetPoints[i + 1];
+
+						for (let t = 0.1; t <= 1; t += 0.1) {
+							const point = this.catmullRomSpline(p0, p1, p2, p3, t);
+							ctx.lineTo(point.x, point.y);
+						}
+					}
+				}
+			}
+		} else if (element.type === "rectangle" && targetPoints.length >= 2) {
+			const x = Math.min(targetPoints[0].x, targetPoints[1].x);
+			const y = Math.min(targetPoints[0].y, targetPoints[1].y);
+			const width = Math.abs(targetPoints[1].x - targetPoints[0].x);
+			const height = Math.abs(targetPoints[1].y - targetPoints[0].y);
+
+			ctx.rect(x, y, width, height);
+			if (element.completed) {
+				ctx.fillStyle = element.color + "20";
+				ctx.fill();
+			}
+		} else if (element.type === "circle" && targetPoints.length >= 2) {
+			const centerX = targetPoints[0].x;
+			const centerY = targetPoints[0].y;
+			const radius = Math.sqrt(
+				(targetPoints[1].x - centerX) ** 2 + (targetPoints[1].y - centerY) ** 2
+			);
+
+			ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+			if (element.completed) {
+				ctx.fillStyle = element.color + "20";
+				ctx.fill();
+			}
+		}
+
+		ctx.stroke();
+
+		// Draw detection lines (only for DETECTION type elements)
+		if (
+			element.detection &&
+			element.info?.type === "DETECTION" &&
+			(element.type === "line" || element.type === "curve")
+		) {
+			ctx.save();
+			ctx.strokeStyle = element.color;
+			ctx.lineWidth = 1;
+			ctx.setLineDash([5, 5]);
+
+			const entry = element.detection.entry.map((p) =>
+				this.mediaToTargetCoords(p)
+			);
+			if (entry.length === 2) {
+				ctx.beginPath();
+				ctx.moveTo(entry[0].x, entry[0].y);
+				ctx.lineTo(entry[1].x, entry[1].y);
+				ctx.stroke();
+			}
+
+			const exit = element.detection.exit.map((p) =>
+				this.mediaToTargetCoords(p)
+			);
+			if (exit.length === 2) {
+				ctx.beginPath();
+				ctx.moveTo(exit[0].x, exit[0].y);
+				ctx.lineTo(exit[1].x, exit[1].y);
+				ctx.stroke();
+			}
+
+			ctx.restore();
+		}
+
+		// Draw direction arrows for lines and curves
+		if (
+			this.#config.rendering.showDirectionArrows &&
+			element.completed &&
+			(element.type === "line" || element.type === "curve")
+		) {
+			const direction = element.direction || this.calculateDirection(element);
+			if (direction && targetPoints.length >= 2) {
+				const targetStart = this.mediaToTargetCoords(direction.start);
+				const targetEnd = this.mediaToTargetCoords(direction.end);
+
+				let arrowPoint: Point;
+				if (element.type === "line") {
+					const t = 0.75;
+					arrowPoint = {
+						x: targetStart.x + (targetEnd.x - targetStart.x) * t,
+						y: targetStart.y + (targetEnd.y - targetStart.y) * t,
+					};
+				} else {
+					// curve
+					const n = targetPoints.length;
+					if (n >= 3) {
+						const p0 = targetPoints[n - 3];
+						const p1 = targetPoints[n - 2];
+						const p2 = targetPoints[n - 1];
+						const p3 = targetPoints[n - 1];
+						arrowPoint = this.catmullRomSpline(p0, p1, p2, p3, 0.5);
+					} else {
+						const t = 0.75;
+						arrowPoint = {
+							x:
+								targetPoints[0].x + (targetPoints[1].x - targetPoints[0].x) * t,
+							y:
+								targetPoints[0].y + (targetPoints[1].y - targetPoints[0].y) * t,
+						};
+					}
+				}
+
+				this.drawArrow(
+					ctx,
+					arrowPoint,
+					targetEnd,
+					element.color,
+					this.#config.rendering.arrowSize
+				);
+			}
+		}
+
+		// Draw handles/points (dots)
+		targetPoints.forEach((point, index) => {
+			const isDraggable = element.completed;
+			const radius = isDraggable ? 6 : 4;
+
+			ctx.beginPath();
+			ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+			ctx.fillStyle = element.color;
+			ctx.fill();
+
+			if (isDraggable) {
+				ctx.beginPath();
+				ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+				ctx.strokeStyle = "#fff";
+				ctx.lineWidth = 1;
+				ctx.stroke();
+			}
+
+			// Draw point numbers for area and curve
+			if (element.type === "area" || element.type === "curve") {
+				ctx.fillStyle = "#fff";
+				ctx.font = "12px Arial";
+				ctx.textAlign = "center";
+				ctx.fillText((index + 1).toString(), point.x, point.y + 4);
+			}
+		});
+
+		// Draw handles for detection points (only for DETECTION type elements)
+		if (element.detection && element.info?.type === "DETECTION") {
+			const allDetectionPoints = [
+				...element.detection.entry,
+				...element.detection.exit,
+			].map((p) => this.mediaToTargetCoords(p));
+
+			allDetectionPoints.forEach((point) => {
+				const size = 8;
+				const halfSize = size / 2;
+				ctx.fillStyle = element.color;
+				ctx.fillRect(point.x - halfSize, point.y - halfSize, size, size);
+				ctx.strokeStyle = "#fff";
+				ctx.lineWidth = 1;
+				ctx.strokeRect(point.x - halfSize, point.y - halfSize, size, size);
+			});
+		}
+
+		// Draw text annotation if present
+		if (element.info?.name && element.completed) {
+			this.#drawElementTextAtTargetResolution(ctx, element, targetPoints);
+		}
+	}
+
+	/**
+	 * Draws element text annotation at target resolution.
+	 * Matches the original drawElementText method logic.
+	 */
+	#drawElementTextAtTargetResolution(
+		ctx: CanvasRenderingContext2D,
+		element: DrawingElement,
+		targetPoints: Point[]
+	): void {
+		if (!element.info?.name || targetPoints.length === 0) return;
+
+		const textData = element.info;
+		let textPoint: Point;
+
+		// Position text based on element type (matching drawElementText logic)
+		if (element.type === "rectangle" && targetPoints.length >= 2) {
+			const x1 = Math.min(targetPoints[0].x, targetPoints[1].x);
+			const y1 = Math.min(targetPoints[0].y, targetPoints[1].y);
+			const x2 = Math.max(targetPoints[0].x, targetPoints[1].x);
+			const y2 = Math.max(targetPoints[0].y, targetPoints[1].y);
+			textPoint = { x: (x1 + x2) / 2, y: (y1 + y2) / 2 };
+		} else if (element.type === "circle" && targetPoints.length >= 2) {
+			textPoint = targetPoints[0];
+		} else if (element.type === "area" && targetPoints.length >= 3) {
+			const centroidX =
+				targetPoints.reduce((sum, p) => sum + p.x, 0) / targetPoints.length;
+			const centroidY =
+				targetPoints.reduce((sum, p) => sum + p.y, 0) / targetPoints.length;
+			textPoint = { x: centroidX, y: centroidY };
+		} else {
+			const midIndex = Math.floor(targetPoints.length / 2);
+			if (targetPoints.length === 2) {
+				textPoint = {
+					x: (targetPoints[0].x + targetPoints[1].x) / 2,
+					y: (targetPoints[0].y + targetPoints[1].y) / 2,
+				};
+			} else {
+				textPoint = targetPoints[midIndex];
+			}
+		}
+
+		const fontSize = textData.fontSize || this.#config.text.defaultFontSize;
+		const fontFamily =
+			textData.fontFamily || this.#config.text.defaultFontFamily;
+
+		ctx.font = `${fontSize}px ${fontFamily}`;
+		ctx.textAlign = "center";
+		ctx.textBaseline = "middle";
+
+		const metrics = ctx.measureText(textData.name);
+		const textWidth = metrics.width;
+		const textHeight = fontSize;
+
+		// Draw background if enabled
+		if (textData.backgroundColor) {
+			const previousAlpha = ctx.globalAlpha;
+			ctx.fillStyle = textData.backgroundColor;
+			ctx.globalAlpha =
+				(textData.backgroundOpacity ??
+					this.#config.text.defaultBackgroundOpacity) * previousAlpha;
+			ctx.fillRect(
+				textPoint.x - textWidth / 2 - 4,
+				textPoint.y - textHeight / 2 - 2,
+				textWidth + 8,
+				textHeight + 4
+			);
+			ctx.globalAlpha = previousAlpha;
+		}
+
+		// Draw text (black color to match original)
+		ctx.fillStyle = "#000000";
+		ctx.fillText(textData.name, textPoint.x, textPoint.y);
 	}
 }

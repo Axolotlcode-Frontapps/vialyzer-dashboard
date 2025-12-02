@@ -175,7 +175,7 @@ export function Lines({
 				drawingEngineRef.current = new DrawingEngine(canvas, media, {
 					resolution: {
 						target: {
-							width: 1080,
+							width: 1280,
 							height: 720,
 						},
 					},
@@ -261,6 +261,7 @@ export function Lines({
 							mediaCallbackRef as (instance: HTMLVideoElement | null) => void
 						}
 						src={src}
+						crossOrigin="anonymous"
 						className="w-full aspect-video pointer-events-none"
 						controls
 						muted
@@ -273,6 +274,7 @@ export function Lines({
 							mediaCallbackRef as (instance: HTMLImageElement | null) => void
 						}
 						src={src}
+						crossOrigin="anonymous"
 						alt="Training media"
 						className="w-full aspect-video object-contain pointer-events-none"
 						draggable={false}

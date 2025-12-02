@@ -1581,6 +1581,91 @@ export class DrawingEngine implements DrawingEngineInterface {
 		this.#redraw();
 	}
 
+	/**
+	 * Takes a snapshot of the canvas with the media behind and all drawn elements.
+	 * Returns a Promise that resolves to a Blob containing the image data.
+	 *
+	 * @param format - Image format ('png' or 'jpeg')
+	 * @param quality - Image quality for JPEG format (0 to 1)
+	 * @returns Promise<Blob> - The snapshot as an image blob
+	 */
+	async takeSnapshot(
+		format: "png" | "jpeg" = "png",
+		quality: number = 0.92
+	): Promise<Blob> {
+		// Get visible elements (same logic as #getVisibleElements)
+		const visibleElements = this.#getVisibleElements();
+
+		// Get layer properties for rendering
+		const layerProps = new Map<string, { opacity: number }>();
+		if (this.#layers) {
+			const layers = this.#layers.getLayers();
+			layers.forEach((layer) => {
+				if (layer.visibility === "visible") {
+					layerProps.set(layer.id, {
+						opacity: layer.opacity,
+					});
+				}
+			});
+		}
+
+		return this.#core.takeSnapshot(
+			visibleElements,
+			layerProps,
+			format,
+			quality
+		);
+	}
+
+	/**
+	 * Takes a snapshot and triggers a download with the specified filename.
+	 * This method is synchronous to preserve the user gesture context for downloads.
+	 *
+	 * @param filename - The filename for the downloaded image (without extension)
+	 * @param format - Image format ('png' or 'jpeg')
+	 * @param quality - Image quality for JPEG format (0 to 1)
+	 */
+	takeSnapshotAndDownload(
+		filename: string = "snapshot",
+		format: "png" | "jpeg" = "png",
+		quality: number = 0.92
+	): { success: boolean; fallback: boolean } {
+		// Get visible elements (same logic as #getVisibleElements)
+		const visibleElements = this.#getVisibleElements();
+
+		// Get layer properties for rendering
+		const layerProps = new Map<string, { opacity: number }>();
+		if (this.#layers) {
+			const layers = this.#layers.getLayers();
+			layers.forEach((layer) => {
+				if (layer.visibility === "visible") {
+					layerProps.set(layer.id, {
+						opacity: layer.opacity,
+					});
+				}
+			});
+		}
+
+		const result = this.#core.takeSnapshotAndDownload(
+			visibleElements,
+			layerProps,
+			filename,
+			format,
+			quality
+		);
+
+		if (result.fallback) {
+			this.setFeedback(
+				"Captura guardada (solo dibujos, el video/imagen requiere permisos CORS)",
+				4000
+			);
+		} else {
+			this.setFeedback("Captura guardada exitosamente", 2000);
+		}
+
+		return result;
+	}
+
 	cleanup(): void {
 		this.#events?.cleanup();
 		this.#shortcuts?.cleanup();

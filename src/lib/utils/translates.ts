@@ -27,7 +27,7 @@ export const actionsTranslate = {
 
 export const vehiculesTranslate = {
 	person: "persona",
-	van: "camioneta",
+	van: "van",
 	motorcycle: "motocicleta",
 	bicycle: "bicicleta",
 	bus: "autobús",

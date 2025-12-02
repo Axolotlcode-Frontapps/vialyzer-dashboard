@@ -752,6 +752,14 @@ export interface DrawingEngineInterface {
 	clearAll(): void;
 	exportDrawings(): void;
 
+	// Snapshot operations
+	takeSnapshot(format?: "png" | "jpeg", quality?: number): Promise<Blob>;
+	takeSnapshotAndDownload(
+		filename?: string,
+		format?: "png" | "jpeg",
+		quality?: number
+	): { success: boolean; fallback: boolean };
+
 	// Clipboard operations
 	copySelectedElements(): number;
 	cutSelectedElements(): void;

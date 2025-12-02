@@ -35,14 +35,14 @@ export default function DateRangePicker({
 						{value?.from ? (
 							value.to ? (
 								<>
-									{format(value.from, "MMM DD, YYYY")} -{" "}
-									{format(value.to, "MMM DD, YYYY")}
+									{format(value.from, "MMM DD, YYYY", "es-CO").toUpperCase()} -{" "}
+									{format(value.to, "MMM DD, YYYY", "es-CO").toUpperCase()}
 								</>
 							) : (
-								format(value.from, "MMM DD, YYYY")
+								format(value.from, "MMM DD, YYYY", "es-CO").toUpperCase()
 							)
 						) : (
-							<span>Pick a date</span>
+							<span>Escoge una fecha</span>
 						)}
 					</Button>
 				</PopoverTrigger>

@@ -72,7 +72,7 @@ export function VolumeTable() {
 			},
 			...(scenarios.map((sceario) => ({
 				accessorKey: sceario,
-				header: sceario,
+				header: sceario.replace(" - Entrada", ""),
 				cell: ({ row }) => {
 					const value = row.original[sceario];
 					return typeof value === "number"
@@ -82,7 +82,7 @@ export function VolumeTable() {
 			})) satisfies ColumnDef<Row>[]),
 			{
 				accessorKey: "total",
-				header: "Total Avg",
+				header: "Total",
 				cell: ({ row }) =>
 					typeof row.original.total === "number"
 						? row.original.total.toLocaleString()

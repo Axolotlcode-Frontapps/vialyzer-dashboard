@@ -97,7 +97,7 @@ export function VelocityTable() {
 			},
 			...(scenarios.map((sceario) => ({
 				accessorKey: sceario,
-				header: sceario,
+				header: sceario.replace(" - Entrada", ""),
 				cell: ({ row }) => <CellColor value={row.original[sceario]} />,
 				//   cell: ({ row }) => typeof row.original[sceario] === "number"
 				//   	? row.original[sceario].toFixed(2)
@@ -105,7 +105,7 @@ export function VelocityTable() {
 			})) satisfies ColumnDef<Row>[]),
 			{
 				accessorKey: "total",
-				header: "Total Avg",
+				header: "Total",
 				cell: ({ row }) => <CellColor value={row.original.total} />,
 			} satisfies ColumnDef<Row>,
 		];
