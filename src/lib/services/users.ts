@@ -46,6 +46,15 @@ class UsersService {
 		});
 	}
 
+	async reactivateUser(id: string) {
+		return await fetcher<GeneralResponse<User>>(`/users/update-user/${id}`, {
+			method: "PATCH",
+			data: {
+				active: true,
+			},
+		});
+	}
+
 	async updateUserProfile(values: UpdateProfileValues) {
 		return await fetcher<GeneralResponse<User>>(`/users/update`, {
 			method: "PUT",
