@@ -4,18 +4,13 @@ import { useMutation } from "@tanstack/react-query";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { toast } from "sonner";
 
+import type { AxiosError } from "axios";
 import type { UpdatePasswordValues } from "@/lib/schemas/auth";
 
 import { authSchemas } from "@/lib/schemas/auth";
 import { authServices } from "@/lib/services/auth";
 import { Button } from "@/ui/shared/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/ui/shared/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/ui/shared/card";
 import { FieldError } from "@/ui/shared/field";
 import { ForgotPasswordInput } from "@/ui/shared/forgot-password-input";
 import { LogoVialyzer } from "@/ui/shared/logo-vialyzer";
@@ -64,13 +59,16 @@ function UpdatePassword() {
 			});
 			navigate({ to: "/auth" });
 		},
-		onError: (error) => {
+		onError: (error: AxiosError) => {
 			form.state.canSubmit = true;
+			const message = (error.response?.data as GeneralResponse<unknown>)?.message;
+
+			const capitalizedMessage =
+				message && message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+
 			toast.error("Error al actualizar la contraseña", {
 				description:
-					error instanceof Error
-						? error.message
-						: "Ocurrió un error inesperado al actualizar la contraseña.",
+					capitalizedMessage || "Error al actualizar la contraseña. Revisa tus credenciales.",
 			});
 		},
 		onSettled: () => {
@@ -86,9 +84,7 @@ function UpdatePassword() {
 				>
 					<LogoVialyzer className="mb-6" />
 				</a>
-				<CardTitle className="text-xl md:text-2xl text-center">
-					Actualizar contraseña
-				</CardTitle>
+				<CardTitle className="text-xl md:text-2xl text-center">Actualizar contraseña</CardTitle>
 				<CardDescription className="md:text-base  text-center">
 					Ingresa tu nueva contraseña para actualizarla.
 				</CardDescription>
@@ -104,8 +100,7 @@ function UpdatePassword() {
 					<form.Field
 						name="password"
 						children={(field) => {
-							const isInvalid =
-								field.state.meta.isTouched && !field.state.meta.isValid;
+							const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 							return (
 								<ForgotPasswordInput
 									isInvalid={isInvalid}
@@ -115,9 +110,7 @@ function UpdatePassword() {
 									name={field.name}
 									label="Nueva contraseña"
 									placeholder="Ingresa tu nueva contraseña"
-									children={() =>
-										isInvalid && <FieldError errors={field.state.meta.errors} />
-									}
+									children={() => isInvalid && <FieldError errors={field.state.meta.errors} />}
 								/>
 							);
 						}}
@@ -126,8 +119,7 @@ function UpdatePassword() {
 					<form.Field
 						name="confirmPassword"
 						children={(field) => {
-							const isInvalid =
-								field.state.meta.isTouched && !field.state.meta.isValid;
+							const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 							return (
 								<ForgotPasswordInput
 									isInvalid={isInvalid}
@@ -137,17 +129,13 @@ function UpdatePassword() {
 									name={field.name}
 									label="Confirmar contraseña"
 									placeholder="Confirma tu nueva contraseña"
-									children={() =>
-										isInvalid && <FieldError errors={field.state.meta.errors} />
-									}
+									children={() => isInvalid && <FieldError errors={field.state.meta.errors} />}
 								/>
 							);
 						}}
 					/>
 
-					<form.Subscribe
-						selector={(state) => [state.canSubmit, state.isSubmitting]}
-					>
+					<form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
 						{([canSubmit, isSubmitting]) => (
 							<Button type="submit" disabled={!canSubmit}>
 								{isSubmitting ? <Spinner /> : null}
@@ -158,10 +146,7 @@ function UpdatePassword() {
 				</form>
 				<span className="inline-block w-full text-center text-muted-foreground text-sm mt-4">
 					Ya tienes una cuenta?{" "}
-					<Link
-						to="/auth"
-						className="font-semibold hover:underline underline-offset-4"
-					>
+					<Link to="/auth" className="font-semibold hover:underline underline-offset-4">
 						Iniciar sesión
 					</Link>
 				</span>

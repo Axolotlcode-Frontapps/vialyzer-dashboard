@@ -4,11 +4,7 @@ import type { AxiosError } from "axios";
 
 import { authServices } from "../services/auth";
 import { SESSION_NAME } from "./contants";
-import {
-	getSessionCookie,
-	removeSessionCookie,
-	setSessionCookie,
-} from "./cookies-secure";
+import { getSessionCookie, removeSessionCookie, setSessionCookie } from "./cookies-secure";
 
 const axiosInstance = axios.create({
 	baseURL: import.meta.env.VITE_API_URL,
@@ -46,7 +42,7 @@ axiosInstance.interceptors.response.use(
 
 		if (
 			error.response?.status === 403 &&
-			errorData.message === "CREDENCIALES INVALIDAS" &&
+			errorData.message === "SESION NO ENCONTRADA" &&
 			!originalRequest._retry
 		) {
 			originalRequest._retry = true;
@@ -59,9 +55,7 @@ axiosInstance.interceptors.response.use(
 			}
 
 			try {
-				const refreshReponse = (
-					await authServices.refreshToken(currentRefreshToken)
-				).payload;
+				const refreshReponse = (await authServices.refreshToken(currentRefreshToken)).payload;
 
 				if (!refreshReponse?.token || !refreshReponse?.refreshToken) {
 					throw new Error("Invalid refresh token response");

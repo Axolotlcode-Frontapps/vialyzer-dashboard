@@ -3,18 +3,13 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+import type { AxiosError } from "axios";
 import type { ForgotPasswordValues } from "@/lib/schemas/auth";
 
 import { authSchemas } from "@/lib/schemas/auth";
 import { authServices } from "@/lib/services/auth";
 import { Button } from "@/ui/shared/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/ui/shared/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/ui/shared/card";
 import { Field, FieldError, FieldLabel } from "@/ui/shared/field";
 import { Input } from "@/ui/shared/input";
 import { LogoVialyzer } from "@/ui/shared/logo-vialyzer";
@@ -51,8 +46,7 @@ function ForgotPassword() {
 			form.reset();
 			toast.success(`¡Se ha enviado un correo electrónico de recuperación!`, {
 				position: "bottom-right",
-				description:
-					"Por favor, revisa tu correo electrónico para restablecer tu contraseña.",
+				description: "Por favor, revisa tu correo electrónico para restablecer tu contraseña.",
 			});
 			navigate({
 				to: "/auth/verify-code",
@@ -63,13 +57,17 @@ function ForgotPassword() {
 				},
 			});
 		},
-		onError: (error) => {
+		onError: (error: AxiosError) => {
 			form.state.canSubmit = true;
-			toast.error(`Error al enviar el correo electrónico de recuperación`, {
+			const message = (error.response?.data as GeneralResponse<unknown>)?.message;
+
+			const capitalizedMessage =
+				message && message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+
+			toast.error("Error al enviar el correo de recuperación", {
 				description:
-					error instanceof Error
-						? error.message
-						: "Por favor, inténtalo de nuevo.",
+					capitalizedMessage ||
+					"Error al enviar el correo de recuperación. Revisa tus credenciales.",
 			});
 		},
 		onSettled: () => {
@@ -85,12 +83,9 @@ function ForgotPassword() {
 				>
 					<LogoVialyzer className="mb-6" />
 				</a>
-				<CardTitle className="text-xl md:text-2xl text-center">
-					Recuperar contraseña
-				</CardTitle>
+				<CardTitle className="text-xl md:text-2xl text-center">Recuperar contraseña</CardTitle>
 				<CardDescription className="md:text-base  text-center">
-					Ingresa tu correo electrónico a continuación para recuperar tu
-					contraseña
+					Ingresa tu correo electrónico a continuación para recuperar tu contraseña
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="px-0">
@@ -104,8 +99,7 @@ function ForgotPassword() {
 					<form.Field
 						name="email"
 						children={(field) => {
-							const isInvalid =
-								field.state.meta.isTouched && !field.state.meta.isValid;
+							const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 							return (
 								<Field data-invalid={isInvalid}>
 									<FieldLabel htmlFor={field.name}>
@@ -124,9 +118,7 @@ function ForgotPassword() {
 							);
 						}}
 					/>
-					<form.Subscribe
-						selector={(state) => [state.canSubmit, state.isSubmitting]}
-					>
+					<form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
 						{([canSubmit, isSubmitting]) => (
 							<Button type="submit" disabled={!canSubmit}>
 								{isSubmitting ? <Spinner /> : null}
@@ -138,10 +130,7 @@ function ForgotPassword() {
 
 				<span className="inline-block w-full text-center text-muted-foreground text-sm mt-4">
 					Ya tienes una cuenta?{" "}
-					<Link
-						to="/auth"
-						className="font-semibold hover:underline underline-offset-4"
-					>
+					<Link to="/auth" className="font-semibold hover:underline underline-offset-4">
 						Iniciar sesión
 					</Link>
 				</span>

@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth";
 
+import type { AxiosError } from "axios";
 import type { SignInValues } from "@/lib/schemas/auth";
 
 import { authSchemas } from "@/lib/schemas/auth";
@@ -45,7 +46,9 @@ export function SignInForm() {
 			form.state.canSubmit = false;
 			const data = await authServices.signIn(values);
 
-			if (!data.payload?.token) return;
+			if (!data.payload?.token) {
+				throw new Error(data.message);
+			}
 
 			if (values.rememberMe) {
 				setRememberMeData({ username: values.username, remember: true });
@@ -57,6 +60,7 @@ export function SignInForm() {
 			await router.invalidate();
 			await queryClient.invalidateQueries();
 			await navigate({ to: "/" });
+			return data;
 		},
 		onSuccess: () => {
 			form.reset();
@@ -65,13 +69,15 @@ export function SignInForm() {
 				description: "Has iniciado sesión correctamente.",
 			});
 		},
-		onError: (error) => {
+		onError: (error: AxiosError) => {
 			form.state.canSubmit = true;
-			toast.error(`Inicio de sesión fallido`, {
-				description:
-					error instanceof Error
-						? error.message
-						: "Por favor, inténtalo de nuevo.",
+			const message = (error.response?.data as GeneralResponse<unknown>)?.message;
+
+			const capitalizedMessage =
+				message && message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+
+			toast.error("Error al iniciar sesión", {
+				description: capitalizedMessage || "Error al iniciar sesión. Revisa tus credenciales.",
 			});
 		},
 		onSettled: () => {
@@ -90,13 +96,10 @@ export function SignInForm() {
 			<form.Field
 				name="username"
 				children={(field) => {
-					const isInvalid =
-						field.state.meta.isTouched && !field.state.meta.isValid;
+					const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 					return (
 						<Field data-invalid={isInvalid}>
-							<FieldLabel htmlFor={field.name}>
-								Correo electrónico o numero de usuario
-							</FieldLabel>
+							<FieldLabel htmlFor={field.name}>Correo electrónico o numero de usuario</FieldLabel>
 							<Input
 								id={field.name}
 								value={field.state.value}
@@ -113,8 +116,7 @@ export function SignInForm() {
 			<form.Field
 				name="password"
 				children={(field) => {
-					const isInvalid =
-						field.state.meta.isTouched && !field.state.meta.isValid;
+					const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 					return (
 						<ForgotPasswordInput
 							isInvalid={isInvalid}
@@ -124,9 +126,7 @@ export function SignInForm() {
 							name={field.name}
 							label="Contraseña"
 							placeholder="Ingresa tu contraseña"
-							children={() =>
-								isInvalid && <FieldError errors={field.state.meta.errors} />
-							}
+							children={() => isInvalid && <FieldError errors={field.state.meta.errors} />}
 						/>
 					);
 				}}
@@ -136,16 +136,13 @@ export function SignInForm() {
 				to="/auth/forgot-password"
 				className={buttonVariants({
 					variant: "link",
-					className:
-						"w-full cursor-pointer text-muted-foreground! mt-10 justify-end px-0!",
+					className: "w-full cursor-pointer text-muted-foreground! mt-10 justify-end px-0!",
 				})}
 			>
 				¿Olvidaste tu contraseña?
 			</Link>
 
-			<form.Subscribe
-				selector={(state) => [state.canSubmit, state.isSubmitting]}
-			>
+			<form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
 				{([canSubmit, isSubmitting]) => (
 					<Button type="submit" disabled={!canSubmit}>
 						{isSubmitting ? <Spinner /> : null}
