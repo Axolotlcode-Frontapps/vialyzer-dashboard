@@ -11,7 +11,7 @@ export function useCameraScenarios(camera: string) {
 		isFetching,
 		isPending,
 	} = useQuery({
-		queryKey: ["camera-scenarios"],
+		queryKey: ["camera-scenarios", camera],
 		queryFn: async () => await camerasService.scenarios(camera),
 		select: (data) => data.payload,
 	});
