@@ -27,26 +27,26 @@ export function UserDelete({
 }) {
 	const queryClient = useQueryClient();
 
+	const isActive = user.active;
+
 	const userDeleteMutation = useMutation({
 		mutationFn: async () => {
 			return await usersService.deleteUser(user.id);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["users"] });
-			toast.success(`Usuario eliminado correctamente`, {
-				description: `Se ha eliminado el usuario "${user.name}" correctamente.`,
+			toast.success(`${isActive ? "Desactivado" : "Eliminado"} correctamente`, {
+				description: `Se ha ${isActive ? "desactivado" : "eliminado"} el usuario "${user.name}" correctamente.`,
 			});
 			onOpenChange(false);
 		},
 		onError: (error: AxiosError) => {
-			const message = (error.response?.data as GeneralResponse<unknown>)
-				?.message;
+			const message = (error.response?.data as GeneralResponse<unknown>)?.message;
 
 			const capitalizedMessage =
-				message &&
-				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+				message && message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
 
-			toast.error(`Error al eliminar el usuario "${user.name}"`, {
+			toast.error(`Error al ${isActive ? "desactivar" : "eliminar"} el usuario "${user.name}"`, {
 				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
 			});
 		},
@@ -56,11 +56,11 @@ export function UserDelete({
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Eliminar usuario</DialogTitle>
+					<DialogTitle>{isActive ? "Desactivar" : "Eliminar"} usuario</DialogTitle>
 					<DialogDescription>
-						¿Estás seguro de que deseas eliminar el usuario &quot;
-						<span className="font-semibold capitalize">{user.name}</span>
-						&quot;?&nbsp; Esta acción no se puede deshacer.
+						¿Estás seguro de que deseas {isActive ? "desactivar" : "eliminar"} el usuario.&nbsp;
+						<span className="font-semibold capitalize">"{user.name}"</span>
+						{!isActive && "Esta acción no se puede deshacer."}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -76,10 +76,10 @@ export function UserDelete({
 						{userDeleteMutation.isPending ? (
 							<>
 								<Spinner />
-								<span>Eliminando...</span>
+								<span>{isActive ? "Desactivando..." : "Eliminando..."}</span>
 							</>
 						) : (
-							<span>Eliminar</span>
+							<span>{isActive ? "Desactivar" : "Eliminar"}</span>
 						)}
 					</Button>
 				</DialogFooter>

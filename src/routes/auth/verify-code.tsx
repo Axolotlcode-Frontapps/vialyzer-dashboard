@@ -4,26 +4,15 @@ import { useMutation } from "@tanstack/react-query";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { toast } from "sonner";
 
-import type { AxiosDefaults } from "axios";
+import type { AxiosDefaults, AxiosError } from "axios";
 import type { VerifyCodeValues } from "@/lib/schemas/auth";
 
 import { authSchemas } from "@/lib/schemas/auth";
 import { authServices } from "@/lib/services/auth";
 import { Button } from "@/ui/shared/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/ui/shared/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/ui/shared/card";
 import { Field, FieldError, FieldLabel } from "@/ui/shared/field";
-import {
-	InputOTP,
-	InputOTPGroup,
-	InputOTPSeparator,
-	InputOTPSlot,
-} from "@/ui/shared/input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/ui/shared/input-otp";
 import { LogoVialyzer } from "@/ui/shared/logo-vialyzer";
 import { Spinner } from "@/ui/shared/spinner";
 
@@ -65,12 +54,15 @@ function VerifyCode() {
 				},
 			});
 		},
-		onError: (error) => {
-			toast.error(`Error al verificar el código`, {
-				description:
-					error instanceof Error
-						? error.message
-						: "Por favor, inténtalo de nuevo.",
+		onError: (error: AxiosError) => {
+			form.state.canSubmit = true;
+			const message = (error.response?.data as GeneralResponse<unknown>)?.message;
+
+			const capitalizedMessage =
+				message && message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+
+			toast.error("Error al verificar el código", {
+				description: capitalizedMessage || "Error al verificar el código. Revisa tus credenciales.",
 			});
 		},
 	});
@@ -107,10 +99,7 @@ function VerifyCode() {
 		},
 		onError: (error: AxiosDefaults) => {
 			toast.error("Error al reenviar el código", {
-				description:
-					error instanceof Error
-						? error.message
-						: "Por favor, inténtalo de nuevo.",
+				description: error instanceof Error ? error.message : "Por favor, inténtalo de nuevo.",
 			});
 		},
 	});
@@ -124,12 +113,10 @@ function VerifyCode() {
 				>
 					<LogoVialyzer className="mb-6" />
 				</a>
-				<CardTitle className="text-xl md:text-2xl text-center">
-					Verificar código
-				</CardTitle>
+				<CardTitle className="text-xl md:text-2xl text-center">Verificar código</CardTitle>
 				<CardDescription>
-					Introduce el código de verificación que te hemos enviado por correo
-					electrónico para continuar.
+					Introduce el código de verificación que te hemos enviado por correo electrónico para
+					continuar.
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="h-fit px-0">
@@ -144,18 +131,13 @@ function VerifyCode() {
 					<form.Field
 						name="code"
 						children={(field) => {
-							const isInvalid =
-								field.state.meta.isTouched && !field.state.meta.isValid;
+							const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 							return (
 								<Field data-invalid={isInvalid}>
 									<FieldLabel htmlFor={field.name} className="mb-2">
 										Correo electrónico o numero de usuario
 									</FieldLabel>
-									<InputOTP
-										maxLength={6}
-										value={field.state.value}
-										onChange={field.handleChange}
-									>
+									<InputOTP maxLength={6} value={field.state.value} onChange={field.handleChange}>
 										<InputOTPGroup className="w-full">
 											<InputOTPSlot className="w-full" index={0} />
 											<InputOTPSlot className="w-full" index={1} />
@@ -174,9 +156,7 @@ function VerifyCode() {
 						}}
 					/>
 
-					<form.Subscribe
-						selector={(state) => [state.canSubmit, state.isSubmitting]}
-					>
+					<form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
 						{([canSubmit, isSubmitting]) => (
 							<Button type="submit" disabled={!canSubmit}>
 								{isSubmitting ? <Spinner /> : null}
@@ -196,10 +176,7 @@ function VerifyCode() {
 				</Button>
 				<span className="inline-block w-full text-center text-muted-foreground text-sm mt-4">
 					Ya tienes una cuenta?{" "}
-					<Link
-						to="/auth"
-						className="font-semibold hover:underline underline-offset-4"
-					>
+					<Link to="/auth" className="font-semibold hover:underline underline-offset-4">
 						Iniciar sesión
 					</Link>
 				</span>

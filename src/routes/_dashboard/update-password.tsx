@@ -3,18 +3,13 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+import type { AxiosError } from "axios";
 import type { UpdatePasswordValues } from "@/lib/schemas/auth";
 
 import { authSchemas } from "@/lib/schemas/auth";
 import { usersService } from "@/lib/services/users";
 import { Button } from "@/ui/shared/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/ui/shared/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/ui/shared/card";
 import { FieldError } from "@/ui/shared/field";
 import { ForgotPasswordInput } from "@/ui/shared/forgot-password-input";
 import { Spinner } from "@/ui/shared/spinner";
@@ -53,13 +48,16 @@ function RouteComponent() {
 			queryClient.invalidateQueries({ queryKey: ["get-me"] });
 			await navigate({ to: "/" });
 		},
-		onError: (error) => {
+		onError: (error: AxiosError) => {
 			form.state.canSubmit = true;
+			const message = (error.response?.data as GeneralResponse<unknown>)?.message;
+
+			const capitalizedMessage =
+				message && message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+
 			toast.error("Error al actualizar la contraseña", {
 				description:
-					error instanceof Error
-						? error.message
-						: "Ocurrió un error inesperado al actualizar la contraseña.",
+					capitalizedMessage || "Error al actualizar la contraseña. Revisa tus credenciales.",
 			});
 		},
 		onSettled: () => {
@@ -71,9 +69,7 @@ function RouteComponent() {
 		<main className="min-h-[calc(100dvh-90px)] grid place-content-center">
 			<Card className="w-full max-w-md min-w-md rounded-xl shadow-2xl p-6 md:p-10 relative text-card-foreground flex flex-col gap-6 border">
 				<CardHeader className="px-0">
-					<CardTitle className="text-xl md:text-2xl text-center">
-						Actualizar contraseña
-					</CardTitle>
+					<CardTitle className="text-xl md:text-2xl text-center">Actualizar contraseña</CardTitle>
 					<CardDescription className="md:text-base  text-center">
 						Ingresa tu nueva contraseña para actualizarla.
 					</CardDescription>
@@ -89,8 +85,7 @@ function RouteComponent() {
 						<form.Field
 							name="password"
 							children={(field) => {
-								const isInvalid =
-									field.state.meta.isTouched && !field.state.meta.isValid;
+								const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 								return (
 									<ForgotPasswordInput
 										isInvalid={isInvalid}
@@ -100,11 +95,7 @@ function RouteComponent() {
 										name={field.name}
 										label="Nueva contraseña"
 										placeholder="Ingresa tu nueva contraseña"
-										children={() =>
-											isInvalid && (
-												<FieldError errors={field.state.meta.errors} />
-											)
-										}
+										children={() => isInvalid && <FieldError errors={field.state.meta.errors} />}
 									/>
 								);
 							}}
@@ -113,8 +104,7 @@ function RouteComponent() {
 						<form.Field
 							name="confirmPassword"
 							children={(field) => {
-								const isInvalid =
-									field.state.meta.isTouched && !field.state.meta.isValid;
+								const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 								return (
 									<ForgotPasswordInput
 										isInvalid={isInvalid}
@@ -124,19 +114,13 @@ function RouteComponent() {
 										name={field.name}
 										label="Confirmar contraseña"
 										placeholder="Confirma tu nueva contraseña"
-										children={() =>
-											isInvalid && (
-												<FieldError errors={field.state.meta.errors} />
-											)
-										}
+										children={() => isInvalid && <FieldError errors={field.state.meta.errors} />}
 									/>
 								);
 							}}
 						/>
 
-						<form.Subscribe
-							selector={(state) => [state.canSubmit, state.isSubmitting]}
-						>
+						<form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
 							{([canSubmit, isSubmitting]) => (
 								<Button type="submit" disabled={!canSubmit}>
 									{isSubmitting ? <Spinner /> : null}
