@@ -110,6 +110,18 @@ export class DrawingShortcuts {
 	#handleActionShortcuts(event: KeyboardEvent): boolean {
 		const isCtrlOrCmd = event.ctrlKey || event.metaKey;
 		const isAlt = event.altKey;
+		const isShift = event.shiftKey;
+
+		// Snapshot (Ctrl+Alt+S) - check early to capture before other handlers
+		if (isCtrlOrCmd && isAlt && event.key.toLowerCase() === "s") {
+			event.preventDefault();
+			this.#config.on.stateChange({
+				type: "shortcut",
+				action: "snapshot",
+				key: event.key,
+			});
+			return true;
+		}
 
 		// Layer shortcuts (Alt + key)
 		if (isAlt && this.#handleLayerShortcuts(event)) {
@@ -210,8 +222,8 @@ export class DrawingShortcuts {
 			return true;
 		}
 
-		// Save/Export
-		if (key === "s" && !event.shiftKey) {
+		// Save (Ctrl+S without Shift)
+		if (key === "s" && !isShift) {
 			event.preventDefault();
 			this.#config.on.stateChange({
 				type: "shortcut",
@@ -800,6 +812,7 @@ export class DrawingShortcuts {
 			},
 			File: {
 				"Ctrl+S / Cmd+S": "Save",
+				"Ctrl+Alt+S / Cmd+Alt+S": "Take snapshot",
 				"Ctrl+O / Cmd+O": "Open",
 				"Ctrl+Shift+E / Cmd+Shift+E": "Export",
 			},
@@ -838,6 +851,7 @@ export class DrawingShortcuts {
 			clearSelection: "Ctrl+Shift+A",
 			delete: "Delete",
 			save: "Ctrl+S",
+			snapshot: "Ctrl+Alt+S",
 			open: "Ctrl+O",
 			export: "Ctrl+Shift+E",
 			clearAll: "Ctrl+Shift+C",

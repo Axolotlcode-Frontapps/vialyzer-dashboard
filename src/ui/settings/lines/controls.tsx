@@ -257,6 +257,7 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 						>
 							<Camera className="w-4 h-4" />
 							Tomar captura
+							<MenubarShortcut>Ctrl+Alt+S</MenubarShortcut>
 						</MenubarItem>
 					</MenubarContent>
 				</MenubarMenu>
