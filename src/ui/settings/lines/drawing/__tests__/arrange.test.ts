@@ -37,7 +37,6 @@ describe("DrawingEngine - Arrange", () => {
 					zIndex: 0,
 					info: {
 						name: "Element 1",
-						type: "DETECTION" as const,
 						direction: "left" as const,
 						distance: 0,
 						fontSize: 12,
@@ -58,7 +57,6 @@ describe("DrawingEngine - Arrange", () => {
 					zIndex: 1,
 					info: {
 						name: "Element 2",
-						type: "DETECTION" as const,
 						direction: "left" as const,
 						distance: 0,
 						fontSize: 12,
@@ -79,7 +77,6 @@ describe("DrawingEngine - Arrange", () => {
 					zIndex: 2,
 					info: {
 						name: "Element 3",
-						type: "DETECTION" as const,
 						direction: "left" as const,
 						distance: 0,
 						fontSize: 12,
@@ -216,7 +213,6 @@ describe("DrawingEngine - Arrange", () => {
 						layerId: layerResult.data.layer.id,
 						info: {
 							name: "Group 1",
-							type: "DETECTION" as const,
 							direction: "left" as const,
 							distance: 0,
 							fontSize: 12,
@@ -237,7 +233,6 @@ describe("DrawingEngine - Arrange", () => {
 						layerId: layerResult.data.layer.id,
 						info: {
 							name: "Group 2",
-							type: "DETECTION" as const,
 							direction: "left" as const,
 							distance: 0,
 							fontSize: 12,
@@ -295,7 +290,6 @@ describe("DrawingEngine - Arrange", () => {
 						layerId: layerResult.data.layer.id,
 						info: {
 							name: "Align 1",
-							type: "DETECTION" as const,
 							direction: "left" as const,
 							distance: 0,
 							fontSize: 12,
@@ -316,7 +310,6 @@ describe("DrawingEngine - Arrange", () => {
 						layerId: layerResult.data.layer.id,
 						info: {
 							name: "Align 2",
-							type: "DETECTION" as const,
 							direction: "left" as const,
 							distance: 0,
 							fontSize: 12,
@@ -440,7 +433,6 @@ describe("DrawingEngine - Arrange", () => {
 						layerId: layerResult.data.layer.id,
 						info: {
 							name: "Dist 1",
-							type: "DETECTION" as const,
 							direction: "left" as const,
 							distance: 0,
 							fontSize: 12,
@@ -461,7 +453,6 @@ describe("DrawingEngine - Arrange", () => {
 						layerId: layerResult.data.layer.id,
 						info: {
 							name: "Dist 2",
-							type: "DETECTION" as const,
 							direction: "left" as const,
 							distance: 0,
 							fontSize: 12,
@@ -482,7 +473,6 @@ describe("DrawingEngine - Arrange", () => {
 						layerId: layerResult.data.layer.id,
 						info: {
 							name: "Dist 3",
-							type: "DETECTION" as const,
 							direction: "left" as const,
 							distance: 0,
 							fontSize: 12,
@@ -558,7 +548,6 @@ describe("DrawingEngine - Arrange", () => {
 					lineWidth: 2,
 					info: {
 						name: "Flip 1",
-						type: "DETECTION" as const,
 						direction: "left" as const,
 						distance: 0,
 						fontSize: 12,
@@ -604,7 +593,6 @@ describe("DrawingEngine - Arrange", () => {
 				lineWidth: 2,
 				info: {
 					name: "Single 1",
-					type: "DETECTION" as const,
 					direction: "left" as const,
 					distance: 0,
 					fontSize: 12,
@@ -633,7 +621,6 @@ describe("DrawingEngine - Arrange", () => {
 				lineWidth: 2,
 				info: {
 					name: "No Layer 1",
-					type: "DETECTION" as const,
 					direction: "left" as const,
 					distance: 0,
 					fontSize: 12,

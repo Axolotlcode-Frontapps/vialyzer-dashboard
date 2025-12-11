@@ -66,11 +66,11 @@ describe("LabelForm Component", () => {
 					elementId: "elem-1",
 					currentText: "Test Label",
 					currentDescription: "Test Description",
-					currentType: "DETECTION",
 					currentDirection: "top",
-					currentDistance: 10,
+					currentDistance: 0,
 					currentFontSize: 16,
 					currentBackgroundEnabled: false,
+					currentLayerType: "DETECTION",
 				});
 			}
 
@@ -412,8 +412,11 @@ describe("LabelForm Component", () => {
 		});
 	});
 
-	describe("Type Selection", () => {
-		it("should have type toggle group", async () => {
+	// Note: Type selection has been moved to LayerForm
+	// Distance field is shown only when layer type is CONFIGURATION
+
+	describe("Distance Field", () => {
+		it("should show distance field when layer type is CONFIGURATION", async () => {
 			const callback = vi.fn();
 			const mockEngine = {
 				...mockDrawingEngine,
@@ -434,41 +437,44 @@ describe("LabelForm Component", () => {
 					type: "annotation",
 					action: "openTextEditor",
 					elementId: "elem-1",
-				});
-			}
-
-			await waitFor(() => {
-				expect(screen.getByText(/Tipo/i)).toBeInTheDocument();
-			});
-		});
-
-		it("should show distance field for CONFIGURATION type", async () => {
-			const callback = vi.fn();
-			const mockEngine = {
-				...mockDrawingEngine,
-				subscribeToStateChanges: vi.fn((cb) => {
-					callback.mockImplementation(cb);
-					return () => {
-						//
-					};
-				}),
-			};
-
-			render(<LabelForm drawingEngine={mockEngine as never} />);
-
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
-			if (stateChangeCallback) {
-				stateChangeCallback({
-					type: "annotation",
-					action: "openTextEditor",
-					elementId: "elem-1",
-					currentType: "CONFIGURATION",
+					currentDistance: 10,
+					currentLayerType: "CONFIGURATION",
 				});
 			}
 
 			await waitFor(() => {
 				expect(screen.getByText(/Distancia/i)).toBeInTheDocument();
+			});
+		});
+
+		it("should not show distance field when layer type is DETECTION", async () => {
+			const callback = vi.fn();
+			const mockEngine = {
+				...mockDrawingEngine,
+				subscribeToStateChanges: vi.fn((cb) => {
+					callback.mockImplementation(cb);
+					return () => {
+						//
+					};
+				}),
+			};
+
+			render(<LabelForm drawingEngine={mockEngine as never} />);
+
+			const stateChangeCallback =
+				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			if (stateChangeCallback) {
+				stateChangeCallback({
+					type: "annotation",
+					action: "openTextEditor",
+					elementId: "elem-1",
+					currentDistance: 0,
+					currentLayerType: "DETECTION",
+				});
+			}
+
+			await waitFor(() => {
+				expect(screen.queryByText(/Distancia/i)).not.toBeInTheDocument();
 			});
 		});
 	});

@@ -11,6 +11,7 @@ import type { DrawingElement, LayerInfo, Point } from "./types";
 export type TransformFunction<T = unknown> = (
 	value: unknown,
 	element: DrawingElement,
+	layer?: LayerInfo,
 	elements?: DrawingElement[]
 ) => T;
 
@@ -27,6 +28,9 @@ export type NestedKeyOf<T extends object> = {
 
 // Type for valid dot-notation paths in a DrawingElement
 export type DrawingElementPaths = NestedKeyOf<DrawingElement>;
+
+// Type for layer field references (e.g., "layer.type", "layer.category")
+export type LayerFieldPaths = `layer.${NestedKeyOf<LayerInfo>}`;
 
 // Transformation function groups
 type ColorTransforms = "rgb" | "rgba";
@@ -55,7 +59,6 @@ export type AllowedTransforms<P extends DrawingElementPaths> =
 					| "info.name"
 					| "info.description"
 					| "info.fontFamily"
-					| "info.type"
 					| "info.direction"
 			? `${TextTransforms}(${P})`
 			: // Number fields
@@ -78,7 +81,8 @@ export type AllowedTransforms<P extends DrawingElementPaths> =
 // The final mapping string for a single field
 export type MappingString =
 	| DrawingElementPaths
-	| AllowedTransforms<DrawingElementPaths>;
+	| AllowedTransforms<DrawingElementPaths>
+	| LayerFieldPaths;
 
 // Path for a field within an array of points, possibly with a transform
 type PointArrayFieldPath =
@@ -93,6 +97,17 @@ export type ArrayMappingString =
 // Field mapping configuration
 export interface FieldMapping {
 	[outputField: string]: MappingString | ArrayMappingString | TransformFunction;
+}
+
+// Output field type - determines how the output is structured
+export type OutputFieldType = "array" | "object";
+
+// Output target configuration - tuple of [type, fieldMapping]
+export type OutputTargetConfig = [OutputFieldType, FieldMapping];
+
+// Multi-target output configuration
+export interface OutputConfig {
+	[targetName: string]: OutputTargetConfig | FieldMapping;
 }
 
 // Reverse field mapping for import
@@ -120,9 +135,9 @@ export type ReverseFieldMappingLayer<TSource> = {
 	[key in InputField<TSource>]?: LayerInfoPaths | CustomFieldMapping;
 };
 
-// Bridge configuration
+// Legacy bridge configuration (for backward compatibility)
 // biome-ignore lint/suspicious/noExplicitAny: Neccessary
-export interface BridgeConfig<TSource = any> {
+export interface LegacyBridgeConfig<TSource = any> {
 	output: FieldMapping;
 	input: {
 		elements: ReverseFieldMapping<TSource>;
@@ -130,10 +145,52 @@ export interface BridgeConfig<TSource = any> {
 	};
 }
 
+// New bridge configuration with multi-target output support
+// biome-ignore lint/suspicious/noExplicitAny: Neccessary
+export interface BridgeConfig<TSource = any> {
+	output: OutputConfig;
+	input: {
+		elements: ReverseFieldMapping<TSource>;
+		layers: ReverseFieldMappingLayer<TSource>;
+	};
+}
+
+// Helper to check if output config is legacy format
+function isLegacyOutput(
+	output: OutputConfig | FieldMapping
+): output is FieldMapping {
+	// Legacy format has string/function values directly, not tuple arrays
+	const firstValue = Object.values(output)[0];
+	return typeof firstValue === "string" || typeof firstValue === "function";
+}
+
+// Helper to check if a value is an OutputTargetConfig tuple
+function isOutputTargetConfig(value: unknown): value is OutputTargetConfig {
+	return (
+		Array.isArray(value) &&
+		value.length === 2 &&
+		(value[0] === "array" || value[0] === "object") &&
+		typeof value[1] === "object"
+	);
+}
+
+// Export result type for multi-target exports
+export interface MultiTargetExportResult {
+	[targetName: string]: unknown[] | Record<string, unknown>;
+}
+
 // Bridge instance interface
 // biome-ignore lint/suspicious/noExplicitAny: Neccessary
 export interface Bridge<TSource = any> {
-	export: <T>(elements: DrawingElement[]) => T[];
+	export: <T>(
+		elements: DrawingElement[],
+		layers?: LayerInfo[]
+	) => T[] | MultiTargetExportResult;
+	exportTarget: <T>(
+		targetName: string,
+		elements: DrawingElement[],
+		layers?: LayerInfo[]
+	) => T[];
 	import: (data: TSource[]) => {
 		elements: DrawingElement[];
 		layers: Map<string, LayerInfo>;
@@ -358,30 +415,128 @@ export const reverseTransformations = {
 export class DrawingBridge<TSource> implements Bridge<TSource> {
 	// Private fields using native # syntax
 	#config: BridgeConfig<TSource>;
+	#isLegacyMode: boolean;
 
-	constructor(config: BridgeConfig<TSource>) {
-		this.#config = { ...config };
+	constructor(config: BridgeConfig<TSource> | LegacyBridgeConfig<TSource>) {
+		// Detect if using legacy output format and convert if needed
+		this.#isLegacyMode = isLegacyOutput(
+			config.output as OutputConfig | FieldMapping
+		);
+
+		if (this.#isLegacyMode) {
+			// Convert legacy format to new format with default target
+			this.#config = {
+				...config,
+				output: {
+					default: ["array", config.output as FieldMapping],
+				},
+			};
+		} else {
+			this.#config = { ...config } as BridgeConfig<TSource>;
+		}
 	}
 
 	/**
 	 * Export multiple drawing elements
+	 * For legacy mode: returns T[] directly
+	 * For multi-target mode: returns MultiTargetExportResult with all targets
 	 */
-	export<T>(elements: DrawingElement[]): T[] {
-		return elements
-			.filter((element) => element.completed) // Only export completed elements
-			.map((element) => this.#exportSingle(element)) as T[];
+	export<T>(
+		elements: DrawingElement[],
+		layers?: LayerInfo[]
+	): T[] | MultiTargetExportResult {
+		const completedElements = elements.filter((element) => element.completed);
+
+		// Legacy mode - return array directly using default target
+		if (this.#isLegacyMode) {
+			return this.exportTarget<T>("default", completedElements, layers);
+		}
+
+		// Multi-target mode - export all targets
+		const result: MultiTargetExportResult = {};
+
+		for (const [targetName, targetConfig] of Object.entries(
+			this.#config.output
+		)) {
+			if (isOutputTargetConfig(targetConfig)) {
+				const [fieldType, fieldMapping] = targetConfig;
+
+				if (fieldType === "array") {
+					result[targetName] = completedElements.map((element) =>
+						this.#exportSingleWithMapping(element, fieldMapping, layers)
+					);
+				} else {
+					// Object type - create a keyed object using element id
+					const objResult: Record<string, unknown> = {};
+					for (const element of completedElements) {
+						objResult[element.id] = this.#exportSingleWithMapping(
+							element,
+							fieldMapping,
+							layers
+						);
+					}
+					result[targetName] = objResult;
+				}
+			}
+		}
+
+		return result;
 	}
 
 	/**
-	 * Export single drawing element
+	 * Export elements for a specific target
 	 */
-	#exportSingle<T>(element: DrawingElement): T {
+	exportTarget<T>(
+		targetName: string,
+		elements: DrawingElement[],
+		layers?: LayerInfo[]
+	): T[] {
+		const completedElements = elements.filter((element) => element.completed);
+		const targetConfig = this.#config.output[targetName];
+
+		if (!targetConfig) {
+			console.warn(
+				`[Bridge] Target "${targetName}" not found in output config`
+			);
+			return [];
+		}
+
+		if (isOutputTargetConfig(targetConfig)) {
+			const [, fieldMapping] = targetConfig;
+			return completedElements.map(
+				(element) =>
+					this.#exportSingleWithMapping(element, fieldMapping, layers) as T
+			);
+		}
+
+		// Fallback for legacy-style direct mapping
+		return completedElements.map(
+			(element) =>
+				this.#exportSingleWithMapping(
+					element,
+					targetConfig as FieldMapping,
+					layers
+				) as T
+		);
+	}
+
+	/**
+	 * Export single drawing element with specific field mapping
+	 */
+	#exportSingleWithMapping<T>(
+		element: DrawingElement,
+		fieldMapping: FieldMapping,
+		layers?: LayerInfo[]
+	): T {
 		const result: Record<string, unknown> = {};
 
+		// Find the layer for this element if layers are provided
+		const layer = layers?.find((l) => l.id === element.layerId);
+
 		// Apply element field mappings
-		for (const [outputField, mapping] of Object.entries(this.#config.output)) {
+		for (const [outputField, mapping] of Object.entries(fieldMapping)) {
 			try {
-				result[outputField] = this.#resolveFieldValue(mapping, element);
+				result[outputField] = this.#resolveFieldValue(mapping, element, layer);
 			} catch (error) {
 				console.warn(
 					`[Bridge] Failed to resolve field mapping for ${outputField}:`,
@@ -405,21 +560,53 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 		// Normalize data: handle both array and object with numeric keys
 		const dataArray = Array.isArray(data) ? data : Object.values(data);
 
-		// Step 1: Import and transform all elements
+		// Step 1: Import and build layers FIRST (so we know layer types)
+		const layers = this.#importLayers(dataArray);
+
+		// Step 2: Import and transform all elements
 		const importedElements = dataArray.map((item) => {
 			return this.#importSingle(item);
 		});
 
-		// Step 2: Validate and filter elements
-		const validElements = importedElements.filter((item) => {
+		// Step 3: Clean up detection based on layer type
+		// For CONFIGURATION layers, elements should not have detection
+		// For incomplete detection (missing entry or exit), remove detection entirely
+		const cleanedElements = importedElements.map((element) => {
+			if (!element.layerId) return element;
+
+			const layer = layers.get(element.layerId);
+
+			// If layer is CONFIGURATION, remove detection
+			if (layer?.type === "CONFIGURATION") {
+				const { detection: _, ...elementWithoutDetection } = element;
+				return elementWithoutDetection as DrawingElement;
+			}
+
+			// If detection exists but is incomplete (missing entry or exit), remove it
+			if (element.detection) {
+				const hasEntry =
+					Array.isArray(element.detection.entry) &&
+					element.detection.entry.length > 0;
+				const hasExit =
+					Array.isArray(element.detection.exit) &&
+					element.detection.exit.length > 0;
+
+				if (!hasEntry || !hasExit) {
+					const { detection: _, ...elementWithoutDetection } = element;
+					return elementWithoutDetection as DrawingElement;
+				}
+			}
+
+			return element;
+		});
+
+		// Step 4: Validate and filter elements
+		const validElements = cleanedElements.filter((item) => {
 			const isValid = this.#validItem(item);
 			return isValid;
 		});
 
-		// Step 3: Import and build layers
-		const layers = this.#importLayers(dataArray);
-
-		// Step 4: Populate elementIds in layers based on valid elements
+		// Step 5: Populate elementIds in layers based on valid elements
 		// This is the responsibility of the bridge - to prepare complete, ready-to-use layers
 		validElements.forEach((element) => {
 			if (element.layerId) {
@@ -471,10 +658,6 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			typeof item.info.description === "undefined" ||
 			(typeof item.info.description === "string" &&
 				item.info.description.trim() !== "");
-		const hasInfoType =
-			hasInfo &&
-			typeof item.info.type === "string" &&
-			item.info.type.trim() !== "";
 		const hasInfoDirection =
 			hasInfo &&
 			typeof item.info.direction === "string" &&
@@ -513,7 +696,6 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			hasInfo,
 			hasInfoName,
 			hasValidInfoDescription,
-			hasInfoType,
 			hasInfoDirection,
 			hasInfoDistance,
 			hasInfoFontSize,
@@ -534,7 +716,6 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			hasInfo &&
 			hasInfoName &&
 			hasValidInfoDescription &&
-			hasInfoType &&
 			hasInfoDirection &&
 			hasInfoDistance &&
 			hasInfoFontSize &&
@@ -708,19 +889,15 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			}
 		}
 
-		// Remove detection and direction based on element type and info.type
+		// Remove detection and direction based on element type
+		// Note: detection is now controlled by layer.type, not element.info.type
+		// The layer type check will be done when adding elements to the engine
 		const elementType = (element as Partial<DrawingElement>).type;
-		const infoType = (element as Partial<DrawingElement>).info?.type;
 
 		// Remove detection and direction for non-line/curve types
 		if (elementType && !["line", "curve"].includes(elementType)) {
 			delete (element as Partial<DrawingElement>).detection;
 			delete (element as Partial<DrawingElement>).direction;
-		}
-
-		// Remove detection if info.type is not DETECTION
-		if (infoType && infoType !== "DETECTION") {
-			delete (element as Partial<DrawingElement>).detection;
 		}
 
 		// Clean up incomplete optional nested objects
@@ -891,6 +1068,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 						id: layerId,
 						name: layerObj.name || `Layer ${layerMap.size + 1}`,
 						description: layerObj.description || "",
+						type: layerObj.type || "CONFIGURATION", // Layer type from import or default
 						category: [], // Will be populated after processing all items
 						visibility: layerObj.visibility || "visible",
 						opacity: layerObj.opacity ?? 1.0,
@@ -939,25 +1117,41 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 	/**
 	 * Update bridge configuration
 	 */
-	updateConfig(newConfig: Partial<BridgeConfig<TSource>>): void {
-		this.#config = {
-			...this.#config,
-			...newConfig,
-			output: {
-				...this.#config.output,
-				...newConfig.output,
-			},
-			input: {
+	updateConfig(
+		config:
+			| Partial<BridgeConfig<TSource>>
+			| Partial<LegacyBridgeConfig<TSource>>
+	): void {
+		if (config.output) {
+			const isLegacy = isLegacyOutput(
+				config.output as OutputConfig | FieldMapping
+			);
+			if (isLegacy) {
+				// Convert legacy to new format
+				this.#config.output = {
+					...this.#config.output,
+					default: ["array", config.output as FieldMapping],
+				};
+			} else {
+				this.#config.output = {
+					...this.#config.output,
+					...(config.output as OutputConfig),
+				};
+			}
+		}
+
+		if (config.input) {
+			this.#config.input = {
 				elements: {
 					...this.#config.input.elements,
-					...newConfig.input?.elements,
+					...config.input.elements,
 				},
 				layers: {
 					...this.#config.input.layers,
-					...newConfig.input?.layers,
+					...config.input.layers,
 				},
-			},
-		};
+			};
+		}
 	}
 
 	/**
@@ -973,15 +1167,22 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 	#resolveFieldValue(
 		mapping: string | TransformFunction,
 		element: DrawingElement,
+		layer?: LayerInfo,
 		elements?: DrawingElement[]
 	): unknown {
-		// If it's a function, call it directly
+		// If it's a function, call it directly with layer parameter
 		if (typeof mapping === "function") {
-			return mapping(element, element, elements);
+			return mapping(undefined, element, layer, elements);
 		}
 
 		// If it's a string, parse it
 		const mappingStr = mapping as string;
+
+		// Handle layer field references (e.g., "layer.type", "layer.category")
+		if (mappingStr.startsWith("layer.") && layer) {
+			const layerPath = mappingStr.substring(6); // Remove "layer." prefix
+			return this.#getNestedValue(layer, layerPath);
+		}
 
 		// Handle transformation functions like "rgb(color)"
 		const functionMatch = mappingStr.match(/^(\w+)\(([^)]+)\)$/);

@@ -171,7 +171,6 @@ export function Lines({
 
 		if (canvas && media && !drawingEngineRef.current) {
 			try {
-				const vehicle = vehicles.at(0);
 				drawingEngineRef.current = new DrawingEngine(canvas, media, {
 					resolution: {
 						target: {
@@ -180,14 +179,11 @@ export function Lines({
 						},
 					},
 					layers: {
-						defaultLayer: vehicle
-							? {
-									name: vehicle.name,
-									category: [vehicle.id],
-									color: vehicle.color,
-									description: "Capa por defecto",
-								}
-							: undefined,
+						defaultLayer: {
+							name: "Capa predefinida",
+							color: "#212D55",
+							description: "Capa por defecto",
+						},
 					},
 					on: {
 						stateChange: (state) => handleStateChangeRef.current?.(state),
@@ -198,7 +194,7 @@ export function Lines({
 				console.error("[Lines] Error during initialization:", error);
 			}
 		}
-	}, [vehicles]);
+	}, []);
 
 	// Cleanup on unmount
 	useEffect(() => {

@@ -63,15 +63,18 @@ export function useModifyDatasources(): UseModifyDatasourcesReturn {
 
 					sceneryGroups.forEach((scenarioDatasources) => {
 						const referenceDatasource = scenarioDatasources[0];
-						const existingVehicleIds = scenarioDatasources.map(
-							(ds) => ds.vehicle.id
-						);
+						const existingVehicleIds = scenarioDatasources
+							.map((ds) => ds.vehicle?.id)
+							.filter(Boolean) as string[];
 
 						const isLine =
 							referenceDatasource.visual_coordinates.type === "line" ||
 							referenceDatasource.visual_coordinates.type === "curve";
 						const isDetection =
 							referenceDatasource.scenery.type === "DETECTION";
+						const isNearMiss = referenceDatasource.scenery.type === "NEAR_MISS";
+						const isConfiguration =
+							referenceDatasource.scenery.type === "CONFIGURATION";
 
 						const hasVehicleChanges =
 							(layer.addedCategories && layer.addedCategories.length > 0) ||
@@ -83,18 +86,14 @@ export function useModifyDatasources(): UseModifyDatasourcesReturn {
 								)
 							: existingVehicleIds;
 
-						vehiclesToUpdate.forEach((vehicleId) => {
-							const datasource = scenarioDatasources.find(
-								(ds) => ds.vehicle.id === vehicleId
-							);
-							if (datasource) {
+						// For CONFIGURATION without vehicles, update datasources without vehicle_id
+						if (isConfiguration && existingVehicleIds.length === 0) {
+							scenarioDatasources.forEach((datasource) => {
 								operations.push(
 									settings.updateDatasource(
 										{
 											scenery_id: datasource.scenery.id,
-											vehicle_id: vehicleId,
 											description: layer.description,
-											second_scenery: datasource.second_scenery?.id,
 											visual_coordinates: {
 												...datasource.visual_coordinates,
 												layer_name: layer.name,
@@ -104,8 +103,32 @@ export function useModifyDatasources(): UseModifyDatasourcesReturn {
 										datasource.id
 									)
 								);
-							}
-						});
+							});
+						} else {
+							vehiclesToUpdate.forEach((vehicleId) => {
+								const datasource = scenarioDatasources.find(
+									(ds) => ds.vehicle?.id === vehicleId
+								);
+								if (datasource) {
+									operations.push(
+										settings.updateDatasource(
+											{
+												scenery_id: datasource.scenery.id,
+												vehicle_id: vehicleId,
+												description: layer.description,
+												second_scenery: datasource.second_scenery?.id,
+												visual_coordinates: {
+													...datasource.visual_coordinates,
+													layer_name: layer.name,
+												},
+												camera,
+											},
+											datasource.id
+										)
+									);
+								}
+							});
+						}
 
 						if (layer.addedCategories && layer.addedCategories.length > 0) {
 							layer.addedCategories.forEach((vehicleId) => {
@@ -128,8 +151,9 @@ export function useModifyDatasources(): UseModifyDatasourcesReturn {
 										camera,
 									};
 
+									// Handle second_scenery for DETECTION and NEAR_MISS types
 									if (
-										isDetection &&
+										(isDetection || isNearMiss) &&
 										isLine &&
 										referenceDatasource.second_scenery
 									) {
@@ -145,7 +169,7 @@ export function useModifyDatasources(): UseModifyDatasourcesReturn {
 						if (layer.removedCategories && layer.removedCategories.length > 0) {
 							layer.removedCategories.forEach((vehicleId) => {
 								const datasource = scenarioDatasources.find(
-									(ds) => ds.vehicle.id === vehicleId
+									(ds) => ds.vehicle?.id === vehicleId
 								);
 								if (datasource) {
 									operations.push(

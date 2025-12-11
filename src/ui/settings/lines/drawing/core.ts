@@ -82,7 +82,6 @@ export class DrawingCore {
 			info: {
 				name: "",
 				description: undefined,
-				type: "DETECTION",
 				direction: "top",
 				distance: 0,
 				fontSize: 16,
@@ -145,12 +144,16 @@ export class DrawingCore {
 		return currentElement;
 	}
 
-	completeElement(element: DrawingElement): DrawingElement {
+	completeElement(
+		element: DrawingElement,
+		layerType?: "DETECTION" | "CONFIGURATION" | "NEAR_MISS"
+	): DrawingElement {
 		const direction = this.calculateDirection(element);
-		// Only generate detection lines for DETECTION type elements
+		// Only generate detection lines for non-CONFIGURATION layer types
+		// CONFIGURATION layers don't have detection, DETECTION and NEAR_MISS do
 		const detection =
-			element.info?.type === "DETECTION"
-				? this.#updateDetectionLines(element)
+			layerType !== "CONFIGURATION"
+				? this.updateDetectionLines(element)
 				: undefined;
 
 		return {
@@ -598,11 +601,11 @@ export class DrawingCore {
 
 		ctx.stroke();
 
-		// Draw detection lines (only for DETECTION type elements)
+		// Draw detection lines (only for elements with detection data)
+		// Detection exists only on DETECTION and NEAR_MISS layer elements
 		// Skip if selected/hovered - they'll be drawn with highlight below
 		if (
 			element.detection &&
-			element.info?.type === "DETECTION" &&
 			(element.type === "line" || element.type === "curve") &&
 			!isSelected &&
 			!isHovered
@@ -648,7 +651,6 @@ export class DrawingCore {
 		// Draw detection line highlights when selected or hovered
 		if (
 			element.detection &&
-			element.info?.type === "DETECTION" &&
 			(element.type === "line" || element.type === "curve") &&
 			(isSelected || isHovered)
 		) {
@@ -762,8 +764,8 @@ export class DrawingCore {
 			}
 		});
 
-		// Draw handles for detection points (only for DETECTION type elements)
-		if (element.detection && element.info?.type === "DETECTION") {
+		// Draw handles for detection points (only for elements with detection data)
+		if (element.detection) {
 			const allDetectionPoints = [
 				...element.detection.entry,
 				...element.detection.exit,
@@ -1197,7 +1199,11 @@ export class DrawingCore {
 		return [p1, p2];
 	}
 
-	#updateDetectionLines(
+	/**
+	 * Generate detection lines for an element (entry and exit lines perpendicular to the element)
+	 * Public method for external access (e.g., when layer type changes)
+	 */
+	updateDetectionLines(
 		element: DrawingElement
 	): { entry: Point[]; exit: Point[] } | undefined {
 		if (
@@ -1600,10 +1606,10 @@ export class DrawingCore {
 
 		ctx.stroke();
 
-		// Draw detection lines (only for DETECTION type elements)
+		// Draw detection lines (only for elements with detection data)
+		// Detection exists only on DETECTION and NEAR_MISS layer elements
 		if (
 			element.detection &&
-			element.info?.type === "DETECTION" &&
 			(element.type === "line" || element.type === "curve")
 		) {
 			ctx.save();
@@ -1709,8 +1715,8 @@ export class DrawingCore {
 			}
 		});
 
-		// Draw handles for detection points (only for DETECTION type elements)
-		if (element.detection && element.info?.type === "DETECTION") {
+		// Draw handles for detection points (only for elements with detection data)
+		if (element.detection) {
 			const allDetectionPoints = [
 				...element.detection.entry,
 				...element.detection.exit,

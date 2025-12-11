@@ -78,10 +78,7 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 					}
 
 					if (element.type === "CONFIGURATION") {
-						const vehicleIds = Array.isArray(layer.category)
-							? layer.category
-							: [layer.category];
-
+						// CONFIGURATION type doesn't require vehicles
 						const config = await settings.addScenarioLine({
 							...line,
 							coordinates,
@@ -91,12 +88,77 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 						if (!config)
 							throw new Error("Error al crear la línea de configuración");
 
+						// Only create datasources if there are vehicle IDs
+						const vehicleIds = Array.isArray(layer.category)
+							? layer.category
+							: layer.category
+								? [layer.category]
+								: [];
+
+						if (vehicleIds.length === 0) {
+							// For CONFIGURATION without vehicles, create a single datasource without vehicle_id
+							const datasource = await settings.addDatasource({
+								scenery_id: config.id,
+								description: layer.description,
+								visual_coordinates,
+								camera,
+							});
+
+							return [datasource];
+						}
+
 						const datasources = await Promise.all(
 							vehicleIds.map((vehicleId) =>
 								settings.addDatasource({
 									scenery_id: config.id,
 									vehicle_id: vehicleId,
 									description: layer.description,
+									visual_coordinates,
+									camera,
+								})
+							)
+						);
+
+						return datasources;
+					}
+
+					if (element.type === "NEAR_MISS") {
+						const isLine =
+							element.visual_coordinates.type === "line" ||
+							element.visual_coordinates.type === "curve";
+
+						const vehicleIds = Array.isArray(layer.category)
+							? layer.category
+							: [layer.category];
+
+						const entry = await settings.addScenarioLine({
+							...line,
+							name: isLine ? `${line.name} - Entrada` : line.name,
+							coordinates: isLine ? detection_entry : coordinates,
+							camera,
+						});
+						if (!entry) throw new Error("Error al crear la línea de entrada");
+
+						let exit: undefined | ScenarioCreated;
+
+						if (isLine) {
+							exit = await settings.addScenarioLine({
+								...line,
+								name: `${line.name} - Salida`,
+								coordinates: detection_exit,
+								camera,
+							});
+
+							if (!exit) throw new Error("Error al crear la línea de salida");
+						}
+
+						const datasources = await Promise.all(
+							vehicleIds.map((vehicleId) =>
+								settings.addDatasource({
+									scenery_id: entry.id,
+									vehicle_id: vehicleId,
+									description: layer.description,
+									second_scenery: exit?.id,
 									visual_coordinates,
 									camera,
 								})

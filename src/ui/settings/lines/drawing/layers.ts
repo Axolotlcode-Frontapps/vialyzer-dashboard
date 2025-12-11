@@ -106,6 +106,7 @@ export class DrawingLayers {
 	createLayer(options: {
 		name: string;
 		description: string;
+		type?: "DETECTION" | "CONFIGURATION" | "NEAR_MISS";
 		category: string[];
 		opacity?: number;
 		visibility?: LayerVisibility;
@@ -129,6 +130,7 @@ export class DrawingLayers {
 			id: layerId,
 			name: layerName,
 			description: options.description,
+			type: options.type || "CONFIGURATION",
 			category: options.category,
 			visibility: options.visibility || "visible",
 			opacity: options.opacity ?? this.#config.layers.defaultOpacity,
@@ -526,6 +528,7 @@ export class DrawingLayers {
 			id: newLayerId,
 			name: `${sourceLayer.name} Copy`,
 			description: sourceLayer.description,
+			type: sourceLayer.type,
 			category: [...sourceLayer.category],
 			visibility: sourceLayer.visibility,
 			opacity: sourceLayer.opacity,
@@ -926,6 +929,7 @@ export class DrawingLayers {
 				defaultLayerConfig?.name || `${this.#config.layers.defaultPrefix} 1`,
 			description:
 				defaultLayerConfig?.description || "Default layer description",
+			type: "CONFIGURATION",
 			category: defaultLayerConfig?.category || [],
 			visibility: defaultLayerConfig?.visibility || "visible",
 			opacity:

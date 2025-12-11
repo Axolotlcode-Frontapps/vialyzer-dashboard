@@ -48,7 +48,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Line",
-						type: "DETECTION",
 						direction: "left",
 						distance: 0,
 						fontSize: 12,
@@ -78,7 +77,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Rectangle",
-						type: "DETECTION",
 						direction: "left",
 						distance: 0,
 						fontSize: 12,
@@ -106,7 +104,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Circle",
-						type: "DETECTION",
 						direction: "left",
 						distance: 0,
 						fontSize: 12,
@@ -135,7 +132,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Area",
-						type: "DETECTION",
 						direction: "left",
 						distance: 0,
 						fontSize: 12,
@@ -166,7 +162,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Curve",
-						type: "DETECTION",
 						direction: "left",
 						distance: 0,
 						fontSize: 12,
@@ -196,7 +191,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Line",
-						type: "DETECTION",
 						direction: "left",
 						distance: 0,
 						fontSize: 12,
@@ -228,7 +222,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Line",
-						type: "DETECTION",
 						direction: "left",
 						distance: 0,
 						fontSize: 12,
@@ -264,7 +257,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Line",
-						type: "DETECTION",
 						direction: "left",
 						distance: 0,
 						fontSize: 12,
@@ -300,7 +292,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Line",
-						type: "DETECTION",
 						direction: "left",
 						distance: 0,
 						fontSize: 12,
@@ -332,7 +323,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Rectangle",
-						type: "DETECTION",
 						direction: "left",
 						distance: 0,
 						fontSize: 12,
@@ -364,7 +354,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Line",
-						type: "DETECTION",
 						direction: "left",
 						distance: 0,
 						fontSize: 12,
@@ -392,7 +381,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Line",
-						type: "DETECTION",
 						direction: "left",
 						distance: 0,
 						fontSize: 12,
@@ -457,7 +445,6 @@ describe("DrawingUtils", () => {
 				color: "#000000",
 				info: {
 					name: "Test Line",
-					type: "DETECTION",
 					direction: "left",
 					distance: 0,
 					fontSize: 12,
@@ -484,7 +471,6 @@ describe("DrawingUtils", () => {
 				color: "#000000",
 				info: {
 					name: "Test Line",
-					type: "DETECTION",
 					direction: "left",
 					distance: 0,
 					fontSize: 12,
@@ -541,7 +527,6 @@ describe("DrawingUtils", () => {
 				color: "#000000",
 				info: {
 					name: "Test Circle",
-					type: "DETECTION",
 					direction: "left",
 					distance: 0,
 					fontSize: 12,
@@ -568,7 +553,6 @@ describe("DrawingUtils", () => {
 				color: "#000000",
 				info: {
 					name: "Test Line",
-					type: "DETECTION",
 					direction: "left",
 					distance: 0,
 					fontSize: 12,
@@ -590,7 +574,6 @@ describe("DrawingUtils", () => {
 				color: "#000000",
 				info: {
 					name: "Test Line",
-					type: "DETECTION",
 					direction: "left",
 					distance: 0,
 					fontSize: 12,

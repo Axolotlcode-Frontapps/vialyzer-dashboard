@@ -19,32 +19,45 @@ import { Skeleton } from "@/ui/shared/skeleton";
 
 const bridge = new DrawingBridge({
 	output: {
-		id: "id",
-		name: "info.name",
-		description: "info.description",
-		coordinates: "[int(points.x), int(points.y)][]",
-		detection_entry: "[int(detection.entry.x), int(detection.entry.y)][]",
-		detection_exit: "[int(detection.exit.x), int(detection.exit.y)][]",
-		distance: "info.distance",
-		color: "rgb(color)",
-		type: "info.type",
-		layer_id: "layerId",
-		visual_coordinates: (_value, element) => ({
-			layer_id: element.layerId,
-			type: element.type,
-			fontSize: element.info.fontSize,
-			fontFamily: element.info.fontFamily,
-			backgroundColor: element.info.backgroundColor,
-			backgroundOpacity: element.info.backgroundOpacity,
-			coordinates: element.points.map((point) => [
-				Math.floor(point.x),
-				Math.floor(point.y),
-			]),
-		}),
-		maps_coordinates: () => [19.3048720286, -99.05621509437437], // Default Mexico City coordinates
-		location: () => "zone 1",
-		visibility: () => true,
-		allowed_directions: () => "ANY",
+		// Main output target for LineElement - includes all data needed for API
+		lines: [
+			"array",
+			{
+				id: "id",
+				name: "info.name",
+				description: "info.description",
+				coordinates: "[int(points.x), int(points.y)][]",
+				detection_entry: "[int(detection.entry.x), int(detection.entry.y)][]",
+				detection_exit: "[int(detection.exit.x), int(detection.exit.y)][]",
+				distance: "info.distance",
+				color: "rgb(color)",
+				type: "layer.type",
+				maps_coordinates: () => [19.3048720286, -99.05621509437437],
+				location: () => "zone 1",
+				visibility: () => true,
+				allowed_directions: () => "ANY",
+				visual_coordinates: (_value, element, layer) => ({
+					layer_id: element.layerId,
+					layer_name: layer?.name,
+					type: element.type,
+					fontSize: element.info.fontSize,
+					fontFamily: element.info.fontFamily,
+					backgroundColor: element.info.backgroundColor,
+					backgroundOpacity: element.info.backgroundOpacity,
+					coordinates: element.points.map((point) => [
+						Math.floor(point.x),
+						Math.floor(point.y),
+					]),
+				}),
+				layer: (_value, element, layer) => ({
+					id: layer?.id || element.layerId,
+					name: layer?.name || "",
+					description: layer?.description || "",
+					type: layer?.type || "CONFIGURATION",
+					category: layer?.category || [],
+				}),
+			},
+		],
 	},
 	input: {
 		elements: {
@@ -63,7 +76,6 @@ const bridge = new DrawingBridge({
 				transform: (value) => (value as string).replace(" - Entrada", ""),
 			},
 			"scenery.description": "info.description",
-			"scenery.type": "info.type",
 			"visual_coordinates.direction": {
 				key: "info.direction",
 				transform: (value) => value ?? "bottom",
@@ -78,6 +90,7 @@ const bridge = new DrawingBridge({
 			"visual_coordinates.layer_id": "id",
 			"visual_coordinates.layer_name": "name",
 			description: "description",
+			"scenery.type": "type",
 			"vehicle.id": "category",
 			"hex(vehicle.color)": "color",
 			"time(createAt)": "createdAt",
@@ -123,35 +136,9 @@ export function Camera() {
 			return;
 		}
 
-		const layerMap = new Map(layers.map((layer) => [layer.id, layer]));
-
 		if (added.length > 0) {
-			const lines = bridge.export<
-				Omit<LineElement, "layer"> & { layer_id: string }
-			>(added);
-
-			const toAdd = lines
-				.map(({ layer_id, ...line }) => {
-					const layer = layerMap.get(layer_id);
-
-					if (!layer) return null;
-
-					return {
-						...line,
-						visual_coordinates: {
-							...line.visual_coordinates,
-							layer_name: layer.name, // Save layer name in visual_coordinates
-						},
-						layer: {
-							id: layer.id,
-							name: layer.name,
-							description: layer.description,
-							category: layer.category, // Pass full array of vehicle IDs
-						},
-					};
-				})
-				.filter((item): item is NonNullable<typeof item> => item !== null);
-
+			// Bridge now exports complete LineElement with layer data included
+			const toAdd = bridge.exportTarget<LineElement>("lines", added, layers);
 			await add(toAdd);
 		}
 
@@ -160,30 +147,12 @@ export function Camera() {
 		}
 
 		if (updated.length > 0) {
-			const lines = bridge.export<
-				Omit<LineElement, "layer"> & { layer_id: string }
-			>(updated);
-
-			const toUpdate: LineElement[] = lines.flatMap(({ layer_id, ...line }) => {
-				const layer = layerMap.get(layer_id);
-
-				if (!layer) return [];
-
-				return {
-					...line,
-					visual_coordinates: {
-						...line.visual_coordinates,
-						layer_name: layer.name,
-					},
-					layer: {
-						id: layer.id,
-						name: layer.name,
-						description: layer.description,
-						category: layer.category,
-					},
-				};
-			});
-
+			// Bridge now exports complete LineElement with layer data included
+			const toUpdate = bridge.exportTarget<LineElement>(
+				"lines",
+				updated,
+				layers
+			);
 			await update({ lines: toUpdate, serverLines });
 		}
 
@@ -200,16 +169,16 @@ export function Camera() {
 	}> => {
 		const { elements, layers } = bridge.import(serverLines);
 
-		const elementMap = new Map<string, DrawingElement>();
-		elements.forEach((element) => {
-			if (!elementMap.has(element.id)) {
-				elementMap.set(element.id, element);
-			}
-		});
+		// const elementMap = new Map<string, DrawingElement>();
+		// elements.forEach((element) => {
+		// 	if (!elementMap.has(element.id)) {
+		// 		elementMap.set(element.id, element);
+		// 	}
+		// });
 
-		const uniqueElements = Array.from(elementMap.values());
+		// const uniqueElements = Array.from(elementMap.values());
 
-		return { elements: uniqueElements, layers };
+		return { elements, layers };
 	};
 
 	if (loading || linesLoading) {
