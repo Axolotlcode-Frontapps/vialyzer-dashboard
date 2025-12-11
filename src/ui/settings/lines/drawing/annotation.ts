@@ -6,6 +6,7 @@ import type {
 	DrawingElement,
 	DrawingStatistics,
 	LabelType,
+	LayerInfo,
 	TextAnalysis,
 	TextData,
 	TextFormattingOptions,
@@ -26,7 +27,11 @@ export class DrawingAnnotation {
 	/**
 	 * Open text editor for an element
 	 */
-	openTextEditor(elementId: string, element?: DrawingElement): void {
+	openTextEditor(
+		elementId: string,
+		element?: DrawingElement,
+		layer?: LayerInfo
+	): void {
 		if (!element?.completed) return;
 
 		this.#config.on.stateChange({
@@ -35,11 +40,11 @@ export class DrawingAnnotation {
 			elementId,
 			currentText: element.info?.name || "",
 			currentDescription: element.info?.description || "",
-			currentType: element.info?.type || "DETECTION",
 			currentDirection: element.info?.direction || "top",
-			currentDistance: element.info?.distance,
+			currentDistance: element.info?.distance ?? 0,
 			currentFontSize: element.info?.fontSize || 16,
 			currentBackgroundEnabled: !!element.info?.backgroundColor,
+			currentLayerType: layer?.type,
 		});
 	}
 
@@ -59,45 +64,15 @@ export class DrawingAnnotation {
 			return;
 		}
 
-		// Validate type is one of the allowed values
-		const validTypes: Array<"DETECTION" | "CONFIGURATION" | "NEAR_MISS"> = [
-			"DETECTION",
-			"CONFIGURATION",
-			"NEAR_MISS",
-		];
-		if (!validTypes.includes(textData.type)) {
-			this.#config.on.feedback(
-				`Invalid type: ${textData.type}. Must be DETECTION, CONFIGURATION, or NEAR_MISS`
-			);
-			return;
-		}
-
-		// Validate distance based on type
-		if (textData.type === "CONFIGURATION" && textData.distance <= 0) {
-			this.#config.on.feedback(
-				"Distance must be greater than 0 for CONFIGURATION type"
-			);
-			return;
-		}
-		if (
-			(textData.type === "DETECTION" || textData.type === "NEAR_MISS") &&
-			textData.distance !== 0
-		) {
-			this.#config.on.feedback(
-				"Distance must be 0 for DETECTION and NEAR_MISS types"
-			);
-			return;
-		}
-
 		const updatedElements = elements.map((element) => {
 			if (element.id === elementId) {
-				// Create updated element
+				// Create updated element - type is inherited from layer, distance is set from form
 				const updatedElement = {
 					...element,
 					info: {
+						...element.info,
 						name: name.trim(),
 						description: textData.description?.trim() || undefined,
-						type: textData.type,
 						direction: textData.direction,
 						distance: textData.distance,
 						fontSize: textData.fontSize,
@@ -106,19 +81,6 @@ export class DrawingAnnotation {
 						backgroundOpacity: 0.8,
 					},
 				};
-
-				// If type changed from DETECTION to CONFIGURATION or vice versa, remove detection lines
-				if (element.info?.type !== textData.type) {
-					if (textData.type !== "DETECTION") {
-						// Remove detection lines for non-DETECTION types
-						updatedElement.detection = undefined;
-					}
-
-					// Force direction recalculation when type changes
-					// This prevents arrow desync when switching between DETECTION and CONFIGURATION
-					// Direction will be recalculated on next render using current points
-					updatedElement.direction = undefined;
-				}
 
 				return updatedElement;
 			}
@@ -148,11 +110,10 @@ export class DrawingAnnotation {
 				return {
 					...element,
 					info: {
+						...element.info,
 						name: "",
 						description: undefined,
-						type: "DETECTION" as const,
 						direction: "top" as const,
-						distance: 0,
 						fontSize: 16,
 						fontFamily: "Arial",
 						backgroundColor: undefined,
@@ -378,7 +339,10 @@ export class DrawingAnnotation {
 	/**
 	 * Get text label validation errors
 	 */
-	validateTextLabels(elements: DrawingElement[]): ValidationError[] {
+	validateTextLabels(
+		elements: DrawingElement[],
+		layers?: Map<string, LayerInfo>
+	): ValidationError[] {
 		const errors: ValidationError[] = [];
 
 		elements.forEach((element, index) => {
@@ -422,8 +386,12 @@ export class DrawingAnnotation {
 					});
 				}
 
+				// Check if distance is required based on layer type
+				const layer = element.layerId
+					? layers?.get(element.layerId)
+					: undefined;
 				if (
-					element.info.type === "CONFIGURATION" &&
+					layer?.type === "CONFIGURATION" &&
 					(element.info.distance === undefined ||
 						element.info.distance === null)
 				) {
@@ -505,7 +473,10 @@ export class DrawingAnnotation {
 	/**
 	 * Export text labels as CSV
 	 */
-	exportTextLabelsAsCSV(elements: DrawingElement[]): string | null {
+	exportTextLabelsAsCSV(
+		elements: DrawingElement[],
+		layers?: Map<string, LayerInfo>
+	): string | null {
 		const elementsWithText = elements.filter((el) => el.info?.name);
 
 		if (elementsWithText.length === 0) {
@@ -518,25 +489,28 @@ export class DrawingAnnotation {
 			"Type",
 			"Name",
 			"Description",
-			"Info Type",
+			"Layer Type",
 			"Direction",
 			"Distance",
 			"Font Size",
 			"Has Background",
 			"Point Count",
 		];
-		const rows = elementsWithText.map((element) => [
-			element.id,
-			element.type,
-			`"${(element.info?.name || "").replace(/"/g, '""')}"`, // Escape quotes for CSV
-			`"${(element.info?.description || "").replace(/"/g, '""')}"`,
-			element.info?.type || "DETECTION",
-			element.info?.direction || "top",
-			element.info?.distance || "",
-			element.info?.fontSize || 16,
-			!!element.info?.backgroundColor,
-			element.points.length,
-		]);
+		const rows = elementsWithText.map((element) => {
+			const layer = element.layerId ? layers?.get(element.layerId) : undefined;
+			return [
+				element.id,
+				element.type,
+				`"${(element.info?.name || "").replace(/"/g, '""')}"`, // Escape quotes for CSV
+				`"${(element.info?.description || "").replace(/"/g, '""')}"`,
+				layer?.type || "DETECTION",
+				element.info?.direction || "top",
+				element.info?.distance || "",
+				element.info?.fontSize || 16,
+				!!element.info?.backgroundColor,
+				element.points.length,
+			];
+		});
 
 		const csvContent = [
 			headers.join(","),

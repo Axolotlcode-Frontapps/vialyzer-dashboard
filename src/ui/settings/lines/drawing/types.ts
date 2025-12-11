@@ -198,7 +198,8 @@ export interface LayerInfo {
 	id: string;
 	name: string; // layer name (user-defined)
 	description: string;
-	category: string[]; // vehicle ids (1..n)
+	type: "DETECTION" | "CONFIGURATION" | "NEAR_MISS"; // layer type
+	category: string[]; // vehicle ids (1..n) - only required for non-CONFIGURATION types
 	visibility: LayerVisibility;
 	opacity: number; // 0.0 to 1.0
 	zIndex: number;
@@ -248,9 +249,8 @@ export interface DrawingElement {
 	info: {
 		name: string;
 		description?: string;
-		type: "DETECTION" | "CONFIGURATION" | "NEAR_MISS";
 		direction: "left" | "right" | "top" | "bottom";
-		distance: number;
+		distance: number; // Required - only shown in UI when element is in CONFIGURATION type layer
 		fontSize: number;
 		fontFamily: string;
 		backgroundColor?: string;
@@ -409,11 +409,11 @@ export interface OpenTextEditorAnnotation {
 	elementId: string;
 	currentText: string;
 	currentDescription: string;
-	currentType: "DETECTION" | "CONFIGURATION" | "NEAR_MISS";
 	currentDirection: "left" | "right" | "top" | "bottom";
-	currentDistance?: number;
+	currentDistance: number;
 	currentFontSize: number;
 	currentBackgroundEnabled: boolean;
+	currentLayerType?: "DETECTION" | "CONFIGURATION" | "NEAR_MISS";
 }
 
 export interface UpdateElementTextAnnotation {
@@ -592,9 +592,8 @@ export interface TextData {
 	name: string;
 	content?: string; // Deprecated - use name instead
 	description?: string;
-	type: "DETECTION" | "CONFIGURATION" | "NEAR_MISS";
 	direction: "left" | "right" | "top" | "bottom";
-	distance: number;
+	distance: number; // Required - only shown in UI when element is in CONFIGURATION type layer
 	fontSize: number;
 	fontFamily?: string;
 	backgroundEnabled: boolean;
@@ -800,6 +799,7 @@ export interface DrawingEngineInterface {
 	// Layer management
 	createLayer(options: {
 		name: string;
+		type?: "DETECTION" | "CONFIGURATION" | "NEAR_MISS";
 		description?: string;
 		category?: string[];
 		opacity?: number;

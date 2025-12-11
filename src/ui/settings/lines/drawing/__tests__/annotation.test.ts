@@ -209,7 +209,6 @@ describe("DrawingAnnotation", () => {
 		it("should complete text input with basic properties", () => {
 			const textData = {
 				name: "Test text",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 16,
@@ -229,7 +228,6 @@ describe("DrawingAnnotation", () => {
 		it("should complete text input with custom font size", () => {
 			const textData = {
 				name: "Large text",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 24,
@@ -249,7 +247,6 @@ describe("DrawingAnnotation", () => {
 		it("should complete text input with custom font family", () => {
 			const textData = {
 				name: "Custom font",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 16,
@@ -269,7 +266,6 @@ describe("DrawingAnnotation", () => {
 		it("should handle empty text input", () => {
 			const textData = {
 				name: "",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 16,
@@ -289,7 +285,6 @@ describe("DrawingAnnotation", () => {
 		it("should complete text input with multiple lines", () => {
 			const textData = {
 				name: "Line 1\nLine 2\nLine 3",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 14,
@@ -309,7 +304,6 @@ describe("DrawingAnnotation", () => {
 		it("should complete text input with special characters", () => {
 			const textData = {
 				name: "Special: @#$%^&*()",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 16,
@@ -334,7 +328,6 @@ describe("DrawingAnnotation", () => {
 			fontSizes.forEach((fontSize, index) => {
 				const textData = {
 					name: `Size ${fontSize}`,
-					type: "DETECTION" as const,
 					direction: "left" as const,
 					distance: 0,
 					fontSize,
@@ -364,7 +357,6 @@ describe("DrawingAnnotation", () => {
 			fontFamilies.forEach((fontFamily, index) => {
 				const textData = {
 					name: `Font: ${fontFamily}`,
-					type: "DETECTION" as const,
 					direction: "left" as const,
 					distance: 0,
 					fontSize: 16,
@@ -403,7 +395,6 @@ describe("DrawingAnnotation", () => {
 
 			const newTextData = {
 				name: "Updated text",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 18,
@@ -429,7 +420,6 @@ describe("DrawingAnnotation", () => {
 		it("should handle text updates with same content", () => {
 			const textData = {
 				name: "Same text",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 16,
@@ -449,7 +439,6 @@ describe("DrawingAnnotation", () => {
 			const longText = "A".repeat(1000);
 			const textData = {
 				name: longText,
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 16,
@@ -469,7 +458,6 @@ describe("DrawingAnnotation", () => {
 		it("should handle text with unicode characters", () => {
 			const textData = {
 				name: "Unicode: 你好世界 🌍 ñáéíóú",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 16,
@@ -489,7 +477,6 @@ describe("DrawingAnnotation", () => {
 		it("should handle text with numbers", () => {
 			const textData = {
 				name: "Numbers: 1234567890",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 16,
@@ -511,7 +498,6 @@ describe("DrawingAnnotation", () => {
 		it("should update state after text completion", () => {
 			const textData = {
 				name: "New text",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 16,
@@ -529,7 +515,6 @@ describe("DrawingAnnotation", () => {
 
 			const textData = {
 				name: "First text",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 16,
@@ -551,7 +536,6 @@ describe("DrawingAnnotation", () => {
 		it("should handle whitespace-only text", () => {
 			const textData = {
 				name: "   ",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 16,
@@ -571,7 +555,6 @@ describe("DrawingAnnotation", () => {
 		it("should handle text with tabs and newlines", () => {
 			const textData = {
 				name: "Line 1\t\tTabbed\nLine 2",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 16,
@@ -591,7 +574,6 @@ describe("DrawingAnnotation", () => {
 		it("should handle minimum font size", () => {
 			const textData = {
 				name: "Tiny text",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 1,
@@ -611,7 +593,6 @@ describe("DrawingAnnotation", () => {
 		it("should handle maximum font size", () => {
 			const textData = {
 				name: "Huge text",
-				type: "DETECTION" as const,
 				direction: "left" as const,
 				distance: 0,
 				fontSize: 200,

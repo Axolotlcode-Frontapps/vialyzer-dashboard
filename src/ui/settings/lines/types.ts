@@ -48,6 +48,7 @@ export interface LayerFormProps {
 	onClose: () => void;
 	onCreateLayer: (layerData: {
 		name: string;
+		type: "DETECTION" | "CONFIGURATION" | "NEAR_MISS";
 		description?: string;
 		category: string[];
 		opacity: number;
@@ -57,6 +58,7 @@ export interface LayerFormProps {
 		layerId: string,
 		layerData: {
 			name: string;
+			type: "DETECTION" | "CONFIGURATION" | "NEAR_MISS";
 			description?: string;
 			category: string[];
 			opacity: number;

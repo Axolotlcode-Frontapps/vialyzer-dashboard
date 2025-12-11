@@ -21,7 +21,6 @@ describe("DrawingBridge", () => {
 				detection_exit: "[int(detection.exit.x), int(detection.exit.y)][]",
 				distance: "info.distance",
 				color: "rgb(color)",
-				type: "info.type",
 				layer_id: "layerId",
 				visual_coordinates: (_value, element) => ({
 					layer_id: element.layerId,
@@ -59,7 +58,6 @@ describe("DrawingBridge", () => {
 						},
 					},
 					"scenery.description": "info.description",
-					"scenery.type": "info.type",
 					"scenery.distance": "info.distance",
 					"visual_coordinates.direction": "info.direction",
 					"visual_coordinates.fontSize": "info.fontSize",
@@ -71,6 +69,7 @@ describe("DrawingBridge", () => {
 					"visual_coordinates.layer_id": "id",
 					"vehicle.name": "name",
 					description: "description",
+					"scenery.type": "type",
 					"vehicle.id": "category",
 					"hex(vehicle.color)": "color",
 					"time(createAt)": "createdAt",
@@ -104,7 +103,28 @@ describe("DrawingBridge", () => {
 				},
 			};
 			const customBridge = new DrawingBridge(customConfig as any);
-			expect(customBridge.getConfig()).toEqual(customConfig);
+			const config = customBridge.getConfig();
+			// Legacy output format is converted to new format with default target
+			expect(config.output).toEqual({
+				default: ["array", customConfig.output],
+			});
+			expect(config.input).toEqual(customConfig.input);
+		});
+
+		it("should initialize with new multi-target output config", () => {
+			const multiTargetConfig = {
+				output: {
+					scenarios: ["array", { id: "id", name: "info.name" }],
+					datasources: ["array", { layer_id: "layerId" }],
+				},
+				input: {
+					elements: { id: "id" },
+					layers: {},
+				},
+			};
+			const multiTargetBridge = new DrawingBridge(multiTargetConfig as any);
+			const config = multiTargetBridge.getConfig();
+			expect(config.output).toEqual(multiTargetConfig.output);
 		});
 	});
 
@@ -123,7 +143,6 @@ describe("DrawingBridge", () => {
 				info: {
 					name: "Test Line",
 					description: "A test line",
-					type: "DETECTION",
 					direction: "left",
 					distance: 100,
 					fontSize: 14,
@@ -132,12 +151,11 @@ describe("DrawingBridge", () => {
 				},
 			};
 
-			const exported = bridge.export([element]) as any[];
+			const exported = bridge.exportTarget("default", [element]) as any[];
 			expect(exported).toBeDefined();
 			expect(Array.isArray(exported)).toBe(true);
 			expect(exported.length).toBe(1);
 			expect(exported[0].id).toBe("test-1");
-			expect(exported[0].type).toBe("DETECTION");
 			expect(exported[0].color).toEqual([255, 0, 0]);
 		});
 
@@ -155,7 +173,6 @@ describe("DrawingBridge", () => {
 					layerId: "layer-1",
 					info: {
 						name: "Line 1",
-						type: "DETECTION",
 						direction: "left",
 						distance: 100,
 						fontSize: 14,
@@ -177,7 +194,6 @@ describe("DrawingBridge", () => {
 					layerId: "layer-1",
 					info: {
 						name: "Area 1",
-						type: "CONFIGURATION",
 						direction: "top",
 						distance: 200,
 						fontSize: 14,
@@ -187,14 +203,14 @@ describe("DrawingBridge", () => {
 				},
 			];
 
-			const exported = bridge.export(elements) as any[];
+			const exported = bridge.exportTarget("default", elements) as any[];
 			expect(exported.length).toBe(2);
 			expect(exported[0].id).toBe("line-1");
 			expect(exported[1].id).toBe("area-1");
 		});
 
 		it("should handle empty elements array", () => {
-			const exported = bridge.export([]);
+			const exported = bridge.exportTarget("default", []);
 			expect(exported).toEqual([]);
 		});
 
@@ -209,7 +225,6 @@ describe("DrawingBridge", () => {
 					layerId: "layer-1",
 					info: {
 						name: "Test",
-						type: "DETECTION",
 						direction: "left",
 						distance: 100,
 						fontSize: 14,
@@ -219,7 +234,7 @@ describe("DrawingBridge", () => {
 				},
 			];
 
-			const exported = bridge.export(elements) as any[];
+			const exported = bridge.exportTarget("default", elements) as any[];
 			expect(exported).toBeDefined();
 			expect(exported[0].layer_id).toBe("layer-1");
 		});
@@ -237,7 +252,6 @@ describe("DrawingBridge", () => {
 				layerId: "layer-1",
 				info: {
 					name: "Test",
-					type: "DETECTION",
 					direction: "left",
 					distance: 100,
 					fontSize: 16,
@@ -247,7 +261,7 @@ describe("DrawingBridge", () => {
 				},
 			};
 
-			const exported = bridge.export([element]) as any[];
+			const exported = bridge.exportTarget("default", [element]) as any[];
 			expect(exported[0].visual_coordinates).toBeDefined();
 			expect(exported[0].visual_coordinates.fontSize).toBe(16);
 			expect(exported[0].visual_coordinates.fontFamily).toBe("Arial");
@@ -266,7 +280,6 @@ describe("DrawingBridge", () => {
 					scenery: {
 						name: "Test Line - Entrada",
 						description: "A test line",
-						type: "DETECTION",
 						color: [255, 0, 0],
 						active: true,
 						distance: 100,
@@ -315,7 +328,6 @@ describe("DrawingBridge", () => {
 						description: "A valid test element",
 						color: [255, 0, 0],
 						active: true,
-						type: "DETECTION",
 						distance: 100,
 						coordinates: [
 							[0, 0],
@@ -402,6 +414,71 @@ describe("DrawingBridge", () => {
 			expect(result.elements).toEqual([]);
 		});
 
+		it("should handle CONFIGURATION layer with null second_scenery (no detection)", () => {
+			const input = [
+				{
+					id: "c3d80101-0484-487a-92b0-130c3707b16b",
+					scenery: {
+						id: "55159206-4baf-421f-83d1-387703414290",
+						name: "probando refactor engine",
+						coordinates: [
+							[499, 278],
+							[693, 268],
+						],
+						distance: 15,
+						description: "layer_1_1765484978020_line_description",
+						color: [255, 0, 0],
+						type: "CONFIGURATION",
+						active: true,
+					},
+					vehicle: null,
+					description: "Capa por defecto",
+					second_scenery: null,
+					visual_coordinates: {
+						type: "line",
+						fontSize: 16,
+						layer_id: "layer_1_1765484978020",
+						fontFamily: "Arial",
+						layer_name: "Capa predefinida",
+						coordinates: [
+							[499, 278],
+							[693, 268],
+						],
+						backgroundOpacity: 0.8,
+						direction: "bottom",
+					},
+				},
+			];
+
+			const result = bridge.import(input);
+
+			// Should import 1 element
+			expect(result.elements.length).toBe(1);
+
+			// Element should have no detection (CONFIGURATION layer)
+			expect(result.elements[0].detection).toBeUndefined();
+
+			// Element should have valid data
+			// ID comes from top-level id per the bridge config mapping (id: "id")
+			expect(result.elements[0].id).toBe(
+				"c3d80101-0484-487a-92b0-130c3707b16b"
+			);
+			expect(result.elements[0].type).toBe("line");
+			expect(result.elements[0].points).toHaveLength(2);
+			expect(result.elements[0].info?.name).toBe("probando refactor engine");
+			expect(result.elements[0].info?.distance).toBe(15);
+			expect(result.elements[0].info?.direction).toBe("bottom");
+
+			// Layer should be CONFIGURATION type
+			expect(result.layers.size).toBe(1);
+			const layer = result.layers.get("layer_1_1765484978020");
+			expect(layer).toBeDefined();
+			expect(layer?.type).toBe("CONFIGURATION");
+			// Layer name defaults to "Layer 1" since vehicle.name is null in test data
+			// and the test bridge config uses "vehicle.name": "name" mapping
+			expect(layer?.name).toBe("Layer 1");
+		});
+
 		it("should handle detection points", () => {
 			const input = [
 				{
@@ -428,7 +505,10 @@ describe("DrawingBridge", () => {
 					visual_coordinates: {
 						type: "line",
 						layer_id: "layer-1",
-						coordinates: [[0, 0]],
+						coordinates: [
+							[0, 0],
+							[100, 100],
+						],
 						fontSize: 14,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
@@ -495,7 +575,6 @@ describe("DrawingBridge", () => {
 				color: "#FF0000",
 				info: {
 					name: "Test",
-					type: "DETECTION",
 					direction: "left",
 					distance: 100,
 					fontSize: 14,
@@ -504,7 +583,7 @@ describe("DrawingBridge", () => {
 				},
 			};
 
-			const exported = bridge.export([element]) as any[];
+			const exported = bridge.exportTarget("default", [element]) as any[];
 			expect(exported[0].color).toEqual([255, 0, 0]);
 		});
 	});
@@ -572,7 +651,6 @@ describe("DrawingBridge", () => {
 				color: "#000000",
 				info: {
 					name: "Test",
-					type: "DETECTION",
 					direction: "left",
 					distance: 100,
 					fontSize: 14,
@@ -581,7 +659,7 @@ describe("DrawingBridge", () => {
 				},
 			};
 
-			const exported = bridge.export([element]) as any[];
+			const exported = bridge.exportTarget("default", [element]) as any[];
 			expect(exported[0].coordinates).toEqual([
 				[10, 20],
 				[100, 200],
@@ -690,7 +768,6 @@ describe("DrawingBridge", () => {
 				layerId: "layer-1",
 				info: {
 					name: "Text Label",
-					type: "DETECTION",
 					direction: "left",
 					distance: 100,
 					fontSize: 16,
@@ -700,7 +777,7 @@ describe("DrawingBridge", () => {
 				},
 			};
 
-			const exported = bridge.export([element]) as any[];
+			const exported = bridge.exportTarget("default", [element]) as any[];
 			expect(exported[0].visual_coordinates.fontSize).toBe(16);
 			expect(exported[0].visual_coordinates.fontFamily).toBe("Arial");
 			expect(exported[0].visual_coordinates.backgroundColor).toBe("#FFFFFF");
@@ -795,7 +872,6 @@ describe("DrawingBridge", () => {
 				layerId: "layer-1",
 				info: {
 					name: "Test",
-					type: "DETECTION",
 					direction: "left",
 					distance: 100,
 					fontSize: 14,
@@ -804,7 +880,7 @@ describe("DrawingBridge", () => {
 				},
 			};
 
-			const exported = bridge.export([element]) as any[];
+			const exported = bridge.exportTarget("default", [element]) as any[];
 			expect(exported[0].maps_coordinates).toEqual([
 				19.3048720286, -99.05621509437437,
 			]);
@@ -841,7 +917,6 @@ describe("DrawingBridge", () => {
 				layerId: "layer-1",
 				info: {
 					name: "Test Line",
-					type: "DETECTION",
 					direction: "left",
 					distance: 100,
 					fontSize: 14,
@@ -850,7 +925,9 @@ describe("DrawingBridge", () => {
 				},
 			};
 
-			const exported = bridge.export([originalElement]) as any[];
+			const exported = bridge.exportTarget("default", [
+				originalElement,
+			]) as any[];
 			const serverFormat = {
 				...exported[0],
 				scenery: {
@@ -924,7 +1001,6 @@ describe("DrawingBridge", () => {
 					layerId: "layer-1",
 					info: {
 						name: `Element ${i}`,
-						type: "DETECTION",
 						direction: "left",
 						distance: 100,
 						fontSize: 14,
@@ -935,7 +1011,7 @@ describe("DrawingBridge", () => {
 			);
 
 			const start = performance.now();
-			const exported = bridge.export(largeDataset) as any[];
+			const exported = bridge.exportTarget("default", largeDataset);
 			const exportTime = performance.now() - start;
 
 			expect(exported.length).toBe(1000);

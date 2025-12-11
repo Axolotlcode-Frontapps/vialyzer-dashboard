@@ -492,8 +492,15 @@ export class DrawingEngine implements DrawingEngineInterface {
 	#completeElement(): void {
 		if (!this.#state.currentElement) return;
 
+		// Get the layer type to determine if detection lines should be generated
+		const layer = this.#state.currentElement.layerId
+			? this.#layers?.getLayer(this.#state.currentElement.layerId)
+			: undefined;
+		const layerType = layer?.type;
+
 		const completedElement = this.#core.completeElement(
-			this.#state.currentElement
+			this.#state.currentElement,
+			layerType
 		);
 
 		// Capture state BEFORE modification for history
@@ -940,11 +947,11 @@ export class DrawingEngine implements DrawingEngineInterface {
 					elementId: data.elementId,
 					currentText: data.currentText,
 					currentDescription: data.currentDescription,
-					currentType: data.currentType,
 					currentDirection: data.currentDirection,
 					currentDistance: data.currentDistance,
 					currentFontSize: data.currentFontSize,
 					currentBackgroundEnabled: data.currentBackgroundEnabled,
+					currentLayerType: data.currentLayerType,
 				});
 				break;
 			case "updateElementText":
@@ -1007,7 +1014,11 @@ export class DrawingEngine implements DrawingEngineInterface {
 			element = this.#state.elements.find((el) => el.id === elementId);
 		}
 		if (element?.completed) {
-			this.#annotation?.openTextEditor(elementId, element);
+			// Get the layer for this element to pass the layer type
+			const layer = element.layerId
+				? this.#layers?.getLayer(element.layerId)
+				: undefined;
+			this.#annotation?.openTextEditor(elementId, element, layer);
 		}
 	}
 
@@ -1303,6 +1314,45 @@ export class DrawingEngine implements DrawingEngineInterface {
 	}
 
 	cancelTextInput(): void {
+		// If the element being edited has no name (was just created), remove it
+		if (this.#state.editingTextId) {
+			const element = this.#state.elements.find(
+				(el) => el.id === this.#state.editingTextId
+			);
+
+			// If element exists and has no name, it was just created and should be removed
+			if (element && !element.info.name.trim()) {
+				// Capture state BEFORE modification for history
+				const beforeState = this.#state.clone();
+
+				// Remove the element from the elements array
+				this.#state.elements = this.#state.elements.filter(
+					(el) => el.id !== this.#state.editingTextId
+				);
+
+				// Remove from layer's elementIds if it has a layerId
+				if (element.layerId && this.#layers) {
+					const layer = this.#layers.getLayer(element.layerId);
+					if (layer) {
+						layer.elementIds = layer.elementIds.filter(
+							(id) => id !== element.id
+						);
+						layer.updatedAt = Date.now();
+					}
+				}
+
+				// Record the removal in history
+				this.#safeRecordHistoryOperation(
+					"deleteElements",
+					"Removed incomplete element",
+					beforeState
+				);
+
+				// Request redraw to update visual state
+				this.#redraw();
+			}
+		}
+
 		this.#state.isEditingText = false;
 		this.#state.editingTextId = null;
 	}
@@ -1860,6 +1910,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 	// Layer management methods
 	createLayer(options: {
 		name: string;
+		type?: "DETECTION" | "CONFIGURATION" | "NEAR_MISS";
 		description?: string;
 		category?: string[];
 		opacity?: number;
@@ -1869,6 +1920,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 	}) {
 		return this.#layers?.createLayer({
 			...options,
+			type: options.type ?? "CONFIGURATION",
 			description: options.description ?? "",
 			category: options.category ?? [],
 		});
@@ -1919,7 +1971,67 @@ export class DrawingEngine implements DrawingEngineInterface {
 	}
 
 	updateLayer(layerId: string, updates: Partial<Omit<LayerInfo, "id">>) {
-		return this.#layers?.updateLayer(layerId, updates);
+		if (!this.#layers) return undefined;
+
+		const layer = this.#layers.getLayer(layerId);
+		if (!layer) return undefined;
+
+		const oldType = layer.type;
+		const newType = updates.type;
+
+		// If type is changing, we need to update elements' detection
+		if (newType && oldType !== newType) {
+			const layerElements = this.#state.elements.filter(
+				(el) => el.layerId === layerId
+			);
+
+			if (layerElements.length > 0) {
+				// Capture state BEFORE modification for history
+				const beforeState = this.#state.clone();
+
+				const isChangingToConfiguration = newType === "CONFIGURATION";
+				const isChangingFromConfiguration = oldType === "CONFIGURATION";
+
+				this.#state.elements = this.#state.elements.map((element) => {
+					if (element.layerId !== layerId) return element;
+
+					// If changing TO CONFIGURATION, remove detection
+					if (isChangingToConfiguration) {
+						const { detection: _, ...elementWithoutDetection } = element;
+						return {
+							...elementWithoutDetection,
+							syncState:
+								element.syncState === "saved" ? "edited" : element.syncState,
+						} as DrawingElement;
+					}
+
+					// If changing FROM CONFIGURATION to another type, add detection
+					if (isChangingFromConfiguration) {
+						const detection = this.#core.updateDetectionLines(element);
+						return {
+							...element,
+							detection,
+							syncState:
+								element.syncState === "saved" ? "edited" : element.syncState,
+						};
+					}
+
+					return element;
+				});
+
+				// Record the element updates in history
+				this.#safeRecordHistoryOperation(
+					"updateElements",
+					`Updated elements for layer type change: ${oldType} -> ${newType}`,
+					beforeState
+				);
+
+				// Request redraw to update visual state
+				this.#redraw();
+			}
+		}
+
+		return this.#layers.updateLayer(layerId, updates);
 	}
 
 	isolateLayer(layerId: string) {

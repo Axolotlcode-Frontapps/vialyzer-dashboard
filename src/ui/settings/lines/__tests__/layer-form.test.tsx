@@ -31,6 +31,7 @@ describe("LayerForm Component", () => {
 		elementIds: [],
 		createdAt: Date.now(),
 		updatedAt: Date.now(),
+		type: "DETECTION" as const,
 	};
 
 	const mockCallbacks = {

@@ -404,7 +404,6 @@ describe("Camera Component", () => {
 						name: "Test Line",
 						description: "Test Description",
 						distance: 100,
-						type: "DETECTION",
 						direction: "right",
 						fontSize: 12,
 						fontFamily: "Arial",
@@ -429,6 +428,7 @@ describe("Camera Component", () => {
 					elementIds: ["1"],
 					createdAt: Date.now(),
 					updatedAt: Date.now(),
+					type: "DETECTION",
 				},
 			];
 
@@ -501,7 +501,6 @@ describe("Camera Component", () => {
 					completed: true,
 					info: {
 						name: "Updated Line",
-						type: "DETECTION",
 						distance: 100,
 						direction: "right",
 						fontSize: 12,
@@ -527,6 +526,7 @@ describe("Camera Component", () => {
 					elementIds: ["1"],
 					createdAt: Date.now(),
 					updatedAt: Date.now(),
+					type: "DETECTION",
 				},
 			];
 
@@ -586,7 +586,6 @@ describe("Camera Component", () => {
 					completed: true,
 					info: {
 						name: "Line to delete",
-						type: "DETECTION",
 						distance: 100,
 						direction: "right",
 						fontSize: 12,
@@ -653,7 +652,6 @@ describe("Camera Component", () => {
 					completed: true,
 					info: {
 						name: "Unchanged Line",
-						type: "DETECTION",
 						distance: 100,
 						direction: "right",
 						fontSize: 12,
@@ -708,7 +706,6 @@ describe("Camera Component", () => {
 					completed: true,
 					info: {
 						name: "Test Line",
-						type: "DETECTION",
 						distance: 100,
 						direction: "right",
 						fontSize: 12,
@@ -734,6 +731,7 @@ describe("Camera Component", () => {
 					elementIds: [],
 					createdAt: Date.now(),
 					updatedAt: Date.now(),
+					type: "DETECTION",
 				},
 			];
 
@@ -801,7 +799,6 @@ describe("Camera Component", () => {
 						info: {
 							name: "Test Line",
 							description: "Test Description",
-							type: "DETECTION" as const,
 							distance: 100,
 							direction: "right",
 							fontSize: 12,
@@ -829,6 +826,7 @@ describe("Camera Component", () => {
 							elementIds: [],
 							createdAt: Date.now(),
 							updatedAt: Date.now(),
+							type: "DETECTION" as const,
 						},
 					],
 				]),
@@ -909,7 +907,6 @@ describe("Camera Component", () => {
 					completed: true,
 					info: {
 						name: "Test Line",
-						type: "DETECTION",
 						distance: 100,
 						direction: "right",
 						fontSize: 12,
@@ -935,6 +932,7 @@ describe("Camera Component", () => {
 					elementIds: [],
 					createdAt: Date.now(),
 					updatedAt: Date.now(),
+					type: "DETECTION",
 				},
 			];
 
@@ -988,7 +986,6 @@ describe("Camera Component", () => {
 					completed: true,
 					info: {
 						name: "Updated Line",
-						type: "DETECTION",
 						distance: 100,
 						direction: "right",
 						fontSize: 12,
@@ -1014,6 +1011,7 @@ describe("Camera Component", () => {
 					elementIds: [],
 					createdAt: Date.now(),
 					updatedAt: Date.now(),
+					type: "DETECTION",
 				},
 			];
 
@@ -1059,7 +1057,6 @@ describe("Camera Component", () => {
 					completed: true,
 					info: {
 						name: "Line to delete",
-						type: "DETECTION",
 						distance: 100,
 						direction: "right",
 						fontSize: 12,
@@ -1127,7 +1124,6 @@ describe("Camera Component", () => {
 					info: {
 						name: "Test Line",
 						description: "Test Description",
-						type: "DETECTION",
 						distance: 100,
 						direction: "right",
 						fontSize: 12,
@@ -1153,6 +1149,7 @@ describe("Camera Component", () => {
 					elementIds: [],
 					createdAt: Date.now(),
 					updatedAt: Date.now(),
+					type: "DETECTION",
 				},
 			];
 
@@ -1221,7 +1218,6 @@ describe("Camera Component", () => {
 						color: "#ff0000",
 						info: {
 							name: "Test Line",
-							type: "DETECTION",
 							distance: 100,
 							direction: "right",
 							fontSize: 12,

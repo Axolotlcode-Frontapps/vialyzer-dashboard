@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { Label } from "@/ui/shared/label";
+import { cn } from "@/lib/utils/cn";
 import { ToggleGroup, ToggleGroupItem } from "@/ui/shared/toggle-group";
 import { useFieldDrawingContext } from "./context";
 
@@ -88,11 +88,9 @@ export function ToggleGroupField({
 	};
 
 	return (
-		<Label className="flex-col gap-0 cursor-default">
+		<div className="flex flex-col gap-0">
 			{label && (
-				<span className="block w-full mb-3.5 text-sm pointer-events-none">
-					{label}
-				</span>
+				<span className="block w-full mb-3.5 text-sm font-medium">{label}</span>
 			)}
 
 			{type === "single" ? (
@@ -108,7 +106,7 @@ export function ToggleGroupField({
 						<ToggleGroupItem
 							key={option.value.toString()}
 							value={option.value.toString()}
-							className={option.className}
+							className={cn(option.className, "min-w-max")}
 						>
 							{option.label}
 						</ToggleGroupItem>
@@ -127,7 +125,7 @@ export function ToggleGroupField({
 						<ToggleGroupItem
 							key={option.value.toString()}
 							value={option.value.toString()}
-							className={option.className}
+							className={cn(option.className, "min-w-max")}
 						>
 							{option.label}
 						</ToggleGroupItem>
@@ -141,6 +139,6 @@ export function ToggleGroupField({
 			{error ? (
 				<span className="text-sm text-destructive mt-2 w-full">{error}</span>
 			) : null}
-		</Label>
+		</div>
 	);
 }

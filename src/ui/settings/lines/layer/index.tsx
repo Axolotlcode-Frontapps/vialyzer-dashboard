@@ -109,6 +109,7 @@ export function LayerPanel({ drawingEngine, vehicles }: LayerPanelProps) {
 
 	const handleCreateLayer = (layerData: {
 		name: string;
+		type: "DETECTION" | "CONFIGURATION" | "NEAR_MISS";
 		description?: string;
 		category: string[];
 		opacity: number;
@@ -124,6 +125,7 @@ export function LayerPanel({ drawingEngine, vehicles }: LayerPanelProps) {
 
 		const result = drawingEngine.createLayer({
 			name: layerData.name,
+			type: layerData.type,
 			description: layerData.description,
 			category: layerData.category,
 			opacity: layerData.opacity,
@@ -141,6 +143,7 @@ export function LayerPanel({ drawingEngine, vehicles }: LayerPanelProps) {
 		layerId: string,
 		layerData: {
 			name: string;
+			type: "DETECTION" | "CONFIGURATION" | "NEAR_MISS";
 			description?: string;
 			category: string[];
 			opacity: number;

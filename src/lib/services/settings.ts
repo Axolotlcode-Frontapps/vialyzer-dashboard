@@ -80,6 +80,7 @@ export interface LineElement {
 		id: string;
 		name: string;
 		description?: string;
+		type: "DETECTION" | "CONFIGURATION" | "NEAR_MISS";
 		category: string | string[]; // Single vehicle ID or array for multiple vehicles
 	};
 }

@@ -28,12 +28,6 @@ const FONT_SIZE_OPTIONS = [
 	{ value: 24, label: "24px" },
 ];
 
-const TYPE_OPTIONS = [
-	{ value: "DETECTION", label: "Detección" },
-	{ value: "CONFIGURATION", label: "Configuración" },
-	{ value: "NEAR_MISS", label: "Casi accidente" },
-];
-
 const DIRECTION_OPTIONS = [
 	{ value: "left", label: "Izquierda", icon: ArrowLeft },
 	{ value: "right", label: "Derecha", icon: ArrowRight },
@@ -44,13 +38,15 @@ const DIRECTION_OPTIONS = [
 export function LabelForm({ drawingEngine }: LabelFormProps) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [editingTextId, setEditingTextId] = useState<string | null>(null);
-	const [isNew, setIsNew] = useState(false);
+	const [_isNew, setIsNew] = useState(false);
+	const [layerType, setLayerType] = useState<
+		"DETECTION" | "CONFIGURATION" | "NEAR_MISS" | undefined
+	>(undefined);
 
 	const form = useDrawingForm({
 		defaultValues: {
 			name: "",
 			description: "",
-			type: "DETECTION" as "DETECTION" | "CONFIGURATION" | "NEAR_MISS",
 			direction: "top" as "left" | "right" | "top" | "bottom",
 			distance: 0,
 			fontSize: 16,
@@ -62,7 +58,6 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 				const infoData = {
 					name: value.name.trim(),
 					description: value.description?.trim() || undefined,
-					type: value.type,
 					direction: value.direction,
 					distance: value.distance,
 					fontSize: value.fontSize,
@@ -79,6 +74,7 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 		setIsOpen(false);
 		setEditingTextId(null);
 		setIsNew(false);
+		setLayerType(undefined);
 		form.reset();
 	}, [form]);
 
@@ -97,7 +93,6 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 				// Update form values from drawing engine
 				form.setFieldValue("name", stateChange.currentText || "");
 				form.setFieldValue("description", stateChange.currentDescription || "");
-				form.setFieldValue("type", stateChange.currentType || "DETECTION");
 				form.setFieldValue("direction", stateChange.currentDirection || "top");
 				form.setFieldValue("distance", stateChange.currentDistance ?? 0);
 				form.setFieldValue("fontSize", stateChange.currentFontSize || 16);
@@ -106,6 +101,9 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 					"backgroundEnabled",
 					stateChange.currentBackgroundEnabled || false
 				);
+
+				// Set layer type to determine if distance field should be shown
+				setLayerType(stateChange.currentLayerType);
 
 				setIsOpen(true);
 			} else if (
@@ -131,7 +129,7 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 		<Dialog
 			open={isOpen}
 			onOpenChange={(open) => {
-				if (!open && !isNew) {
+				if (!open) {
 					handleCancel();
 				}
 			}}
@@ -180,24 +178,6 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 
 					<div className="space-y-4">
 						<form.AppField
-							name="type"
-							validators={{
-								onChange: labelFormSchema.shape.type,
-							}}
-						>
-							{(field) => (
-								<field.ToggleGroupField
-									label="Tipo"
-									type="single"
-									options={TYPE_OPTIONS}
-									variant="outline"
-									size="sm"
-									className="justify-start"
-								/>
-							)}
-						</form.AppField>
-
-						<form.AppField
 							name="direction"
 							validators={{
 								onChange: labelFormSchema.shape.direction,
@@ -215,26 +195,22 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 							)}
 						</form.AppField>
 
-						<form.Subscribe selector={(state) => state.values.type}>
-							{(selectedType) =>
-								selectedType === "CONFIGURATION" ? (
-									<form.AppField
-										name="distance"
-										validators={{
-											onChange: labelFormSchema.shape.distance,
-										}}
-									>
-										{(field) => (
-											<field.TextField
-												label="Distancia"
-												placeholder="Ingresa la distancia..."
-												type="number"
-											/>
-										)}
-									</form.AppField>
-								) : null
-							}
-						</form.Subscribe>
+						{layerType === "CONFIGURATION" && (
+							<form.AppField
+								name="distance"
+								validators={{
+									onChange: labelFormSchema.shape.distance,
+								}}
+							>
+								{(field) => (
+									<field.TextField
+										label="Distancia"
+										placeholder="Ingresa la distancia..."
+										type="number"
+									/>
+								)}
+							</form.AppField>
+						)}
 
 						<div className="flex items-start gap-4">
 							<form.AppField

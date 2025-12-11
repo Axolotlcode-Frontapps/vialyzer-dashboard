@@ -136,9 +136,10 @@ export function useUpdateScenarioLine() {
 							primaryServer.scenery.id
 						);
 
-						const existingVehicleIds = elementDatasources.map(
-							(ds) => ds.vehicle.id
-						);
+						// CONFIGURATION type doesn't require vehicles
+						const existingVehicleIds = elementDatasources
+							.map((ds) => ds.vehicle?.id)
+							.filter(Boolean) as string[];
 
 						const newVehicleIds = vehicleIds.filter(
 							(vid) => !existingVehicleIds.includes(vid)
@@ -151,11 +152,28 @@ export function useUpdateScenarioLine() {
 							newVehicleIds.length > 0 || removedVehicleIds.length > 0;
 
 						if (!hasVehicleChanges) {
-							return { config };
+							// Update existing datasources without vehicle changes
+							const updatePromises = elementDatasources.map((ds) =>
+								settings.updateDatasource(
+									{
+										scenery_id: config.id,
+										vehicle_id: ds.vehicle?.id,
+										description: layer.description,
+										visual_coordinates,
+										camera,
+									},
+									ds.id
+								)
+							);
+
+							const results = await Promise.all(updatePromises);
+							return { config, datasources: results };
 						}
 
 						const updatePromises = elementDatasources
-							.filter((ds) => vehicleIds.includes(ds.vehicle.id))
+							.filter(
+								(ds) => ds.vehicle?.id && vehicleIds.includes(ds.vehicle.id)
+							)
 							.map((ds) =>
 								settings.updateDatasource(
 									{
@@ -174,6 +192,98 @@ export function useUpdateScenarioLine() {
 								scenery_id: config.id,
 								vehicle_id: vehicleId,
 								description: layer.description,
+								visual_coordinates,
+								camera,
+							})
+						);
+
+						const removePromises = elementDatasources
+							.filter(
+								(ds) =>
+									ds.vehicle?.id && removedVehicleIds.includes(ds.vehicle.id)
+							)
+							.map((ds) =>
+								settings.removeDatasource({ id: ds.id }, { id: camera })
+							);
+
+						const datasourceResults = await Promise.all([
+							...updatePromises,
+							...addPromises,
+							...removePromises,
+						]);
+
+						return datasourceResults;
+					}
+
+					if (element.type === "NEAR_MISS") {
+						const isLine =
+							element.visual_coordinates.type === "line" ||
+							element.visual_coordinates.type === "curve";
+
+						const entry = await settings.updateScenarioLine(
+							{
+								...line,
+								name: isLine ? `${line.name} - Entrada` : line.name,
+								coordinates: isLine ? detection_entry : coordinates,
+								camera,
+							},
+							primaryServer.scenery.id
+						);
+
+						let exit: undefined | IdLine;
+
+						if (isLine) {
+							exit = await settings.updateScenarioLine(
+								{
+									...line,
+									name: `${line.name} - Salida`,
+									coordinates: detection_exit,
+									camera,
+								},
+								primaryServer.second_scenery!.id
+							);
+						}
+
+						const existingVehicleIds = elementDatasources.map(
+							(ds) => ds.vehicle.id
+						);
+
+						const newVehicleIds = vehicleIds.filter(
+							(vid) => !existingVehicleIds.includes(vid)
+						);
+						const removedVehicleIds = existingVehicleIds.filter(
+							(vid) => !vehicleIds.includes(vid)
+						);
+
+						const hasVehicleChanges =
+							newVehicleIds.length > 0 || removedVehicleIds.length > 0;
+
+						if (!hasVehicleChanges) {
+							return { entry, exit };
+						}
+
+						const updatePromises = elementDatasources
+							.filter((ds) => vehicleIds.includes(ds.vehicle.id))
+							.map((ds) =>
+								settings.updateDatasource(
+									{
+										scenery_id: entry.id,
+										vehicle_id: ds.vehicle.id,
+										description: layer.description,
+										second_scenery: exit?.id,
+										visual_coordinates,
+										camera,
+									},
+									ds.id
+								)
+							);
+
+						const addPromises = newVehicleIds.map((vehicleId) =>
+							settings.addDatasource({
+								scenery_id: entry.id,
+								vehicle_id: vehicleId,
+								description: layer.description,
+								second_scenery: exit?.id,
 								visual_coordinates,
 								camera,
 							})

@@ -19,6 +19,7 @@ describe("LayerItem Component", () => {
 		description: "Test layer description",
 		createdAt: Date.now(),
 		updatedAt: Date.now(),
+		type: "DETECTION" as const,
 	};
 
 	const mockCallbacks = {
