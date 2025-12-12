@@ -56,3 +56,19 @@ export function getDateRange(range: Partial<TimeRange>): RangeDates | null {
 	if (diffDays <= 30) return "30d";
 	return "custom";
 }
+
+export function getAllDatesInRange(startDate: string, endDate: string): Date[] {
+	const dates: Date[] = [];
+
+	const start = new Date(startDate);
+	const end = new Date(endDate);
+
+	const current = new Date(start);
+
+	while (current <= end) {
+		dates.push(new Date(current));
+		current.setDate(current.getDate() + 1);
+	}
+
+	return dates;
+}

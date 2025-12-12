@@ -225,8 +225,10 @@ export function GraphDistribution() {
 
 										return (
 											<div className="flex items-center gap-2 justify-end">
-												<span className="block">{occurrence?.count}</span>
-												<Badge variant="secondary" className="block">
+												<span className="block tabular-nums font-mono">
+													{occurrence?.count.toLocaleString()}
+												</span>
+												<Badge variant="secondary" className="block tabular-nums font-mono">
 													{percentage}%
 												</Badge>
 											</div>

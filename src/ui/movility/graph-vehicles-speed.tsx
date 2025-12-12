@@ -6,6 +6,7 @@ import type { ChartConfig } from "../shared/chart";
 
 import { movility } from "@/lib/services/movility";
 import { cn } from "@/lib/utils/cn";
+import { getAllDatesInRange } from "@/lib/utils/date-format";
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
 import { GraphBar } from "../shared/graphs/bar";
 import { Skeleton } from "../shared/skeleton";
@@ -60,19 +61,28 @@ export function GraphVehiclesSpeed() {
 	);
 
 	const data = useMemo(() => {
-		return (speedGraph ?? [])
-			?.sort((a, b) => new Date(a.query_date).getTime() - new Date(b.query_date).getTime())
-			.map((item) => {
-				const formattedDate = format(new Date(item.query_date), "ddd DD", "es-MX");
-				const query_date = `${formattedDate[0].toUpperCase()}${formattedDate.slice(1)}`;
+		const allDates = getAllDatesInRange(initialValues.startDate ?? "", initialValues.endDate ?? "");
 
-				return {
-					...item,
-					average_speed: Number.parseFloat(item.average_speed),
-					query_date,
-				};
+		const dataByDate = new Map<string, { average_speed: number }>();
+		for (const item of speedGraph ?? []) {
+			const dateKey = format(new Date(item.query_date), "YYYY-MM-DD");
+			dataByDate.set(dateKey, {
+				average_speed: Number.parseFloat(item.average_speed),
 			});
-	}, [speedGraph]);
+		}
+
+		return allDates.map((dateObj) => {
+			const dateKey = format(dateObj, "YYYY-MM-DD");
+			const formattedDate = format(dateObj, "ddd DD", "es-MX");
+			const query_date = `${formattedDate[0].toUpperCase()}${formattedDate.slice(1)}`;
+			const speedData = dataByDate.get(dateKey);
+
+			return {
+				query_date,
+				average_speed: speedData?.average_speed ?? 0,
+			};
+		});
+	}, [speedGraph, initialValues.startDate, initialValues.endDate]);
 
 	if (loading) {
 		return <Skeleton className="h-[400px]" />;

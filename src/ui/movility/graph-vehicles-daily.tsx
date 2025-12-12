@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { movility } from "@/lib/services/movility";
 import { chartConfig } from "@/lib/utils/charts";
+import { getAllDatesInRange } from "@/lib/utils/date-format";
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
 import { GraphStack } from "../shared/graphs/stack";
 import { Skeleton } from "../shared/skeleton";
@@ -51,28 +52,37 @@ export function GraphVehiclesDaily() {
 		[isLoading, isRefetching, isFetching, isPending]
 	);
 
-	const data = useMemo(
-		() =>
-			dailyGraph?.map((item) => {
-				const formattedDate = format(new Date(item.date), "ddd DD", "es-MX");
-				const date = `${formattedDate[0].toUpperCase()}${formattedDate.slice(1)}`;
+	const data = useMemo(() => {
+		const allDates = getAllDatesInRange(initialValues.startDate ?? "", initialValues.endDate ?? "");
 
-				return {
-					date,
-					...item.metadata.reduce(
-						(acc, vehicle) => {
-							const key = vehicle.vehiclename.replaceAll(" ", "_").toLowerCase();
+		const dataByDate = new Map<string, Record<string, number>>();
+		for (const item of dailyGraph ?? []) {
+			const dateKey = format(new Date(item.date), "YYYY-MM-DD");
+			dataByDate.set(
+				dateKey,
+				item.metadata.reduce(
+					(acc, vehicle) => {
+						const key = vehicle.vehiclename.replaceAll(" ", "_").toLowerCase();
+						acc[key] = vehicle.vol_acumulate;
+						return acc;
+					},
+					{} as Record<string, number>
+				)
+			);
+		}
 
-							acc[key] = vehicle.vol_acumulate;
+		return allDates.map((dateObj) => {
+			const dateKey = format(dateObj, "YYYY-MM-DD");
+			const formattedDate = format(dateObj, "ddd DD", "es-MX");
+			const date = `${formattedDate[0].toUpperCase()}${formattedDate.slice(1)}`;
+			const vehicleData = dataByDate.get(dateKey) ?? {};
 
-							return acc;
-						},
-						{} as Record<string, number>
-					),
-				};
-			}) ?? [],
-		[dailyGraph]
-	);
+			return {
+				date,
+				...vehicleData,
+			};
+		});
+	}, [dailyGraph, initialValues.startDate, initialValues.endDate]);
 
 	const stats = useMemo(() => {
 		const values = data.map(({ date, ...vehicles }) => ({

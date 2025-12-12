@@ -47,6 +47,7 @@ export function Maps() {
 	const [showCaliBoundary, setShowCaliBoundary] = useState(false);
 
 	const onUnmount = useCallback(() => setMap(null), []);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: No necessary
 	const onLoad = useCallback(
 		(map: google.maps.Map) => {
 			setMap(map);

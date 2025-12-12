@@ -339,12 +339,8 @@ export class DrawingLayers {
 
 		const newVisibility = layer.visibility === "visible" ? "hidden" : "visible";
 		layer.visibility = newVisibility;
-		layer.updatedAt = Date.now();
-
-		// Mark layer as edited if it was previously saved
-		if (layer.syncState === "saved") {
-			layer.syncState = "edited";
-		}
+		// Note: visibility is a UI-only property, so we don't update syncState
+		// or updatedAt. These changes don't need to be saved to the backend.
 
 		this.#triggerStateChange("layerAction", {
 			action: "layerVisibilityChanged",
@@ -383,12 +379,8 @@ export class DrawingLayers {
 
 		const clampedOpacity = Math.max(0, Math.min(1, opacity));
 		layer.opacity = clampedOpacity;
-		layer.updatedAt = Date.now();
-
-		// Mark layer as edited if it was previously saved
-		if (layer.syncState === "saved") {
-			layer.syncState = "edited";
-		}
+		// Note: opacity is a UI-only property, so we don't update syncState
+		// or updatedAt. These changes don't need to be saved to the backend.
 
 		this.#triggerStateChange("layerAction", {
 			action: "layerOpacityChanged",

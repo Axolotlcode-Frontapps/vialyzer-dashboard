@@ -545,13 +545,25 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			return element;
 		});
 
-		// Step 4: Validate and filter elements
-		const validElements = cleanedElements.filter((item) => {
+		// Step 4: Deduplicate elements by ID
+		// Multiple datasources can share the same scenery.id (used as element ID)
+		// when they differ only by vehicle configuration. We only need one element
+		// per unique ID since the visual representation is the same.
+		const elementMap = new Map<string, DrawingElement>();
+		cleanedElements.forEach((element) => {
+			if (element.id && !elementMap.has(element.id)) {
+				elementMap.set(element.id, element);
+			}
+		});
+		const deduplicatedElements = Array.from(elementMap.values());
+
+		// Step 5: Validate and filter elements
+		const validElements = deduplicatedElements.filter((item) => {
 			const isValid = this.#validItem(item);
 			return isValid;
 		});
 
-		// Step 5: Populate elementIds in layers based on valid elements
+		// Step 6: Populate elementIds in layers based on valid elements
 		// This is the responsibility of the bridge - to prepare complete, ready-to-use layers
 		validElements.forEach((element) => {
 			if (element.layerId) {

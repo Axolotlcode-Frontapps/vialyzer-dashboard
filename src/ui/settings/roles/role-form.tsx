@@ -49,8 +49,8 @@ export function RoleForm({ onSuccess, update, role }: Props) {
 		onSuccess: ({ name }) => {
 			form.reset();
 			queryClient.invalidateQueries({ queryKey: ["roles"] });
-			toast.success(`Rol creado correctamente`, {
-				description: `Se ha creado el rol "${name}" correctamente.`,
+			toast.success(`Rol ${update ? "actualizado" : "creado"} correctamente`, {
+				description: `Se ha ${update ? "actualizado" : "creado"} el rol "${name}" con éxito.`,
 			});
 			onSuccess(false);
 		},
