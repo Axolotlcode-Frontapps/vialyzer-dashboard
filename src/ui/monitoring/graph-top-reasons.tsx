@@ -1,30 +1,13 @@
 import { useSearch } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-	Bar,
-	BarChart,
-	CartesianGrid,
-	LabelList,
-	XAxis,
-	YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 
 import type { ChartConfig } from "../shared/chart";
 
 import { kpiServices } from "@/lib/services/kpis";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "../shared/card";
-import {
-	ChartContainer,
-	ChartTooltip,
-	ChartTooltipContent,
-} from "../shared/chart";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../shared/card";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../shared/chart";
 
 const config = {
 	amount: {
@@ -49,9 +32,7 @@ export function GraphTopReasons() {
 	const { data, isLoading, isRefetching, isFetching, isPending } = useQuery({
 		queryKey: ["monitoring-top-reasons", selected, startDate, endDate],
 		queryFn: async () =>
-			selected
-				? await kpiServices.getTopReasons(selected, startDate, endDate)
-				: [],
+			selected ? await kpiServices.getTopReasons(selected, startDate, endDate) : [],
 	});
 
 	const loading = useMemo(
@@ -77,9 +58,7 @@ export function GraphTopReasons() {
 				<CardTitle className="monitoring__stat-title text-start place-self-start">
 					Top 5 motivos de rechazo
 				</CardTitle>
-				<CardDescription className="monitoring__stat-title text-xs">
-					Cantidad
-				</CardDescription>
+				<CardDescription className="monitoring__stat-title text-xs">Cantidad</CardDescription>
 			</CardHeader>
 			<CardContent
 				className="p-0 grid grid-cols-subgrid gap-5"
@@ -103,16 +82,8 @@ export function GraphTopReasons() {
 							axisLine={false}
 						/>
 						<XAxis dataKey="amount" type="number" hide />
-						<ChartTooltip
-							cursor={false}
-							content={<ChartTooltipContent indicator="line" />}
-						/>
-						<Bar
-							dataKey="amount"
-							layout="vertical"
-							fill="var(--color-amount)"
-							radius={4}
-						>
+						<ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
+						<Bar dataKey="amount" layout="vertical" fill="var(--color-amount)" radius={4}>
 							<LabelList
 								dataKey="reason"
 								position="insideLeft"

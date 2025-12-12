@@ -34,24 +34,17 @@ export function ModuleDelete({
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["modules"] });
 			onOpenChange(false);
-			toast.success(
-				`Módulo ${isDeleted ? "desactivado" : "eliminado"} correctamente.`
-			);
+			toast.success(`Módulo ${isDeleted ? "desactivado" : "eliminado"} correctamente.`);
 		},
 		onError: (error: AxiosError) => {
-			const message = (error.response?.data as GeneralResponse<unknown>)
-				?.message;
+			const message = (error.response?.data as GeneralResponse<unknown>)?.message;
 
 			const capitalizedMessage =
-				message &&
-				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+				message && message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
 
-			toast.error(
-				`Error al ${isDeleted ? "desactivar" : "eliminar"} el módulo.`,
-				{
-					description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
-				}
-			);
+			toast.error(`Error al ${isDeleted ? "desactivar" : "eliminar"} el módulo.`, {
+				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
+			});
 		},
 	});
 
@@ -63,24 +56,19 @@ export function ModuleDelete({
 						{isDeleted ? "Desactivar" : "Eliminar"} módulo: {module.name}
 					</DialogTitle>
 					<DialogDescription>
-						Esto {isDeleted ? "desactivará" : "eliminará"} permanentemente el
-						módulo y sus permisos. Esta acción no se puede deshacer.
+						Esto {isDeleted ? "desactivará" : "eliminará"} permanentemente el módulo y sus permisos.
+						Esta acción no se puede deshacer.
 					</DialogDescription>
 				</DialogHeader>
 				<DialogFooter>
 					<DialogClose asChild>
 						<Button variant="outline">Cancelar</Button>
 					</DialogClose>
-					<Button
-						variant="destructive"
-						onClick={() => onDeletedMutation.mutate()}
-					>
+					<Button variant="destructive" onClick={() => onDeletedMutation.mutate()}>
 						{onDeletedMutation.isPending ? (
 							<>
 								<Spinner />
-								<span>
-									{isDeleted ? "Desactivando" : "Eliminando"} módulo...
-								</span>
+								<span>{isDeleted ? "Desactivando" : "Eliminando"} módulo...</span>
 							</>
 						) : (
 							<span>{isDeleted ? "Desactivar" : "Eliminar"} módulo</span>

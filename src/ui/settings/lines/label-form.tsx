@@ -1,23 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import {
-	ArrowDown,
-	ArrowLeft,
-	ArrowRight,
-	ArrowUp,
-	NotebookPen,
-	Square,
-} from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, NotebookPen, Square } from "lucide-react";
 
 import type { LabelFormProps } from "./types";
 
 import { Button } from "@/ui/shared/button";
-import {
-	Dialog,
-	DialogContent,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "@/ui/shared/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/ui/shared/dialog";
 import { useDrawingForm } from "./drawing-form/hook";
 import { labelFormSchema } from "./drawing-form/schemas";
 
@@ -83,10 +70,7 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 		if (!drawingEngine) return;
 
 		const unsubscribe = drawingEngine.subscribeToStateChanges((stateChange) => {
-			if (
-				stateChange.type === "annotation" &&
-				stateChange.action === "openTextEditor"
-			) {
+			if (stateChange.type === "annotation" && stateChange.action === "openTextEditor") {
 				setEditingTextId(stateChange.elementId as string);
 				setIsNew(!stateChange.currentText);
 
@@ -97,19 +81,13 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 				form.setFieldValue("distance", stateChange.currentDistance ?? 0);
 				form.setFieldValue("fontSize", stateChange.currentFontSize || 16);
 				form.setFieldValue("fontFamily", "Arial");
-				form.setFieldValue(
-					"backgroundEnabled",
-					stateChange.currentBackgroundEnabled || false
-				);
+				form.setFieldValue("backgroundEnabled", stateChange.currentBackgroundEnabled || false);
 
 				// Set layer type to determine if distance field should be shown
 				setLayerType(stateChange.currentLayerType);
 
 				setIsOpen(true);
-			} else if (
-				stateChange.type === "annotation" &&
-				stateChange.action === "updateElementText"
-			) {
+			} else if (stateChange.type === "annotation" && stateChange.action === "updateElementText") {
 				// Successfully updated - close the modal
 				handleReset();
 			}
@@ -138,9 +116,7 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<NotebookPen className="w-5 h-5" />
-						{editingTextId
-							? "Editar Información de Escenario"
-							: "Agregar Información de Escenario"}
+						{editingTextId ? "Editar Información de Escenario" : "Agregar Información de Escenario"}
 					</DialogTitle>
 				</DialogHeader>
 
@@ -159,11 +135,7 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 						}}
 					>
 						{(field) => (
-							<field.TextField
-								label="Nombre"
-								placeholder="Ingresa el nombre..."
-								autoFocus
-							/>
+							<field.TextField label="Nombre" placeholder="Ingresa el nombre..." autoFocus />
 						)}
 					</form.AppField>
 

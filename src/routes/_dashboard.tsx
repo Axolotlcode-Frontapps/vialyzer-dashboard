@@ -39,9 +39,7 @@ export const Route = createFileRoute("/_dashboard")({
 function PrivateLayout() {
 	const queryClient = useQueryClient();
 	const navigate = Route.useNavigate();
-	const user = queryClient.getQueryData<GeneralResponse<User>>(
-		getMeQuery.queryKey
-	)?.payload;
+	const user = queryClient.getQueryData<GeneralResponse<User>>(getMeQuery.queryKey)?.payload;
 
 	useEffect(() => {
 		if (user?.firstLogin) {

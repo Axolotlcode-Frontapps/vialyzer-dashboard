@@ -4,13 +4,7 @@ import { useFieldContext } from "@/contexts/form-context";
 
 import { Button } from "../button";
 import { Label } from "../label";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "../select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../select";
 
 interface Props<T> {
 	label: string;
@@ -23,11 +17,7 @@ interface Option {
 	name: string;
 }
 
-export function SelectField<T extends Option>({
-	label,
-	placeholder,
-	options,
-}: Props<T>) {
+export function SelectField<T extends Option>({ label, placeholder, options }: Props<T>) {
 	const field = useFieldContext<string>();
 	const [open, setOpen] = useState(false);
 
@@ -83,11 +73,7 @@ export function SelectField<T extends Option>({
 				</Button>
 			) : null}
 
-			{error ? (
-				<span className="block w-full text-sm text-destructive mt-2">
-					{error}
-				</span>
-			) : null}
+			{error ? <span className="block w-full text-sm text-destructive mt-2">{error}</span> : null}
 		</div>
 	);
 }

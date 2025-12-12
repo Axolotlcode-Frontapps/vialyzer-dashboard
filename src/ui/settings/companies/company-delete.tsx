@@ -39,12 +39,10 @@ export function CompanyDelete({
 			onOpenChange(false);
 		},
 		onError: (error: AxiosError) => {
-			const message = (error.response?.data as GeneralResponse<unknown>)
-				?.message;
+			const message = (error.response?.data as GeneralResponse<unknown>)?.message;
 
 			const capitalizedMessage =
-				message &&
-				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+				message && message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
 
 			toast.error(`Error al eliminar la empresa "${company.name}"`, {
 				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
@@ -56,7 +54,7 @@ export function CompanyDelete({
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Eliminar rol</DialogTitle>
+					<DialogTitle>Eliminar empresa</DialogTitle>
 					<DialogDescription>
 						¿Estás seguro de que deseas eliminar la empresa &quot;
 						<span className="font-semibold capitalize">{company.name}</span>
@@ -68,10 +66,7 @@ export function CompanyDelete({
 					<DialogClose asChild>
 						<Button>Cancelar</Button>
 					</DialogClose>
-					<Button
-						variant="destructive"
-						onClick={() => companyDeleteMutation.mutate()}
-					>
+					<Button variant="destructive" onClick={() => companyDeleteMutation.mutate()}>
 						{companyDeleteMutation.isPending ? (
 							<>
 								<Spinner />

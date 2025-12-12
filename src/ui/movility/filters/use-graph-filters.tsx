@@ -2,10 +2,7 @@ import { useLocation, useNavigate } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { weekStart } from "@formkit/tempo";
 
-import type {
-	MovilityCameraFilters,
-	MovilityCameraForm,
-} from "@/lib/schemas/movility";
+import type { MovilityCameraFilters, MovilityCameraForm } from "@/lib/schemas/movility";
 
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
 
@@ -111,11 +108,8 @@ export function getDefaultValues(
 	const hourValue = searchParams.hour ?? defaultValues.hour;
 	const hour = hourValue ? Number(hourValue) : undefined;
 
-	const minuteIntervalValue =
-		searchParams.minuteInterval ?? defaultValues.minuteInterval;
-	const minuteInterval = minuteIntervalValue
-		? Number(minuteIntervalValue)
-		: undefined;
+	const minuteIntervalValue = searchParams.minuteInterval ?? defaultValues.minuteInterval;
+	const minuteInterval = minuteIntervalValue ? Number(minuteIntervalValue) : undefined;
 
 	const searchDate = searchParams.date;
 	const date = searchDate ?? defaultValues.date;

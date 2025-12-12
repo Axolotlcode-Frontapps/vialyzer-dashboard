@@ -1,10 +1,4 @@
-import {
-	format,
-	monthEnd,
-	monthStart,
-	weekEnd,
-	weekStart,
-} from "@formkit/tempo";
+import { format, monthEnd, monthStart, weekEnd, weekStart } from "@formkit/tempo";
 
 export interface TimeRange {
 	startDate: string;

@@ -2,13 +2,7 @@ import { useMemo, useState } from "react";
 import { useFieldContext } from "@/contexts/form";
 
 import { Label } from "../label";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "../select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../select";
 import { ResetField } from "./reset-field";
 
 interface Option {
@@ -70,11 +64,7 @@ export function SelectField({ label, placeholder, options, disabled }: Props) {
 
 			{field.state.value ? <ResetField onReset={handleReset} /> : null}
 
-			{error ? (
-				<span className="block w-full text-sm text-destructive mt-2">
-					{error}
-				</span>
-			) : null}
+			{error ? <span className="block w-full text-sm text-destructive mt-2">{error}</span> : null}
 		</div>
 	);
 }

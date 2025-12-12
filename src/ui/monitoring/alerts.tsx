@@ -35,9 +35,7 @@ export function Alerts({ unattended, total, loading }: AlertsProps) {
 	return (
 		<Card className="p-6 @5xl/graphs:col-span-2">
 			<CardHeader className="p-0">
-				<CardTitle className="monitoring__stat-title">
-					Cantidad de alertas no atendidas
-				</CardTitle>
+				<CardTitle className="monitoring__stat-title">Cantidad de alertas no atendidas</CardTitle>
 			</CardHeader>
 			<CardContent className="p-0">
 				<span className="grid grid-rows-2 grid-cols-2 gap-x-6">
@@ -45,9 +43,7 @@ export function Alerts({ unattended, total, loading }: AlertsProps) {
 						{unattended ?? 0}
 					</span>
 					<span className="block font-medium self-center">No atendidas</span>
-					<span className="block font-medium text-center text-4xl">
-						{total ?? 0}
-					</span>
+					<span className="block font-medium text-center text-4xl">{total ?? 0}</span>
 					<span className="block font-medium self-center">Totales</span>
 				</span>
 			</CardContent>

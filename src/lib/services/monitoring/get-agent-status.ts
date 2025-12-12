@@ -21,10 +21,7 @@ const getDefaultDateRange = () => {
 	};
 };
 
-export const getAgentStatus = async (
-	instance: AxiosInstance,
-	params?: AgentStatusParams
-) => {
+export const getAgentStatus = async (instance: AxiosInstance, params?: AgentStatusParams) => {
 	try {
 		const defaultRange = getDefaultDateRange();
 		const response = await instance.get<GeneralResponse<AgentStatusData[]>>(

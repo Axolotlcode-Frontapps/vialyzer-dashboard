@@ -4,6 +4,7 @@ import { Label, Pie, PieChart } from "recharts";
 
 import { movility } from "@/lib/services/movility";
 import { chartConfig } from "@/lib/utils/charts";
+import { cn } from "@/lib/utils/cn";
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
 import { Badge } from "../shared/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/card";
@@ -31,39 +32,37 @@ export function GraphDistribution() {
 		minuteInterval: initialValues.minuteInterval,
 	};
 
-	const [
-		{ data: totalTraffic, ...totalQuery },
-		{ data: distribution, ...distributionQuery },
-	] = useQueries({
-		queries: [
-			{
-				queryKey: ["total-traffic-volume", camera, filters],
-				queryFn: async () => {
-					const traffic = await movility.totalTraffic(camera, {
-						endDate: filters.endDate ?? "",
-						startDate: filters.startDate ?? "",
-						rawScenarioIds: filters.scenarioIds?.join(","),
-						rawVehicleIds: filters.vehicleIds?.join(","),
-					});
+	const [{ data: totalTraffic, ...totalQuery }, { data: distribution, ...distributionQuery }] =
+		useQueries({
+			queries: [
+				{
+					queryKey: ["total-traffic-volume", camera, filters],
+					queryFn: async () => {
+						const traffic = await movility.totalTraffic(camera, {
+							endDate: filters.endDate ?? "",
+							startDate: filters.startDate ?? "",
+							rawScenarioIds: filters.scenarioIds?.join(","),
+							rawVehicleIds: filters.vehicleIds?.join(","),
+						});
 
-					return traffic;
+						return traffic;
+					},
 				},
-			},
-			{
-				queryKey: ["vehicle-distribution-volume", camera, filters],
-				queryFn: async () => {
-					const distribution = await movility.vehicleDistribution(camera, {
-						endDate: filters.endDate ?? "",
-						startDate: filters.startDate ?? "",
-						rawScenarioIds: filters.scenarioIds?.join(","),
-						rawVehicleIds: filters.vehicleIds?.join(","),
-					});
+				{
+					queryKey: ["vehicle-distribution-volume", camera, filters],
+					queryFn: async () => {
+						const distribution = await movility.vehicleDistribution(camera, {
+							endDate: filters.endDate ?? "",
+							startDate: filters.startDate ?? "",
+							rawScenarioIds: filters.scenarioIds?.join(","),
+							rawVehicleIds: filters.vehicleIds?.join(","),
+						});
 
-					return distribution;
+						return distribution;
+					},
 				},
-			},
-		],
-	});
+			],
+		});
 
 	const loadingTotal = useMemo(
 		() =>
@@ -71,12 +70,7 @@ export function GraphDistribution() {
 			totalQuery.isRefetching ||
 			totalQuery.isFetching ||
 			totalQuery.isPending,
-		[
-			totalQuery.isLoading,
-			totalQuery.isRefetching,
-			totalQuery.isFetching,
-			totalQuery.isPending,
-		]
+		[totalQuery.isLoading, totalQuery.isRefetching, totalQuery.isFetching, totalQuery.isPending]
 	);
 
 	const loadingDistribution = useMemo(
@@ -98,9 +92,7 @@ export function GraphDistribution() {
 		const filteredVehicles =
 			(initialValues.actors && initialValues.actors.length === 0
 				? distribution
-				: distribution?.filter((d) =>
-						initialValues.actors?.includes(d.vehicleId)
-					)) ?? [];
+				: distribution?.filter((d) => initialValues.actors?.includes(d.vehicleId))) ?? [];
 
 		return filteredVehicles.map((item) => {
 			const vehicleType = item.vehicleType.replace(" ", "_").toLowerCase();
@@ -147,7 +139,47 @@ export function GraphDistribution() {
 				>
 					<PieChart className="flex items-center justify-center gap-6">
 						<ChartTooltip
-							content={<ChartTooltipContent nameKey="vehicleType" hideLabel />}
+							content={
+								<ChartTooltipContent
+									nameKey="vehicleType"
+									hideLabel
+									formatter={(value, name, item) => {
+										const percentage = Number.parseFloat(`${value}`).toFixed(2);
+										const locale = chartConfig[name].label;
+
+										return (
+											<div
+												key={item.dataKey}
+												className={cn(
+													"[&>svg]:text-muted-foreground flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5"
+												)}
+											>
+												<div
+													className={cn(
+														"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg) items-center size-2.5"
+													)}
+													style={
+														{
+															"--color-bg": item.payload.fill,
+															"--color-border": item.payload.fill,
+														} as React.CSSProperties
+													}
+												/>
+												<div className={cn("flex flex-1 justify-between leading-none gap-2")}>
+													<div className="grid gap-1.5">
+														<span className="text-muted-foreground">{locale}</span>
+													</div>
+													{item.value ? (
+														<span className="text-foreground font-mono font-medium tabular-nums">
+															{percentage}%
+														</span>
+													) : null}
+												</div>
+											</div>
+										);
+									}}
+								/>
+							}
 						/>
 						<Pie
 							data={data}
@@ -188,9 +220,7 @@ export function GraphDistribution() {
 										const percentage = Number.parseFloat(`${value}`).toFixed(2);
 
 										const occurrence = totalTraffic?.byVehicleType.find(
-											(vehicle) =>
-												vehicle.type.replaceAll(" ", "_").toLowerCase() ===
-												item.value
+											(vehicle) => vehicle.type.replaceAll(" ", "_").toLowerCase() === item.value
 										);
 
 										return (
@@ -226,20 +256,3 @@ export function GraphDistribution() {
 		</Card>
 	);
 }
-
-// labelLine={false}
-// label={(props) => {
-//   return (
-//     <text
-//       cx={props.cx}
-//       cy={props.cy}
-//       x={props.x}
-//       y={props.y}
-//       textAnchor={props.textAnchor}
-//       dominantBaseline={props.dominantBaseline}
-//       fill="var(--foreground)"
-//     >
-//       {`${props.value.toFixed(2)}%`}
-//     </text>
-//   );
-// }}

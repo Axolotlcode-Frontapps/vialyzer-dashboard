@@ -30,12 +30,7 @@ interface Props {
 	minutes_pending: number;
 }
 
-export function Notification({
-	ticket_status,
-	description,
-	vehicle,
-	minutes_pending,
-}: Props) {
+export function Notification({ ticket_status, description, vehicle, minutes_pending }: Props) {
 	const vehicleLabel = vehicleTypeLabels[vehicle] || vehicle;
 
 	const formatPendingTime = () => {
@@ -57,9 +52,7 @@ export function Notification({
 			<CardContent className="p-0">
 				<p className="font-medium text-base">{description}</p>
 				<span className="block text-[#4B5563] text-sm">{vehicleLabel}</span>
-				<span className="block text-[#4B5563] text-sm">
-					Tiempo: {formatPendingTime()}
-				</span>
+				<span className="block text-[#4B5563] text-sm">Tiempo: {formatPendingTime()}</span>
 				<span
 					className="data-[status='PENDING']:text-[#FC4B5F] data-[status='IN_PROGRESS']:text-[#F59E0B] data-[status='RESOLVED']:text-[#009B46]"
 					data-status={ticket_status}

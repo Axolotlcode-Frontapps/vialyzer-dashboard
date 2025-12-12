@@ -6,10 +6,7 @@ interface RejectedAlertsProps {
 	rejectedPercentage?: number;
 }
 
-export function RejectedAlerts({
-	loading,
-	rejectedPercentage,
-}: RejectedAlertsProps) {
+export function RejectedAlerts({ loading, rejectedPercentage }: RejectedAlertsProps) {
 	if (loading) {
 		return (
 			<Card className="p-6">
@@ -28,9 +25,7 @@ export function RejectedAlerts({
 	return (
 		<Card className="p-6">
 			<CardHeader className="p-0">
-				<CardTitle className="monitoring__stat-title">
-					Alertas rechazadas
-				</CardTitle>
+				<CardTitle className="monitoring__stat-title">Alertas rechazadas</CardTitle>
 			</CardHeader>
 			<CardContent className="p-0">
 				<span className="block text-center font-medium text-4xl">

@@ -14,10 +14,7 @@ export class DrawingUtils {
 	/**
 	 * Find the drawing element near the mouse position
 	 */
-	findElementNearMouse(
-		mousePos: Point,
-		elements: DrawingElement[]
-	): string | null {
+	findElementNearMouse(mousePos: Point, elements: DrawingElement[]): string | null {
 		const {
 			line: lineThreshold,
 			area: areaThreshold,
@@ -25,9 +22,7 @@ export class DrawingUtils {
 		} = this.#config.interactionThresholds;
 
 		for (const element of elements) {
-			const displayPoints = element.points.map((point) =>
-				this.#core.mediaToDisplayCoords(point)
-			);
+			const displayPoints = element.points.map((point) => this.#core.mediaToDisplayCoords(point));
 
 			if (element.type === "line" && displayPoints.length >= 2) {
 				const distance = this.#core.distanceToLineSegment(
@@ -54,25 +49,17 @@ export class DrawingUtils {
 				const centerX = displayPoints[0].x;
 				const centerY = displayPoints[0].y;
 				const radius = Math.sqrt(
-					(displayPoints[1].x - centerX) ** 2 +
-						(displayPoints[1].y - centerY) ** 2
+					(displayPoints[1].x - centerX) ** 2 + (displayPoints[1].y - centerY) ** 2
 				);
-				const distance = Math.sqrt(
-					(mousePos.x - centerX) ** 2 + (mousePos.y - centerY) ** 2
-				);
+				const distance = Math.sqrt((mousePos.x - centerX) ** 2 + (mousePos.y - centerY) ** 2);
 
 				if (distance <= radius + areaThreshold) return element.id;
 			} else if (element.type === "area" && displayPoints.length >= 3) {
-				if (this.#core.pointInPolygon(mousePos, displayPoints))
-					return element.id;
+				if (this.#core.pointInPolygon(mousePos, displayPoints)) return element.id;
 
 				for (let i = 0; i < displayPoints.length; i++) {
 					const nextPoint = displayPoints[(i + 1) % displayPoints.length];
-					const distance = this.#core.distanceToLineSegment(
-						mousePos,
-						displayPoints[i],
-						nextPoint
-					);
+					const distance = this.#core.distanceToLineSegment(mousePos, displayPoints[i], nextPoint);
 					if (distance <= areaThreshold) return element.id;
 				}
 			} else if (element.type === "curve" && displayPoints.length >= 2) {
@@ -114,9 +101,7 @@ export class DrawingUtils {
 				);
 				for (let j = 0; j < entryDisplayPoints.length; j++) {
 					const point = entryDisplayPoints[j];
-					const distance = Math.sqrt(
-						(mousePos.x - point.x) ** 2 + (mousePos.y - point.y) ** 2
-					);
+					const distance = Math.sqrt((mousePos.x - point.x) ** 2 + (mousePos.y - point.y) ** 2);
 					if (distance <= threshold) {
 						return { elementId: element.id, pointIndex: j, pointType: "entry" };
 					}
@@ -128,9 +113,7 @@ export class DrawingUtils {
 				);
 				for (let j = 0; j < exitDisplayPoints.length; j++) {
 					const point = exitDisplayPoints[j];
-					const distance = Math.sqrt(
-						(mousePos.x - point.x) ** 2 + (mousePos.y - point.y) ** 2
-					);
+					const distance = Math.sqrt((mousePos.x - point.x) ** 2 + (mousePos.y - point.y) ** 2);
 					if (distance <= threshold) {
 						return { elementId: element.id, pointIndex: j, pointType: "exit" };
 					}
@@ -138,9 +121,7 @@ export class DrawingUtils {
 			}
 
 			// Check main points
-			const displayPoints = element.points.map((point) =>
-				this.#core.mediaToDisplayCoords(point)
-			);
+			const displayPoints = element.points.map((point) => this.#core.mediaToDisplayCoords(point));
 
 			if (element.type === "rectangle" && displayPoints.length >= 2) {
 				const x1 = Math.min(displayPoints[0].x, displayPoints[1].x);
@@ -157,9 +138,7 @@ export class DrawingUtils {
 
 				for (let j = 0; j < corners.length; j++) {
 					const corner = corners[j];
-					const distance = Math.sqrt(
-						(mousePos.x - corner.x) ** 2 + (mousePos.y - corner.y) ** 2
-					);
+					const distance = Math.sqrt((mousePos.x - corner.x) ** 2 + (mousePos.y - corner.y) ** 2);
 					if (distance <= threshold) {
 						return { elementId: element.id, pointIndex: j, pointType: "main" };
 					}
@@ -167,9 +146,7 @@ export class DrawingUtils {
 			} else {
 				for (let j = 0; j < displayPoints.length; j++) {
 					const point = displayPoints[j];
-					const distance = Math.sqrt(
-						(mousePos.x - point.x) ** 2 + (mousePos.y - point.y) ** 2
-					);
+					const distance = Math.sqrt((mousePos.x - point.x) ** 2 + (mousePos.y - point.y) ** 2);
 
 					if (distance <= threshold) {
 						return { elementId: element.id, pointIndex: j, pointType: "main" };
@@ -247,25 +224,14 @@ export class DrawingUtils {
 	/**
 	 * Check if a point is within canvas bounds
 	 */
-	isPointInBounds(
-		point: Point,
-		mediaSize: { width: number; height: number }
-	): boolean {
-		return (
-			point.x >= 0 &&
-			point.x < mediaSize.width &&
-			point.y >= 0 &&
-			point.y < mediaSize.height
-		);
+	isPointInBounds(point: Point, mediaSize: { width: number; height: number }): boolean {
+		return point.x >= 0 && point.x < mediaSize.width && point.y >= 0 && point.y < mediaSize.height;
 	}
 
 	/**
 	 * Clamp a point to canvas bounds
 	 */
-	clampToCanvas(
-		point: Point,
-		mediaSize: { width: number; height: number }
-	): Point {
+	clampToCanvas(point: Point, mediaSize: { width: number; height: number }): Point {
 		return {
 			x: Math.max(0, Math.min(mediaSize.width - 1, point.x)),
 			y: Math.max(0, Math.min(mediaSize.height - 1, point.y)),

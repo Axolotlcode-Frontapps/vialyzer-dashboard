@@ -14,12 +14,7 @@ export class DrawingActions {
 	#utils: DrawingUtils;
 	#state: DrawingState;
 
-	constructor(
-		core: DrawingCore,
-		config: DrawingConfig,
-		utils: DrawingUtils,
-		state: DrawingState
-	) {
+	constructor(core: DrawingCore, config: DrawingConfig, utils: DrawingUtils, state: DrawingState) {
 		this.#core = core;
 		this.#config = config;
 		this.#utils = utils;
@@ -29,13 +24,8 @@ export class DrawingActions {
 	/**
 	 * Copy selected elements to clipboard
 	 */
-	copySelectedElements(
-		selectedElements: string[],
-		elements: DrawingElement[]
-	): number {
-		const selectedEls = elements.filter((el) =>
-			selectedElements.includes(el.id)
-		);
+	copySelectedElements(selectedElements: string[], elements: DrawingElement[]): number {
+		const selectedEls = elements.filter((el) => selectedElements.includes(el.id));
 
 		this.#state.clipboard = selectedEls.map((element) => ({
 			...element,
@@ -70,9 +60,7 @@ export class DrawingActions {
 
 		this.#resetPasteOffset();
 
-		this.#config.on.feedback(
-			`Copied ${selectedEls.length} element(s) to clipboard`
-		);
+		this.#config.on.feedback(`Copied ${selectedEls.length} element(s) to clipboard`);
 
 		return selectedEls.length;
 	}
@@ -80,13 +68,8 @@ export class DrawingActions {
 	/**
 	 * Cut selected elements to clipboard
 	 */
-	cutSelectedElements(
-		selectedElements: string[],
-		elements: DrawingElement[]
-	): number {
-		const selectedEls = elements.filter((el) =>
-			selectedElements.includes(el.id)
-		);
+	cutSelectedElements(selectedElements: string[], elements: DrawingElement[]): number {
+		const selectedEls = elements.filter((el) => selectedElements.includes(el.id));
 
 		this.#state.clipboard = selectedEls.map((element) => ({
 			...element,
@@ -128,9 +111,7 @@ export class DrawingActions {
 			elementIds: selectedElements,
 		});
 
-		this.#config.on.feedback(
-			`Cut ${selectedEls.length} element(s) to clipboard`
-		);
+		this.#config.on.feedback(`Cut ${selectedEls.length} element(s) to clipboard`);
 
 		return selectedEls.length;
 	}
@@ -252,15 +233,10 @@ export class DrawingActions {
 	 * Elements that are 'new' (never saved) are removed immediately
 	 * Elements that are 'saved' or 'edited' are marked as 'deleted' for backend sync
 	 */
-	deleteSelectedElements(
-		selectedElements: string[],
-		elements: DrawingElement[]
-	): void {
+	deleteSelectedElements(selectedElements: string[], elements: DrawingElement[]): void {
 		if (selectedElements.length === 0) return;
 
-		const elementsToDelete = elements.filter((el) =>
-			selectedElements.includes(el.id)
-		);
+		const elementsToDelete = elements.filter((el) => selectedElements.includes(el.id));
 
 		// Separate elements by sync state
 		const newElements = elementsToDelete.filter((el) => el.syncState === "new");
@@ -289,10 +265,7 @@ export class DrawingActions {
 	/**
 	 * Toggle element selection
 	 */
-	toggleElementSelection(
-		elementId: string,
-		selectedElements: string[]
-	): string[] {
+	toggleElementSelection(elementId: string, selectedElements: string[]): string[] {
 		const newSelection = selectedElements.includes(elementId)
 			? selectedElements.filter((id) => id !== elementId)
 			: [...selectedElements, elementId];
@@ -457,10 +430,7 @@ export class DrawingActions {
 	/**
 	 * Ungroup selected elements
 	 */
-	ungroupSelectedElements(
-		selectedElements: string[],
-		elements: DrawingElement[]
-	): void {
+	ungroupSelectedElements(selectedElements: string[], elements: DrawingElement[]): void {
 		const updatedElements = elements.map((element) => {
 			if (selectedElements.includes(element.id) && element.groupId) {
 				const { groupId: _groupId, ...elementWithoutGroup } = element;
@@ -483,15 +453,10 @@ export class DrawingActions {
 	/**
 	 * Bring selected elements to front
 	 */
-	bringToFront(
-		selectedElements: string[],
-		elements: DrawingElement[]
-	): DrawingElement[] {
+	bringToFront(selectedElements: string[], elements: DrawingElement[]): DrawingElement[] {
 		if (selectedElements.length === 0) return elements;
 
-		const selectedEls = elements.filter((el) =>
-			selectedElements.includes(el.id)
-		);
+		const selectedEls = elements.filter((el) => selectedElements.includes(el.id));
 		const otherEls = elements.filter((el) => !selectedElements.includes(el.id));
 		const reorderedElements = [...otherEls, ...selectedEls];
 
@@ -509,15 +474,10 @@ export class DrawingActions {
 	/**
 	 * Send selected elements to back
 	 */
-	sendToBack(
-		selectedElements: string[],
-		elements: DrawingElement[]
-	): DrawingElement[] {
+	sendToBack(selectedElements: string[], elements: DrawingElement[]): DrawingElement[] {
 		if (selectedElements.length === 0) return elements;
 
-		const selectedEls = elements.filter((el) =>
-			selectedElements.includes(el.id)
-		);
+		const selectedEls = elements.filter((el) => selectedElements.includes(el.id));
 		const otherEls = elements.filter((el) => !selectedElements.includes(el.id));
 		const reorderedElements = [...selectedEls, ...otherEls];
 
@@ -535,19 +495,13 @@ export class DrawingActions {
 	/**
 	 * Align selected elements
 	 */
-	alignElements(
-		selectedElements: string[],
-		elements: DrawingElement[],
-		alignment: string
-	): void {
+	alignElements(selectedElements: string[], elements: DrawingElement[], alignment: string): void {
 		if (selectedElements.length < 2) {
 			this.#config.on.feedback("Select at least 2 elements to align");
 			return;
 		}
 
-		const selectedEls = elements.filter((el) =>
-			selectedElements.includes(el.id)
-		);
+		const selectedEls = elements.filter((el) => selectedElements.includes(el.id));
 		const bounds = selectedEls
 			.map((el) => this.#utils.getElementBounds(el))
 			.filter((b): b is NonNullable<typeof b> => b !== null);
@@ -570,14 +524,12 @@ export class DrawingActions {
 				break;
 			case "centerX": {
 				const allCentersX = bounds.map((b) => (b.minX + b.maxX) / 2);
-				referenceValue =
-					allCentersX.reduce((a, b) => a + b, 0) / allCentersX.length;
+				referenceValue = allCentersX.reduce((a, b) => a + b, 0) / allCentersX.length;
 				break;
 			}
 			case "centerY": {
 				const allCentersY = bounds.map((b) => (b.minY + b.maxY) / 2);
-				referenceValue =
-					allCentersY.reduce((a, b) => a + b, 0) / allCentersY.length;
+				referenceValue = allCentersY.reduce((a, b) => a + b, 0) / allCentersY.length;
 				break;
 			}
 			default:
@@ -694,13 +646,10 @@ export class DrawingActions {
 	getClipboardStats(): { total: number; types: Record<string, number> } {
 		return {
 			total: this.#state.clipboard.length,
-			types: this.#state.clipboard.reduce(
-				(acc: Record<string, number>, element) => {
-					acc[element.type] = (acc[element.type] || 0) + 1;
-					return acc;
-				},
-				{}
-			),
+			types: this.#state.clipboard.reduce((acc: Record<string, number>, element) => {
+				acc[element.type] = (acc[element.type] || 0) + 1;
+				return acc;
+			}, {}),
 		};
 	}
 }

@@ -1,10 +1,4 @@
-import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetHeader,
-	SheetTitle,
-} from "@/ui/shared/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/ui/shared/sheet";
 import { RoleForm } from "./role-form";
 
 export function RoleUpdate({
@@ -22,8 +16,8 @@ export function RoleUpdate({
 				<SheetHeader>
 					<SheetTitle>Editar rol</SheetTitle>
 					<SheetDescription>
-						Vas a modificar la información de este rol. Realiza los cambios
-						necesarios y guarda para actualizar el rol.
+						Vas a modificar la información de este rol. Realiza los cambios necesarios y guarda para
+						actualizar el rol.
 					</SheetDescription>
 				</SheetHeader>
 				<RoleForm onSuccess={onOpenChange} update role={role} />

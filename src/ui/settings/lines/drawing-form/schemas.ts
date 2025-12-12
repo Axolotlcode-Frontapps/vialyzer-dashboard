@@ -6,10 +6,7 @@ export const labelFormSchema = z.object({
 		.string()
 		.min(1, "El nombre es requerido")
 		.max(100, "El nombre debe tener menos de 100 caracteres"),
-	description: z
-		.string()
-		.max(200, "La descripción debe tener menos de 200 caracteres")
-		.optional(),
+	description: z.string().max(200, "La descripción debe tener menos de 200 caracteres").optional(),
 	direction: z.enum(["left", "right", "top", "bottom"], {
 		message: "La dirección es requerida",
 	}),
@@ -62,9 +59,7 @@ export type LabelFormValues = z.infer<typeof labelFormSchema>;
 export type LayerFormValues = z.infer<typeof layerFormSchema>;
 
 // Schema union type for form validation
-export type DrawingFormSchemas =
-	| typeof labelFormSchema
-	| typeof layerFormSchema;
+export type DrawingFormSchemas = typeof labelFormSchema | typeof layerFormSchema;
 
 // Default values
 export const labelFormDefaults: LabelFormValues = {

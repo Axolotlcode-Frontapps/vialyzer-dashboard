@@ -19,14 +19,7 @@ import type {
 } from "@tanstack/react-table";
 import type { GenericTableSearchValues } from "@/lib/schemas/shared";
 
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/ui/shared/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/ui/shared/table";
 import { Card, CardContent, CardFooter, CardHeader } from "../card";
 import { Skeleton } from "../skeleton";
 import { DataTablePagination } from "./pagination";
@@ -135,10 +128,7 @@ export function DataTable<TData, TValue>({
 											<TableHead key={header.id}>
 												{header.isPlaceholder
 													? null
-													: flexRender(
-															header.column.columnDef.header,
-															header.getContext()
-														)}
+													: flexRender(header.column.columnDef.header, header.getContext())}
 											</TableHead>
 										);
 									})}
@@ -152,10 +142,7 @@ export function DataTable<TData, TValue>({
 										<TableRow>
 											{row.getVisibleCells().map((cell) => (
 												<TableCell key={cell.id}>
-													{flexRender(
-														cell.column.columnDef.cell,
-														cell.getContext()
-													)}
+													{flexRender(cell.column.columnDef.cell, cell.getContext())}
 												</TableCell>
 											))}
 										</TableRow>
@@ -163,10 +150,7 @@ export function DataTable<TData, TValue>({
 								))
 							) : (
 								<TableRow>
-									<TableCell
-										colSpan={columns.length}
-										className="h-24 text-center"
-									>
+									<TableCell colSpan={columns.length} className="h-24 text-center">
 										Sin resultados
 									</TableCell>
 								</TableRow>

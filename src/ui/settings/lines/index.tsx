@@ -1,11 +1,4 @@
-import {
-	useCallback,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-	useSyncExternalStore,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 import type { LinesProps, StateChangeEvent } from "./types";
 
@@ -16,14 +9,7 @@ import { LabelForm } from "./label-form";
 import { LayerPanel } from "./layer";
 import { Panel } from "./panel";
 
-export function Lines({
-	src,
-	type,
-	onDrawingComplete,
-	onSave,
-	onLoad,
-	vehicles = [],
-}: LinesProps) {
+export function Lines({ src, type, onDrawingComplete, onSave, onLoad, vehicles = [] }: LinesProps) {
 	// Canvas and media references
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const mediaRef = useRef<HTMLVideoElement | HTMLImageElement | null>(null);
@@ -35,11 +21,9 @@ export function Lines({
 	const onLoadExecutedRef = useRef<boolean>(false);
 
 	// Stable refs for callbacks
-	const handleStateChangeRef = useRef<(stateChange: StateChangeEvent) => void>(
-		() => {
-			// default empty
-		}
-	);
+	const handleStateChangeRef = useRef<(stateChange: StateChangeEvent) => void>(() => {
+		// default empty
+	});
 	const showToastFeedbackRef = useRef<(message: string) => void>(() => {
 		// default empty
 	});
@@ -125,9 +109,7 @@ export function Lines({
 									drawingEngineRef.current.clearAll();
 									drawingEngineRef.current.addElements(elements, layers);
 
-									showToastFeedback(
-										`Loaded ${elements.length} elements in ${layers.size} layers`
-									);
+									showToastFeedback(`Loaded ${elements.length} elements in ${layers.size} layers`);
 								}
 							})
 							.catch((error) => {
@@ -234,10 +216,7 @@ export function Lines({
 				<Controls drawingEngine={drawingEngineRef.current} onSave={onSave} />
 				<div className="flex items-center gap-2">
 					<Panel drawingEngine={drawingEngineRef.current} />
-					<LayerPanel
-						drawingEngine={drawingEngineRef.current}
-						vehicles={vehicles}
-					/>
+					<LayerPanel drawingEngine={drawingEngineRef.current} vehicles={vehicles} />
 				</div>
 
 				<LabelForm drawingEngine={drawingEngineRef.current} />
@@ -253,9 +232,7 @@ export function Lines({
 				{/* Media element */}
 				{type === "video" ? (
 					<video
-						ref={
-							mediaCallbackRef as (instance: HTMLVideoElement | null) => void
-						}
+						ref={mediaCallbackRef as (instance: HTMLVideoElement | null) => void}
 						src={src}
 						crossOrigin="anonymous"
 						className="w-full aspect-video pointer-events-none"
@@ -266,9 +243,7 @@ export function Lines({
 					/>
 				) : (
 					<img
-						ref={
-							mediaCallbackRef as (instance: HTMLImageElement | null) => void
-						}
+						ref={mediaCallbackRef as (instance: HTMLImageElement | null) => void}
 						src={src}
 						crossOrigin="anonymous"
 						alt="Training media"

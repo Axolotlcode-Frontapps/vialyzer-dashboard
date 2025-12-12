@@ -22,8 +22,7 @@ Element.prototype.scrollIntoView = function () {
 // Extend Vitest's expect with custom DOM matchers
 expect.extend({
 	toBeInTheDocument(received: unknown) {
-		const pass =
-			received != null && (received as Element).ownerDocument != null;
+		const pass = received != null && (received as Element).ownerDocument != null;
 		return {
 			pass,
 			message: () =>
@@ -37,10 +36,7 @@ expect.extend({
 		const hasAttribute = element?.hasAttribute?.(attribute) ?? false;
 		const actualValue = element?.getAttribute?.(attribute);
 
-		const pass =
-			value !== undefined
-				? hasAttribute && actualValue === value
-				: hasAttribute;
+		const pass = value !== undefined ? hasAttribute && actualValue === value : hasAttribute;
 
 		return {
 			pass,
@@ -86,9 +82,7 @@ expect.extend({
 		return {
 			pass: isDisabled,
 			message: () =>
-				isDisabled
-					? "expected element not to be disabled"
-					: "expected element to be disabled",
+				isDisabled ? "expected element not to be disabled" : "expected element to be disabled",
 		};
 	},
 });

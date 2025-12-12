@@ -21,10 +21,7 @@ export const STATUS_STYLES = {
 	},
 };
 
-export const STATUS: Record<
-	TCameraStatus,
-	{ label: string; color: string; dot: string }
-> = {
+export const STATUS: Record<TCameraStatus, { label: string; color: string; dot: string }> = {
 	PROCESSING: { ...STATUS_STYLES.normal, label: "Procesando" },
 	WAITING_FOR_CONFIGURATION: {
 		...STATUS_STYLES.warning,
@@ -37,12 +34,11 @@ export const STATUS: Record<
 	CAMERA_DISCONNECTED: { ...STATUS_STYLES.error, label: "Cámara desconectada" },
 };
 
-export const STATUS_ORDER: Record<keyof typeof STATUS_STYLES, TCameraStatus[]> =
-	{
-		normal: ["PROCESSING"],
-		warning: ["WAITING_FOR_CONFIGURATION"],
-		error: ["PROCESSING_STOPPED", "CAMERA_DISCONNECTED"],
-	};
+export const STATUS_ORDER: Record<keyof typeof STATUS_STYLES, TCameraStatus[]> = {
+	normal: ["PROCESSING"],
+	warning: ["WAITING_FOR_CONFIGURATION"],
+	error: ["PROCESSING_STOPPED", "CAMERA_DISCONNECTED"],
+};
 
 export const STATUS_TYPES: TCameraStatus[] = [
 	"PROCESSING",

@@ -5,13 +5,7 @@ import type { LayerFormProps } from "../types";
 
 import { Badge } from "@/ui/shared/badge";
 import { Button } from "@/ui/shared/button";
-import {
-	Dialog,
-	DialogContent,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "@/ui/shared/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/ui/shared/dialog";
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
@@ -37,9 +31,9 @@ export const LayerForm = memo(function LayerForm({
 }: LayerFormProps) {
 	const isEditing = !!layerToEdit;
 	const [selectedVehicles, setSelectedVehicles] = useState<string[]>([]);
-	const [selectedType, setSelectedType] = useState<
-		"DETECTION" | "CONFIGURATION" | "NEAR_MISS"
-	>("CONFIGURATION");
+	const [selectedType, setSelectedType] = useState<"DETECTION" | "CONFIGURATION" | "NEAR_MISS">(
+		"CONFIGURATION"
+	);
 
 	const form = useDrawingForm({
 		defaultValues: layerToEdit
@@ -152,10 +146,7 @@ export const LayerForm = memo(function LayerForm({
 						}}
 					>
 						{(field) => (
-							<field.TextField
-								label="Nombre de la capa"
-								placeholder="Nombre de la capa..."
-							/>
+							<field.TextField label="Nombre de la capa" placeholder="Nombre de la capa..." />
 						)}
 					</form.AppField>
 
@@ -214,14 +205,10 @@ export const LayerForm = memo(function LayerForm({
 											>
 												<div className="h-full flex flex-wrap gap-1 flex-1">
 													{selectedVehicles.length === 0 ? (
-														<span className="text-muted-foreground">
-															Agregar vehículo...
-														</span>
+														<span className="text-muted-foreground">Agregar vehículo...</span>
 													) : (
 														selectedVehicles.map((vehicleId) => {
-															const vehicle = vehicles.find(
-																(v) => v.id === vehicleId
-															);
+															const vehicle = vehicles.find((v) => v.id === vehicleId);
 															if (!vehicle) return null;
 															return (
 																<Badge
@@ -262,9 +249,7 @@ export const LayerForm = memo(function LayerForm({
 												<DropdownMenuCheckboxItem
 													key={vehicle.id}
 													checked={selectedVehicles.includes(vehicle.id)}
-													onCheckedChange={(checked) =>
-														handleToggleVehicle(vehicle.id, checked)
-													}
+													onCheckedChange={(checked) => handleToggleVehicle(vehicle.id, checked)}
 													onSelect={(e) => e.preventDefault()}
 												>
 													<div className="flex items-center gap-2">
@@ -299,10 +284,7 @@ export const LayerForm = memo(function LayerForm({
 						}}
 					>
 						{(field) => (
-							<field.TextField
-								label="Descripción"
-								placeholder="Descripción de la capa..."
-							/>
+							<field.TextField label="Descripción" placeholder="Descripción de la capa..." />
 						)}
 					</form.AppField>
 
@@ -312,15 +294,7 @@ export const LayerForm = memo(function LayerForm({
 							onChange: layerFormSchema.shape.opacity,
 						}}
 					>
-						{(field) => (
-							<field.SliderField
-								label="Opacidad"
-								min={0}
-								max={100}
-								step={1}
-								unit="%"
-							/>
-						)}
+						{(field) => <field.SliderField label="Opacidad" min={0} max={100} step={1} unit="%" />}
 					</form.AppField>
 
 					<form.AppForm>

@@ -242,16 +242,12 @@ describe("DrawingEngine - History", () => {
 			engine.addElements([testElement], new Map());
 
 			const undoPreview = engine.getUndoPreview();
-			expect(undoPreview === null || typeof undoPreview === "string").toBe(
-				true
-			);
+			expect(undoPreview === null || typeof undoPreview === "string").toBe(true);
 
 			engine.undoLast();
 
 			const redoPreview = engine.getRedoPreview();
-			expect(redoPreview === null || typeof redoPreview === "string").toBe(
-				true
-			);
+			expect(redoPreview === null || typeof redoPreview === "string").toBe(true);
 		});
 
 		it("should clear redo stack when new operation is performed", () => {

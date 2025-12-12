@@ -1,5 +1,12 @@
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
+import type {
+	Formatter,
+	NameType,
+	ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
+
+import { cn } from "@/lib/utils/cn";
 import { Card, CardContent, CardHeader, CardTitle } from "../card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../chart";
 import { Stats } from "./stats";
@@ -7,6 +14,8 @@ import { Stats } from "./stats";
 interface Props {
 	title: string;
 	tooltip?: (label: string) => React.ReactNode;
+	formatter?: Formatter<ValueType, NameType>;
+	className?: string;
 	data: {
 		[k: string]: number | string;
 	}[];
@@ -36,18 +45,24 @@ interface Props {
 	}[];
 }
 
-export function GraphBar({ title, data, config, stats, axis, tooltip }: Props) {
+export function GraphBar({
+	title,
+	data,
+	config,
+	stats,
+	axis,
+	tooltip,
+	formatter,
+	className,
+}: Props) {
 	return (
-		<Card className="border-0 rounded-lg @md/velocity:max-w-[70%] @4xl/velocity:max-w-none">
+		<Card className={cn("border-0 rounded-lg", className)}>
 			<CardHeader className="flex justify-between flex-wrap">
 				<CardTitle>{title}</CardTitle>
 				{stats ? <Stats info={stats} /> : null}
 			</CardHeader>
 			<CardContent>
-				<ChartContainer
-					config={config}
-					className="w-full min-h-80 max-h-[400px] -bg-conic-330"
-				>
+				<ChartContainer config={config} className="w-full min-h-80 max-h-[400px]">
 					<BarChart accessibilityLayer data={data}>
 						<CartesianGrid vertical={false} />
 						<XAxis
@@ -70,15 +85,10 @@ export function GraphBar({ title, data, config, stats, axis, tooltip }: Props) {
 						/>
 						<ChartTooltip
 							content={<ChartTooltipContent labelFormatter={tooltip} />}
+							formatter={formatter}
 						/>
 						{Object.entries(config).map(([key, value]) => (
-							<Bar
-								key={key}
-								dataKey={key}
-								name={value.label}
-								fill={value.color}
-								radius={8}
-							/>
+							<Bar key={key} dataKey={key} name={value.label} fill={value.color} radius={8} />
 						))}
 					</BarChart>
 				</ChartContainer>

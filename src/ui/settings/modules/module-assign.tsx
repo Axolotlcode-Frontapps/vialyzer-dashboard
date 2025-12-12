@@ -66,8 +66,7 @@ export function ModuleAssign({
 		select: (data) => data.payload,
 	});
 
-	const globalIsLoading =
-		isLoadingModules || (isEnabled && isLoadingModuleByRole);
+	const globalIsLoading = isLoadingModules || (isEnabled && isLoadingModuleByRole);
 
 	const assignMutation = useMutation({
 		mutationFn: async (values: AssignModuleValues) => {
@@ -84,12 +83,10 @@ export function ModuleAssign({
 		},
 		onError: (error: AxiosError) => {
 			form.state.canSubmit = true;
-			const message = (error.response?.data as GeneralResponse<unknown>)
-				?.message;
+			const message = (error.response?.data as GeneralResponse<unknown>)?.message;
 
 			const capitalizedMessage =
-				message &&
-				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+				message && message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
 
 			toast.error(`Error al crear módulo`, {
 				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
@@ -116,9 +113,7 @@ export function ModuleAssign({
 			<SheetContent className="w-full sm:min-w-[600px]">
 				<SheetHeader>
 					<SheetTitle>Asignar módulo</SheetTitle>
-					<SheetDescription>
-						Seleccione un módulo para asignar al rol.
-					</SheetDescription>
+					<SheetDescription>Seleccione un módulo para asignar al rol.</SheetDescription>
 				</SheetHeader>
 
 				<form
@@ -133,8 +128,7 @@ export function ModuleAssign({
 					<form.Field
 						name="modulesIds"
 						children={(field) => {
-							const isInvalid =
-								field.state.meta.isTouched && !field.state.meta.isValid;
+							const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 							return (
 								<FieldSet>
 									<FieldDescription>
@@ -161,9 +155,7 @@ export function ModuleAssign({
 																	if (checked) {
 																		field.pushValue(module.id);
 																	} else {
-																		const index = field.state.value.indexOf(
-																			module.id
-																		);
+																		const index = field.state.value.indexOf(module.id);
 																		if (index > -1) {
 																			field.removeValue(index);
 																		}
@@ -171,12 +163,8 @@ export function ModuleAssign({
 																}}
 															/>
 															<FieldContent className="gap-0">
-																<FieldTitle className="capitalize">
-																	{module.name}
-																</FieldTitle>
-																<FieldDescription>
-																	{module.description}
-																</FieldDescription>
+																<FieldTitle className="capitalize">{module.name}</FieldTitle>
+																<FieldDescription>{module.description}</FieldDescription>
 															</FieldContent>
 															{/* <RadioGroupItem
 															value={plan.id}
@@ -197,19 +185,11 @@ export function ModuleAssign({
 				</form>
 
 				<SheetFooter>
-					<form.Subscribe
-						selector={(state) => [state.canSubmit, state.isSubmitting]}
-					>
+					<form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
 						{([canSubmit, isSubmitting]) => (
-							<Button
-								type="submit"
-								disabled={!canSubmit}
-								form="module-assign-form"
-							>
+							<Button type="submit" disabled={!canSubmit} form="module-assign-form">
 								{isSubmitting ? <Spinner /> : null}
-								{isSubmitting
-									? "Confirmando asignación"
-									: "Confirmar asignación"}
+								{isSubmitting ? "Confirmando asignación" : "Confirmar asignación"}
 							</Button>
 						)}
 					</form.Subscribe>

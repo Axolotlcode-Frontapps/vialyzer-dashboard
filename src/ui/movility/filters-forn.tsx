@@ -4,10 +4,7 @@ import { useCameraScenarios } from "@/hooks/use-camera-scenarios";
 import { useCameraVehicles } from "@/hooks/use-camera-vehicles";
 import { useCameras } from "@/hooks/use-cameras";
 
-import type {
-	MovilityCameraFilters,
-	MovilityCameraForm,
-} from "@/lib/schemas/movility";
+import type { MovilityCameraFilters, MovilityCameraForm } from "@/lib/schemas/movility";
 
 import { movilitySchemas } from "@/lib/schemas/movility";
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
@@ -32,40 +29,24 @@ export function FiltersForm() {
 
 	const inVelocity = useMemo(() => pathname.includes("velocity"), [pathname]);
 
-	const defaultVehiclesIds = useMemo(
-		() => vehicles.map((cat) => cat.id),
-		[vehicles]
-	);
+	const defaultVehiclesIds = useMemo(() => vehicles.map((cat) => cat.id), [vehicles]);
 
-	const defaultScenariosIds = useMemo(
-		() => scenarios.map((cat) => cat.id),
-		[scenarios]
-	);
+	const defaultScenariosIds = useMemo(() => scenarios.map((cat) => cat.id), [scenarios]);
 
 	const form = useFiltersForm({
 		defaultValues: {
 			...initialValues,
 			camera: camera,
-			actors: initialValues.actors?.length
-				? initialValues.actors
-				: defaultVehiclesIds,
-			zones: initialValues.zones?.length
-				? initialValues.zones
-				: defaultScenariosIds,
+			actors: initialValues.actors?.length ? initialValues.actors : defaultVehiclesIds,
+			zones: initialValues.zones?.length ? initialValues.zones : defaultScenariosIds,
 		},
 		onSubmit: async ({ value }) => {
-			const valueToSubmit: MovilityCameraFilters &
-				Pick<MovilityCameraForm, "camera"> = structuredClone(value);
-			if (
-				value.actors?.length === defaultVehiclesIds.length ||
-				value.camera !== camera
-			) {
+			const valueToSubmit: MovilityCameraFilters & Pick<MovilityCameraForm, "camera"> =
+				structuredClone(value);
+			if (value.actors?.length === defaultVehiclesIds.length || value.camera !== camera) {
 				valueToSubmit.actors = undefined;
 			}
-			if (
-				value.zones?.length === defaultScenariosIds.length ||
-				value.camera !== camera
-			) {
+			if (value.zones?.length === defaultScenariosIds.length || value.camera !== camera) {
 				valueToSubmit.zones = undefined;
 			}
 
@@ -100,7 +81,6 @@ export function FiltersForm() {
 					children={(field) => (
 						<field.SingleSelectField
 							placeholder="Seleccione una cámara"
-							className="mr-auto @lg/filters:max-w-max"
 							options={cameras.map((camera) => ({
 								value: camera.id,
 								label: camera.name,
@@ -119,7 +99,6 @@ export function FiltersForm() {
 								children={(field) => (
 									<field.DateRangeField
 										label="Rango de fechas"
-										className="@lg/filters:max-w-max"
 										endDate={endDate ?? undefined}
 										onChooseEndDate={(value) => {
 											form.setFieldValue("endDate", value);
@@ -138,10 +117,9 @@ export function FiltersForm() {
 							<field.SingleSelectField
 								label="Rango de horas"
 								placeholder="Seleccione una hora"
-								className="@lg/filters:max-w-max"
 								options={Array.from({ length: 24 }, (_, hour) => ({
 									value: hour,
-									label: hour.toString(),
+									label: `${hour.toString().padStart(2, "0")}:00`,
 								}))}
 							/>
 						)}
@@ -162,10 +140,7 @@ export function FiltersForm() {
 												value: vehicle.id,
 												label:
 													vehiclesCat?.[
-														vehicle.name.replaceAll(
-															" ",
-															"_"
-														) as keyof typeof vehiclesCat
+														vehicle.name.replaceAll(" ", "_") as keyof typeof vehiclesCat
 													] ?? vehicle.name,
 											}
 								)}
@@ -180,8 +155,7 @@ export function FiltersForm() {
 						children={(field) => (
 							<field.MultiSelectField
 								label="Movimientos"
-								placeholder="Seleccione una o más movimientos"
-								className="@lg/filters:max-w-max"
+								placeholder="Selecciona movimientos"
 								options={scenarios.map((scenario) => ({
 									value: scenario.id,
 									label: scenario.name,
@@ -191,7 +165,7 @@ export function FiltersForm() {
 					/>
 				</div>
 				<form.AppForm>
-					<div className="flex items-center justify-end gap-2">
+					<div className="flex items-center justify-end gap-2 flex-wrap">
 						<form.Submit label="Aplicar filtros" loading="Aplicando..." />
 						<form.Reset
 							label="Limpiar filtros"

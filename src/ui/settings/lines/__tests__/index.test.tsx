@@ -73,9 +73,7 @@ vi.mock("../controls", () => ({
 			<button
 				type="button"
 				data-testid="line-mode-button"
-				onClick={() =>
-					(drawingEngine as typeof mockDrawingEngine)?.setDrawingMode("line")
-				}
+				onClick={() => (drawingEngine as typeof mockDrawingEngine)?.setDrawingMode("line")}
 			>
 				Line Mode
 			</button>
@@ -96,9 +94,7 @@ vi.mock("../controls", () => ({
 			<button
 				type="button"
 				data-testid="delete-button"
-				onClick={() =>
-					(drawingEngine as typeof mockDrawingEngine)?.deleteSelectedElements()
-				}
+				onClick={() => (drawingEngine as typeof mockDrawingEngine)?.deleteSelectedElements()}
 			>
 				Delete
 			</button>
@@ -116,9 +112,7 @@ vi.mock("../panel", () => ({
 			<button
 				type="button"
 				data-testid="select-layer-button"
-				onClick={() =>
-					(drawingEngine as typeof mockDrawingEngine)?.setDrawingMode("select")
-				}
+				onClick={() => (drawingEngine as typeof mockDrawingEngine)?.setDrawingMode("select")}
 			>
 				Select Layer
 			</button>
@@ -132,18 +126,14 @@ vi.mock("../layer", () => ({
 			<button
 				type="button"
 				data-testid="create-layer-button"
-				onClick={() =>
-					(drawingEngine as typeof mockDrawingEngine)?.createLayer()
-				}
+				onClick={() => (drawingEngine as typeof mockDrawingEngine)?.createLayer()}
 			>
 				Create Layer
 			</button>
 			<button
 				type="button"
 				data-testid="delete-layer-button"
-				onClick={() =>
-					(drawingEngine as typeof mockDrawingEngine)?.deleteLayer()
-				}
+				onClick={() => (drawingEngine as typeof mockDrawingEngine)?.deleteLayer()}
 			>
 				Delete Layer
 			</button>
@@ -161,10 +151,7 @@ vi.mock("../label-form", () => ({
 				type="button"
 				data-testid="save-label-button"
 				onClick={() =>
-					(drawingEngine as typeof mockDrawingEngine)?.completeTextInput(
-						"elem-1",
-						{} as never
-					)
+					(drawingEngine as typeof mockDrawingEngine)?.completeTextInput("elem-1", {} as never)
 				}
 			>
 				Save Label
@@ -182,27 +169,21 @@ vi.mock("../canvas-context-menu", () => ({
 			<button
 				type="button"
 				data-testid="copy-button"
-				onClick={() =>
-					(drawingEngine as typeof mockDrawingEngine)?.copySelectedElements()
-				}
+				onClick={() => (drawingEngine as typeof mockDrawingEngine)?.copySelectedElements()}
 			>
 				Copy
 			</button>
 			<button
 				type="button"
 				data-testid="paste-button"
-				onClick={() =>
-					(drawingEngine as typeof mockDrawingEngine)?.pasteElements()
-				}
+				onClick={() => (drawingEngine as typeof mockDrawingEngine)?.pasteElements()}
 			>
 				Paste
 			</button>
 			<button
 				type="button"
 				data-testid="context-delete-button"
-				onClick={() =>
-					(drawingEngine as typeof mockDrawingEngine)?.deleteSelectedElements()
-				}
+				onClick={() => (drawingEngine as typeof mockDrawingEngine)?.deleteSelectedElements()}
 			>
 				Delete
 			</button>
@@ -273,9 +254,7 @@ describe("Lines Component", () => {
 		it("should apply correct CSS classes", () => {
 			render(<Lines {...defaultProps} />);
 
-			const container = document.querySelector(
-				'[data-testid="controls"]'
-			)?.parentElement;
+			const container = document.querySelector('[data-testid="controls"]')?.parentElement;
 			expect(container).toBeInTheDocument();
 		});
 	});
@@ -463,9 +442,7 @@ describe("Lines Component", () => {
 
 	describe("Error Handling", () => {
 		it("should render when onLoad rejects", () => {
-			const onLoad = vi
-				.fn()
-				.mockRejectedValue(new Error("Failed to load data"));
+			const onLoad = vi.fn().mockRejectedValue(new Error("Failed to load data"));
 
 			render(<Lines {...defaultProps} onLoad={onLoad} />);
 

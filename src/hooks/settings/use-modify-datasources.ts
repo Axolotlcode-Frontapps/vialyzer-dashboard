@@ -13,12 +13,7 @@ interface ModifyDatasourcesParams {
 }
 
 interface UseModifyDatasourcesReturn {
-	modifyDatasources: UseMutateAsyncFunction<
-		unknown[],
-		Error,
-		ModifyDatasourcesParams,
-		unknown
-	>;
+	modifyDatasources: UseMutateAsyncFunction<unknown[], Error, ModifyDatasourcesParams, unknown>;
 	loading: boolean;
 	error: Error | null;
 }
@@ -28,9 +23,7 @@ export function useModifyDatasources(): UseModifyDatasourcesReturn {
 
 	const { mutateAsync, isPending, error } = useMutation({
 		mutationFn: async ({ layers, serverLines }: ModifyDatasourcesParams) => {
-			const layersWithChanges = layers.filter(
-				(layer) => layer.syncState === "edited"
-			);
+			const layersWithChanges = layers.filter((layer) => layer.syncState === "edited");
 
 			if (layersWithChanges.length === 0) {
 				return [];
@@ -70,20 +63,16 @@ export function useModifyDatasources(): UseModifyDatasourcesReturn {
 						const isLine =
 							referenceDatasource.visual_coordinates.type === "line" ||
 							referenceDatasource.visual_coordinates.type === "curve";
-						const isDetection =
-							referenceDatasource.scenery.type === "DETECTION";
+						const isDetection = referenceDatasource.scenery.type === "DETECTION";
 						const isNearMiss = referenceDatasource.scenery.type === "NEAR_MISS";
-						const isConfiguration =
-							referenceDatasource.scenery.type === "CONFIGURATION";
+						const isConfiguration = referenceDatasource.scenery.type === "CONFIGURATION";
 
 						const hasVehicleChanges =
 							(layer.addedCategories && layer.addedCategories.length > 0) ||
 							(layer.removedCategories && layer.removedCategories.length > 0);
 
 						const vehiclesToUpdate = hasVehicleChanges
-							? existingVehicleIds.filter((vid) =>
-									currentVehicleIds.includes(vid)
-								)
+							? existingVehicleIds.filter((vid) => currentVehicleIds.includes(vid))
 							: existingVehicleIds;
 
 						// For CONFIGURATION without vehicles, update datasources without vehicle_id
@@ -106,9 +95,7 @@ export function useModifyDatasources(): UseModifyDatasourcesReturn {
 							});
 						} else {
 							vehiclesToUpdate.forEach((vehicleId) => {
-								const datasource = scenarioDatasources.find(
-									(ds) => ds.vehicle?.id === vehicleId
-								);
+								const datasource = scenarioDatasources.find((ds) => ds.vehicle?.id === vehicleId);
 								if (datasource) {
 									operations.push(
 										settings.updateDatasource(
@@ -152,13 +139,8 @@ export function useModifyDatasources(): UseModifyDatasourcesReturn {
 									};
 
 									// Handle second_scenery for DETECTION and NEAR_MISS types
-									if (
-										(isDetection || isNearMiss) &&
-										isLine &&
-										referenceDatasource.second_scenery
-									) {
-										datasourceConfig.second_scenery =
-											referenceDatasource.second_scenery.id;
+									if ((isDetection || isNearMiss) && isLine && referenceDatasource.second_scenery) {
+										datasourceConfig.second_scenery = referenceDatasource.second_scenery.id;
 									}
 
 									operations.push(settings.addDatasource(datasourceConfig));
@@ -168,16 +150,9 @@ export function useModifyDatasources(): UseModifyDatasourcesReturn {
 
 						if (layer.removedCategories && layer.removedCategories.length > 0) {
 							layer.removedCategories.forEach((vehicleId) => {
-								const datasource = scenarioDatasources.find(
-									(ds) => ds.vehicle?.id === vehicleId
-								);
+								const datasource = scenarioDatasources.find((ds) => ds.vehicle?.id === vehicleId);
 								if (datasource) {
-									operations.push(
-										settings.removeDatasource(
-											{ id: datasource.id },
-											{ id: camera }
-										)
-									);
+									operations.push(settings.removeDatasource({ id: datasource.id }, { id: camera }));
 								}
 							});
 						}
@@ -191,9 +166,7 @@ export function useModifyDatasources(): UseModifyDatasourcesReturn {
 			const errors = all.filter((item) => item.status === "rejected");
 
 			if (errors.length > 0) {
-				throw new Error(
-					"Error al modificar datasources de una o más capas de escenario"
-				);
+				throw new Error("Error al modificar datasources de una o más capas de escenario");
 			}
 
 			const results = all

@@ -31,11 +31,7 @@ export default function DatePicker({
 						)}
 					>
 						<CalendarIcon className="mr-2 h-4 w-4" />
-						{value ? (
-							format(value, "MMM DD, YYYY")
-						) : (
-							<span>Seleccionar fecha</span>
-						)}
+						{value ? format(value, "MMM DD, YYYY") : <span>Seleccionar fecha</span>}
 					</Button>
 				</PopoverTrigger>
 				<PopoverContent className="w-auto p-0" align="start">

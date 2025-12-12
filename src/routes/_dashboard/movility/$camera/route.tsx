@@ -1,9 +1,4 @@
-import {
-	createFileRoute,
-	Link,
-	Outlet,
-	useLocation,
-} from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { zodValidator } from "@tanstack/zod-adapter";
 
@@ -26,8 +21,7 @@ function MobilityLayout() {
 	const { pathname, searchStr: search } = useLocation();
 
 	const tabs = useMemo(() => {
-		const activeVolume =
-			pathname === `/movility/${params.camera}/volume` ? "volume" : "velocity";
+		const activeVolume = pathname === `/movility/${params.camera}/volume` ? "volume" : "velocity";
 
 		return {
 			active: activeVolume as keyof typeof locales,
@@ -41,21 +35,14 @@ function MobilityLayout() {
 
 	return (
 		<div className="w-full container mx-auto py-8">
-			<h1 className="text-2xl mb-6">
-				Dashboard Movilidad - {locales[tabs.active]}
-			</h1>
+			<h1 className="text-2xl mb-6">Dashboard Movilidad - {locales[tabs.active]}</h1>
 			<FiltersForm />
 			<Tabs value={tabs.active} className="w-full mb-6">
 				<TabsList
 					className={`w-full grid grid-cols-2 max-w-max gap-2 overflow-x-auto snap-x snap-mandatory justify-start`}
 				>
 					{tabs.list.map(([key, to]) => (
-						<TabsTrigger
-							value={key}
-							asChild
-							key={key}
-							className="min-w-max snap-center"
-						>
+						<TabsTrigger value={key} asChild key={key} className="min-w-max snap-center">
 							<Link to={`${to}${tabs.search}`}>{locales[key]}</Link>
 						</TabsTrigger>
 					))}

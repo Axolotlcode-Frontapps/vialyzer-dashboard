@@ -31,8 +31,8 @@ export function CompanyAdd() {
 				<SheetHeader>
 					<SheetTitle>Crear empresa</SheetTitle>
 					<SheetDescription>
-						Vas a crear una nueva empresa. Completa la información necesaria y
-						guarda para agregar la empresa.
+						Vas a crear una nueva empresa. Completa la información necesaria y guarda para agregar
+						la empresa.
 					</SheetDescription>
 				</SheetHeader>
 

@@ -145,9 +145,7 @@ describe("DrawingState", () => {
 		// Mock DrawingArrange
 		(DrawingArrange as any).mockImplementation(() => ({
 			changeZOrder: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
-			changeZOrderInLayer: vi
-				.fn()
-				.mockReturnValue({ elements: [], affectedIds: [] }),
+			changeZOrderInLayer: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
 		}));
 
 		// Mock DrawingAnnotation
@@ -226,16 +224,7 @@ describe("DrawingState", () => {
 		});
 
 		it("should support all drawing modes", () => {
-			const modes = [
-				"cursor",
-				"select",
-				"line",
-				"area",
-				"rectangle",
-				"circle",
-				"curve",
-				"erase",
-			];
+			const modes = ["cursor", "select", "line", "area", "rectangle", "circle", "curve", "erase"];
 
 			modes.forEach((mode) => {
 				engine.setDrawingMode(mode as any);
@@ -335,10 +324,7 @@ describe("DrawingState", () => {
 
 		it("should set feedback through engine", () => {
 			engine.setFeedback("New feedback");
-			expect(stateMockInstance.setFeedback).toHaveBeenCalledWith(
-				"New feedback",
-				true
-			);
+			expect(stateMockInstance.setFeedback).toHaveBeenCalledWith("New feedback", true);
 		});
 
 		it("should clear feedback", () => {

@@ -17,18 +17,14 @@ export function Locations() {
 		return (
 			cameras
 				.filter((camera) => {
-					const matchesSearch = camera.name
-						.toLowerCase()
-						.includes(search?.toLowerCase() ?? "");
+					const matchesSearch = camera.name.toLowerCase().includes(search?.toLowerCase() ?? "");
 
 					return matchesSearch;
 				})
 				.filter((camera) => {
 					if (!filter) return true;
 
-					return STATUS_ORDER[filter as keyof typeof STATUS_ORDER].includes(
-						camera.state
-					);
+					return STATUS_ORDER[filter as keyof typeof STATUS_ORDER].includes(camera.state);
 				}) ?? []
 		);
 	}, [cameras, search, filter]);
@@ -36,9 +32,7 @@ export function Locations() {
 	return (
 		<ScrollArea className="max-h-[600px]">
 			<ul className="flex-1 mt-4 pr-2">
-				<Activity
-					mode={loading && !filteredCameras.length ? "visible" : "hidden"}
-				>
+				<Activity mode={loading && !filteredCameras.length ? "visible" : "hidden"}>
 					<li className="text-center text-muted-foreground text-lg py-12">
 						Cargando ubicaciones...
 					</li>
@@ -85,9 +79,7 @@ export function Locations() {
 								</span> */}
 								<span className="text-sm text-muted-foreground flex items-center gap-1">
 									Última actualización:{" "}
-									<span className="text-foreground text-xs">
-										{formatDate(loc.updatedAt)}
-									</span>
+									<span className="text-foreground text-xs">{formatDate(loc.updatedAt)}</span>
 								</span>
 							</div>
 						</li>

@@ -5,10 +5,11 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { VehicleType } from "@/types/agents";
 
 import { movility } from "@/lib/services/movility";
+import { chartConfig } from "@/lib/utils/charts";
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
 import { GraphsTable } from "../shared/data-table/graphs-table";
 import { Skeleton } from "../shared/skeleton";
-import { useGraphFilters, vehicles } from "./filters/use-graph-filters";
+import { useGraphFilters } from "./filters/use-graph-filters";
 
 type Row = {
 	vehicle: VehicleType | "Total";
@@ -17,10 +18,7 @@ type Row = {
 };
 
 function CellColor({ value: original }: { value?: number | string }) {
-	const value =
-		typeof original === "number"
-			? original
-			: Number.parseFloat(`${original ?? 0}`);
+	const value = typeof original === "number" ? original : Number.parseFloat(`${original ?? 0}`);
 
 	const green = value >= 0 && value < 30;
 	const yellow = value >= 30 && value < 40;
@@ -37,11 +35,7 @@ function CellColor({ value: original }: { value?: number | string }) {
 					? "text-red-400"
 					: "";
 
-	return (
-		<span className={color}>
-			{Number.parseFloat(value.toFixed(2)).toLocaleString()}
-		</span>
-	);
+	return <span className={color}>{Number.parseFloat(value.toFixed(2)).toLocaleString()}</span>;
 }
 
 export function VelocityTable() {
@@ -91,17 +85,14 @@ export function VelocityTable() {
 				accessorKey: "vehicle",
 				header: "Actor vial / Movimiento",
 				cell: ({ row }) =>
-					vehicles?.[
-						row.original.vehicle.replaceAll(" ", "_") as keyof typeof vehicles
-					] ?? row.original.vehicle,
+					chartConfig[
+						row.original.vehicle.replaceAll(" ", "_").toLowerCase() as keyof typeof chartConfig
+					]?.label ?? row.original.vehicle,
 			},
 			...(scenarios.map((sceario) => ({
 				accessorKey: sceario,
 				header: sceario.replace(" - Entrada", ""),
 				cell: ({ row }) => <CellColor value={row.original[sceario]} />,
-				//   cell: ({ row }) => typeof row.original[sceario] === "number"
-				//   	? row.original[sceario].toFixed(2)
-				// : Number.parseFloat(`${row.original[sceario]}`).toFixed(2),
 			})) satisfies ColumnDef<Row>[]),
 			{
 				accessorKey: "total",
@@ -131,10 +122,7 @@ export function VelocityTable() {
 					total,
 				};
 			})
-			?.sort(
-				(a, b) =>
-					Number.parseFloat(`${b.total}`) - Number.parseFloat(`${a.total}`)
-			);
+			?.sort((a, b) => Number.parseFloat(`${b.total}`) - Number.parseFloat(`${a.total}`));
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const totalCols = rows.reduce((acc, { total, vehicle, ...scenarios }) => {
@@ -144,8 +132,7 @@ export function VelocityTable() {
 				}
 
 				if (typeof acc[scenario] === "number") {
-					acc[scenario] +=
-						typeof value === "number" ? value : Number.parseFloat(`${value}`);
+					acc[scenario] += typeof value === "number" ? value : Number.parseFloat(`${value}`);
 				}
 			});
 
@@ -154,8 +141,7 @@ export function VelocityTable() {
 			}
 
 			if (typeof acc.total === "number") {
-				acc.total +=
-					typeof total === "number" ? total : Number.parseFloat(`${total}`);
+				acc.total += typeof total === "number" ? total : Number.parseFloat(`${total}`);
 			}
 
 			return acc;

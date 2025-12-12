@@ -28,12 +28,8 @@ export function CanvasContextMenu({
 	const [selectedElements, setSelectedElements] = useState<string[]>(
 		drawingEngine?.selectedElements || []
 	);
-	const [clipboard, setClipboard] = useState<DrawingElement[]>(
-		drawingEngine?.getClipboard() || []
-	);
-	const [elements, setElements] = useState<DrawingElement[]>(
-		drawingEngine?.elements || []
-	);
+	const [clipboard, setClipboard] = useState<DrawingElement[]>(drawingEngine?.getClipboard() || []);
+	const [elements, setElements] = useState<DrawingElement[]>(drawingEngine?.elements || []);
 
 	// Subscribe to drawing engine state changes
 	useEffect(() => {
@@ -101,9 +97,7 @@ export function CanvasContextMenu({
 							Cortar {selectedElements.length} elemento(s)
 							<ContextMenuShortcut>Ctrl+X</ContextMenuShortcut>
 						</ContextMenuItem>
-						<ContextMenuItem
-							onClick={() => drawingEngine?.duplicateSelectedElements()}
-						>
+						<ContextMenuItem onClick={() => drawingEngine?.duplicateSelectedElements()}>
 							Duplicar {selectedElements.length} elemento(s)
 							<ContextMenuShortcut>Ctrl+D</ContextMenuShortcut>
 						</ContextMenuItem>
@@ -115,16 +109,12 @@ export function CanvasContextMenu({
 				{clipboard.length > 0 && (
 					<>
 						<ContextMenuItem
-							onClick={() =>
-								drawingEngine?.pasteElements(true, contextMenuPosition)
-							}
+							onClick={() => drawingEngine?.pasteElements(true, contextMenuPosition)}
 						>
 							Pegar Aquí ({clipboard.length} elemento(s))
 							<ContextMenuShortcut>Ctrl+Shift+V</ContextMenuShortcut>
 						</ContextMenuItem>
-						<ContextMenuItem
-							onClick={() => drawingEngine?.pasteElements(false)}
-						>
+						<ContextMenuItem onClick={() => drawingEngine?.pasteElements(false)}>
 							Pegar con Desplazamiento ({clipboard.length} elemento(s))
 							<ContextMenuShortcut>Ctrl+V</ContextMenuShortcut>
 						</ContextMenuItem>
@@ -164,15 +154,11 @@ export function CanvasContextMenu({
 				)}
 
 				{/* Drawing Mode Operations */}
-				<ContextMenuItem
-					onClick={() => drawingEngine?.setDrawingMode("cursor")}
-				>
+				<ContextMenuItem onClick={() => drawingEngine?.setDrawingMode("cursor")}>
 					Cambiar a Modo Cursor
 					<ContextMenuShortcut>C or 1</ContextMenuShortcut>
 				</ContextMenuItem>
-				<ContextMenuItem
-					onClick={() => drawingEngine?.setDrawingMode("select")}
-				>
+				<ContextMenuItem onClick={() => drawingEngine?.setDrawingMode("select")}>
 					Cambiar a Modo Selección
 					<ContextMenuShortcut>S or 2</ContextMenuShortcut>
 				</ContextMenuItem>
@@ -192,15 +178,11 @@ export function CanvasContextMenu({
 					Cambiar a Modo Curva
 					<ContextMenuShortcut>U or 6</ContextMenuShortcut>
 				</ContextMenuItem>
-				<ContextMenuItem
-					onClick={() => drawingEngine?.setDrawingMode("rectangle")}
-				>
+				<ContextMenuItem onClick={() => drawingEngine?.setDrawingMode("rectangle")}>
 					Cambiar a Modo Rectángulo
 					<ContextMenuShortcut>R or 7</ContextMenuShortcut>
 				</ContextMenuItem>
-				<ContextMenuItem
-					onClick={() => drawingEngine?.setDrawingMode("circle")}
-				>
+				<ContextMenuItem onClick={() => drawingEngine?.setDrawingMode("circle")}>
 					Cambiar a Modo Círculo
 					<ContextMenuShortcut>O or 8</ContextMenuShortcut>
 				</ContextMenuItem>
@@ -215,10 +197,7 @@ export function CanvasContextMenu({
 							</ContextMenuItem>
 						)}
 						{elements.length > 0 && (
-							<ContextMenuItem
-								onClick={() => drawingEngine?.clearAll()}
-								className="text-red-600"
-							>
+							<ContextMenuItem onClick={() => drawingEngine?.clearAll()} className="text-red-600">
 								Limpiar Todos los Elementos ({elements.length} total)
 								<ContextMenuShortcut>Ctrl+Shift+C</ContextMenuShortcut>
 							</ContextMenuItem>

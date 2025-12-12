@@ -1,51 +1,46 @@
-import {createContext, useContext} from "react";
-import {useJsApiLoader} from "@react-google-maps/api";
-import type {ReactNode} from "react";
+import { createContext, useContext } from "react";
+import { useJsApiLoader } from "@react-google-maps/api";
+
+import type { ReactNode } from "react";
 
 interface GoogleMapsContextType {
-    isLoaded: boolean;
-    loadError: Error | undefined;
+	isLoaded: boolean;
+	loadError: Error | undefined;
 }
 
-const GoogleMapsContext = createContext<GoogleMapsContextType | undefined>(
-    undefined
-);
+const GoogleMapsContext = createContext<GoogleMapsContextType | undefined>(undefined);
 
 const libraries: ("places" | "visualization" | "maps" | "marker")[] = [
-    "places",
-    "visualization",
-    "maps",
-    "marker"
+	"places",
+	"visualization",
+	"maps",
+	"marker",
 ];
 
 interface GoogleMapsProviderProps {
-    children: ReactNode;
+	children: ReactNode;
 }
 
-export function GoogleMapsProvider({children}: GoogleMapsProviderProps) {
-    const {isLoaded, loadError} = useJsApiLoader({
-        googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-        libraries,
-        id: 'google-maps-script',
-        mapIds: [import.meta.env.VITE_GOOGLE_MAP_ID],
-    });
+export function GoogleMapsProvider({ children }: GoogleMapsProviderProps) {
+	const { isLoaded, loadError } = useJsApiLoader({
+		googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+		libraries,
+		id: "google-maps-script",
+		mapIds: [import.meta.env.VITE_GOOGLE_MAP_ID],
+	});
 
-    const value = {
-        isLoaded,
-        loadError,
-    };
+	const value = {
+		isLoaded,
+		loadError,
+	};
 
-    return (
-        <GoogleMapsContext.Provider value={value}>
-            {children}
-        </GoogleMapsContext.Provider>
-    );
+	return <GoogleMapsContext.Provider value={value}>{children}</GoogleMapsContext.Provider>;
 }
 
 export function useGoogleMaps() {
-    const context = useContext(GoogleMapsContext);
-    if (context === undefined) {
-        throw new Error("useGoogleMaps must be used within a GoogleMapsProvider");
-    }
-    return context;
+	const context = useContext(GoogleMapsContext);
+	if (context === undefined) {
+		throw new Error("useGoogleMaps must be used within a GoogleMapsProvider");
+	}
+	return context;
 }

@@ -21,9 +21,7 @@ import {
 
 const route = getRouteApi("__root__");
 
-export function TableFilterButton(
-	props: React.HTMLAttributes<HTMLButtonElement>
-) {
+export function TableFilterButton(props: React.HTMLAttributes<HTMLButtonElement>) {
 	return (
 		<Button className="cursor-pointer" {...props}>
 			<ListFilter />
@@ -43,8 +41,7 @@ export function TableFilters({ filters = [] }: Props) {
 	const isMobile = useMediaQuery("(max-width: 640px)");
 
 	const setFilters = useMemo(() => {
-		const { page, limit, ...filters } =
-			filterSearch as GenericTableSearchValues;
+		const { page, limit, ...filters } = filterSearch as GenericTableSearchValues;
 
 		return filters || {};
 	}, [filterSearch]);

@@ -106,9 +106,7 @@ export function setupTestContext(): TestContext {
 		ctx.layersMockInstance = {
 			getLayers: vi.fn(() => Array.from(state.layers.values())),
 			getVisibleLayers: vi.fn(() =>
-				Array.from(state.layers.values()).filter(
-					(layer: any) => layer.visibility === "visible"
-				)
+				Array.from(state.layers.values()).filter((layer: any) => layer.visibility === "visible")
 			),
 			getActiveLayer: vi.fn(() =>
 				state.activeLayerId ? state.layers.get(state.activeLayerId) : null
@@ -184,8 +182,7 @@ export function setupTestContext(): TestContext {
 				const deleted = state.layers.delete(id);
 				state.layerOrder = state.layerOrder.filter((lid: string) => lid !== id);
 				if (state.activeLayerId === id) {
-					state.activeLayerId =
-						state.layers.size > 0 ? state.layers.keys().next().value : null;
+					state.activeLayerId = state.layers.size > 0 ? state.layers.keys().next().value : null;
 				}
 				return {
 					success: deleted,
@@ -258,8 +255,7 @@ export function setupTestContext(): TestContext {
 			toggleLayerVisibility: vi.fn((id: string) => {
 				const layer = state.layers.get(id);
 				if (layer) {
-					layer.visibility =
-						layer.visibility === "visible" ? "hidden" : "visible";
+					layer.visibility = layer.visibility === "visible" ? "hidden" : "visible";
 					return {
 						success: true,
 						operation: "toggleLayerVisibility",
@@ -371,32 +367,30 @@ export function setupTestContext(): TestContext {
 					message: "Layer not found",
 				};
 			}),
-			moveElementsToLayer: vi.fn(
-				(elementIds: string[], targetLayerId: string) => {
-					const layer = state.layers.get(targetLayerId);
-					if (layer) {
-						elementIds.forEach((elementId) => {
-							if (!layer.elementIds.includes(elementId)) {
-								layer.elementIds.push(elementId);
-							}
-						});
-						return {
-							success: true,
-							operation: "moveElementsToLayer",
-							affectedLayers: [targetLayerId],
-							affectedElements: elementIds,
-							message: `${elementIds.length} element(s) moved to layer`,
-						};
-					}
+			moveElementsToLayer: vi.fn((elementIds: string[], targetLayerId: string) => {
+				const layer = state.layers.get(targetLayerId);
+				if (layer) {
+					elementIds.forEach((elementId) => {
+						if (!layer.elementIds.includes(elementId)) {
+							layer.elementIds.push(elementId);
+						}
+					});
 					return {
-						success: false,
+						success: true,
 						operation: "moveElementsToLayer",
-						affectedLayers: [],
-						affectedElements: [],
-						message: "Target layer not found",
+						affectedLayers: [targetLayerId],
+						affectedElements: elementIds,
+						message: `${elementIds.length} element(s) moved to layer`,
 					};
 				}
-			),
+				return {
+					success: false,
+					operation: "moveElementsToLayer",
+					affectedLayers: [],
+					affectedElements: [],
+					message: "Target layer not found",
+				};
+			}),
 		};
 		return ctx.layersMockInstance;
 	});
@@ -659,11 +653,7 @@ export function setupTestContext(): TestContext {
 
 				const t = Math.max(
 					0,
-					Math.min(
-						1,
-						((point.x - start.x) * dx + (point.y - start.y) * dy) /
-							(length * length)
-					)
+					Math.min(1, ((point.x - start.x) * dx + (point.y - start.y) * dy) / (length * length))
 				);
 
 				const projX = start.x + t * dx;
@@ -708,14 +698,8 @@ export function setupTestContext(): TestContext {
 				}
 
 				// For other types, calculate from centroid or bounding box
-				const sumX = element.points.reduce(
-					(sum: number, p: any) => sum + p.x,
-					0
-				);
-				const sumY = element.points.reduce(
-					(sum: number, p: any) => sum + p.y,
-					0
-				);
+				const sumX = element.points.reduce((sum: number, p: any) => sum + p.x, 0);
+				const sumY = element.points.reduce((sum: number, p: any) => sum + p.y, 0);
 				const centerX = sumX / element.points.length;
 				const centerY = sumY / element.points.length;
 
@@ -767,14 +751,8 @@ export function setupTestContext(): TestContext {
 				return Math.sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2);
 			}),
 			getElementCenter: vi.fn((element: any) => {
-				const sumX = element.points.reduce(
-					(sum: number, p: any) => sum + p.x,
-					0
-				);
-				const sumY = element.points.reduce(
-					(sum: number, p: any) => sum + p.y,
-					0
-				);
+				const sumX = element.points.reduce((sum: number, p: any) => sum + p.x, 0);
+				const sumY = element.points.reduce((sum: number, p: any) => sum + p.y, 0);
 				return {
 					x: sumX / element.points.length,
 					y: sumY / element.points.length,

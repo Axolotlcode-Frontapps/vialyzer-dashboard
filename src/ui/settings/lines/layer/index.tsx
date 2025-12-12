@@ -5,13 +5,7 @@ import type { DrawingEngine } from "../drawing";
 import type { LayerInfo } from "../drawing/layers";
 
 import { Button } from "@/ui/shared/button";
-import {
-	Card,
-	CardAction,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from "@/ui/shared/card";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/ui/shared/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/shared/popover";
 import { LayerForm } from "./form";
 import { LayerItem } from "./item";
@@ -179,10 +173,7 @@ export function LayerPanel({ drawingEngine, vehicles }: LayerPanelProps) {
 	const handleVisibilityToggle = (layerId: string) => {
 		const result = drawingEngine?.toggleLayerVisibility(layerId);
 		if (!result?.success) {
-			console.error(
-				"[DrawingLayer] Failed to toggle visibility:",
-				result?.message
-			);
+			console.error("[DrawingLayer] Failed to toggle visibility:", result?.message);
 		} else {
 			// Force redraw to update visibility immediately
 			drawingEngine?.requestRedraw();
@@ -192,10 +183,7 @@ export function LayerPanel({ drawingEngine, vehicles }: LayerPanelProps) {
 	const handleOpacityChange = (layerId: string, opacity: number) => {
 		const result = drawingEngine?.setLayerOpacity(layerId, opacity);
 		if (!result?.success) {
-			console.error(
-				"[DrawingLayer] Failed to change opacity:",
-				result?.message
-			);
+			console.error("[DrawingLayer] Failed to change opacity:", result?.message);
 		} else {
 			// Force redraw to update opacity immediately
 			drawingEngine?.requestRedraw();
@@ -213,10 +201,7 @@ export function LayerPanel({ drawingEngine, vehicles }: LayerPanelProps) {
 		if (layers.length > 1) {
 			const result = drawingEngine?.deleteLayer(layerId);
 			if (!result?.success) {
-				console.error(
-					"[DrawingLayer] Failed to delete layer:",
-					result?.message
-				);
+				console.error("[DrawingLayer] Failed to delete layer:", result?.message);
 			}
 		}
 	};
@@ -224,10 +209,7 @@ export function LayerPanel({ drawingEngine, vehicles }: LayerPanelProps) {
 	const handleLayerDuplicate = (layerId: string) => {
 		const result = drawingEngine?.duplicateLayer(layerId);
 		if (!result?.success) {
-			console.error(
-				"[DrawingLayer] Failed to duplicate layer:",
-				result?.message
-			);
+			console.error("[DrawingLayer] Failed to duplicate layer:", result?.message);
 		}
 	};
 
@@ -284,9 +266,7 @@ export function LayerPanel({ drawingEngine, vehicles }: LayerPanelProps) {
 					className="size-8"
 					variant="secondary"
 					size="icon"
-					title={
-						isVisible ? "Ocultar panel de capas" : "Mostrar panel de capas"
-					}
+					title={isVisible ? "Ocultar panel de capas" : "Mostrar panel de capas"}
 				>
 					<Move className="size-4" />
 				</Button>
@@ -333,13 +313,9 @@ export function LayerPanel({ drawingEngine, vehicles }: LayerPanelProps) {
 										{layers.length} Capa{layers.length !== 1 ? "s" : ""}
 									</div>
 									<div className="text-xs text-muted-foreground/80">
-										{layers.filter((l) => l.visibility === "visible").length}{" "}
-										visible
-										{layers.filter((l) => l.visibility === "visible").length !==
-										1
-											? "s"
-											: ""}
-										, {elements.length} elementos totales
+										{layers.filter((l) => l.visibility === "visible").length} visible
+										{layers.filter((l) => l.visibility === "visible").length !== 1 ? "s" : ""},{" "}
+										{elements.length} elementos totales
 									</div>
 								</div>
 
@@ -402,16 +378,12 @@ export function LayerPanel({ drawingEngine, vehicles }: LayerPanelProps) {
 									<div className="bg-accent text-foreground rounded-lg py-2 px-3 border">
 										<div className="flex justify-between items-center">
 											<span className="text-sm font-medium">Capa Activa</span>
-											<span className="text-sm font-bold">
-												{activeLayer.name}
-											</span>
+											<span className="text-sm font-bold">{activeLayer.name}</span>
 										</div>
 										<div className="text-xs text-muted-foreground mt-1">
-											{drawingEngine?.elements?.filter(
-												(el) => el.layerId === activeLayer.id
-											)?.length || 0}{" "}
-											elementos • {Math.round(activeLayer.opacity * 100)}%
-											opacidad
+											{drawingEngine?.elements?.filter((el) => el.layerId === activeLayer.id)
+												?.length || 0}{" "}
+											elementos • {Math.round(activeLayer.opacity * 100)}% opacidad
 										</div>
 									</div>
 								)}
@@ -420,17 +392,14 @@ export function LayerPanel({ drawingEngine, vehicles }: LayerPanelProps) {
 								{isolatedLayerId && (
 									<div className="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg py-2 px-3">
 										<div className="text-xs font-medium">
-											Capa Aislada:{" "}
-											{layers.find((l) => l.id === isolatedLayerId)?.name}
+											Capa Aislada: {layers.find((l) => l.id === isolatedLayerId)?.name}
 										</div>
 									</div>
 								)}
 							</>
 						) : (
 							<div className="text-center py-4">
-								<div className="text-sm text-muted-foreground">
-									Cargando medio...
-								</div>
+								<div className="text-sm text-muted-foreground">Cargando medio...</div>
 							</div>
 						)}
 					</CardContent>

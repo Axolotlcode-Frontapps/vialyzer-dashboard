@@ -12,13 +12,7 @@ import { usersService } from "@/lib/services/users";
 import { Button } from "@/ui/shared/button";
 import { Field, FieldError, FieldLabel } from "@/ui/shared/field";
 import { Input } from "@/ui/shared/input";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/ui/shared/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/shared/select";
 import { SheetClose, SheetFooter } from "@/ui/shared/sheet";
 import { Spinner } from "@/ui/shared/spinner";
 
@@ -73,23 +67,18 @@ export function UserFields({ onSuccess, update = false, user }: Props) {
 		onSuccess: ({ name }) => {
 			form.reset();
 			queryClient.invalidateQueries({ queryKey: ["users"] });
-			toast.success(
-				`Usuario ${update ? "actualizado" : "creado"} correctamente`,
-				{
-					description: `Se ha ${update ? "actualizado" : "creado"} el usuario "${name}".`,
-				}
-			);
+			toast.success(`Usuario ${update ? "actualizado" : "creado"} correctamente`, {
+				description: `Se ha ${update ? "actualizado" : "creado"} el usuario "${name}".`,
+			});
 			onSuccess(false);
 		},
 		onError: (error: AxiosError) => {
 			form.state.canSubmit = true;
 
-			const message = (error.response?.data as GeneralResponse<unknown>)
-				?.message;
+			const message = (error.response?.data as GeneralResponse<unknown>)?.message;
 
 			const capitalizedMessage =
-				message &&
-				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+				message && message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
 
 			toast.error(`Error al ${update ? "actualizar" : "crear"} el usuario`, {
 				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
@@ -114,8 +103,7 @@ export function UserFields({ onSuccess, update = false, user }: Props) {
 				<div className="flex flex-col sm:flex-row gap-4">
 					<form.Field name="name">
 						{(field) => {
-							const isInvalid =
-								field.state.meta.isTouched && !field.state.meta.isValid;
+							const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 							return (
 								<Field data-invalid={isInvalid}>
 									<FieldLabel htmlFor={field.name}>Nombre</FieldLabel>
@@ -135,8 +123,7 @@ export function UserFields({ onSuccess, update = false, user }: Props) {
 
 					<form.Field name="lastname">
 						{(field) => {
-							const isInvalid =
-								field.state.meta.isTouched && !field.state.meta.isValid;
+							const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 							return (
 								<Field data-invalid={isInvalid}>
 									<FieldLabel htmlFor={field.name}>Apellido</FieldLabel>
@@ -157,8 +144,7 @@ export function UserFields({ onSuccess, update = false, user }: Props) {
 
 				<form.Field name="email">
 					{(field) => {
-						const isInvalid =
-							field.state.meta.isTouched && !field.state.meta.isValid;
+						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
 						return (
 							<Field data-invalid={isInvalid}>
@@ -180,8 +166,7 @@ export function UserFields({ onSuccess, update = false, user }: Props) {
 
 				<form.Field name="phone">
 					{(field) => {
-						const isInvalid =
-							field.state.meta.isTouched && !field.state.meta.isValid;
+						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 						return (
 							<Field data-invalid={isInvalid}>
 								<FieldLabel htmlFor={field.name}>Teléfono</FieldLabel>
@@ -202,8 +187,7 @@ export function UserFields({ onSuccess, update = false, user }: Props) {
 
 				<form.Field name="role">
 					{(field) => {
-						const isInvalid =
-							field.state.meta.isTouched && !field.state.meta.isValid;
+						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 						return (
 							<Field data-invalid={isInvalid}>
 								<FieldLabel htmlFor={field.name}>Rol</FieldLabel>
@@ -231,8 +215,7 @@ export function UserFields({ onSuccess, update = false, user }: Props) {
 
 				<form.Field name="company">
 					{(field) => {
-						const isInvalid =
-							field.state.meta.isTouched && !field.state.meta.isValid;
+						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 						return (
 							<Field data-invalid={isInvalid}>
 								<FieldLabel htmlFor={field.name}>Empresa</FieldLabel>
@@ -260,9 +243,7 @@ export function UserFields({ onSuccess, update = false, user }: Props) {
 			</form>
 
 			<SheetFooter>
-				<form.Subscribe
-					selector={(state) => [state.canSubmit, state.isSubmitting]}
-				>
+				<form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
 					{([canSubmit, isSubmitting]) => (
 						<Button type="submit" form="user-form" disabled={!canSubmit}>
 							{isSubmitting ? <Spinner /> : null}

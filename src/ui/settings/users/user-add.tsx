@@ -31,8 +31,8 @@ export function UserAdd() {
 				<SheetHeader>
 					<SheetTitle>Crear usuario</SheetTitle>
 					<SheetDescription>
-						Vas a crear un nuevo usuario. Completa la información necesaria y
-						guarda para agregar el usuario.
+						Vas a crear un nuevo usuario. Completa la información necesaria y guarda para agregar el
+						usuario.
 					</SheetDescription>
 				</SheetHeader>
 

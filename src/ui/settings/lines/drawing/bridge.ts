@@ -54,12 +54,7 @@ export type AllowedTransforms<P extends DrawingElementPaths> =
 	P extends "color" | "info.backgroundColor"
 		? `${ColorTransforms}(${P})`
 		: // Text fields
-			P extends
-					| "type"
-					| "info.name"
-					| "info.description"
-					| "info.fontFamily"
-					| "info.direction"
+			P extends "type" | "info.name" | "info.description" | "info.fontFamily" | "info.direction"
 			? `${TextTransforms}(${P})`
 			: // Number fields
 				P extends "info.distance" | "info.fontSize" | "info.backgroundOpacity"
@@ -91,8 +86,7 @@ type PointArrayFieldPath =
 
 // Type for the array mapping syntax, e.g., "[int(points.x), int(points.y)][]"
 // This syntax is restricted to point arrays like 'points' or 'detection.entry'
-export type ArrayMappingString =
-	`[${PointArrayFieldPath}, ${PointArrayFieldPath}][]`;
+export type ArrayMappingString = `[${PointArrayFieldPath}, ${PointArrayFieldPath}][]`;
 
 // Field mapping configuration
 export interface FieldMapping {
@@ -156,9 +150,7 @@ export interface BridgeConfig<TSource = any> {
 }
 
 // Helper to check if output config is legacy format
-function isLegacyOutput(
-	output: OutputConfig | FieldMapping
-): output is FieldMapping {
+function isLegacyOutput(output: OutputConfig | FieldMapping): output is FieldMapping {
 	// Legacy format has string/function values directly, not tuple arrays
 	const firstValue = Object.values(output)[0];
 	return typeof firstValue === "string" || typeof firstValue === "function";
@@ -182,15 +174,8 @@ export interface MultiTargetExportResult {
 // Bridge instance interface
 // biome-ignore lint/suspicious/noExplicitAny: Neccessary
 export interface Bridge<TSource = any> {
-	export: <T>(
-		elements: DrawingElement[],
-		layers?: LayerInfo[]
-	) => T[] | MultiTargetExportResult;
-	exportTarget: <T>(
-		targetName: string,
-		elements: DrawingElement[],
-		layers?: LayerInfo[]
-	) => T[];
+	export: <T>(elements: DrawingElement[], layers?: LayerInfo[]) => T[] | MultiTargetExportResult;
+	exportTarget: <T>(targetName: string, elements: DrawingElement[], layers?: LayerInfo[]) => T[];
 	import: (data: TSource[]) => {
 		elements: DrawingElement[];
 		layers: Map<string, LayerInfo>;
@@ -213,10 +198,7 @@ export const transformations = {
 		return [r, g, b];
 	},
 
-	rgba: (
-		color: string,
-		alpha: number = 1
-	): [number, number, number, number] => {
+	rgba: (color: string, alpha: number = 1): [number, number, number, number] => {
 		const hex = color.replace("#", "");
 		const r = parseInt(hex.substr(0, 2), 16);
 		const g = parseInt(hex.substr(2, 2), 16);
@@ -281,11 +263,7 @@ export const transformations = {
 		return Number.isNaN(timestamp) ? Date.now() : timestamp;
 	},
 
-	elementIndex: (
-		_value: unknown,
-		element: DrawingElement,
-		elements?: DrawingElement[]
-	): number => {
+	elementIndex: (_value: unknown, element: DrawingElement, elements?: DrawingElement[]): number => {
 		if (elements) {
 			return elements.indexOf(element);
 		}
@@ -299,10 +277,7 @@ export const transformations = {
 
 	// ID transformations
 	generateId: (element: DrawingElement): string => {
-		return (
-			element.id ||
-			`element-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-		);
+		return element.id || `element-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 	},
 };
 
@@ -389,8 +364,7 @@ export const reverseTransformations = {
 	},
 
 	time: (value: number): number => {
-		if (typeof value !== "number" || Number.isNaN(value))
-			return new Date().getTime();
+		if (typeof value !== "number" || Number.isNaN(value)) return new Date().getTime();
 
 		return new Date(value).getTime();
 	},
@@ -419,9 +393,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 
 	constructor(config: BridgeConfig<TSource> | LegacyBridgeConfig<TSource>) {
 		// Detect if using legacy output format and convert if needed
-		this.#isLegacyMode = isLegacyOutput(
-			config.output as OutputConfig | FieldMapping
-		);
+		this.#isLegacyMode = isLegacyOutput(config.output as OutputConfig | FieldMapping);
 
 		if (this.#isLegacyMode) {
 			// Convert legacy format to new format with default target
@@ -441,10 +413,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 	 * For legacy mode: returns T[] directly
 	 * For multi-target mode: returns MultiTargetExportResult with all targets
 	 */
-	export<T>(
-		elements: DrawingElement[],
-		layers?: LayerInfo[]
-	): T[] | MultiTargetExportResult {
+	export<T>(elements: DrawingElement[], layers?: LayerInfo[]): T[] | MultiTargetExportResult {
 		const completedElements = elements.filter((element) => element.completed);
 
 		// Legacy mode - return array directly using default target
@@ -455,9 +424,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 		// Multi-target mode - export all targets
 		const result: MultiTargetExportResult = {};
 
-		for (const [targetName, targetConfig] of Object.entries(
-			this.#config.output
-		)) {
+		for (const [targetName, targetConfig] of Object.entries(this.#config.output)) {
 			if (isOutputTargetConfig(targetConfig)) {
 				const [fieldType, fieldMapping] = targetConfig;
 
@@ -469,11 +436,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 					// Object type - create a keyed object using element id
 					const objResult: Record<string, unknown> = {};
 					for (const element of completedElements) {
-						objResult[element.id] = this.#exportSingleWithMapping(
-							element,
-							fieldMapping,
-							layers
-						);
+						objResult[element.id] = this.#exportSingleWithMapping(element, fieldMapping, layers);
 					}
 					result[targetName] = objResult;
 				}
@@ -486,37 +449,25 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 	/**
 	 * Export elements for a specific target
 	 */
-	exportTarget<T>(
-		targetName: string,
-		elements: DrawingElement[],
-		layers?: LayerInfo[]
-	): T[] {
+	exportTarget<T>(targetName: string, elements: DrawingElement[], layers?: LayerInfo[]): T[] {
 		const completedElements = elements.filter((element) => element.completed);
 		const targetConfig = this.#config.output[targetName];
 
 		if (!targetConfig) {
-			console.warn(
-				`[Bridge] Target "${targetName}" not found in output config`
-			);
+			console.warn(`[Bridge] Target "${targetName}" not found in output config`);
 			return [];
 		}
 
 		if (isOutputTargetConfig(targetConfig)) {
 			const [, fieldMapping] = targetConfig;
 			return completedElements.map(
-				(element) =>
-					this.#exportSingleWithMapping(element, fieldMapping, layers) as T
+				(element) => this.#exportSingleWithMapping(element, fieldMapping, layers) as T
 			);
 		}
 
 		// Fallback for legacy-style direct mapping
 		return completedElements.map(
-			(element) =>
-				this.#exportSingleWithMapping(
-					element,
-					targetConfig as FieldMapping,
-					layers
-				) as T
+			(element) => this.#exportSingleWithMapping(element, targetConfig as FieldMapping, layers) as T
 		);
 	}
 
@@ -538,10 +489,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			try {
 				result[outputField] = this.#resolveFieldValue(mapping, element, layer);
 			} catch (error) {
-				console.warn(
-					`[Bridge] Failed to resolve field mapping for ${outputField}:`,
-					error
-				);
+				console.warn(`[Bridge] Failed to resolve field mapping for ${outputField}:`, error);
 				result[outputField] = null;
 			}
 		}
@@ -585,11 +533,8 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			// If detection exists but is incomplete (missing entry or exit), remove it
 			if (element.detection) {
 				const hasEntry =
-					Array.isArray(element.detection.entry) &&
-					element.detection.entry.length > 0;
-				const hasExit =
-					Array.isArray(element.detection.exit) &&
-					element.detection.exit.length > 0;
+					Array.isArray(element.detection.entry) && element.detection.entry.length > 0;
+				const hasExit = Array.isArray(element.detection.exit) && element.detection.exit.length > 0;
 
 				if (!hasEntry || !hasExit) {
 					const { detection: _, ...elementWithoutDetection } = element;
@@ -650,35 +595,23 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			typeof item.groupId === "undefined";
 		const hasInfo = typeof item.info === "object" && item.info !== null;
 		const hasInfoName =
-			hasInfo &&
-			typeof item.info.name === "string" &&
-			item.info.name.trim() !== "";
+			hasInfo && typeof item.info.name === "string" && item.info.name.trim() !== "";
 		const hasValidInfoDescription =
 			!hasInfo ||
 			typeof item.info.description === "undefined" ||
-			(typeof item.info.description === "string" &&
-				item.info.description.trim() !== "");
+			(typeof item.info.description === "string" && item.info.description.trim() !== "");
 		const hasInfoDirection =
-			hasInfo &&
-			typeof item.info.direction === "string" &&
-			item.info.direction.trim() !== "";
+			hasInfo && typeof item.info.direction === "string" && item.info.direction.trim() !== "";
 		const hasInfoDistance =
-			hasInfo &&
-			typeof item.info.distance === "number" &&
-			!Number.isNaN(item.info.distance);
+			hasInfo && typeof item.info.distance === "number" && !Number.isNaN(item.info.distance);
 		const hasInfoFontSize =
-			hasInfo &&
-			typeof item.info.fontSize === "number" &&
-			!Number.isNaN(item.info.fontSize);
+			hasInfo && typeof item.info.fontSize === "number" && !Number.isNaN(item.info.fontSize);
 		const hasInfoFontFamily =
-			hasInfo &&
-			typeof item.info.fontFamily === "string" &&
-			item.info.fontFamily.trim() !== "";
+			hasInfo && typeof item.info.fontFamily === "string" && item.info.fontFamily.trim() !== "";
 		const hasValidInfoBackgroundColor =
 			!hasInfo ||
 			typeof item.info.backgroundColor === "undefined" ||
-			(typeof item.info.backgroundColor === "string" &&
-				item.info.backgroundColor.trim() !== "");
+			(typeof item.info.backgroundColor === "string" && item.info.backgroundColor.trim() !== "");
 		const hasInfoBackgroundOpacity =
 			hasInfo &&
 			typeof item.info.backgroundOpacity === "number" &&
@@ -750,16 +683,13 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			!Number.isNaN(layer.opacity) &&
 			layer.opacity >= 0 &&
 			layer.opacity <= 1;
-		const hasZIndex =
-			typeof layer.zIndex === "number" && !Number.isNaN(layer.zIndex);
+		const hasZIndex = typeof layer.zIndex === "number" && !Number.isNaN(layer.zIndex);
 		const hasElementIds = Array.isArray(layer.elementIds);
 		const hasValidColor =
 			(typeof layer.color === "string" && layer.color.trim() !== "") ||
 			typeof layer.color === "undefined";
-		const hasCreatedAt =
-			typeof layer.createdAt === "number" && !Number.isNaN(layer.createdAt);
-		const hasUpdatedAt =
-			typeof layer.updatedAt === "number" && !Number.isNaN(layer.updatedAt);
+		const hasCreatedAt = typeof layer.createdAt === "number" && !Number.isNaN(layer.createdAt);
+		const hasUpdatedAt = typeof layer.updatedAt === "number" && !Number.isNaN(layer.updatedAt);
 
 		return (
 			hasId &&
@@ -791,9 +721,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 		const optionalNestedObjects = new Set(["detection", "direction"]);
 
 		// Process each field mapping from the input configuration
-		for (const [sourceMapping, destinationConfig] of Object.entries(
-			this.#config.input.elements
-		)) {
+		for (const [sourceMapping, destinationConfig] of Object.entries(this.#config.input.elements)) {
 			try {
 				// Skip function mappings (they should be handled by the user outside the bridge)
 				if (typeof destinationConfig === "function") {
@@ -824,10 +752,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 				}
 
 				// Get the value from the source data
-				const sourceValue = this.#getNestedValue(
-					inputData,
-					sourcePath as string
-				);
+				const sourceValue = this.#getNestedValue(inputData, sourcePath as string);
 
 				// Track attempted nested fields
 				const parentPath = destinationPath.split(".").slice(0, -1).join(".");
@@ -844,16 +769,11 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 
 				// First check for custom transform function (runs even if sourceValue is undefined)
 				if (isCustomMapping) {
-					const customTransform = (destinationConfig as CustomFieldMapping)
-						.transform;
+					const customTransform = (destinationConfig as CustomFieldMapping).transform;
 					transformedValue = customTransform(sourceValue);
 				} else if (transformFuncName) {
 					// Then check for built-in transform functions
-					if (
-						reverseTransformations[
-							transformFuncName as keyof typeof reverseTransformations
-						]
-					) {
+					if (reverseTransformations[transformFuncName as keyof typeof reverseTransformations]) {
 						const transformFn = reverseTransformations[
 							transformFuncName as keyof typeof reverseTransformations
 						] as (value: unknown) => unknown;
@@ -882,10 +802,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 					transformedValue
 				);
 			} catch (error) {
-				console.warn(
-					`[Bridge] Failed to process input mapping for "${sourceMapping}":`,
-					error
-				);
+				console.warn(`[Bridge] Failed to process input mapping for "${sourceMapping}":`, error);
 			}
 		}
 
@@ -903,9 +820,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 		// Clean up incomplete optional nested objects
 		// Only remove parent objects that are truly optional (like detection, direction)
 		// Don't remove required objects like info that just have some optional fields
-		for (const [parentPath, attemptedFields] of Object.entries(
-			nestedFieldsAttempted
-		)) {
+		for (const [parentPath, attemptedFields] of Object.entries(nestedFieldsAttempted)) {
 			// Only apply cleanup logic to truly optional nested objects
 			if (!optionalNestedObjects.has(parentPath)) {
 				continue;
@@ -914,17 +829,11 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			const setFields = nestedFieldsSet[parentPath] || new Set();
 
 			// Check if all attempted fields were successfully set
-			const allFieldsSet = Array.from(attemptedFields).every((field) =>
-				setFields.has(field)
-			);
+			const allFieldsSet = Array.from(attemptedFields).every((field) => setFields.has(field));
 
 			// If not all fields were set, remove the entire parent object
 			if (!allFieldsSet) {
-				this.#setNestedValue(
-					element as unknown as Record<string, unknown>,
-					parentPath,
-					undefined
-				);
+				this.#setNestedValue(element as unknown as Record<string, unknown>, parentPath, undefined);
 			}
 		}
 
@@ -949,10 +858,8 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 
 		// Sort data to prioritize items with non-null vehicle data
 		const sortedData = [...data].sort((a, b) => {
-			const aHasVehicle =
-				this.#getNestedValue(a as Record<string, unknown>, "vehicle") !== null;
-			const bHasVehicle =
-				this.#getNestedValue(b as Record<string, unknown>, "vehicle") !== null;
+			const aHasVehicle = this.#getNestedValue(a as Record<string, unknown>, "vehicle") !== null;
+			const bHasVehicle = this.#getNestedValue(b as Record<string, unknown>, "vehicle") !== null;
 			// Items with vehicle come first
 			if (aHasVehicle && !bHasVehicle) return -1;
 			if (!aHasVehicle && bHasVehicle) return 1;
@@ -1007,23 +914,15 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 
 					// First check for custom transform function
 					if (isCustomMapping) {
-						const customTransform = (destinationConfig as CustomFieldMapping)
-							.transform;
+						const customTransform = (destinationConfig as CustomFieldMapping).transform;
 						transformedValue = customTransform(sourceValue);
 					} else if (transformFuncName) {
 						// Then check for built-in transform functions
-						if (
-							reverseTransformations[
-								transformFuncName as keyof typeof reverseTransformations
-							]
-						) {
+						if (reverseTransformations[transformFuncName as keyof typeof reverseTransformations]) {
 							const transformFn = reverseTransformations[
 								transformFuncName as keyof typeof reverseTransformations
 							] as (value: unknown) => unknown;
-							transformedValue = transformFn(sourceValue) as Record<
-								string,
-								unknown
-							>;
+							transformedValue = transformFn(sourceValue) as Record<string, unknown>;
 						}
 					}
 
@@ -1034,10 +933,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 						transformedValue
 					);
 				} catch (error) {
-					console.warn(
-						`[Bridge] Failed to process layer mapping for "${sourceMapping}":`,
-						error
-					);
+					console.warn(`[Bridge] Failed to process layer mapping for "${sourceMapping}":`, error);
 				}
 			}
 
@@ -1086,10 +982,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 				}
 			} else {
 				skippedItems++;
-				console.warn(
-					`[Bridge] Skipping element - no valid layer ID. Extracted:`,
-					layerId
-				);
+				console.warn(`[Bridge] Skipping element - no valid layer ID. Extracted:`, layerId);
 			}
 		});
 
@@ -1118,14 +1011,10 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 	 * Update bridge configuration
 	 */
 	updateConfig(
-		config:
-			| Partial<BridgeConfig<TSource>>
-			| Partial<LegacyBridgeConfig<TSource>>
+		config: Partial<BridgeConfig<TSource>> | Partial<LegacyBridgeConfig<TSource>>
 	): void {
 		if (config.output) {
-			const isLegacy = isLegacyOutput(
-				config.output as OutputConfig | FieldMapping
-			);
+			const isLegacy = isLegacyOutput(config.output as OutputConfig | FieldMapping);
 			if (isLegacy) {
 				// Convert legacy to new format
 				this.#config.output = {
@@ -1191,9 +1080,10 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			const fieldValue = this.#getNestedValue(element, fieldPath);
 
 			if (transformations[funcName as keyof typeof transformations]) {
-				const transformFn = transformations[
-					funcName as keyof typeof transformations
-				] as (value: unknown, element: DrawingElement) => unknown;
+				const transformFn = transformations[funcName as keyof typeof transformations] as (
+					value: unknown,
+					element: DrawingElement
+				) => unknown;
 				return transformFn(fieldValue, element);
 			}
 
@@ -1253,22 +1143,16 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 					let yValue = this.#getNestedValue(item, ySubPath);
 
 					// Apply transformations if specified
-					if (
-						xTransform &&
-						transformations[xTransform as keyof typeof transformations]
-					) {
-						const transformFn = transformations[
-							xTransform as keyof typeof transformations
-						] as (value: unknown) => unknown;
+					if (xTransform && transformations[xTransform as keyof typeof transformations]) {
+						const transformFn = transformations[xTransform as keyof typeof transformations] as (
+							value: unknown
+						) => unknown;
 						xValue = transformFn(xValue);
 					}
-					if (
-						yTransform &&
-						transformations[yTransform as keyof typeof transformations]
-					) {
-						const transformFn = transformations[
-							yTransform as keyof typeof transformations
-						] as (value: unknown) => unknown;
+					if (yTransform && transformations[yTransform as keyof typeof transformations]) {
+						const transformFn = transformations[yTransform as keyof typeof transformations] as (
+							value: unknown
+						) => unknown;
 						yValue = transformFn(yValue);
 					}
 
@@ -1312,22 +1196,14 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 	/**
 	 * Set nested value in object using dot notation
 	 */
-	#setNestedValue(
-		obj: Record<string, unknown>,
-		path: string,
-		value: unknown
-	): void {
+	#setNestedValue(obj: Record<string, unknown>, path: string, value: unknown): void {
 		const keys = path.split(".");
 		const lastKey = keys.pop();
 		if (!lastKey) return;
 
 		let current = obj;
 		for (const key of keys) {
-			if (
-				!(key in current) ||
-				typeof current[key] !== "object" ||
-				current[key] === null
-			) {
+			if (!(key in current) || typeof current[key] !== "object" || current[key] === null) {
 				current[key] = {};
 			}
 			current = current[key] as Record<string, unknown>;

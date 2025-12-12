@@ -182,9 +182,7 @@ export class DrawingState implements DrawingStateProperties {
 			selectedElements: structuredClone(state.selectedElements),
 			mode: state.mode,
 			drawing: state.drawing,
-			currentElement: state.currentElement
-				? structuredClone(state.currentElement)
-				: null,
+			currentElement: state.currentElement ? structuredClone(state.currentElement) : null,
 			hoveredElement: state.hoveredElement,
 			drag: { ...state.drag },
 			isEditingText: state.isEditingText,

@@ -941,16 +941,7 @@ export class DrawingShortcuts {
 		}
 
 		// Special keys
-		const specialKeys = [
-			"Enter",
-			"Escape",
-			"Delete",
-			"Backspace",
-			"Tab",
-			" ",
-			"F2",
-			"F5",
-		];
+		const specialKeys = ["Enter", "Escape", "Delete", "Backspace", "Tab", " ", "F2", "F5"];
 		if (specialKeys.includes(event.key)) {
 			return true;
 		}

@@ -1,12 +1,6 @@
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "../card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../chart";
 import { GraphHeader } from "./header";
 import { Stats } from "./stats";
@@ -50,16 +44,7 @@ interface Props {
 	}[];
 }
 
-export function GraphStack({
-	title,
-	data,
-	config,
-	stats,
-	header,
-	axis,
-	legends,
-	tooltip,
-}: Props) {
+export function GraphStack({ title, data, config, stats, header, axis, legends, tooltip }: Props) {
 	return (
 		<Card className="border-0 rounded-lg">
 			<CardHeader className="w-full flex flex-col justify-between flex-wrap gap-5">
@@ -74,10 +59,7 @@ export function GraphStack({
 				) : null}
 			</CardHeader>
 			<CardContent>
-				<ChartContainer
-					config={config}
-					className="w-full min-h-80 max-h-[400px] -bg-conic-330"
-				>
+				<ChartContainer config={config} className="w-full min-h-80 max-h-[400px] -bg-conic-330">
 					<BarChart accessibilityLayer data={data}>
 						<CartesianGrid vertical={false} />
 						<XAxis
@@ -99,9 +81,7 @@ export function GraphStack({
 								position: "insideLeft",
 							}}
 						/>
-						<ChartTooltip
-							content={<ChartTooltipContent labelFormatter={tooltip} />}
-						/>
+						<ChartTooltip content={<ChartTooltipContent labelFormatter={tooltip} />} />
 						{Object.keys(config).map((key, index) => (
 							<Bar
 								key={key}

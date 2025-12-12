@@ -1,21 +1,10 @@
-import {
-	flexRender,
-	getCoreRowModel,
-	useReactTable,
-} from "@tanstack/react-table";
+import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 
 import type { ColumnDef } from "@tanstack/react-table";
 
 import { pinningStyles } from "@/lib/utils/charts";
 import { Card, CardContent } from "../card";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "../table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../table";
 
 interface Props<T, V> {
 	data: T[];
@@ -44,16 +33,10 @@ export function GraphsTable<T, V>({ data, columns, pining = [] }: Props<T, V>) {
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map((header) => {
 									return (
-										<TableHead
-											key={header.id}
-											style={{ ...pinningStyles(header.column) }}
-										>
+										<TableHead key={header.id} style={{ ...pinningStyles(header.column) }}>
 											{header.isPlaceholder
 												? null
-												: flexRender(
-														header.column.columnDef.header,
-														header.getContext()
-													)}
+												: flexRender(header.column.columnDef.header, header.getContext())}
 										</TableHead>
 									);
 								})}
@@ -63,29 +46,17 @@ export function GraphsTable<T, V>({ data, columns, pining = [] }: Props<T, V>) {
 					<TableBody>
 						{table.getRowModel().rows?.length ? (
 							table.getRowModel().rows.map((row) => (
-								<TableRow
-									key={row.id}
-									data-state={row.getIsSelected() && "selected"}
-								>
+								<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
 									{row.getVisibleCells().map((cell) => (
-										<TableCell
-											key={cell.id}
-											style={{ ...pinningStyles(cell.column) }}
-										>
-											{flexRender(
-												cell.column.columnDef.cell,
-												cell.getContext()
-											)}
+										<TableCell key={cell.id} style={{ ...pinningStyles(cell.column) }}>
+											{flexRender(cell.column.columnDef.cell, cell.getContext())}
 										</TableCell>
 									))}
 								</TableRow>
 							))
 						) : (
 							<TableRow>
-								<TableCell
-									colSpan={columns.length}
-									className="h-24 text-center"
-								>
+								<TableCell colSpan={columns.length} className="h-24 text-center">
 									Sin resultados
 								</TableCell>
 							</TableRow>

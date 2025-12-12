@@ -1,13 +1,7 @@
 import { useMemo } from "react";
 
 import { Label } from "@/ui/shared/label";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/ui/shared/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/shared/select";
 import { useFieldDrawingContext } from "./context";
 
 interface Props {
@@ -17,12 +11,7 @@ interface Props {
 	options: { value: number; label: string }[];
 }
 
-export function SelectField({
-	label,
-	description,
-	placeholder,
-	options,
-}: Props) {
+export function SelectField({ label, description, placeholder, options }: Props) {
 	const field = useFieldDrawingContext<number>();
 
 	const error = useMemo(() => {
@@ -40,9 +29,7 @@ export function SelectField({
 
 	return (
 		<Label className="flex-col gap-0">
-			{label ? (
-				<span className="block w-full mb-3.5 text-sm">{label}</span>
-			) : null}
+			{label ? <span className="block w-full mb-3.5 text-sm">{label}</span> : null}
 			<Select
 				value={field.state.value?.toString()}
 				onValueChange={(value) => field.handleChange(Number(value))}
@@ -58,12 +45,8 @@ export function SelectField({
 					))}
 				</SelectContent>
 			</Select>
-			{description ? (
-				<span className="text-sm text-muted-foreground">{description}</span>
-			) : null}
-			{error ? (
-				<span className="text-sm text-destructive mt-2 w-full">{error}</span>
-			) : null}
+			{description ? <span className="text-sm text-muted-foreground">{description}</span> : null}
+			{error ? <span className="text-sm text-destructive mt-2 w-full">{error}</span> : null}
 		</Label>
 	);
 }

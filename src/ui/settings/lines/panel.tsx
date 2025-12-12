@@ -4,13 +4,7 @@ import { BarChart3, ChevronRight } from "lucide-react";
 import type { PanelProps } from "./types";
 
 import { Button } from "@/ui/shared/button";
-import {
-	Card,
-	CardAction,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from "@/ui/shared/card";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/ui/shared/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/shared/popover";
 
 export function Panel({ drawingEngine }: PanelProps) {
@@ -76,12 +70,8 @@ export function Panel({ drawingEngine }: PanelProps) {
 									<div className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
 										Información
 									</div>
-									<div className="text-sm font-medium text-foreground">
-										{/* media type */}
-									</div>
-									<div className="text-xs text-muted-foreground/80">
-										{/* media into*/}
-									</div>
+									<div className="text-sm font-medium text-foreground">{/* media type */}</div>
+									<div className="text-xs text-muted-foreground/80">{/* media into*/}</div>
 								</div>
 
 								{/* Drawing Elements Count */}
@@ -135,18 +125,14 @@ export function Panel({ drawingEngine }: PanelProps) {
 								{/* Total Summary */}
 								<div className="bg-accent text-foreground rounded-lg py-1 px-2 border">
 									<div className="flex justify-between items-center">
-										<span className="text-sm font-medium">
-											Elementos totales
-										</span>
+										<span className="text-sm font-medium">Elementos totales</span>
 										<span className="text-lg font-bold">{elements.length}</span>
 									</div>
 								</div>
 							</>
 						) : (
 							<div className="text-center py-4">
-								<div className="text-sm text-muted-foreground">
-									Cargando recurso...
-								</div>
+								<div className="text-sm text-muted-foreground">Cargando recurso...</div>
 							</div>
 						)}
 					</CardContent>

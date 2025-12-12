@@ -27,11 +27,7 @@ export class DrawingAnnotation {
 	/**
 	 * Open text editor for an element
 	 */
-	openTextEditor(
-		elementId: string,
-		element?: DrawingElement,
-		layer?: LayerInfo
-	): void {
+	openTextEditor(elementId: string, element?: DrawingElement, layer?: LayerInfo): void {
 		if (!element?.completed) return;
 
 		this.#config.on.stateChange({
@@ -153,9 +149,7 @@ export class DrawingAnnotation {
 			averagePoints:
 				elements.length > 0
 					? Math.round(
-							(elements.reduce((sum, el) => sum + el.points.length, 0) /
-								elements.length) *
-								100
+							(elements.reduce((sum, el) => sum + el.points.length, 0) / elements.length) * 100
 						) / 100
 					: 0,
 			colors: this.#analyzeColors(elements),
@@ -193,9 +187,7 @@ export class DrawingAnnotation {
 	 */
 	#analyzeTextLabels(elements: DrawingElement[]): TextAnalysis {
 		const elementsWithText = elements.filter((el) => el.info?.name);
-		const elementsWithDescription = elements.filter(
-			(el) => el.info?.description
-		);
+		const elementsWithDescription = elements.filter((el) => el.info?.description);
 
 		if (elementsWithText.length === 0) {
 			return {
@@ -227,9 +219,7 @@ export class DrawingAnnotation {
 		return {
 			total: elementsWithText.length,
 			averageLength:
-				Math.round(
-					(textLengths.reduce((a, b) => a + b, 0) / textLengths.length) * 100
-				) / 100,
+				Math.round((textLengths.reduce((a, b) => a + b, 0) / textLengths.length) * 100) / 100,
 			fontSizes,
 			longestText: {
 				content: longestElement.info?.name || "",
@@ -245,9 +235,7 @@ export class DrawingAnnotation {
 			averageDescriptionLength:
 				descriptionLengths.length > 0
 					? Math.round(
-							(descriptionLengths.reduce((a, b) => a + b, 0) /
-								descriptionLengths.length) *
-								100
+							(descriptionLengths.reduce((a, b) => a + b, 0) / descriptionLengths.length) * 100
 						) / 100
 					: 0,
 		};
@@ -272,15 +260,11 @@ export class DrawingAnnotation {
 		if (stats.byType.line > 0) summary.push(`Lines: ${stats.byType.line}`);
 		if (stats.byType.area > 0) summary.push(`Areas: ${stats.byType.area}`);
 		if (stats.byType.curve > 0) summary.push(`Curves: ${stats.byType.curve}`);
-		if (stats.byType.rectangle > 0)
-			summary.push(`Rectangles: ${stats.byType.rectangle}`);
-		if (stats.byType.circle > 0)
-			summary.push(`Circles: ${stats.byType.circle}`);
+		if (stats.byType.rectangle > 0) summary.push(`Rectangles: ${stats.byType.rectangle}`);
+		if (stats.byType.circle > 0) summary.push(`Circles: ${stats.byType.circle}`);
 
 		if (stats.textStats.total > 0) {
-			summary.push(
-				`Average text length: ${stats.textStats.averageLength} characters`
-			);
+			summary.push(`Average text length: ${stats.textStats.averageLength} characters`);
 			if (stats.textStats.withDescription > 0) {
 				summary.push(`With descriptions: ${stats.textStats.withDescription}`);
 				summary.push(
@@ -316,9 +300,7 @@ export class DrawingAnnotation {
 		return elements.filter((element) => {
 			if (!element.info || !element.info.name) return false;
 
-			const name = caseSensitive
-				? element.info.name
-				: element.info.name.toLowerCase();
+			const name = caseSensitive ? element.info.name : element.info.name.toLowerCase();
 			const description = element.info.description
 				? caseSensitive
 					? element.info.description
@@ -374,10 +356,7 @@ export class DrawingAnnotation {
 					});
 				}
 
-				if (
-					element.info.fontSize &&
-					(element.info.fontSize < 8 || element.info.fontSize > 48)
-				) {
+				if (element.info.fontSize && (element.info.fontSize < 8 || element.info.fontSize > 48)) {
 					errors.push({
 						elementId: element.id,
 						elementIndex: index,
@@ -387,13 +366,10 @@ export class DrawingAnnotation {
 				}
 
 				// Check if distance is required based on layer type
-				const layer = element.layerId
-					? layers?.get(element.layerId)
-					: undefined;
+				const layer = element.layerId ? layers?.get(element.layerId) : undefined;
 				if (
 					layer?.type === "CONFIGURATION" &&
-					(element.info.distance === undefined ||
-						element.info.distance === null)
+					(element.info.distance === undefined || element.info.distance === null)
 				) {
 					errors.push({
 						elementId: element.id,
@@ -411,10 +387,7 @@ export class DrawingAnnotation {
 	/**
 	 * Auto-generate text labels based on element properties
 	 */
-	generateAutoLabels(
-		elements: DrawingElement[],
-		labelType: LabelType = "type"
-	): DrawingElement[] {
+	generateAutoLabels(elements: DrawingElement[], labelType: LabelType = "type"): DrawingElement[] {
 		const updatedElements = elements.map((element, index) => {
 			// Skip if element already has name
 			if (element.info?.name) {
@@ -425,8 +398,7 @@ export class DrawingAnnotation {
 
 			switch (labelType) {
 				case "type":
-					autoText =
-						element.type.charAt(0).toUpperCase() + element.type.slice(1);
+					autoText = element.type.charAt(0).toUpperCase() + element.type.slice(1);
 					break;
 				case "index":
 					autoText = `${element.type} ${index + 1}`;
@@ -463,9 +435,7 @@ export class DrawingAnnotation {
 			elements: updatedElements,
 		});
 
-		this.#config.on.feedback(
-			`Auto-generated ${labelType} labels for ${elements.length} elements`
-		);
+		this.#config.on.feedback(`Auto-generated ${labelType} labels for ${elements.length} elements`);
 
 		return updatedElements;
 	}
@@ -512,14 +482,9 @@ export class DrawingAnnotation {
 			];
 		});
 
-		const csvContent = [
-			headers.join(","),
-			...rows.map((row) => row.join(",")),
-		].join("\n");
+		const csvContent = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
 
-		this.#config.on.feedback(
-			`Exported ${elementsWithText.length} text labels as CSV`
-		);
+		this.#config.on.feedback(`Exported ${elementsWithText.length} text labels as CSV`);
 
 		return csvContent;
 	}
@@ -590,9 +555,7 @@ export class DrawingAnnotation {
 			elements: updatedElements,
 		});
 
-		this.#config.on.feedback(
-			`Updated text properties for ${selectedElements.length} elements`
-		);
+		this.#config.on.feedback(`Updated text properties for ${selectedElements.length} elements`);
 
 		return updatedElements;
 	}
@@ -652,8 +615,7 @@ export class DrawingAnnotation {
 				// Check for redundant description
 				if (
 					element.info.description &&
-					element.info.description.toLowerCase() ===
-						element.info.name.toLowerCase()
+					element.info.description.toLowerCase() === element.info.name.toLowerCase()
 				) {
 					issues.push({
 						elementId: element.id,

@@ -14,9 +14,7 @@ export const fetcher = async <T, D = unknown>(
 	if (response.status !== 200) {
 		const errorData = response.data as ErrorResponse;
 
-		throw new Error(
-			errorData.detail?.message || "An error occurred while fetching data."
-		);
+		throw new Error(errorData.detail?.message || "An error occurred while fetching data.");
 	}
 
 	return response.data;

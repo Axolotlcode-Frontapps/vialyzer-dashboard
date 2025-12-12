@@ -33,10 +33,7 @@ export function CompanyTableActions({ company }: { company: Company }) {
 						</DropdownMenuItem>
 					</HasPermission>
 					<HasPermission moduleBase="companies" permissionName="delete">
-						<DropdownMenuItem
-							variant="destructive"
-							onClick={() => setOpenDelete(true)}
-						>
+						<DropdownMenuItem variant="destructive" onClick={() => setOpenDelete(true)}>
 							<Trash className="mr-2 h-4 w-4" />
 							Eliminar
 						</DropdownMenuItem>
@@ -45,18 +42,10 @@ export function CompanyTableActions({ company }: { company: Company }) {
 			</DropdownMenu>
 
 			<HasPermission moduleBase="companies" permissionName="update">
-				<CompanyUpdate
-					open={openUpdate}
-					onOpenChange={setOpenUpdate}
-					company={company}
-				/>
+				<CompanyUpdate open={openUpdate} onOpenChange={setOpenUpdate} company={company} />
 			</HasPermission>
 			<HasPermission moduleBase="companies" permissionName="delete">
-				<CompanyDelete
-					open={openDelete}
-					onOpenChange={setOpenDelete}
-					company={company}
-				/>
+				<CompanyDelete open={openDelete} onOpenChange={setOpenDelete} company={company} />
 			</HasPermission>
 		</>
 	);

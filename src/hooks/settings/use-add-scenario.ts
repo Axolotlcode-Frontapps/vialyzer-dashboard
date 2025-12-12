@@ -36,9 +36,7 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 							element.visual_coordinates.type === "line" ||
 							element.visual_coordinates.type === "curve";
 
-						const vehicleIds = Array.isArray(layer.category)
-							? layer.category
-							: [layer.category];
+						const vehicleIds = Array.isArray(layer.category) ? layer.category : [layer.category];
 
 						const entry = await settings.addScenarioLine({
 							...line,
@@ -85,8 +83,7 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 							camera,
 							visibility: false,
 						});
-						if (!config)
-							throw new Error("Error al crear la línea de configuración");
+						if (!config) throw new Error("Error al crear la línea de configuración");
 
 						// Only create datasources if there are vehicle IDs
 						const vehicleIds = Array.isArray(layer.category)
@@ -127,9 +124,7 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 							element.visual_coordinates.type === "line" ||
 							element.visual_coordinates.type === "curve";
 
-						const vehicleIds = Array.isArray(layer.category)
-							? layer.category
-							: [layer.category];
+						const vehicleIds = Array.isArray(layer.category) ? layer.category : [layer.category];
 
 						const entry = await settings.addScenarioLine({
 							...line,

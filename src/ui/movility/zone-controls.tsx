@@ -79,10 +79,7 @@ export function ZoneControls({
 
 			{isOpen && (
 				<>
-					<Button
-						className="fixed inset-0 z-30"
-						onClick={() => setIsOpen(false)}
-					/>
+					<Button className="fixed inset-0 z-30" onClick={() => setIsOpen(false)} />
 					<div className="absolute top-0 left-full ml-2 bg-white rounded-lg shadow-2xl border border-gray-200 w-80 z-50 animate-fade-in max-h-[500px] flex flex-col">
 						{/* Header */}
 						<div className="p-3 border-b border-gray-200">
@@ -109,9 +106,7 @@ export function ZoneControls({
 									{/* Toggle para límite de Cali */}
 									<div className="p-3 border-b border-gray-200">
 										<div className="flex items-center justify-between">
-											<span className="text-sm font-medium text-gray-900">
-												Límite de Cali
-											</span>
+											<span className="text-sm font-medium text-gray-900">Límite de Cali</span>
 											<button
 												type="button"
 												onClick={onToggleCaliBoundary}
@@ -145,9 +140,7 @@ export function ZoneControls({
 											>
 												<div className="flex items-center justify-between">
 													<div>
-														<div className="text-sm font-medium text-gray-900">
-															{zone.name}
-														</div>
+														<div className="text-sm font-medium text-gray-900">{zone.name}</div>
 														<div className="text-xs text-gray-500">
 															{zone.neighborhoodCount} barrios
 														</div>

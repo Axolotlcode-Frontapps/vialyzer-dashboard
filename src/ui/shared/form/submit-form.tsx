@@ -30,9 +30,7 @@ export function SubmitButton({
 			{([canSubmit, isSubmitting]) => {
 				return (
 					<Button type="submit" {...props} size={size} disabled={!canSubmit}>
-						{isSubmitting ? (
-							<LoaderCircle className="size-4 animate-spin" />
-						) : null}
+						{isSubmitting ? <LoaderCircle className="size-4 animate-spin" /> : null}
 						{isSubmitting ? labelLoading : label}
 					</Button>
 				);

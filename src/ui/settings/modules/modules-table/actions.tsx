@@ -1,11 +1,5 @@
 import { Activity, useState } from "react";
-import {
-	CheckCircle,
-	MoreHorizontal,
-	Pencil,
-	ShieldMinus,
-	Trash,
-} from "lucide-react";
+import { CheckCircle, MoreHorizontal, Pencil, ShieldMinus, Trash } from "lucide-react";
 
 import { Button } from "@/ui/shared/button";
 import {
@@ -53,10 +47,7 @@ export function ModuleAction({ module }: { module: Module }) {
 						</DropdownMenuItem>
 					</Activity>
 
-					<DropdownMenuItem
-						variant="destructive"
-						onClick={() => setOpenModuleDelete(true)}
-					>
+					<DropdownMenuItem variant="destructive" onClick={() => setOpenModuleDelete(true)}>
 						<Activity mode={module.active ? "visible" : "hidden"}>
 							<ShieldMinus />
 							Desactivar
@@ -69,17 +60,9 @@ export function ModuleAction({ module }: { module: Module }) {
 				</DropdownMenuContent>
 			</DropdownMenu>
 
-			<ModuleEdit
-				open={openModuleEdit}
-				onOpenChange={setOpenModuleEdit}
-				module={module}
-			/>
+			<ModuleEdit open={openModuleEdit} onOpenChange={setOpenModuleEdit} module={module} />
 
-			<ModuleDelete
-				open={openModuleDelete}
-				onOpenChange={setOpenModuleDelete}
-				module={module}
-			/>
+			<ModuleDelete open={openModuleDelete} onOpenChange={setOpenModuleDelete} module={module} />
 		</>
 	);
 }

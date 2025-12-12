@@ -201,9 +201,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				>
 					<img src={Logo} className="size-8" alt="Vialyzer Dashboard Logo" />
 					<span className="sr-only">{config.name}</span>
-					{open ? (
-						<span className="text-xl font-semibold">{config.name}</span>
-					) : null}
+					{open ? <span className="text-xl font-semibold">{config.name}</span> : null}
 				</a>
 			</SidebarHeader>
 			<SidebarContent>
@@ -211,9 +209,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
 				<Activity
 					mode={
-						hasModule("movilidad") ||
-						hasModule("agentes") ||
-						hasModule("dashboard")
+						hasModule("movilidad") || hasModule("agentes") || hasModule("dashboard")
 							? "visible"
 							: "hidden"
 					}

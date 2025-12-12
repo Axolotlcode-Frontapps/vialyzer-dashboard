@@ -56,12 +56,10 @@ export function ModuleForm({
 		},
 		onError: (error: AxiosError) => {
 			form.state.canSubmit = true;
-			const message = (error.response?.data as GeneralResponse<unknown>)
-				?.message;
+			const message = (error.response?.data as GeneralResponse<unknown>)?.message;
 
 			const capitalizedMessage =
-				message &&
-				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+				message && message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
 
 			toast.error(`Error al crear módulo`, {
 				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
@@ -86,8 +84,7 @@ export function ModuleForm({
 				<form.Field
 					name="name"
 					children={(field) => {
-						const isInvalid =
-							field.state.meta.isTouched && !field.state.meta.isValid;
+						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 						return (
 							<Field data-invalid={isInvalid}>
 								<FieldLabel htmlFor={field.name}>Nombre</FieldLabel>
@@ -109,8 +106,7 @@ export function ModuleForm({
 				<form.Field
 					name="description"
 					children={(field) => {
-						const isInvalid =
-							field.state.meta.isTouched && !field.state.meta.isValid;
+						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 						return (
 							<Field data-invalid={isInvalid}>
 								<FieldLabel htmlFor={field.name}>Descripción</FieldLabel>
@@ -132,9 +128,7 @@ export function ModuleForm({
 			</form>
 
 			<SheetFooter>
-				<form.Subscribe
-					selector={(state) => [state.canSubmit, state.isSubmitting]}
-				>
+				<form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
 					{([canSubmit, isSubmitting]) => (
 						<Button type="submit" disabled={!canSubmit} form="module-form">
 							{isSubmitting ? <Spinner /> : null}

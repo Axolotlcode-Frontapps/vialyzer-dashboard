@@ -22,9 +22,7 @@ export function DetailsCard() {
 				<X className="size-3.5 text-muted-foreground" />
 			</Button>
 			<h3 className="flex items-center gap-3 mb-2">
-				<span
-					className={`w-4 h-4 rounded-full ${STATUS[location.state].color} inline-block`}
-				/>
+				<span className={`w-4 h-4 rounded-full ${STATUS[location.state].color} inline-block`} />
 				<span className="font-bold text-xl">{location.name}</span>
 			</h3>
 			<section className="flex flex-col gap-2 text-lg">
@@ -36,9 +34,7 @@ export function DetailsCard() {
 				</span> */}
 				<span>
 					Última actualización:{" "}
-					<span className="font-semibold">
-						{formatDate(location.updatedAt)}
-					</span>
+					<span className="font-semibold">{formatDate(location.updatedAt)}</span>
 				</span>
 				<span>
 					Estado:{" "}

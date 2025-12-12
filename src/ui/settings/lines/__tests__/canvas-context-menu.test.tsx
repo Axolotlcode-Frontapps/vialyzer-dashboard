@@ -545,9 +545,7 @@ describe("CanvasContextMenu Component", () => {
 		it("should handle null children", () => {
 			expect(() =>
 				render(
-					<CanvasContextMenu drawingEngine={mockDrawingEngine as never}>
-						{null}
-					</CanvasContextMenu>
+					<CanvasContextMenu drawingEngine={mockDrawingEngine as never}>{null}</CanvasContextMenu>
 				)
 			).not.toThrow();
 		});

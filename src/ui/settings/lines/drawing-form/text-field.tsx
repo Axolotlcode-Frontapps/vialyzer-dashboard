@@ -27,25 +27,17 @@ export function TextField({ label, description, ...props }: Props) {
 
 	return (
 		<Label className="flex-col gap-0">
-			{label ? (
-				<span className="block w-full mb-3.5 text-sm">{label}</span>
-			) : null}
+			{label ? <span className="block w-full mb-3.5 text-sm">{label}</span> : null}
 			<Input
 				value={field.state.value}
 				onChange={(e) => {
-					field.handleChange(
-						props.type === "number" ? e.target.valueAsNumber : e.target.value
-					);
+					field.handleChange(props.type === "number" ? e.target.valueAsNumber : e.target.value);
 				}}
 				className="w-full"
 				{...props}
 			/>
-			{description ? (
-				<span className="text-sm text-muted-foreground">{description}</span>
-			) : null}
-			{error ? (
-				<span className="text-sm text-destructive mt-2 w-full">{error}</span>
-			) : null}
+			{description ? <span className="text-sm text-muted-foreground">{description}</span> : null}
+			{error ? <span className="text-sm text-destructive mt-2 w-full">{error}</span> : null}
 		</Label>
 	);
 }

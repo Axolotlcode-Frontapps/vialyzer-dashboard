@@ -61,9 +61,7 @@ export function GraphVehiclesDaily() {
 					date,
 					...item.metadata.reduce(
 						(acc, vehicle) => {
-							const key = vehicle.vehiclename
-								.replaceAll(" ", "_")
-								.toLowerCase();
+							const key = vehicle.vehiclename.replaceAll(" ", "_").toLowerCase();
 
 							acc[key] = vehicle.vol_acumulate;
 

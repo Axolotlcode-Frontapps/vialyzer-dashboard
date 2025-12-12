@@ -1,10 +1,4 @@
-import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetHeader,
-	SheetTitle,
-} from "@/ui/shared/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/ui/shared/sheet";
 import { CompanyForm } from "./company-form";
 
 export function CompanyUpdate({
@@ -22,8 +16,8 @@ export function CompanyUpdate({
 				<SheetHeader>
 					<SheetTitle>Editar empresa</SheetTitle>
 					<SheetDescription>
-						Vas a modificar la información de esta empresa. Realiza los cambios
-						necesarios y guarda para actualizar la empresa.
+						Vas a modificar la información de esta empresa. Realiza los cambios necesarios y guarda
+						para actualizar la empresa.
 					</SheetDescription>
 				</SheetHeader>
 

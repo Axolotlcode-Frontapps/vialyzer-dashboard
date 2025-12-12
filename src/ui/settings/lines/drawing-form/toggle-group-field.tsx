@@ -51,9 +51,7 @@ export function ToggleGroupField({
 			}
 
 			// Find original option to preserve number type
-			const originalOption = options.find(
-				(opt) => opt.value.toString() === value
-			);
+			const originalOption = options.find((opt) => opt.value.toString() === value);
 			if (originalOption && typeof originalOption.value === "number") {
 				field.handleChange(originalOption.value);
 			} else {
@@ -61,9 +59,7 @@ export function ToggleGroupField({
 			}
 		} else if (type === "multiple" && Array.isArray(value)) {
 			const convertedValues = value.map((item) => {
-				const originalOption = options.find(
-					(opt) => opt.value.toString() === item
-				);
+				const originalOption = options.find((opt) => opt.value.toString() === item);
 				return originalOption && typeof originalOption.value === "number"
 					? originalOption.value
 					: item;
@@ -76,9 +72,7 @@ export function ToggleGroupField({
 		const value = field.state.value;
 		if (type === "single") {
 			// Return undefined instead of empty string when no value
-			return value !== undefined && value !== null
-				? value.toString()
-				: undefined;
+			return value !== undefined && value !== null ? value.toString() : undefined;
 		} else {
 			if (Array.isArray(value)) {
 				return value.map((v) => v.toString());
@@ -89,9 +83,7 @@ export function ToggleGroupField({
 
 	return (
 		<div className="flex flex-col gap-0">
-			{label && (
-				<span className="block w-full mb-3.5 text-sm font-medium">{label}</span>
-			)}
+			{label && <span className="block w-full mb-3.5 text-sm font-medium">{label}</span>}
 
 			{type === "single" ? (
 				<ToggleGroup
@@ -133,12 +125,8 @@ export function ToggleGroupField({
 				</ToggleGroup>
 			)}
 
-			{description ? (
-				<span className="text-sm text-muted-foreground">{description}</span>
-			) : null}
-			{error ? (
-				<span className="text-sm text-destructive mt-2 w-full">{error}</span>
-			) : null}
+			{description ? <span className="text-sm text-muted-foreground">{description}</span> : null}
+			{error ? <span className="text-sm text-destructive mt-2 w-full">{error}</span> : null}
 		</div>
 	);
 }

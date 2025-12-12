@@ -12,17 +12,14 @@ export function Notifications() {
 
 	const { data: kpisData, isLoading: loadingAgents } = useQuery({
 		queryKey: ["monitoring-kpis-info", selected],
-		queryFn: async () =>
-			selected ? await kpiServices.getKpis(selected) : undefined,
+		queryFn: async () => (selected ? await kpiServices.getKpis(selected) : undefined),
 		enabled: !!selected,
 	});
 
 	const { data: notifications = [], isLoading: loading } = useQuery({
 		queryKey: ["monitoring-notifications", selected],
 		queryFn: async () =>
-			selected
-				? await kpiServices.getNotifications(selected)
-				: Promise.resolve([]),
+			selected ? await kpiServices.getNotifications(selected) : Promise.resolve([]),
 		enabled: !!selected,
 	});
 

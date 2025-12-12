@@ -78,9 +78,7 @@ export function CamerasPreview() {
 							</div>
 						</div>
 					</TooltipTrigger>
-					<TooltipContent className="text-base">
-						Ver preview de cámara
-					</TooltipContent>
+					<TooltipContent className="text-base">Ver preview de cámara</TooltipContent>
 				</Tooltip>
 			))}
 		</div>

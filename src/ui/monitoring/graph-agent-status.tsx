@@ -1,24 +1,13 @@
 import { useSearch } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-	Bar,
-	BarChart,
-	CartesianGrid,
-	LabelList,
-	XAxis,
-	YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 
 import type { ContentType } from "recharts/types/component/Label";
 import type { ChartConfig } from "../shared/chart";
 
 import { kpiServices } from "@/lib/services/kpis";
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/card";
-import {
-	ChartContainer,
-	ChartTooltip,
-	ChartTooltipContent,
-} from "../shared/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../shared/chart";
 
 const config = {
 	time: {
@@ -60,14 +49,10 @@ const media: ContentType = ({ x, y, width }) => {
 export function GraphAgentStatus() {
 	const { selected } = useSearch({ from: "/_dashboard/monitoring" });
 
-	const { data: agentStatus, isLoading: loading } = useQuery<
-		AgentStatusGraphData[]
-	>({
+	const { data: agentStatus, isLoading: loading } = useQuery<AgentStatusGraphData[]>({
 		queryKey: ["monitoring-agent-status", selected, startDate, endDate],
 		queryFn: async () =>
-			selected
-				? await kpiServices.getAgentStatus(selected, startDate, endDate)
-				: [],
+			selected ? await kpiServices.getAgentStatus(selected, startDate, endDate) : [],
 		enabled: !!selected,
 	});
 
@@ -98,9 +83,7 @@ export function GraphAgentStatus() {
 						))}
 				</ul>
 				{loading ? (
-					<p className="text-center text-muted-foreground text-lg py-12">
-						Cargando datos...
-					</p>
+					<p className="text-center text-muted-foreground text-lg py-12">Cargando datos...</p>
 				) : (
 					<ChartContainer config={config} className="w-full max-h-[212px]">
 						<BarChart accessibilityLayer data={agentStatus}>
@@ -127,22 +110,9 @@ export function GraphAgentStatus() {
 								axisLine={false}
 								xAxisId="top"
 							/>
-							<ChartTooltip
-								cursor={false}
-								content={<ChartTooltipContent indicator="line" />}
-							/>
-							<Bar
-								dataKey="total_time_minutes"
-								fill="var(--color-time)"
-								xAxisId="top"
-								radius={4}
-							/>
-							<Bar
-								dataKey="average_minutes"
-								fill="transparent"
-								radius={4}
-								xAxisId="bottom"
-							>
+							<ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
+							<Bar dataKey="total_time_minutes" fill="var(--color-time)" xAxisId="top" radius={4} />
+							<Bar dataKey="average_minutes" fill="transparent" radius={4} xAxisId="bottom">
 								<LabelList
 									dataKey="average_minutes"
 									position="top"

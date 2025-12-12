@@ -34,9 +34,7 @@ describe("DrawingEngine - Layers", () => {
 		it("should get active layer", () => {
 			const layer = engine.getActiveLayer();
 			// Initially might be null or undefined
-			expect(
-				layer === null || layer === undefined || typeof layer === "object"
-			).toBe(true);
+			expect(layer === null || layer === undefined || typeof layer === "object").toBe(true);
 		});
 
 		it("should get specific layer by id", () => {
@@ -247,9 +245,7 @@ describe("DrawingEngine - Layers", () => {
 
 				// After isolation, only one layer should be visible
 				const visibleLayers = engine.getVisibleLayers();
-				const isolatedVisible = visibleLayers.some(
-					(l) => l.id === result1.data?.layer?.id
-				);
+				const isolatedVisible = visibleLayers.some((l) => l.id === result1.data?.layer?.id);
 				expect(isolatedVisible).toBe(true);
 			}
 		});
@@ -307,10 +303,7 @@ describe("DrawingEngine - Layers", () => {
 					},
 				};
 
-				engine.addElements(
-					[element],
-					new Map([[result1.data.layer.id, result1.data.layer]])
-				);
+				engine.addElements([element], new Map([[result1.data.layer.id, result1.data.layer]]));
 
 				// Move element to layer2
 				engine.moveElementsToLayer([element.id], result2.data.layer.id);
@@ -392,10 +385,7 @@ describe("DrawingEngine - Layers", () => {
 					},
 				};
 
-				engine.addElements(
-					[element],
-					new Map([[result.data.layer.id, result.data.layer]])
-				);
+				engine.addElements([element], new Map([[result.data.layer.id, result.data.layer]]));
 
 				const retrievedLayer = engine.getLayer(result.data.layer.id);
 				expect(retrievedLayer).toBeDefined();

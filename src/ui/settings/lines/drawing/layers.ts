@@ -1,11 +1,6 @@
 import type { DrawingConfig } from "./config";
 import type { DrawingState } from "./state";
-import type {
-	DrawingElement,
-	LayerInfo,
-	LayerVisibility,
-	StateChangeEvent,
-} from "./types";
+import type { DrawingElement, LayerInfo, LayerVisibility, StateChangeEvent } from "./types";
 
 // Re-export for backward compatibility
 export type { LayerInfo, LayerVisibility };
@@ -204,9 +199,7 @@ export class DrawingLayers {
 
 		// Remove layer
 		this.#state.layers.delete(layerId);
-		this.#state.layerOrder = this.#state.layerOrder.filter(
-			(id) => id !== layerId
-		);
+		this.#state.layerOrder = this.#state.layerOrder.filter((id) => id !== layerId);
 		this.#updateLayerZIndices();
 
 		// Update active layer if necessary
@@ -222,9 +215,7 @@ export class DrawingLayers {
 		// Delete all elements that belong to this layer
 		if (affectedElements.length > 0) {
 			// Filter out elements that belong to the deleted layer
-			this.#state.elements = this.#state.elements.filter(
-				(el) => !affectedElements.includes(el.id)
-			);
+			this.#state.elements = this.#state.elements.filter((el) => !affectedElements.includes(el.id));
 
 			// Clear selection if any deleted elements were selected
 			this.#state.selectedElements = this.#state.selectedElements.filter(
@@ -237,9 +228,7 @@ export class DrawingLayers {
 			layerId,
 			affectedElements,
 		});
-		this.#provideFeedback(
-			`Deleted layer: ${layer.name} and ${affectedElements.length} element(s)`
-		);
+		this.#provideFeedback(`Deleted layer: ${layer.name} and ${affectedElements.length} element(s)`);
 
 		// Record in history
 		this.#recordHistory(
@@ -276,9 +265,7 @@ export class DrawingLayers {
 			};
 		}
 
-		const validElementIds = elementIds.filter((id) =>
-			elements.some((el) => el.id === id)
-		);
+		const validElementIds = elementIds.filter((id) => elements.some((el) => el.id === id));
 
 		if (validElementIds.length === 0) {
 			return {
@@ -295,9 +282,7 @@ export class DrawingLayers {
 		// Remove elements from their current layers
 		for (const layer of this.#state.layers.values()) {
 			const originalLength = layer.elementIds.length;
-			layer.elementIds = layer.elementIds.filter(
-				(id) => !validElementIds.includes(id)
-			);
+			layer.elementIds = layer.elementIds.filter((id) => !validElementIds.includes(id));
 			if (layer.elementIds.length !== originalLength) {
 				affectedLayers.push(layer.id);
 				layer.updatedAt = Date.now();
@@ -325,9 +310,7 @@ export class DrawingLayers {
 			targetLayerId,
 			affectedLayers,
 		});
-		this.#provideFeedback(
-			`Moved ${validElementIds.length} elements to layer: ${targetLayer.name}`
-		);
+		this.#provideFeedback(`Moved ${validElementIds.length} elements to layer: ${targetLayer.name}`);
 
 		return {
 			success: true,
@@ -371,10 +354,7 @@ export class DrawingLayers {
 		this.#provideFeedback(`Layer "${layer.name}" is now ${newVisibility}`);
 
 		// Record in history
-		this.#recordHistory(
-			"toggleLayerVisibility",
-			`Layer "${layer.name}" is now ${newVisibility}`
-		);
+		this.#recordHistory("toggleLayerVisibility", `Layer "${layer.name}" is now ${newVisibility}`);
 
 		return {
 			success: true,
@@ -415,9 +395,7 @@ export class DrawingLayers {
 			layerId,
 			opacity: clampedOpacity,
 		});
-		this.#provideFeedback(
-			`Layer opacity set to ${Math.round(clampedOpacity * 100)}%`
-		);
+		this.#provideFeedback(`Layer opacity set to ${Math.round(clampedOpacity * 100)}%`);
 
 		// Record in history
 		this.#recordHistory(
@@ -491,36 +469,34 @@ export class DrawingLayers {
 
 		// Duplicate elements with new IDs and assign to new layer
 		const newLayerId = this.#generateLayerId();
-		const duplicatedElements: DrawingElement[] = sourceElements.map(
-			(element) => {
-				const newId = this.#generateElementId();
-				return {
-					...element,
-					id: newId,
-					layerId: newLayerId,
-					// Deep copy points
-					points: element.points.map((point) => ({ ...point })),
-					// Deep copy detection if exists
-					detection: element.detection
-						? {
-								entry: element.detection.entry.map((point) => ({ ...point })),
-								exit: element.detection.exit.map((point) => ({ ...point })),
-							}
-						: undefined,
-					// Deep copy direction if exists
-					direction: element.direction
-						? {
-								start: { ...element.direction.start },
-								end: { ...element.direction.end },
-							}
-						: undefined,
-					// Deep copy info (always required)
-					info: { ...element.info },
-					// Mark as new for sync tracking
-					syncState: "new" as const,
-				};
-			}
-		);
+		const duplicatedElements: DrawingElement[] = sourceElements.map((element) => {
+			const newId = this.#generateElementId();
+			return {
+				...element,
+				id: newId,
+				layerId: newLayerId,
+				// Deep copy points
+				points: element.points.map((point) => ({ ...point })),
+				// Deep copy detection if exists
+				detection: element.detection
+					? {
+							entry: element.detection.entry.map((point) => ({ ...point })),
+							exit: element.detection.exit.map((point) => ({ ...point })),
+						}
+					: undefined,
+				// Deep copy direction if exists
+				direction: element.direction
+					? {
+							start: { ...element.direction.start },
+							end: { ...element.direction.end },
+						}
+					: undefined,
+				// Deep copy info (always required)
+				info: { ...element.info },
+				// Mark as new for sync tracking
+				syncState: "new" as const,
+			};
+		});
 
 		const duplicatedElementIds = duplicatedElements.map((el) => el.id);
 
@@ -620,15 +596,10 @@ export class DrawingLayers {
 			oldName,
 			newName: trimmedName,
 		});
-		this.#provideFeedback(
-			`Layer renamed from "${oldName}" to "${trimmedName}"`
-		);
+		this.#provideFeedback(`Layer renamed from "${oldName}" to "${trimmedName}"`);
 
 		// Record in history
-		this.#recordHistory(
-			"renameLayer",
-			`Renamed layer from "${oldName}" to "${trimmedName}"`
-		);
+		this.#recordHistory("renameLayer", `Renamed layer from "${oldName}" to "${trimmedName}"`);
 
 		return {
 			success: true,
@@ -640,10 +611,7 @@ export class DrawingLayers {
 		};
 	}
 
-	updateLayer(
-		layerId: string,
-		updates: Partial<Omit<LayerInfo, "id">>
-	): LayerOperationResult {
+	updateLayer(layerId: string, updates: Partial<Omit<LayerInfo, "id">>): LayerOperationResult {
 		const layer = this.#state.layers.get(layerId);
 		if (!layer) {
 			return {
@@ -673,23 +641,16 @@ export class DrawingLayers {
 
 			// Track removed categories (in old but not in new)
 			oldCategories.forEach((cat) => {
-				if (
-					!newCategories.has(cat) &&
-					!layer.removedCategories!.includes(cat)
-				) {
+				if (!newCategories.has(cat) && !layer.removedCategories!.includes(cat)) {
 					layer.removedCategories!.push(cat);
 				}
 			});
 
 			// Remove from addedCategories if it was re-removed
-			layer.addedCategories = layer.addedCategories.filter((cat) =>
-				newCategories.has(cat)
-			);
+			layer.addedCategories = layer.addedCategories.filter((cat) => newCategories.has(cat));
 
 			// Remove from removedCategories if it was re-added
-			layer.removedCategories = layer.removedCategories.filter(
-				(cat) => !newCategories.has(cat)
-			);
+			layer.removedCategories = layer.removedCategories.filter((cat) => !newCategories.has(cat));
 		}
 
 		Object.assign(layer, updates, { updatedAt: Date.now() });
@@ -744,10 +705,7 @@ export class DrawingLayers {
 
 		// Record in history
 		const layer = this.#state.layers.get(layerId);
-		this.#recordHistory(
-			"setActiveLayer",
-			`Set active layer: ${layer?.name || layerId}`
-		);
+		this.#recordHistory("setActiveLayer", `Set active layer: ${layer?.name || layerId}`);
 
 		return {
 			success: true,
@@ -850,16 +808,10 @@ export class DrawingLayers {
 				return false;
 			}
 			if (filter.opacity) {
-				if (
-					filter.opacity.min !== undefined &&
-					layer.opacity < filter.opacity.min
-				) {
+				if (filter.opacity.min !== undefined && layer.opacity < filter.opacity.min) {
 					return false;
 				}
-				if (
-					filter.opacity.max !== undefined &&
-					layer.opacity > filter.opacity.max
-				) {
+				if (filter.opacity.max !== undefined && layer.opacity > filter.opacity.max) {
 					return false;
 				}
 			}
@@ -872,10 +824,7 @@ export class DrawingLayers {
 			if (filter.namePattern && !filter.namePattern.test(layer.name)) {
 				return false;
 			}
-			if (
-				filter.category &&
-				!filter.category.some((cat) => layer.category.includes(cat))
-			) {
+			if (filter.category && !filter.category.some((cat) => layer.category.includes(cat))) {
 				return false;
 			}
 			return true;
@@ -925,15 +874,12 @@ export class DrawingLayers {
 
 		const defaultLayer: LayerInfo = {
 			id: defaultLayerId,
-			name:
-				defaultLayerConfig?.name || `${this.#config.layers.defaultPrefix} 1`,
-			description:
-				defaultLayerConfig?.description || "Default layer description",
+			name: defaultLayerConfig?.name || `${this.#config.layers.defaultPrefix} 1`,
+			description: defaultLayerConfig?.description || "Default layer description",
 			type: "CONFIGURATION",
 			category: defaultLayerConfig?.category || [],
 			visibility: defaultLayerConfig?.visibility || "visible",
-			opacity:
-				defaultLayerConfig?.opacity ?? this.#config.layers.defaultOpacity,
+			opacity: defaultLayerConfig?.opacity ?? this.#config.layers.defaultOpacity,
 			zIndex: 0,
 			elementIds: [],
 			color: defaultLayerConfig?.color || this.#config.layers.colors[0],
@@ -951,8 +897,7 @@ export class DrawingLayers {
 	}
 
 	#getNextLayerColor(): string {
-		const colorIndex =
-			this.#state.layers.size % this.#config.layers.colors.length;
+		const colorIndex = this.#state.layers.size % this.#config.layers.colors.length;
 		return this.#config.layers.colors[colorIndex];
 	}
 

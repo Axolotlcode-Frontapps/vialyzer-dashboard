@@ -22,10 +22,7 @@ const getDefaultDateRange = () => {
 	};
 };
 
-export const getTimePermanence = async (
-	instance: AxiosInstance,
-	params?: TimePermanenceParams
-) => {
+export const getTimePermanence = async (instance: AxiosInstance, params?: TimePermanenceParams) => {
 	try {
 		const defaultRange = getDefaultDateRange();
 		const queryParams = {
@@ -44,9 +41,7 @@ export const getTimePermanence = async (
 		}
 
 		if (!response.data.success) {
-			throw new Error(
-				response.data.message || "Error al obtener el tiempo de permanencia"
-			);
+			throw new Error(response.data.message || "Error al obtener el tiempo de permanencia");
 		}
 
 		return response.data.payload;

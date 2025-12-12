@@ -1,12 +1,6 @@
 // @vitest-environment jsdom
 /** biome-ignore-all lint/suspicious/noExplicitAny: Need for tests */
-import {
-	cleanup,
-	fireEvent,
-	render,
-	screen,
-	waitFor,
-} from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LabelForm } from "../label-form";
@@ -33,9 +27,7 @@ describe("LabelForm Component", () => {
 			render(<LabelForm drawingEngine={mockDrawingEngine as never} />);
 
 			expect(screen.queryByText(/Editar Información/i)).not.toBeInTheDocument();
-			expect(
-				screen.queryByText(/Agregar Información/i)
-			).not.toBeInTheDocument();
+			expect(screen.queryByText(/Agregar Información/i)).not.toBeInTheDocument();
 		});
 
 		it("should render without drawing engine", () => {
@@ -57,8 +49,7 @@ describe("LabelForm Component", () => {
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
 			// Trigger open text editor event
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -96,8 +87,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -126,8 +116,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -156,8 +145,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				// Open dialog
 				stateChangeCallback({
@@ -190,8 +178,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -201,9 +188,7 @@ describe("LabelForm Component", () => {
 			}
 
 			await waitFor(() => {
-				expect(
-					screen.getByPlaceholderText(/Ingresa el nombre/i)
-				).toBeInTheDocument();
+				expect(screen.getByPlaceholderText(/Ingresa el nombre/i)).toBeInTheDocument();
 			});
 		});
 
@@ -221,8 +206,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -232,9 +216,7 @@ describe("LabelForm Component", () => {
 			}
 
 			await waitFor(() => {
-				expect(
-					screen.getByPlaceholderText(/Agrega una descripción/i)
-				).toBeInTheDocument();
+				expect(screen.getByPlaceholderText(/Agrega una descripción/i)).toBeInTheDocument();
 			});
 		});
 
@@ -252,8 +234,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -265,9 +246,7 @@ describe("LabelForm Component", () => {
 			}
 
 			await waitFor(() => {
-				const nameInput = screen.getByPlaceholderText(
-					/Ingresa el nombre/i
-				) as HTMLInputElement;
+				const nameInput = screen.getByPlaceholderText(/Ingresa el nombre/i) as HTMLInputElement;
 				expect(nameInput.value).toBe("Test Name");
 			});
 		});
@@ -289,8 +268,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -329,8 +307,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -362,8 +339,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -394,8 +370,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -430,8 +405,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -461,8 +435,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -494,8 +467,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -525,8 +497,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -554,8 +525,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -588,9 +558,7 @@ describe("LabelForm Component", () => {
 				subscribeToStateChanges: vi.fn().mockReturnValue(unsubscribe),
 			};
 
-			const { unmount } = render(
-				<LabelForm drawingEngine={mockEngine as never} />
-			);
+			const { unmount } = render(<LabelForm drawingEngine={mockEngine as never} />);
 			unmount();
 
 			expect(unsubscribe).toHaveBeenCalled();
@@ -612,8 +580,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -638,8 +605,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -664,8 +630,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -675,9 +640,7 @@ describe("LabelForm Component", () => {
 			}
 
 			await waitFor(() => {
-				expect(
-					screen.getByPlaceholderText(/Ingresa el nombre/i)
-				).toBeInTheDocument();
+				expect(screen.getByPlaceholderText(/Ingresa el nombre/i)).toBeInTheDocument();
 			});
 		});
 	});
@@ -697,8 +660,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -728,8 +690,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",
@@ -761,8 +722,7 @@ describe("LabelForm Component", () => {
 
 			render(<LabelForm drawingEngine={mockEngine as never} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "annotation",

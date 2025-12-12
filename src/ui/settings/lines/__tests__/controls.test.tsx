@@ -58,12 +58,7 @@ describe("Controls Component", () => {
 
 	describe("Rendering", () => {
 		it("should render toolbar", () => {
-			render(
-				<Controls
-					drawingEngine={mockDrawingEngine as never}
-					onSave={mockOnSave}
-				/>
-			);
+			render(<Controls drawingEngine={mockDrawingEngine as never} onSave={mockOnSave} />);
 
 			// Check for main toolbar elements
 			const toolbar = screen.getByRole("menubar");
@@ -71,12 +66,7 @@ describe("Controls Component", () => {
 		});
 
 		it("should render drawing mode toggle group", () => {
-			render(
-				<Controls
-					drawingEngine={mockDrawingEngine as never}
-					onSave={mockOnSave}
-				/>
-			);
+			render(<Controls drawingEngine={mockDrawingEngine as never} onSave={mockOnSave} />);
 
 			// Toggle group should be present
 			const toggles = screen.getAllByRole("radio");
@@ -98,12 +88,7 @@ describe("Controls Component", () => {
 
 	describe("Drawing Modes", () => {
 		it("should display cursor mode by default", async () => {
-			render(
-				<Controls
-					drawingEngine={mockDrawingEngine as never}
-					onSave={mockOnSave}
-				/>
-			);
+			render(<Controls drawingEngine={mockDrawingEngine as never} onSave={mockOnSave} />);
 
 			// Default mode should be cursor
 			const cursorButton = await screen.findByLabelText(/Modo Cursor/i);
@@ -116,9 +101,7 @@ describe("Controls Component", () => {
 				setDrawingMode: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			// Find and click line mode button
 			const lineButton = await screen.findByLabelText(/Modo Línea/i);
@@ -128,12 +111,7 @@ describe("Controls Component", () => {
 		});
 
 		it("should support all drawing modes", async () => {
-			render(
-				<Controls
-					drawingEngine={mockDrawingEngine as never}
-					onSave={mockOnSave}
-				/>
-			);
+			render(<Controls drawingEngine={mockDrawingEngine as never} onSave={mockOnSave} />);
 
 			// Check that all main modes are available
 			expect(await screen.findByLabelText(/Modo Cursor/i)).toBeInTheDocument();
@@ -149,12 +127,7 @@ describe("Controls Component", () => {
 				isInitialized: false,
 			};
 
-			render(
-				<Controls
-					drawingEngine={uninitializedEngine as never}
-					onSave={mockOnSave}
-				/>
-			);
+			render(<Controls drawingEngine={uninitializedEngine as never} onSave={mockOnSave} />);
 
 			// Buttons should be present but disabled when not initialized
 			const lineButton = await screen.findByLabelText(/Modo Línea/i);
@@ -164,12 +137,7 @@ describe("Controls Component", () => {
 
 	describe("State Subscription", () => {
 		it("should subscribe to state changes on mount", () => {
-			render(
-				<Controls
-					drawingEngine={mockDrawingEngine as never}
-					onSave={mockOnSave}
-				/>
-			);
+			render(<Controls drawingEngine={mockDrawingEngine as never} onSave={mockOnSave} />);
 
 			expect(mockDrawingEngine.subscribeToStateChanges).toHaveBeenCalled();
 		});
@@ -186,13 +154,10 @@ describe("Controls Component", () => {
 				}),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			// Simulate mode change event
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "modeChange",
@@ -209,9 +174,7 @@ describe("Controls Component", () => {
 				selectedElements: ["elem-1", "elem-2"],
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			expect(screen.getByRole("menubar")).toBeInTheDocument();
 		});
@@ -225,9 +188,7 @@ describe("Controls Component", () => {
 				undoLast: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			// Verify Edit menu exists
 			const editMenu = screen.getByText("Editar");
@@ -242,9 +203,7 @@ describe("Controls Component", () => {
 				redoLast: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const editMenu = screen.getByText("Editar");
 			expect(editMenu).toBeInTheDocument();
@@ -257,9 +216,7 @@ describe("Controls Component", () => {
 				canUndo: vi.fn(() => false),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const editMenu = screen.getByText("Editar");
 			expect(editMenu).toBeInTheDocument();
@@ -272,9 +229,7 @@ describe("Controls Component", () => {
 				canRedo: vi.fn(() => false),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const editMenu = screen.getByText("Editar");
 			expect(editMenu).toBeInTheDocument();
@@ -290,9 +245,7 @@ describe("Controls Component", () => {
 				cutSelectedElements: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const editMenu = screen.getByText("Editar");
 			expect(editMenu).toBeInTheDocument();
@@ -306,9 +259,7 @@ describe("Controls Component", () => {
 				copySelectedElements: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const editMenu = screen.getByText("Editar");
 			expect(editMenu).toBeInTheDocument();
@@ -321,9 +272,7 @@ describe("Controls Component", () => {
 				pasteElements: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const editMenu = screen.getByText("Editar");
 			expect(editMenu).toBeInTheDocument();
@@ -339,9 +288,7 @@ describe("Controls Component", () => {
 				deleteSelectedElements: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const editMenu = screen.getByText("Editar");
 			expect(editMenu).toBeInTheDocument();
@@ -354,9 +301,7 @@ describe("Controls Component", () => {
 				selectedElements: ["elem-1", "elem-2", "elem-3"],
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			expect(screen.getByRole("menubar")).toBeInTheDocument();
 		});
@@ -374,9 +319,7 @@ describe("Controls Component", () => {
 				}),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const fileMenu = screen.getByText("Archivo");
 			expect(fileMenu).toBeInTheDocument();
@@ -384,9 +327,7 @@ describe("Controls Component", () => {
 		});
 
 		it("should show loading state while saving", async () => {
-			const slowSave = vi.fn(
-				() => new Promise<void>((resolve) => setTimeout(resolve, 100))
-			);
+			const slowSave = vi.fn(() => new Promise<void>((resolve) => setTimeout(resolve, 100)));
 
 			const mockEngine = {
 				...mockDrawingEngine,
@@ -398,9 +339,7 @@ describe("Controls Component", () => {
 				}),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={slowSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={slowSave} />);
 
 			const fileMenu = screen.getByText("Archivo");
 			fireEvent.click(fileMenu);
@@ -420,9 +359,7 @@ describe("Controls Component", () => {
 				}),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			// Just verify it renders without crashing
 			expect(screen.getByText("Archivo")).toBeInTheDocument();
@@ -441,9 +378,7 @@ describe("Controls Component", () => {
 				}),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={failingSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={failingSave} />);
 
 			// Should not crash
 			expect(screen.getByText("Archivo")).toBeInTheDocument();
@@ -455,9 +390,7 @@ describe("Controls Component", () => {
 				elements: [],
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			// Just verify it renders
 			expect(screen.getByText("Archivo")).toBeInTheDocument();
@@ -471,9 +404,7 @@ describe("Controls Component", () => {
 				selectedElements: ["elem-1", "elem-2"],
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const actionsMenu = screen.getByText("Acciones");
 			expect(actionsMenu).toBeInTheDocument();
@@ -486,9 +417,7 @@ describe("Controls Component", () => {
 				alignElements: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const toolsMenu = screen.getByText("Herramientas");
 			expect(toolsMenu).toBeInTheDocument();
@@ -504,9 +433,7 @@ describe("Controls Component", () => {
 				moveSelectedElements: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const actionsMenu = screen.getByText("Acciones");
 			expect(actionsMenu).toBeInTheDocument();
@@ -522,9 +449,7 @@ describe("Controls Component", () => {
 				bringToFront: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const editMenu = screen.getByText("Editar");
 			expect(editMenu).toBeInTheDocument();
@@ -538,9 +463,7 @@ describe("Controls Component", () => {
 				sendToBack: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const editMenu = screen.getByText("Editar");
 			expect(editMenu).toBeInTheDocument();
@@ -556,9 +479,7 @@ describe("Controls Component", () => {
 				groupSelectedElements: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const editMenu = screen.getByText("Editar");
 			expect(editMenu).toBeInTheDocument();
@@ -572,9 +493,7 @@ describe("Controls Component", () => {
 				ungroupSelectedElements: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const editMenu = screen.getByText("Editar");
 			expect(editMenu).toBeInTheDocument();
@@ -590,9 +509,7 @@ describe("Controls Component", () => {
 				addText: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const actionsMenu = screen.getByText("Acciones");
 			expect(actionsMenu).toBeInTheDocument();
@@ -607,9 +524,7 @@ describe("Controls Component", () => {
 				exportDrawings: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const archiveMenu = screen.getByText("Archivo");
 			fireEvent.click(archiveMenu);
@@ -625,9 +540,7 @@ describe("Controls Component", () => {
 				clearAll: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const editMenu = screen.getByText("Editar");
 			expect(editMenu).toBeInTheDocument();
@@ -637,12 +550,7 @@ describe("Controls Component", () => {
 
 	describe("Accessibility", () => {
 		it("should have proper button labels", () => {
-			render(
-				<Controls
-					drawingEngine={mockDrawingEngine as never}
-					onSave={mockOnSave}
-				/>
-			);
+			render(<Controls drawingEngine={mockDrawingEngine as never} onSave={mockOnSave} />);
 
 			expect(screen.getByLabelText(/Modo Cursor/i)).toBeInTheDocument();
 			expect(screen.getByText(/Archivo/i)).toBeInTheDocument();
@@ -650,24 +558,14 @@ describe("Controls Component", () => {
 		});
 
 		it("should have proper ARIA labels", () => {
-			render(
-				<Controls
-					drawingEngine={mockDrawingEngine as never}
-					onSave={mockOnSave}
-				/>
-			);
+			render(<Controls drawingEngine={mockDrawingEngine as never} onSave={mockOnSave} />);
 
 			const menubar = screen.getByRole("menubar");
 			expect(menubar).toBeInTheDocument();
 		});
 
 		it("should support keyboard navigation", () => {
-			render(
-				<Controls
-					drawingEngine={mockDrawingEngine as never}
-					onSave={mockOnSave}
-				/>
-			);
+			render(<Controls drawingEngine={mockDrawingEngine as never} onSave={mockOnSave} />);
 
 			const menubar = screen.getByRole("menubar");
 			expect(menubar).toBeInTheDocument();
@@ -680,15 +578,11 @@ describe("Controls Component", () => {
 
 	describe("Edge Cases", () => {
 		it("should handle null drawing engine", () => {
-			expect(() =>
-				render(<Controls drawingEngine={null} onSave={mockOnSave} />)
-			).not.toThrow();
+			expect(() => render(<Controls drawingEngine={null} onSave={mockOnSave} />)).not.toThrow();
 		});
 
 		it("should handle undefined onSave", () => {
-			expect(() =>
-				render(<Controls drawingEngine={mockDrawingEngine as never} />)
-			).not.toThrow();
+			expect(() => render(<Controls drawingEngine={mockDrawingEngine as never} />)).not.toThrow();
 		});
 
 		it("should handle empty elements array", () => {
@@ -698,9 +592,7 @@ describe("Controls Component", () => {
 			};
 
 			expect(() =>
-				render(
-					<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-				)
+				render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />)
 			).not.toThrow();
 		});
 
@@ -711,9 +603,7 @@ describe("Controls Component", () => {
 			};
 
 			expect(() =>
-				render(
-					<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-				)
+				render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />)
 			).not.toThrow();
 		});
 	});
@@ -725,9 +615,7 @@ describe("Controls Component", () => {
 				setDrawingMode: vi.fn(),
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			const lineButton = await screen.findByLabelText(/Modo Línea/i);
 			const cursorButton = screen.getByLabelText(/Modo Cursor/i);
@@ -763,9 +651,7 @@ describe("Controls Component", () => {
 			};
 
 			expect(() =>
-				render(
-					<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-				)
+				render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />)
 			).not.toThrow();
 		});
 	});
@@ -777,9 +663,7 @@ describe("Controls Component", () => {
 				drawingMode: "cursor" as const,
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			// Component should render without errors
 			expect(screen.getByRole("menubar")).toBeInTheDocument();
@@ -791,9 +675,7 @@ describe("Controls Component", () => {
 				drawingMode: "line" as const,
 			};
 
-			render(
-				<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />
-			);
+			render(<Controls drawingEngine={mockEngine as never} onSave={mockOnSave} />);
 
 			expect(screen.getByRole("menubar")).toBeInTheDocument();
 		});

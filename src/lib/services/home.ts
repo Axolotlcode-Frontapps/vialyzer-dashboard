@@ -2,9 +2,7 @@ import { fetcher } from "@/lib/utils/fetch-api";
 
 class HomeService {
 	async getPreviewCameras() {
-		return await fetcher<GeneralResponse<PreviewCamera[]>>(
-			"/cameras/get-all-camera-preview"
-		);
+		return await fetcher<GeneralResponse<PreviewCamera[]>>("/cameras/get-all-camera-preview");
 	}
 
 	async getCameras() {

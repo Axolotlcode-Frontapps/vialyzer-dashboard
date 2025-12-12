@@ -35,14 +35,11 @@ export function LocationFilter() {
 						variant="secondary"
 						className={cn(
 							`flex items-center gap-2 rounded-full font-semibold border transition-colors hover:cursor-pointer`,
-							search.filter === category ||
-								(category === "all" && !search.filter)
+							search.filter === category || (category === "all" && !search.filter)
 								? "bg-accent border-accent-foreground text-accent-foreground"
 								: "hover:bg-accent/50"
 						)}
-						onClick={() =>
-							onFilter(category === "all" ? null : (category as StatusType))
-						}
+						onClick={() => onFilter(category === "all" ? null : (category as StatusType))}
 					>
 						{category !== "all" && (
 							<span
@@ -56,9 +53,7 @@ export function LocationFilter() {
 							{category === "all"
 								? cameras?.length
 								: cameras?.filter((l) =>
-										STATUS_ORDER[
-											category as keyof typeof STATUS_STYLES
-										].includes(l.state)
+										STATUS_ORDER[category as keyof typeof STATUS_STYLES].includes(l.state)
 									).length}
 						</span>
 					</Button>

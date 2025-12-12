@@ -46,9 +46,7 @@ export const useColumns = (moduleData: Module) => {
 				),
 				cell: ({ row }) => (
 					<Checkbox
-						checked={selectedPermissionsIds.some(
-							(selected) => selected.id === row.original.id
-						)}
+						checked={selectedPermissionsIds.some((selected) => selected.id === row.original.id)}
 						onCheckedChange={(value) => {
 							const id = row.original.id;
 							if (value) {
@@ -58,9 +56,7 @@ export const useColumns = (moduleData: Module) => {
 								]);
 							} else {
 								setSelectedPermissionsIds(
-									selectedPermissionsIds.filter(
-										(selected) => selected.id !== id
-									)
+									selectedPermissionsIds.filter((selected) => selected.id !== id)
 								);
 							}
 						}}
@@ -70,43 +66,26 @@ export const useColumns = (moduleData: Module) => {
 			},
 			{
 				accessorKey: "action",
-				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title="Acción" />
-				),
-				cell: ({ row }) => (
-					<span className="inline-block w-[200px]">{row.original.action}</span>
-				),
+				header: ({ column }) => <DataTableColumnHeader column={column} title="Acción" />,
+				cell: ({ row }) => <span className="inline-block w-[200px]">{row.original.action}</span>,
 			},
 			{
 				accessorKey: "module",
-				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title="Módulo" />
-				),
-				cell: ({ row }) => (
-					<span className="inline-block w-[200px]">{row.original.module}</span>
-				),
+				header: ({ column }) => <DataTableColumnHeader column={column} title="Módulo" />,
+				cell: ({ row }) => <span className="inline-block w-[200px]">{row.original.module}</span>,
 			},
 			{
 				accessorKey: "active",
-				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title="Activo" />
-				),
+				header: ({ column }) => <DataTableColumnHeader column={column} title="Activo" />,
 				cell: ({ row }) => (
-					<span className="inline-block w-[100px]">
-						{row.original.active ? "Sí" : "No"}
-					</span>
+					<span className="inline-block w-[100px]">{row.original.active ? "Sí" : "No"}</span>
 				),
 			},
 			{
 				accessorKey: "assigned",
-				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title="Asignado" />
-				),
+				header: ({ column }) => <DataTableColumnHeader column={column} title="Asignado" />,
 				cell: ({ row }) => (
-					<AssignPermission
-						permission={row.original}
-						permissionsData={moduleData.permissions}
-					/>
+					<AssignPermission permission={row.original} permissionsData={moduleData.permissions} />
 				),
 			},
 		],

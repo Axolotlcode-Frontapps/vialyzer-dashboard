@@ -1,10 +1,4 @@
-import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetHeader,
-	SheetTitle,
-} from "@/ui/shared/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/ui/shared/sheet";
 import { UserFields } from "./user-form";
 
 export function UserUpdate({
@@ -22,8 +16,8 @@ export function UserUpdate({
 				<SheetHeader>
 					<SheetTitle>Actualizar usuario</SheetTitle>
 					<SheetDescription>
-						Vas a actualizar un usuario existente. Completa la información
-						necesaria y guarda para aplicar los cambios.
+						Vas a actualizar un usuario existente. Completa la información necesaria y guarda para
+						aplicar los cambios.
 					</SheetDescription>
 				</SheetHeader>
 

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/ui/shared/field";
 import { Input } from "@/ui/shared/input";
-import { Label } from "@/ui/shared/label";
 import { useFieldFiltersContext } from "./context";
 
 interface Props extends React.ComponentProps<"input"> {
@@ -26,22 +26,18 @@ export function TextField({ label, description, ...props }: Props) {
 	}, [field.state.meta]);
 
 	return (
-		<Label className="flex-col gap-0">
-			{label ? (
-				<span className="block w-full mb-3.5 text-sm">{label}</span>
-			) : null}
+		<Field orientation="responsive" className="@md/filters:max-w-fit">
+			{label ? <FieldLabel htmlFor={field.name}>{label}</FieldLabel> : null}
+			{description ? <FieldDescription>{description}</FieldDescription> : null}
 			<Input
+				id={field.name}
+				name={field.name}
 				value={field.state.value}
 				onChange={(e) => field.handleChange(e.target.value)}
 				className="w-full"
 				{...props}
 			/>
-			{description ? (
-				<span className="text-sm text-muted-foreground">{description}</span>
-			) : null}
-			{error ? (
-				<span className="text-sm text-destructive mt-2 w-full">{error}</span>
-			) : null}
-		</Label>
+			{error ? <FieldError>{error}</FieldError> : null}
+		</Field>
 	);
 }

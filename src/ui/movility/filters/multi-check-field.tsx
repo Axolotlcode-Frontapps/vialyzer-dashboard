@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { Button } from "@/ui/shared/button";
-import { Label } from "@/ui/shared/label";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/ui/shared/field";
 import { Skeleton } from "@/ui/shared/skeleton";
 import { useFieldFiltersContext } from "./context";
 
@@ -12,12 +12,7 @@ interface Props extends React.ComponentProps<"input"> {
 	loading?: boolean;
 }
 
-export function MultiCheckField({
-	label,
-	description,
-	options = [],
-	loading,
-}: Props) {
+export function MultiCheckField({ label, description, options = [], loading }: Props) {
 	const field = useFieldFiltersContext<string[]>();
 
 	const error = useMemo(() => {
@@ -34,20 +29,17 @@ export function MultiCheckField({
 	}, [field.state.meta]);
 
 	return (
-		<Label className="flex-col gap-0">
-			{label ? (
-				<span className="block w-full mb-3.5 text-sm">{label}</span>
-			) : null}
-			<div className="flex flex-wrap gap-2 py-[5px]">
+		<Field orientation="responsive" className="@md/filters:max-w-fit">
+			{label ? <FieldLabel>{label}</FieldLabel> : null}
+			{description ? <FieldDescription>{description}</FieldDescription> : null}
+			<div className="flex flex-wrap gap-2">
 				{!loading ? (
 					options.map((option) => (
 						<Button
 							key={option.value}
 							type="button"
 							size="sm"
-							variant={
-								field.state.value.includes(option.value) ? "default" : "outline"
-							}
+							variant={field.state.value.includes(option.value) ? "default" : "outline"}
 							onClick={() => {
 								const selected = field.state.value.includes(option.value)
 									? field.state.value.filter((c) => c !== option.value)
@@ -61,22 +53,17 @@ export function MultiCheckField({
 					))
 				) : (
 					<>
-						<Skeleton className="h-[30px] w-22 rounded-full" />
-						<Skeleton className="h-[30px] w-22 rounded-full" />
-						<Skeleton className="h-[30px] w-18 rounded-full" />
-						<Skeleton className="h-[30px] w-20 rounded-full" />
-						<Skeleton className="h-[30px] w-20 rounded-full" />
-						<Skeleton className="h-[30px] w-18 rounded-full" />
-						<Skeleton className="h-[30px] w-28 rounded-full" />
+						<Skeleton className="h-8 w-22 rounded-md" />
+						<Skeleton className="h-8 w-22 rounded-md" />
+						<Skeleton className="h-8 w-18 rounded-md" />
+						<Skeleton className="h-8 w-20 rounded-md" />
+						<Skeleton className="h-8 w-20 rounded-md" />
+						<Skeleton className="h-8 w-18 rounded-md" />
+						<Skeleton className="h-8 w-28 rounded-md" />
 					</>
 				)}
 			</div>
-			{description ? (
-				<span className="text-sm text-muted-foreground">{description}</span>
-			) : null}
-			{error ? (
-				<span className="text-sm text-destructive mt-2 w-full">{error}</span>
-			) : null}
-		</Label>
+			{error ? <FieldError>{error}</FieldError> : null}
+		</Field>
 	);
 }

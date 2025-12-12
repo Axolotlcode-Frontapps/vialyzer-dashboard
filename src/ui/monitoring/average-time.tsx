@@ -8,12 +8,7 @@ interface AverageTimeProps {
 	formattedTime?: string;
 }
 
-export function AverageTime({
-	hours,
-	minutes,
-	loading,
-	formattedTime,
-}: AverageTimeProps) {
+export function AverageTime({ hours, minutes, loading, formattedTime }: AverageTimeProps) {
 	if (loading) {
 		return (
 			<Card className="p-6">
@@ -37,9 +32,7 @@ export function AverageTime({
 	return (
 		<Card className="p-6">
 			<CardHeader className="p-0 block">
-				<CardTitle className="monitoring__stat-title">
-					Tiempo promedio atención
-				</CardTitle>
+				<CardTitle className="monitoring__stat-title">Tiempo promedio atención</CardTitle>
 			</CardHeader>
 			<CardContent className="p-0">
 				<span className="block text-center text-xl">

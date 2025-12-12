@@ -294,32 +294,22 @@ export class DrawingConfig {
 
 		// Validate resolution
 		if (config.resolution?.target) {
-			if (
-				config.resolution.target.width !== undefined &&
-				config.resolution.target.width < 1
-			) {
+			if (config.resolution.target.width !== undefined && config.resolution.target.width < 1) {
 				issues.push({
 					type: "error",
 					message: "resolution.width must be at least 1",
 				});
 			}
-			if (
-				config.resolution.target.height !== undefined &&
-				config.resolution.target.height < 1
-			) {
+			if (config.resolution.target.height !== undefined && config.resolution.target.height < 1) {
 				issues.push({
 					type: "error",
 					message: "resolution.height must be at least 1",
 				});
 			}
-			if (
-				config.resolution.target.width !== undefined &&
-				config.resolution.target.width > 16384
-			) {
+			if (config.resolution.target.width !== undefined && config.resolution.target.width > 16384) {
 				issues.push({
 					type: "warning",
-					message:
-						"resolution.width is very large (>16384) and may cause performance issues",
+					message: "resolution.width is very large (>16384) and may cause performance issues",
 				});
 			}
 			if (
@@ -328,8 +318,7 @@ export class DrawingConfig {
 			) {
 				issues.push({
 					type: "warning",
-					message:
-						"resolution.height is very large (>16384) and may cause performance issues",
+					message: "resolution.height is very large (>16384) and may cause performance issues",
 				});
 			}
 		}
@@ -349,10 +338,7 @@ export class DrawingConfig {
 
 		// Validate history config
 		if (config.history) {
-			if (
-				config.history.maxHistorySize !== undefined &&
-				config.history.maxHistorySize < 0
-			) {
+			if (config.history.maxHistorySize !== undefined && config.history.maxHistorySize < 0) {
 				issues.push({
 					type: "error",
 					message: "history.maxHistorySize must be non-negative",
@@ -372,10 +358,7 @@ export class DrawingConfig {
 		// Validate rendering config
 		if (config.rendering) {
 			const rendering = config.rendering;
-			if (
-				rendering.defaultLineWidth !== undefined &&
-				rendering.defaultLineWidth <= 0
-			) {
+			if (rendering.defaultLineWidth !== undefined && rendering.defaultLineWidth <= 0) {
 				issues.push({
 					type: "error",
 					message: "rendering.defaultLineWidth must be positive",
@@ -390,19 +373,13 @@ export class DrawingConfig {
 					message: "rendering.defaultOpacity must be between 0 and 1",
 				});
 			}
-			if (
-				rendering.selectedLineWidth !== undefined &&
-				rendering.selectedLineWidth <= 0
-			) {
+			if (rendering.selectedLineWidth !== undefined && rendering.selectedLineWidth <= 0) {
 				issues.push({
 					type: "error",
 					message: "rendering.selectedLineWidth must be positive",
 				});
 			}
-			if (
-				rendering.hoveredLineWidth !== undefined &&
-				rendering.hoveredLineWidth <= 0
-			) {
+			if (rendering.hoveredLineWidth !== undefined && rendering.hoveredLineWidth <= 0) {
 				issues.push({
 					type: "error",
 					message: "rendering.hoveredLineWidth must be positive",
@@ -418,10 +395,7 @@ export class DrawingConfig {
 
 		// Validate text config
 		if (config.text) {
-			if (
-				config.text.defaultFontSize !== undefined &&
-				config.text.defaultFontSize <= 0
-			) {
+			if (config.text.defaultFontSize !== undefined && config.text.defaultFontSize <= 0) {
 				issues.push({
 					type: "error",
 					message: "text.defaultFontSize must be positive",
@@ -429,8 +403,7 @@ export class DrawingConfig {
 			}
 			if (
 				config.text.defaultBackgroundOpacity !== undefined &&
-				(config.text.defaultBackgroundOpacity < 0 ||
-					config.text.defaultBackgroundOpacity > 1)
+				(config.text.defaultBackgroundOpacity < 0 || config.text.defaultBackgroundOpacity > 1)
 			) {
 				issues.push({
 					type: "error",

@@ -26,9 +26,7 @@ export function DatePickerField({ label, placeholder }: Props) {
 				: null;
 	}, [errors]);
 
-	const selectedDate = field.state.value
-		? new Date(field.state.value)
-		: undefined;
+	const selectedDate = field.state.value ? new Date(field.state.value) : undefined;
 
 	return (
 		<>

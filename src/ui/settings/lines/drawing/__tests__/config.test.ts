@@ -159,9 +159,7 @@ describe("DrawingConfig", () => {
 		// Mock DrawingArrange
 		(DrawingArrange as any).mockImplementation(() => ({
 			changeZOrder: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
-			changeZOrderInLayer: vi
-				.fn()
-				.mockReturnValue({ elements: [], affectedIds: [] }),
+			changeZOrderInLayer: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
 		}));
 
 		// Mock DrawingAnnotation
@@ -336,9 +334,7 @@ describe("DrawingConfig", () => {
 
 		it("should have selected width greater than default", () => {
 			const config = engine.getConfig();
-			expect(config.rendering.selectedLineWidth).toBeGreaterThan(
-				config.rendering.defaultLineWidth
-			);
+			expect(config.rendering.selectedLineWidth).toBeGreaterThan(config.rendering.defaultLineWidth);
 		});
 	});
 
@@ -424,19 +420,14 @@ describe("DrawingConfig", () => {
 	describe("Resolution Calculations", () => {
 		it("should support aspect ratio calculations", () => {
 			const config = engine.getConfig();
-			const aspectRatio =
-				config.resolution.display.width / config.resolution.display.height;
+			const aspectRatio = config.resolution.display.width / config.resolution.display.height;
 			expect(aspectRatio).toBeCloseTo(16 / 9, 2);
 		});
 
 		it("should have matching dimensions across resolutions", () => {
 			const config = engine.getConfig();
-			expect(config.resolution.display.width).toBe(
-				config.resolution.target.width
-			);
-			expect(config.resolution.display.height).toBe(
-				config.resolution.target.height
-			);
+			expect(config.resolution.display.width).toBe(config.resolution.target.width);
+			expect(config.resolution.display.height).toBe(config.resolution.target.height);
 		});
 	});
 

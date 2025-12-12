@@ -28,13 +28,9 @@ export function useUpdateScenarioLine() {
 						...line
 					} = element;
 
-					const vehicleIds = Array.isArray(layer.category)
-						? layer.category
-						: [layer.category];
+					const vehicleIds = Array.isArray(layer.category) ? layer.category : [layer.category];
 
-					const elementDatasources = serverLines.filter(
-						(item) => item.scenery.id === id
-					);
+					const elementDatasources = serverLines.filter((item) => item.scenery.id === id);
 
 					if (elementDatasources.length === 0)
 						throw new Error("Línea de escenario no encontrada en el servidor");
@@ -70,19 +66,12 @@ export function useUpdateScenarioLine() {
 							);
 						}
 
-						const existingVehicleIds = elementDatasources.map(
-							(ds) => ds.vehicle.id
-						);
+						const existingVehicleIds = elementDatasources.map((ds) => ds.vehicle.id);
 
-						const newVehicleIds = vehicleIds.filter(
-							(vid) => !existingVehicleIds.includes(vid)
-						);
-						const removedVehicleIds = existingVehicleIds.filter(
-							(vid) => !vehicleIds.includes(vid)
-						);
+						const newVehicleIds = vehicleIds.filter((vid) => !existingVehicleIds.includes(vid));
+						const removedVehicleIds = existingVehicleIds.filter((vid) => !vehicleIds.includes(vid));
 
-						const hasVehicleChanges =
-							newVehicleIds.length > 0 || removedVehicleIds.length > 0;
+						const hasVehicleChanges = newVehicleIds.length > 0 || removedVehicleIds.length > 0;
 
 						if (!hasVehicleChanges) {
 							return { entry, exit };
@@ -117,9 +106,7 @@ export function useUpdateScenarioLine() {
 
 						const removePromises = elementDatasources
 							.filter((ds) => removedVehicleIds.includes(ds.vehicle.id))
-							.map((ds) =>
-								settings.removeDatasource({ id: ds.id }, { id: camera })
-							);
+							.map((ds) => settings.removeDatasource({ id: ds.id }, { id: camera }));
 
 						const datasourceResults = await Promise.all([
 							...updatePromises,
@@ -141,15 +128,10 @@ export function useUpdateScenarioLine() {
 							.map((ds) => ds.vehicle?.id)
 							.filter(Boolean) as string[];
 
-						const newVehicleIds = vehicleIds.filter(
-							(vid) => !existingVehicleIds.includes(vid)
-						);
-						const removedVehicleIds = existingVehicleIds.filter(
-							(vid) => !vehicleIds.includes(vid)
-						);
+						const newVehicleIds = vehicleIds.filter((vid) => !existingVehicleIds.includes(vid));
+						const removedVehicleIds = existingVehicleIds.filter((vid) => !vehicleIds.includes(vid));
 
-						const hasVehicleChanges =
-							newVehicleIds.length > 0 || removedVehicleIds.length > 0;
+						const hasVehicleChanges = newVehicleIds.length > 0 || removedVehicleIds.length > 0;
 
 						if (!hasVehicleChanges) {
 							// Update existing datasources without vehicle changes
@@ -171,9 +153,7 @@ export function useUpdateScenarioLine() {
 						}
 
 						const updatePromises = elementDatasources
-							.filter(
-								(ds) => ds.vehicle?.id && vehicleIds.includes(ds.vehicle.id)
-							)
+							.filter((ds) => ds.vehicle?.id && vehicleIds.includes(ds.vehicle.id))
 							.map((ds) =>
 								settings.updateDatasource(
 									{
@@ -198,13 +178,8 @@ export function useUpdateScenarioLine() {
 						);
 
 						const removePromises = elementDatasources
-							.filter(
-								(ds) =>
-									ds.vehicle?.id && removedVehicleIds.includes(ds.vehicle.id)
-							)
-							.map((ds) =>
-								settings.removeDatasource({ id: ds.id }, { id: camera })
-							);
+							.filter((ds) => ds.vehicle?.id && removedVehicleIds.includes(ds.vehicle.id))
+							.map((ds) => settings.removeDatasource({ id: ds.id }, { id: camera }));
 
 						const datasourceResults = await Promise.all([
 							...updatePromises,
@@ -244,19 +219,12 @@ export function useUpdateScenarioLine() {
 							);
 						}
 
-						const existingVehicleIds = elementDatasources.map(
-							(ds) => ds.vehicle.id
-						);
+						const existingVehicleIds = elementDatasources.map((ds) => ds.vehicle.id);
 
-						const newVehicleIds = vehicleIds.filter(
-							(vid) => !existingVehicleIds.includes(vid)
-						);
-						const removedVehicleIds = existingVehicleIds.filter(
-							(vid) => !vehicleIds.includes(vid)
-						);
+						const newVehicleIds = vehicleIds.filter((vid) => !existingVehicleIds.includes(vid));
+						const removedVehicleIds = existingVehicleIds.filter((vid) => !vehicleIds.includes(vid));
 
-						const hasVehicleChanges =
-							newVehicleIds.length > 0 || removedVehicleIds.length > 0;
+						const hasVehicleChanges = newVehicleIds.length > 0 || removedVehicleIds.length > 0;
 
 						if (!hasVehicleChanges) {
 							return { entry, exit };
@@ -291,9 +259,7 @@ export function useUpdateScenarioLine() {
 
 						const removePromises = elementDatasources
 							.filter((ds) => removedVehicleIds.includes(ds.vehicle.id))
-							.map((ds) =>
-								settings.removeDatasource({ id: ds.id }, { id: camera })
-							);
+							.map((ds) => settings.removeDatasource({ id: ds.id }, { id: camera }));
 
 						const datasourceResults = await Promise.all([
 							...updatePromises,
