@@ -140,9 +140,7 @@ describe("DrawingAnnotation", () => {
 		// Mock DrawingArrange
 		(DrawingArrange as any).mockImplementation(() => ({
 			changeZOrder: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
-			changeZOrderInLayer: vi
-				.fn()
-				.mockReturnValue({ elements: [], affectedIds: [] }),
+			changeZOrderInLayer: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
 		}));
 
 		// Mock DrawingAnnotation
@@ -339,9 +337,7 @@ describe("DrawingAnnotation", () => {
 			});
 
 			// Verify all font sizes were processed
-			expect(annotationMockInstance.completeTextInput).toHaveBeenCalledTimes(
-				fontSizes.length
-			);
+			expect(annotationMockInstance.completeTextInput).toHaveBeenCalledTimes(fontSizes.length);
 		});
 
 		it("should support various font families", () => {
@@ -368,9 +364,7 @@ describe("DrawingAnnotation", () => {
 			});
 
 			// Verify all font families were processed
-			expect(annotationMockInstance.completeTextInput).toHaveBeenCalledTimes(
-				fontFamilies.length
-			);
+			expect(annotationMockInstance.completeTextInput).toHaveBeenCalledTimes(fontFamilies.length);
 		});
 	});
 
@@ -583,11 +577,7 @@ describe("DrawingAnnotation", () => {
 
 			engine.completeTextInput("tiny", textData);
 
-			expect(annotationMockInstance.completeTextInput).toHaveBeenCalledWith(
-				"tiny",
-				textData,
-				[]
-			);
+			expect(annotationMockInstance.completeTextInput).toHaveBeenCalledWith("tiny", textData, []);
 		});
 
 		it("should handle maximum font size", () => {
@@ -602,11 +592,7 @@ describe("DrawingAnnotation", () => {
 
 			engine.completeTextInput("huge", textData);
 
-			expect(annotationMockInstance.completeTextInput).toHaveBeenCalledWith(
-				"huge",
-				textData,
-				[]
-			);
+			expect(annotationMockInstance.completeTextInput).toHaveBeenCalledWith("huge", textData, []);
 		});
 	});
 });

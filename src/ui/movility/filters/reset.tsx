@@ -1,6 +1,7 @@
-import { LoaderCircle, RefreshCcw } from "lucide-react";
+import { RefreshCcw } from "lucide-react";
 
 import { Button } from "@/ui/shared/button";
+import { Spinner } from "@/ui/shared/spinner";
 import { useFormFiltersContext } from "./context";
 
 export function Reset({
@@ -26,11 +27,7 @@ export function Reset({
 						onClick?.();
 					}}
 				>
-					{isSubmitting ? (
-						<LoaderCircle className="size-4 animate-spin" />
-					) : (
-						<RefreshCcw className="size-4" />
-					)}
+					{isSubmitting ? <Spinner /> : <RefreshCcw className="size-4" />}
 					{isSubmitting ? loading : label}
 				</Button>
 			)}

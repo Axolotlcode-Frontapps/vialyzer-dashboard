@@ -11,7 +11,7 @@ import {
 	CommandItem,
 	CommandList,
 } from "@/ui/shared/command";
-import { Label } from "@/ui/shared/label";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/ui/shared/field";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/shared/popover";
 import { useFieldFiltersContext } from "./context";
 
@@ -45,10 +45,9 @@ export function SingleSelectField({
 	}, [field.state.meta]);
 
 	return (
-		<Label className={cn("w-full flex-col gap-0", props.className)}>
-			{label ? (
-				<span className="block w-full mb-3.5 text-sm">{label}</span>
-			) : null}
+		<Field orientation="responsive" className="@md/filters:max-w-fit">
+			{label ? <FieldLabel>{label}</FieldLabel> : null}
+			{description ? <FieldDescription>{description}</FieldDescription> : null}
 			<Popover>
 				<PopoverTrigger asChild>
 					<Button
@@ -60,41 +59,30 @@ export function SingleSelectField({
 							!field.state.value && "text-muted-foreground"
 						)}
 					>
-						{typeof field.state.value === "string" ||
-						typeof field.state.value === "number"
-							? options.find((option) => option.value === field.state.value)
-									?.label
+						{typeof field.state.value === "string" || typeof field.state.value === "number"
+							? options.find((option) => option.value === field.state.value)?.label
 							: props.placeholder}
 						<ChevronsUpDown className="opacity-50" />
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className="w-full p-0">
+				<PopoverContent className="w-full max-w-[220px] p-0" align="start">
 					<Command>
-						<CommandInput
-							placeholder={props.placeholder ?? "Search..."}
-							className="h-9"
-						/>
+						<CommandInput placeholder={props.placeholder ?? "Search..."} className="h-9" />
 						<CommandList>
 							<CommandEmpty>{empty}</CommandEmpty>
 							<CommandGroup>
 								{options.map((option) => (
 									<CommandItem
 										value={
-											typeof option.value === "string"
-												? option.value
-												: option.value.toString()
+											typeof option.value === "string" ? option.value : option.value.toString()
 										}
 										key={option.value}
 										onSelect={(currentValue) => {
 											const isString = typeof option.value === "string";
-											const parsedValue = isString
-												? currentValue
-												: parseInt(currentValue, 10);
+											const parsedValue = isString ? currentValue : parseInt(currentValue, 10);
 
 											field.handleChange(
-												parsedValue === field.state.value
-													? undefined
-													: option.value
+												parsedValue === field.state.value ? undefined : option.value
 											);
 										}}
 									>
@@ -102,9 +90,7 @@ export function SingleSelectField({
 										<Check
 											className={cn(
 												"ml-auto",
-												option.value === field.state.value
-													? "opacity-100"
-													: "opacity-0"
+												option.value === field.state.value ? "opacity-100" : "opacity-0"
 											)}
 										/>
 									</CommandItem>
@@ -114,12 +100,7 @@ export function SingleSelectField({
 					</Command>
 				</PopoverContent>
 			</Popover>
-			{description ? (
-				<span className="text-sm text-muted-foreground">{description}</span>
-			) : null}
-			{error ? (
-				<span className="text-sm text-destructive mt-2 w-full">{error}</span>
-			) : null}
-		</Label>
+			{error ? <FieldError>{error}</FieldError> : null}
+		</Field>
 	);
 }

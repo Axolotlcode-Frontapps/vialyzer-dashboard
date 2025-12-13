@@ -1,10 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import {
-	Circle,
-	GoogleMap,
-	Polygon,
-	TrafficLayer,
-} from "@react-google-maps/api";
+import { Circle, GoogleMap, Polygon, TrafficLayer } from "@react-google-maps/api";
 import { useQuery } from "@tanstack/react-query";
 import { useGoogleMaps } from "@/contexts/maps";
 import { useNeighborhoods } from "@/hooks/use-neighborhoods.ts";
@@ -46,19 +41,24 @@ export function Maps() {
 	const [map, setMap] = useState<google.maps.Map | null>(null);
 	const [mapZoom, setMapZoom] = useState<number>(13);
 	const [selectedZone, setSelectedZone] = useState<string | null>(null);
-	const [selectedNeighborhood, setSelectedNeighborhood] =
-		useState<NeighborhoodFeature | null>(null);
+	const [selectedNeighborhood, setSelectedNeighborhood] = useState<NeighborhoodFeature | null>(
+		null
+	);
 	const [showCaliBoundary, setShowCaliBoundary] = useState(false);
 
 	const onUnmount = useCallback(() => setMap(null), []);
-	const onLoad = useCallback((map: google.maps.Map) => {
-		setMap(map);
-		setMapZoom(map.getZoom() || 13);
-
-		map.addListener("zoom_changed", () => {
+	// biome-ignore lint/correctness/useExhaustiveDependencies: No necessary
+	const onLoad = useCallback(
+		(map: google.maps.Map) => {
+			setMap(map);
 			setMapZoom(map.getZoom() || 13);
-		});
-	}, [mapZoom]);
+
+			map.addListener("zoom_changed", () => {
+				setMapZoom(map.getZoom() || 13);
+			});
+		},
+		[mapZoom]
+	);
 
 	const mapOptions = useMemo(() => {
 		const useMapId = shouldUseMapId(mapStyle);
@@ -154,10 +154,7 @@ export function Maps() {
 					onNeighborhoodSelect={setSelectedNeighborhood}
 					onToggleCaliBoundary={() => setShowCaliBoundary(!showCaliBoundary)}
 				/>
-				<HeatmapControls
-					activeHeatmap={activeHeatmap}
-					onHeatmapChange={setActiveHeatmap}
-				/>
+				<HeatmapControls activeHeatmap={activeHeatmap} onHeatmapChange={setActiveHeatmap} />
 			</div>
 			<GoogleMap
 				key={mapStyle}
@@ -178,9 +175,7 @@ export function Maps() {
 
 				{showCaliBoundary && caliBoundary && (
 					<Polygon
-						paths={convertGeoJSONToGoogleMapsPath(
-							caliBoundary.geometry.coordinates
-						)}
+						paths={convertGeoJSONToGoogleMapsPath(caliBoundary.geometry.coordinates)}
 						options={{
 							fillColor: "#8b5cf6",
 							fillOpacity: 0.05,
@@ -194,9 +189,7 @@ export function Maps() {
 				{/* Polígonos de Barrios */}
 				{selectedNeighborhood && (
 					<Polygon
-						paths={convertGeoJSONToGoogleMapsPath(
-							selectedNeighborhood.geometry.coordinates
-						)}
+						paths={convertGeoJSONToGoogleMapsPath(selectedNeighborhood.geometry.coordinates)}
 						options={{
 							fillColor: "#3b82f6",
 							fillOpacity: 0.2,
@@ -215,9 +208,7 @@ export function Maps() {
 						?.neighborhoods.map((neighborhood) => (
 							<Polygon
 								key={neighborhood.properties["@id"]}
-								paths={convertGeoJSONToGoogleMapsPath(
-									neighborhood.geometry.coordinates
-								)}
+								paths={convertGeoJSONToGoogleMapsPath(neighborhood.geometry.coordinates)}
 								options={{
 									fillColor: "#10b981",
 									fillOpacity: 0.15,

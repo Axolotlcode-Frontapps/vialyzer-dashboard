@@ -4,14 +4,7 @@ import { useSearch } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 // import { useLoaderData } from 'react-router';
-import {
-	Bar,
-	BarChart,
-	CartesianGrid,
-	LabelList,
-	XAxis,
-	YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 
 import type { ContentType } from "recharts/types/component/Label";
 import type { ChartConfig } from "../shared/chart";
@@ -19,11 +12,7 @@ import type { ChartConfig } from "../shared/chart";
 import { kpiServices } from "@/lib/services/kpis";
 import { chartConfig } from "@/lib/utils/charts";
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/card";
-import {
-	ChartContainer,
-	ChartTooltip,
-	ChartTooltipContent,
-} from "../shared/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../shared/chart";
 
 const config = {
 	time: {
@@ -62,9 +51,7 @@ export function GraphTime() {
 	const { data } = useQuery({
 		queryKey: ["monitoring-time-permanence", selected, startDate, endDate],
 		queryFn: async () =>
-			selected
-				? await kpiServices.getTime(selected, startDate, endDate)
-				: undefined,
+			selected ? await kpiServices.getTime(selected, startDate, endDate) : undefined,
 		enabled: !!selected,
 	});
 
@@ -96,29 +83,15 @@ export function GraphTime() {
 						}}
 					>
 						<CartesianGrid vertical={false} />
-						<YAxis
-							dataKey="vehicle"
-							type="category"
-							tickLine={false}
-							axisLine={false}
-						/>
+						<YAxis dataKey="vehicle" type="category" tickLine={false} axisLine={false} />
 						<XAxis
 							dataKey="time"
 							type="number"
 							tickLine={false}
 							tickFormatter={(value) => `${value}Min`}
 						/>
-						<ChartTooltip
-							cursor={false}
-							content={<ChartTooltipContent indicator="line" />}
-						/>
-						<Bar
-							dataKey="time"
-							layout="vertical"
-							fill="var(--color-time)"
-							height={20}
-							radius={4}
-						>
+						<ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
+						<Bar dataKey="time" layout="vertical" fill="var(--color-time)" height={20} radius={4}>
 							<LabelList
 								dataKey="vehicle"
 								position="center"

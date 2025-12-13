@@ -37,16 +37,12 @@ export function HighParking({ peakDay, peakHour, loading }: HighParkingProps) {
 	return (
 		<Card className="p-6 @5xl/graphs:col-span-2">
 			<CardHeader className="p-0">
-				<CardTitle className="monitoring__stat-title">
-					Hora y día de mayor parqueo
-				</CardTitle>
+				<CardTitle className="monitoring__stat-title">Hora y día de mayor parqueo</CardTitle>
 			</CardHeader>
 			<CardContent className="p-0">
 				<span className="flex items-center font-medium gap-2 mb-5">
 					<span className="flex-1 block text-center">Día</span>
-					<span className="flex-[1.5] block font-medium text-2xl">
-						{peakDay || "N/A"}
-					</span>
+					<span className="flex-[1.5] block font-medium text-2xl">{peakDay || "N/A"}</span>
 				</span>
 				<span className="flex items-center font-medium gap-2">
 					<span className="flex-1 block text-center">Hora</span>

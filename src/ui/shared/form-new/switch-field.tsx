@@ -28,16 +28,11 @@ export function SwitchField({ label }: Props) {
 	return (
 		<Label className="flex gap-0 text-sm relative cursor-pointer">
 			<div className="flex items-center space-x-2">
-				<Switch
-					checked={field.state.value}
-					onCheckedChange={field.handleChange}
-				/>
+				<Switch checked={field.state.value} onCheckedChange={field.handleChange} />
 				<span className="block w-full">{label}</span>
 			</div>
 
-			{error ? (
-				<span className="w-full text-sm text-destructive mt-2">{error}</span>
-			) : null}
+			{error ? <span className="w-full text-sm text-destructive mt-2">{error}</span> : null}
 		</Label>
 	);
 }

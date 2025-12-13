@@ -12,13 +12,7 @@ import { departmentsServices } from "@/lib/services/deparments";
 import { Button } from "@/ui/shared/button";
 import { Field, FieldContent, FieldError, FieldLabel } from "@/ui/shared/field";
 import { Input } from "@/ui/shared/input";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/ui/shared/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/shared/select";
 import { SheetClose, SheetFooter } from "@/ui/shared/sheet";
 import { Spinner } from "@/ui/shared/spinner";
 import { Switch } from "@/ui/shared/switch";
@@ -73,22 +67,17 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 		onSuccess: ({ name }) => {
 			form.reset();
 			queryClient.invalidateQueries({ queryKey: ["companies"] });
-			toast.success(
-				`Empresa ${update ? "actualizada" : "creada"} correctamente`,
-				{
-					description: `Se ha ${update ? "actualizado" : "creado"} la empresa "${name}" correctamente.`,
-				}
-			);
+			toast.success(`Empresa ${update ? "actualizada" : "creada"} correctamente`, {
+				description: `Se ha ${update ? "actualizado" : "creado"} la empresa "${name}" correctamente.`,
+			});
 			onSuccess(false);
 		},
 		onError: (error: AxiosError) => {
 			form.state.canSubmit = true;
-			const message = (error.response?.data as GeneralResponse<unknown>)
-				?.message;
+			const message = (error.response?.data as GeneralResponse<unknown>)?.message;
 
 			const capitalizedMessage =
-				message &&
-				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+				message && message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
 
 			toast.error(`Error al ${update ? "actualizar" : "crear"} la empresa`, {
 				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
@@ -100,9 +89,7 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 	});
 
 	useEffect(() => {
-		const selectedDepartment = departmentsData.find(
-			(dep) => dep.departments === department
-		);
+		const selectedDepartment = departmentsData.find((dep) => dep.departments === department);
 
 		if (
 			department &&
@@ -127,8 +114,7 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 				<form.Field
 					name="name"
 					children={(field) => {
-						const isInvalid =
-							field.state.meta.isTouched && !field.state.meta.isValid;
+						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
 						return (
 							<Field data-invalid={isInvalid}>
@@ -151,8 +137,7 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 				<form.Field
 					name="description"
 					children={(field) => {
-						const isInvalid =
-							field.state.meta.isTouched && !field.state.meta.isValid;
+						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
 						return (
 							<Field data-invalid={isInvalid}>
@@ -176,8 +161,7 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 					<form.Field
 						name="nit"
 						children={(field) => {
-							const isInvalid =
-								field.state.meta.isTouched && !field.state.meta.isValid;
+							const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
 							return (
 								<Field data-invalid={isInvalid}>
@@ -201,8 +185,7 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 					<form.Field
 						name="phone"
 						children={(field) => {
-							const isInvalid =
-								field.state.meta.isTouched && !field.state.meta.isValid;
+							const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
 							return (
 								<Field data-invalid={isInvalid}>
@@ -226,8 +209,7 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 				<form.Field
 					name="address"
 					children={(field) => {
-						const isInvalid =
-							field.state.meta.isTouched && !field.state.meta.isValid;
+						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
 						return (
 							<Field data-invalid={isInvalid}>
@@ -250,16 +232,12 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 				<form.Field
 					name="department"
 					children={(field) => {
-						const isInvalid =
-							field.state.meta.isTouched && !field.state.meta.isValid;
+						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
 						return (
 							<Field data-invalid={isInvalid}>
 								<FieldLabel htmlFor={field.name}>Departamento</FieldLabel>
-								<Select
-									onValueChange={field.handleChange}
-									value={field.state.value}
-								>
+								<Select onValueChange={field.handleChange} value={field.state.value}>
 									<SelectTrigger>
 										<SelectValue
 											onBlur={field.handleBlur}
@@ -269,10 +247,7 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 									</SelectTrigger>
 									<SelectContent>
 										{departmentsData.map((department) => (
-											<SelectItem
-												key={department.departments}
-												value={department.departments}
-											>
+											<SelectItem key={department.departments} value={department.departments}>
 												{department.departments}
 											</SelectItem>
 										))}
@@ -287,21 +262,14 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 				<form.Field
 					name="city"
 					children={(field) => {
-						const isInvalid =
-							field.state.meta.isTouched && !field.state.meta.isValid;
+						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
 						return (
 							<Field data-invalid={isInvalid}>
 								<FieldLabel htmlFor={field.name}>Ciudad</FieldLabel>
-								<Select
-									onValueChange={field.handleChange}
-									value={field.state.value}
-								>
+								<Select onValueChange={field.handleChange} value={field.state.value}>
 									<SelectTrigger>
-										<SelectValue
-											aria-invalid={isInvalid}
-											placeholder="Seleccione una ciudad"
-										/>
+										<SelectValue aria-invalid={isInvalid} placeholder="Seleccione una ciudad" />
 									</SelectTrigger>
 									<SelectContent>
 										{departmentsData
@@ -322,8 +290,7 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 				<form.Field
 					name="active"
 					children={(field) => {
-						const isInvalid =
-							field.state.meta.isTouched && !field.state.meta.isValid;
+						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
 						return (
 							<Field
@@ -332,9 +299,7 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 								className="line-flex justify-start mt-3"
 							>
 								<FieldContent>
-									<FieldLabel htmlFor="form-tanstack-switch-twoFactor">
-										Activo
-									</FieldLabel>
+									<FieldLabel htmlFor="form-tanstack-switch-twoFactor">Activo</FieldLabel>
 
 									{isInvalid && <FieldError errors={field.state.meta.errors} />}
 								</FieldContent>
@@ -351,9 +316,7 @@ export function CompanyForm({ onSuccess, update = false, company }: Props) {
 				/>
 			</form>
 			<SheetFooter>
-				<form.Subscribe
-					selector={(state) => [state.canSubmit, state.isSubmitting]}
-				>
+				<form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
 					{([canSubmit, isSubmitting]) => {
 						return (
 							<Button type="submit" disabled={!canSubmit} form="company-form">

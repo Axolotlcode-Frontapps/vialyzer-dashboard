@@ -23,10 +23,7 @@ const getDefaultDateRange = () => {
 	};
 };
 
-export const getVehicleAlerts = async (
-	instance: AxiosInstance,
-	params?: VehicleAlertsParams
-) => {
+export const getVehicleAlerts = async (instance: AxiosInstance, params?: VehicleAlertsParams) => {
 	try {
 		const defaultRange = getDefaultDateRange();
 		const queryParams = {

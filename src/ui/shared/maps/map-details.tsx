@@ -29,9 +29,7 @@ export function MapDetails() {
 			<section className="flex flex-col gap-2 text-lg">
 				<span>
 					Volumen actual:{" "}
-					<span className="font-semibold">
-						{/* {location.volume.toLocaleString()} v/h */}
-					</span>
+					<span className="font-semibold">{/* {location.volume.toLocaleString()} v/h */}</span>
 				</span>
 				<span>
 					Última actualización:{" "}

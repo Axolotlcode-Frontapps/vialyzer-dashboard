@@ -49,19 +49,17 @@ export function RoleForm({ onSuccess, update, role }: Props) {
 		onSuccess: ({ name }) => {
 			form.reset();
 			queryClient.invalidateQueries({ queryKey: ["roles"] });
-			toast.success(`Rol creado correctamente`, {
-				description: `Se ha creado el rol "${name}" correctamente.`,
+			toast.success(`Rol ${update ? "actualizado" : "creado"} correctamente`, {
+				description: `Se ha ${update ? "actualizado" : "creado"} el rol "${name}" con éxito.`,
 			});
 			onSuccess(false);
 		},
 		onError: (error: AxiosError) => {
 			form.state.canSubmit = true;
-			const message = (error.response?.data as GeneralResponse<unknown>)
-				?.message;
+			const message = (error.response?.data as GeneralResponse<unknown>)?.message;
 
 			const capitalizedMessage =
-				message &&
-				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+				message && message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
 
 			toast.error(`Error al ${update ? "actualizar" : "crear"} el rol`, {
 				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
@@ -86,8 +84,7 @@ export function RoleForm({ onSuccess, update, role }: Props) {
 				<form.Field
 					name="name"
 					children={(field) => {
-						const isInvalid =
-							field.state.meta.isTouched && !field.state.meta.isValid;
+						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
 						return (
 							<Field data-invalid={isInvalid}>
@@ -110,8 +107,7 @@ export function RoleForm({ onSuccess, update, role }: Props) {
 				<form.Field
 					name="description"
 					children={(field) => {
-						const isInvalid =
-							field.state.meta.isTouched && !field.state.meta.isValid;
+						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
 						return (
 							<Field data-invalid={isInvalid}>
@@ -133,9 +129,7 @@ export function RoleForm({ onSuccess, update, role }: Props) {
 				/>
 			</form>
 			<SheetFooter>
-				<form.Subscribe
-					selector={(state) => [state.canSubmit, state.isSubmitting]}
-				>
+				<form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
 					{([canSubmit, isSubmitting]) => {
 						return (
 							<Button type="submit" disabled={!canSubmit} form="role-form">

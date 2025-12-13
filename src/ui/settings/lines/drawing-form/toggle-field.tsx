@@ -40,9 +40,7 @@ export function ToggleField({
 
 	return (
 		<Label className="flex-col gap-0 items-start">
-			{label ? (
-				<span className="block w-full mb-3 text-sm">{label}</span>
-			) : null}
+			{label ? <span className="block w-full mb-3 text-sm">{label}</span> : null}
 
 			<Toggle
 				pressed={field.state.value || false}
@@ -55,12 +53,8 @@ export function ToggleField({
 				{children}
 			</Toggle>
 
-			{description ? (
-				<span className="text-sm text-muted-foreground">{description}</span>
-			) : null}
-			{error ? (
-				<span className="text-sm text-destructive mt-2 w-full">{error}</span>
-			) : null}
+			{description ? <span className="text-sm text-muted-foreground">{description}</span> : null}
+			{error ? <span className="text-sm text-destructive mt-2 w-full">{error}</span> : null}
 		</Label>
 	);
 }

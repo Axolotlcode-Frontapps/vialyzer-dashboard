@@ -46,9 +46,7 @@ class MovilitySchema {
 	filtersCameraForm = z.object({
 		...this.filtersCameraSearch.shape,
 		camera: z.uuid("Camara no válida"),
-		actors: z
-			.array(z.uuid("Actor vial no válido"))
-			.min(1, "Seleccione al menos un actor vial"),
+		actors: z.array(z.uuid("Actor vial no válido")).min(1, "Seleccione al menos un actor vial"),
 		zones: z.array(z.uuid()),
 	});
 }
@@ -56,9 +54,5 @@ class MovilitySchema {
 export const movilitySchemas = new MovilitySchema();
 
 export type MovilitySearchParams = z.infer<typeof movilitySchemas.filters>;
-export type MovilityCameraFilters = z.infer<
-	typeof movilitySchemas.filtersCameraSearch
->;
-export type MovilityCameraForm = z.infer<
-	typeof movilitySchemas.filtersCameraForm
->;
+export type MovilityCameraFilters = z.infer<typeof movilitySchemas.filtersCameraSearch>;
+export type MovilityCameraForm = z.infer<typeof movilitySchemas.filtersCameraForm>;

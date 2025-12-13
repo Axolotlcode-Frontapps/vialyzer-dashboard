@@ -1,12 +1,6 @@
 // @vitest-environment jsdom
 /** biome-ignore-all lint/suspicious/noExplicitAny: Need for tests */
-import {
-	cleanup,
-	fireEvent,
-	render,
-	screen,
-	waitFor,
-} from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LayerForm } from "../layer/form";
@@ -50,26 +44,20 @@ describe("LayerForm Component", () => {
 
 	describe("Rendering", () => {
 		it("should not show dialog when isOpen is false", () => {
-			render(
-				<LayerForm isOpen={false} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={false} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			expect(screen.queryByText("Crear Nueva Capa")).not.toBeInTheDocument();
 			expect(screen.queryByText("Editar Capa")).not.toBeInTheDocument();
 		});
 
 		it("should show dialog when isOpen is true", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			expect(screen.getByText("Crear Nueva Capa")).toBeInTheDocument();
 		});
 
 		it("should show create title when no layer to edit", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			expect(screen.getByText("Crear Nueva Capa")).toBeInTheDocument();
 		});
@@ -102,33 +90,25 @@ describe("LayerForm Component", () => {
 
 	describe("Form Fields", () => {
 		it("should have vehicle selection field", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			expect(screen.getByText("Actor víal")).toBeInTheDocument();
 		});
 
 		it("should have description field", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			expect(screen.getByText("Descripción")).toBeInTheDocument();
 		});
 
 		it("should have opacity field", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			expect(screen.getByText("Opacidad")).toBeInTheDocument();
 		});
 
 		it("should display all vehicles in select", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			const select = screen.getByRole("combobox");
 			fireEvent.click(select);
@@ -143,9 +123,7 @@ describe("LayerForm Component", () => {
 
 	describe("Form Submission - Create", () => {
 		it("should have create layer capability", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			const submitButton = screen.getByText("Crear Capa");
 			expect(submitButton).toBeInTheDocument();
@@ -153,20 +131,14 @@ describe("LayerForm Component", () => {
 		});
 
 		it("should have description field", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
-			const descriptionInput = screen.getByPlaceholderText(
-				"Descripción de la capa..."
-			);
+			const descriptionInput = screen.getByPlaceholderText("Descripción de la capa...");
 			expect(descriptionInput).toBeInTheDocument();
 		});
 
 		it("should have opacity control", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			// Verify form has the required fields for layer creation
 			expect(screen.getByText("Crear Capa")).toBeInTheDocument();
@@ -174,9 +146,7 @@ describe("LayerForm Component", () => {
 		});
 
 		it("should have close functionality", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			expect(mockCallbacks.onClose).toBeDefined();
 		});
@@ -258,9 +228,7 @@ describe("LayerForm Component", () => {
 
 	describe("Form Cancellation", () => {
 		it("should call onClose when cancel button is clicked", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			const cancelButton = screen.getByText("Cancelar");
 			fireEvent.click(cancelButton);
@@ -269,18 +237,14 @@ describe("LayerForm Component", () => {
 		});
 
 		it("should call onClose when dialog is closed", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			// Dialog close would trigger onOpenChange
 			expect(screen.getByText("Cancelar")).toBeInTheDocument();
 		});
 
 		it("should not call onCreateLayer when cancelled", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			const cancelButton = screen.getByText("Cancelar");
 			fireEvent.click(cancelButton);
@@ -291,9 +255,7 @@ describe("LayerForm Component", () => {
 
 	describe("Form Validation", () => {
 		it("should require vehicle selection", async () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			const submitButton = screen.getByText("Crear Capa");
 			fireEvent.click(submitButton);
@@ -305,22 +267,16 @@ describe("LayerForm Component", () => {
 		});
 
 		it("should allow optional description", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			// Description field should be optional (not required)
-			const descriptionInput = screen.getByPlaceholderText(
-				"Descripción de la capa..."
-			);
+			const descriptionInput = screen.getByPlaceholderText("Descripción de la capa...");
 			expect(descriptionInput).toBeInTheDocument();
 			expect(descriptionInput).not.toHaveAttribute("required");
 		});
 
 		it("should validate opacity range", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			expect(screen.getByText("Opacidad")).toBeInTheDocument();
 			// Opacity should be between 0-100
@@ -329,9 +285,7 @@ describe("LayerForm Component", () => {
 
 	describe("Vehicle Selection", () => {
 		it("should show vehicle color in options", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			const select = screen.getByRole("combobox");
 			fireEvent.click(select);
@@ -344,9 +298,7 @@ describe("LayerForm Component", () => {
 		});
 
 		it("should update layer properties based on selected vehicle", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			// Verify form has vehicle selection capability
 			const select = screen.getByRole("combobox");
@@ -355,9 +307,7 @@ describe("LayerForm Component", () => {
 		});
 
 		it("should show placeholder when no vehicle selected", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			expect(screen.getByText("Selecciona un vehículo...")).toBeInTheDocument();
 		});
@@ -369,9 +319,7 @@ describe("LayerForm Component", () => {
 				<LayerForm isOpen={false} vehicles={mockVehicles} {...mockCallbacks} />
 			);
 
-			rerender(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			rerender(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			// Form should be in initial state
 			expect(screen.getByText("Selecciona un vehículo...")).toBeInTheDocument();
@@ -400,9 +348,7 @@ describe("LayerForm Component", () => {
 
 	describe("Opacity Control", () => {
 		it("should display opacity percentage", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			expect(screen.getByText("Opacidad")).toBeInTheDocument();
 		});
@@ -422,9 +368,7 @@ describe("LayerForm Component", () => {
 		});
 
 		it("should have opacity slider with correct range", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			// Slider should exist with 0-100 range
 			expect(screen.getByText("Opacidad")).toBeInTheDocument();
@@ -433,9 +377,7 @@ describe("LayerForm Component", () => {
 
 	describe("Accessibility", () => {
 		it("should have proper form labels", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			expect(screen.getByText("Actor víal")).toBeInTheDocument();
 			expect(screen.getByText("Descripción")).toBeInTheDocument();
@@ -443,26 +385,20 @@ describe("LayerForm Component", () => {
 		});
 
 		it("should have submit and cancel buttons", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			expect(screen.getByText("Crear Capa")).toBeInTheDocument();
 			expect(screen.getByText("Cancelar")).toBeInTheDocument();
 		});
 
 		it("should have proper dialog title", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			expect(screen.getByText("Crear Nueva Capa")).toBeInTheDocument();
 		});
 
 		it("should show loading state on submit button", () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			// Button should show loading text when submitting
 			expect(screen.getByText("Crear Capa")).toBeInTheDocument();
@@ -477,9 +413,7 @@ describe("LayerForm Component", () => {
 		});
 
 		it("should handle undefined vehicles", () => {
-			expect(() =>
-				render(<LayerForm isOpen={true} {...mockCallbacks} />)
-			).not.toThrow();
+			expect(() => render(<LayerForm isOpen={true} {...mockCallbacks} />)).not.toThrow();
 		});
 
 		it("should handle layer without description", () => {
@@ -562,9 +496,7 @@ describe("LayerForm Component", () => {
 			);
 
 			// Re-render with same props
-			rerender(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			rerender(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			expect(screen.getByText("Crear Nueva Capa")).toBeInTheDocument();
 		});
@@ -596,9 +528,7 @@ describe("LayerForm Component", () => {
 		});
 
 		it("should prevent submission without vehicle selected", async () => {
-			render(
-				<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />
-			);
+			render(<LayerForm isOpen={true} vehicles={mockVehicles} {...mockCallbacks} />);
 
 			const submitButton = screen.getByText("Crear Capa");
 			fireEvent.click(submitButton);

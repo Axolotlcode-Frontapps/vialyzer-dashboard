@@ -1,9 +1,8 @@
 import { useMemo } from "react";
-import { date } from "@formkit/tempo";
+import { date, dayEnd } from "@formkit/tempo";
 
-import { cn } from "@/lib/utils/cn";
 import DateRangePicker from "@/ui/shared/date-range-picker";
-import { Label } from "@/ui/shared/label";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/ui/shared/field";
 import { useFieldFiltersContext } from "./context";
 
 interface Props {
@@ -14,13 +13,7 @@ interface Props {
 	className?: string;
 }
 
-export function DateRangeField({
-	label,
-	description,
-	endDate,
-	onChooseEndDate,
-	className,
-}: Props) {
+export function DateRangeField({ label, description, endDate, onChooseEndDate }: Props) {
 	const field = useFieldFiltersContext<string>();
 
 	const error = useMemo(() => {
@@ -37,10 +30,9 @@ export function DateRangeField({
 	}, [field.state.meta]);
 
 	return (
-		<Label className={cn("w-full flex-col gap-0", className)}>
-			{label ? (
-				<span className="block w-full mb-3.5 text-sm">{label}</span>
-			) : null}
+		<Field orientation="responsive" className="@md/filters:max-w-fit">
+			{label ? <FieldLabel>{label}</FieldLabel> : null}
+			{description ? <FieldDescription>{description}</FieldDescription> : null}
 			<DateRangePicker
 				className="w-full"
 				disabled={{ after: new Date() }}
@@ -53,16 +45,11 @@ export function DateRangeField({
 						field.handleChange(value.from.toISOString());
 					}
 					if (value?.to) {
-						onChooseEndDate?.(value.to.toISOString());
+						onChooseEndDate?.(dayEnd(value.to).toISOString());
 					}
 				}}
 			/>
-			{description ? (
-				<span className="text-sm text-muted-foreground">{description}</span>
-			) : null}
-			{error ? (
-				<span className="text-sm text-destructive mt-2 w-full">{error}</span>
-			) : null}
-		</Label>
+			{error ? <FieldError>{error}</FieldError> : null}
+		</Field>
 	);
 }

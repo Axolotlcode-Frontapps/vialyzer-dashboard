@@ -8,11 +8,7 @@ import { hasModule } from "@/lib/utils/permissions";
 import { DetailsCard } from "@/ui/settings/details-card";
 import { LocationFilter } from "@/ui/settings/location-filter";
 import { Locations } from "@/ui/settings/locations";
-import {
-	InputGroup,
-	InputGroupAddon,
-	InputGroupInput,
-} from "@/ui/shared/input-group";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/ui/shared/input-group";
 import { Maps } from "@/ui/shared/maps";
 
 export const Route = createFileRoute("/_dashboard/settings/cameras/")({

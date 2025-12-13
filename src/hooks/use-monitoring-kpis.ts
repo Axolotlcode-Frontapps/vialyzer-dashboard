@@ -18,11 +18,7 @@ export function useMonitoringKpis() {
 		attendedAlerts: data.total_tickets - data.unattended_alerts,
 		rejectedAlertsPercentage:
 			data.total_tickets > 0
-				? Math.round(
-						((data.total_tickets - data.unattended_alerts) /
-							data.total_tickets) *
-							100
-					)
+				? Math.round(((data.total_tickets - data.unattended_alerts) / data.total_tickets) * 100)
 				: 0,
 		averageTimeFormatted: `${data.average_hours.toFixed(2)}h ${data.average_minutes.toFixed(2)}m`,
 		peakHourFormatted: `${data.peak_hour}:00-${data.peak_hour + 1}:00`,

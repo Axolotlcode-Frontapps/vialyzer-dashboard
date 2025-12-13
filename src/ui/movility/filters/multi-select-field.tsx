@@ -4,8 +4,8 @@ import { ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { Button } from "@/ui/shared/button";
 import { Checkbox } from "@/ui/shared/checkbox";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/ui/shared/field";
 import { Input } from "@/ui/shared/input";
-import { Label } from "@/ui/shared/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/shared/popover";
 import { useFieldFiltersContext } from "./context";
 
@@ -27,10 +27,7 @@ export function MultiSelectField({
 	const field = useFieldFiltersContext<string[]>();
 
 	const filtered = useMemo(
-		() =>
-			options.filter((option) =>
-				option.label.toLowerCase().includes(search.toLowerCase())
-			),
+		() => options.filter((option) => option.label.toLowerCase().includes(search.toLowerCase())),
 		[search, options]
 	);
 
@@ -48,10 +45,9 @@ export function MultiSelectField({
 	}, [field.state.meta]);
 
 	return (
-		<Label className={cn("w-full flex-col gap-0", props.className)}>
-			{label ? (
-				<span className="block w-full mb-3.5 text-sm">{label}</span>
-			) : null}
+		<Field orientation="responsive" className="@md/filters:max-w-fit">
+			{label ? <FieldLabel>{label}</FieldLabel> : null}
+			{description ? <FieldDescription>{description}</FieldDescription> : null}
 			<Popover>
 				<PopoverTrigger asChild>
 					<Button
@@ -64,7 +60,7 @@ export function MultiSelectField({
 						)}
 					>
 						{field.state.value.length > 0
-							? `${field.state.value.length} opciones seleccionadas`
+							? `${field.state.value.length} selecciones`
 							: props.placeholder}
 						<ChevronsUpDown className="opacity-50" />
 					</Button>
@@ -84,9 +80,7 @@ export function MultiSelectField({
 							<Checkbox
 								id={`all-${field.name}`}
 								name={`all-${field.name}`}
-								checked={options.every((option) =>
-									field.state.value.includes(option.value)
-								)}
+								checked={options.every((option) => field.state.value.includes(option.value))}
 								onCheckedChange={(checked) =>
 									checked
 										? field.handleChange(options.map((option) => option.value))
@@ -102,14 +96,14 @@ export function MultiSelectField({
 								className="w-full pl-2 flex items-center gap-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 							>
 								<Checkbox
+									id={option.value}
+									name={option.value}
 									checked={field.state.value.includes(option.value)}
 									onCheckedChange={(checked) =>
 										checked
 											? field.handleChange([...field.state.value, option.value])
 											: field.handleChange(
-													field.state.value.filter(
-														(value) => value !== option.value
-													)
+													field.state.value.filter((value) => value !== option.value)
 												)
 									}
 								/>
@@ -119,12 +113,7 @@ export function MultiSelectField({
 					</div>
 				</PopoverContent>
 			</Popover>
-			{description ? (
-				<span className="text-sm text-muted-foreground">{description}</span>
-			) : null}
-			{error ? (
-				<span className="text-sm text-destructive mt-2 w-full">{error}</span>
-			) : null}
-		</Label>
+			{error ? <FieldError>{error}</FieldError> : null}
+		</Field>
 	);
 }

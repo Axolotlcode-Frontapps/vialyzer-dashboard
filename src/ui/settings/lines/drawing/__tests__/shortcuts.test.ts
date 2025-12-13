@@ -154,9 +154,7 @@ describe("DrawingShortcuts", () => {
 		// Mock DrawingArrange
 		(DrawingArrange as any).mockImplementation(() => ({
 			changeZOrder: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
-			changeZOrderInLayer: vi
-				.fn()
-				.mockReturnValue({ elements: [], affectedIds: [] }),
+			changeZOrderInLayer: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
 		}));
 
 		// Mock DrawingAnnotation
@@ -235,9 +233,7 @@ describe("DrawingShortcuts", () => {
 
 			if (shortcutsMockInstance.handleKeyDown) {
 				shortcutsMockInstance.handleKeyDown(keyEvent);
-				expect(shortcutsMockInstance.handleKeyDown).toHaveBeenCalledWith(
-					keyEvent
-				);
+				expect(shortcutsMockInstance.handleKeyDown).toHaveBeenCalledWith(keyEvent);
 			}
 		});
 
@@ -251,9 +247,7 @@ describe("DrawingShortcuts", () => {
 
 			if (shortcutsMockInstance.handleKeyDown) {
 				shortcutsMockInstance.handleKeyDown(keyEvent);
-				expect(shortcutsMockInstance.handleKeyDown).toHaveBeenCalledWith(
-					keyEvent
-				);
+				expect(shortcutsMockInstance.handleKeyDown).toHaveBeenCalledWith(keyEvent);
 			}
 		});
 
@@ -584,9 +578,7 @@ describe("DrawingShortcuts", () => {
 		it("should support unregistering shortcuts", () => {
 			if (shortcutsMockInstance.unregisterShortcut) {
 				shortcutsMockInstance.unregisterShortcut("Ctrl+K");
-				expect(shortcutsMockInstance.unregisterShortcut).toHaveBeenCalledWith(
-					"Ctrl+K"
-				);
+				expect(shortcutsMockInstance.unregisterShortcut).toHaveBeenCalledWith("Ctrl+K");
 			}
 		});
 	});
@@ -595,9 +587,7 @@ describe("DrawingShortcuts", () => {
 		it("should check if shortcut is currently pressed", () => {
 			if (shortcutsMockInstance.isShortcutPressed) {
 				shortcutsMockInstance.isShortcutPressed("Ctrl+C");
-				expect(shortcutsMockInstance.isShortcutPressed).toHaveBeenCalledWith(
-					"Ctrl+C"
-				);
+				expect(shortcutsMockInstance.isShortcutPressed).toHaveBeenCalledWith("Ctrl+C");
 			}
 		});
 

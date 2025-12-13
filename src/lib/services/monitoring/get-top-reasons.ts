@@ -26,10 +26,7 @@ interface GetTopReasonsParams {
 	end_date?: string;
 }
 
-export const getTopReasons = async (
-	instance: AxiosInstance,
-	params: GetTopReasonsParams = {}
-) => {
+export const getTopReasons = async (instance: AxiosInstance, params: GetTopReasonsParams = {}) => {
 	// Si no mandaron start_date o end_date, usar valores por defecto del mes actual
 	const { start_date, end_date } = {
 		...getCurrentMonthRange(),

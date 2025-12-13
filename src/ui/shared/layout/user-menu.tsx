@@ -25,9 +25,7 @@ export function UserMenu() {
 
 	const queryClient = useQueryClient();
 
-	const userMe = queryClient.getQueryData<GeneralResponse<User>>([
-		"get-me",
-	])?.payload;
+	const userMe = queryClient.getQueryData<GeneralResponse<User>>(["get-me"])?.payload;
 
 	const router = useRouter();
 	const auth = useAuth();
@@ -81,9 +79,7 @@ export function UserMenu() {
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
 					<HasModule moduleName="perfil">
-						<DropdownMenuItem
-							onClick={() => router.navigate({ to: "/profile" })}
-						>
+						<DropdownMenuItem onClick={() => router.navigate({ to: "/profile" })}>
 							<BadgeCheck />
 							Mi cuenta
 						</DropdownMenuItem>

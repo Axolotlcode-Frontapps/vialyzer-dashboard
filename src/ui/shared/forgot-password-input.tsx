@@ -2,12 +2,7 @@ import { useState } from "react";
 import { Eye, EyeClosed } from "lucide-react";
 
 import { Field, FieldLabel } from "./field";
-import {
-	InputGroup,
-	InputGroupAddon,
-	InputGroupButton,
-	InputGroupInput,
-} from "./input-group";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "./input-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 export function ForgotPasswordInput({
@@ -46,16 +41,12 @@ export function ForgotPasswordInput({
 					<InputGroupAddon align="inline-end">
 						<Tooltip>
 							<TooltipTrigger asChild>
-								<InputGroupButton
-									onClick={() => setShowPassword(!showPassword)}
-								>
+								<InputGroupButton onClick={() => setShowPassword(!showPassword)}>
 									{showPassword ? <Eye /> : <EyeClosed />}
 								</InputGroupButton>
 							</TooltipTrigger>
 							<TooltipContent>
-								<p>
-									{showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-								</p>
+								<p>{showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}</p>
 							</TooltipContent>
 						</Tooltip>
 					</InputGroupAddon>

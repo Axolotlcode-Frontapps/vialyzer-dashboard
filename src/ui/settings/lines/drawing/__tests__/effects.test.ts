@@ -154,9 +154,7 @@ describe("DrawingEffects", () => {
 		// Mock DrawingArrange
 		(DrawingArrange as any).mockImplementation(() => ({
 			changeZOrder: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
-			changeZOrderInLayer: vi
-				.fn()
-				.mockReturnValue({ elements: [], affectedIds: [] }),
+			changeZOrderInLayer: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
 		}));
 
 		// Mock DrawingAnnotation
@@ -238,11 +236,7 @@ describe("DrawingEffects", () => {
 			};
 
 			if (effectsMockInstance.addLayerEffect) {
-				const result = effectsMockInstance.addLayerEffect(
-					"layer-1",
-					"drop-shadow",
-					config
-				);
+				const result = effectsMockInstance.addLayerEffect("layer-1", "drop-shadow", config);
 
 				expect(effectsMockInstance.addLayerEffect).toHaveBeenCalledWith(
 					"layer-1",
@@ -370,11 +364,7 @@ describe("DrawingEffects", () => {
 
 			if (effectsMockInstance.addLayerEffect) {
 				effectsMockInstance.addLayerEffect("layer-1", "blur", config);
-				expect(effectsMockInstance.addLayerEffect).toHaveBeenCalledWith(
-					"layer-1",
-					"blur",
-					config
-				);
+				expect(effectsMockInstance.addLayerEffect).toHaveBeenCalledWith("layer-1", "blur", config);
 			}
 		});
 
@@ -438,11 +428,7 @@ describe("DrawingEffects", () => {
 			};
 
 			if (effectsMockInstance.addLayerEffect) {
-				effectsMockInstance.addLayerEffect(
-					"layer-1",
-					"gradient-overlay",
-					config
-				);
+				effectsMockInstance.addLayerEffect("layer-1", "gradient-overlay", config);
 				expect(effectsMockInstance.addLayerEffect).toHaveBeenCalledWith(
 					"layer-1",
 					"gradient-overlay",
@@ -460,11 +446,7 @@ describe("DrawingEffects", () => {
 			};
 
 			if (effectsMockInstance.addLayerEffect) {
-				effectsMockInstance.addLayerEffect(
-					"layer-1",
-					"gradient-overlay",
-					config
-				);
+				effectsMockInstance.addLayerEffect("layer-1", "gradient-overlay", config);
 				expect(effectsMockInstance.addLayerEffect).toHaveBeenCalled();
 			}
 		});
@@ -480,11 +462,7 @@ describe("DrawingEffects", () => {
 
 			if (effectsMockInstance.addLayerEffect) {
 				effectsMockInstance.addLayerEffect("layer-1", "noise", config);
-				expect(effectsMockInstance.addLayerEffect).toHaveBeenCalledWith(
-					"layer-1",
-					"noise",
-					config
-				);
+				expect(effectsMockInstance.addLayerEffect).toHaveBeenCalledWith("layer-1", "noise", config);
 			}
 		});
 	});
@@ -513,14 +491,8 @@ describe("DrawingEffects", () => {
 	describe("Effect Removal", () => {
 		it("should remove effect from layer", () => {
 			if (effectsMockInstance.removeLayerEffect) {
-				const result = effectsMockInstance.removeLayerEffect(
-					"layer-1",
-					"effect-1"
-				);
-				expect(effectsMockInstance.removeLayerEffect).toHaveBeenCalledWith(
-					"layer-1",
-					"effect-1"
-				);
+				const result = effectsMockInstance.removeLayerEffect("layer-1", "effect-1");
+				expect(effectsMockInstance.removeLayerEffect).toHaveBeenCalledWith("layer-1", "effect-1");
 				expect(result).toBe(true);
 			}
 		});
@@ -528,10 +500,7 @@ describe("DrawingEffects", () => {
 		it("should handle removing non-existent effect", () => {
 			if (effectsMockInstance.removeLayerEffect) {
 				effectsMockInstance.removeLayerEffect.mockReturnValue(false);
-				const result = effectsMockInstance.removeLayerEffect(
-					"layer-1",
-					"non-existent"
-				);
+				const result = effectsMockInstance.removeLayerEffect("layer-1", "non-existent");
 				expect(result).toBe(false);
 			}
 		});
@@ -565,11 +534,7 @@ describe("DrawingEffects", () => {
 					blur: 20,
 				};
 
-				const result = effectsMockInstance.updateLayerEffect(
-					"layer-1",
-					"effect-1",
-					newConfig
-				);
+				const result = effectsMockInstance.updateLayerEffect("layer-1", "effect-1", newConfig);
 
 				expect(effectsMockInstance.updateLayerEffect).toHaveBeenCalledWith(
 					"layer-1",
@@ -583,11 +548,7 @@ describe("DrawingEffects", () => {
 		it("should handle updating non-existent effect", () => {
 			if (effectsMockInstance.updateLayerEffect) {
 				effectsMockInstance.updateLayerEffect.mockReturnValue(false);
-				const result = effectsMockInstance.updateLayerEffect(
-					"layer-1",
-					"non-existent",
-					{}
-				);
+				const result = effectsMockInstance.updateLayerEffect("layer-1", "non-existent", {});
 				expect(result).toBe(false);
 			}
 		});
@@ -610,10 +571,7 @@ describe("DrawingEffects", () => {
 		it("should check if layer has specific effect", () => {
 			if (effectsMockInstance.hasEffect) {
 				effectsMockInstance.hasEffect.mockReturnValue(true);
-				const hasEffect = effectsMockInstance.hasEffect(
-					"layer-1",
-					"drop-shadow"
-				);
+				const hasEffect = effectsMockInstance.hasEffect("layer-1", "drop-shadow");
 				expect(hasEffect).toBe(true);
 			}
 		});
@@ -660,18 +618,12 @@ describe("DrawingEffects", () => {
 		it("should apply effect to layer elements", () => {
 			if (effectsMockInstance.applyEffect) {
 				effectsMockInstance.applyEffect("layer-1", "effect-1");
-				expect(effectsMockInstance.applyEffect).toHaveBeenCalledWith(
-					"layer-1",
-					"effect-1"
-				);
+				expect(effectsMockInstance.applyEffect).toHaveBeenCalledWith("layer-1", "effect-1");
 			}
 		});
 
 		it("should apply all effects to layer", () => {
-			if (
-				effectsMockInstance.getLayerEffects &&
-				effectsMockInstance.applyEffect
-			) {
+			if (effectsMockInstance.getLayerEffects && effectsMockInstance.applyEffect) {
 				effectsMockInstance.getLayerEffects.mockReturnValue([
 					{ id: "effect-1" },
 					{ id: "effect-2" },
@@ -716,11 +668,7 @@ describe("DrawingEffects", () => {
 
 			if (effectsMockInstance.addLayerEffect) {
 				expect(() => {
-					effectsMockInstance.addLayerEffect(
-						"layer-1",
-						"drop-shadow",
-						validConfig
-					);
+					effectsMockInstance.addLayerEffect("layer-1", "drop-shadow", validConfig);
 				}).not.toThrow();
 			}
 		});

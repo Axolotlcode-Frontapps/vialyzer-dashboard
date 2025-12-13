@@ -39,12 +39,10 @@ export function RoleDelete({
 			onOpenChange(false);
 		},
 		onError: (error: AxiosError) => {
-			const message = (error.response?.data as GeneralResponse<unknown>)
-				?.message;
+			const message = (error.response?.data as GeneralResponse<unknown>)?.message;
 
 			const capitalizedMessage =
-				message &&
-				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+				message && message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
 
 			toast.error(`Error al eliminar el rol "${role.name}"`, {
 				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
@@ -68,10 +66,7 @@ export function RoleDelete({
 					<DialogClose asChild>
 						<Button>Cancelar</Button>
 					</DialogClose>
-					<Button
-						variant="destructive"
-						onClick={() => roleEditMutation.mutate()}
-					>
+					<Button variant="destructive" onClick={() => roleEditMutation.mutate()}>
 						{roleEditMutation.isPending ? (
 							<>
 								<Spinner />

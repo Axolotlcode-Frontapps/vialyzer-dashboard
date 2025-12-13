@@ -301,8 +301,7 @@ describe("Camera Component", () => {
 			render(<Camera />);
 
 			// Get the onDrawingComplete callback
-			const onDrawingComplete =
-				vi.mocked(Lines).mock.calls[0][0].onDrawingComplete;
+			const onDrawingComplete = vi.mocked(Lines).mock.calls[0][0].onDrawingComplete;
 
 			expect(onDrawingComplete).toBeDefined();
 
@@ -872,11 +871,9 @@ describe("Camera Component", () => {
 	describe("Error Handling", () => {
 		it("should handle errors in add operation", async () => {
 			const mockAdd = vi.fn().mockRejectedValue(new Error("Add failed"));
-			const consoleErrorSpy = vi
-				.spyOn(console, "error")
-				.mockImplementation(() => {
-					//
-				});
+			const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {
+				//
+			});
 
 			vi.mocked(useAddScenarioLine).mockReturnValue({
 				add: mockAdd,
@@ -943,11 +940,9 @@ describe("Camera Component", () => {
 
 		it("should handle errors in update operation", async () => {
 			const mockUpdate = vi.fn().mockRejectedValue(new Error("Update failed"));
-			const consoleErrorSpy = vi
-				.spyOn(console, "error")
-				.mockImplementation(() => {
-					//
-				});
+			const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {
+				//
+			});
 
 			vi.mocked(useUpdateScenarioLine).mockReturnValue({
 				update: mockUpdate,
@@ -1022,11 +1017,9 @@ describe("Camera Component", () => {
 
 		it("should handle errors in remove operation", async () => {
 			const mockRemove = vi.fn().mockRejectedValue(new Error("Remove failed"));
-			const consoleErrorSpy = vi
-				.spyOn(console, "error")
-				.mockImplementation(() => {
-					//
-				});
+			const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {
+				//
+			});
 
 			vi.mocked(useRemoveScenarioLine).mockReturnValue({
 				remove: mockRemove,

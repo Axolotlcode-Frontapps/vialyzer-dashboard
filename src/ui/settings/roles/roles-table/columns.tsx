@@ -14,24 +14,16 @@ export const useRolesColumns = () => {
 		() => [
 			{
 				accessorKey: "name",
-				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title="Nombre" />
-				),
-				cell: ({ row }) => (
-					<span className="capitalize">{row.getValue("name")}</span>
-				),
+				header: ({ column }) => <DataTableColumnHeader column={column} title="Nombre" />,
+				cell: ({ row }) => <span className="capitalize">{row.getValue("name")}</span>,
 			},
 			{
 				accessorKey: "description",
-				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title="Descripción" />
-				),
+				header: ({ column }) => <DataTableColumnHeader column={column} title="Descripción" />,
 			},
 			{
 				accessorKey: "modules",
-				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title="Módulos" />
-				),
+				header: ({ column }) => <DataTableColumnHeader column={column} title="Módulos" />,
 				cell: ({ row }) => (
 					<Badge variant="secondary" className="capitalize">
 						{row.original.modules?.length ?? 0} Módulos
@@ -40,20 +32,14 @@ export const useRolesColumns = () => {
 			},
 			{
 				accessorKey: "permissions",
-				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title="Permisos" />
-				),
+				header: ({ column }) => <DataTableColumnHeader column={column} title="Permisos" />,
 				cell: ({ row }) => (
 					<Badge variant="secondary" className="capitalize">
 						{row.original.permissions?.length ?? 0} Permisos
 					</Badge>
 				),
 			},
-			...((!hasAnyMultiplePermissions("roles", [
-				"associate-modules",
-				"update",
-				"delete",
-			])
+			...((!hasAnyMultiplePermissions("roles", ["associate-modules", "update", "delete"])
 				? []
 				: [
 						{

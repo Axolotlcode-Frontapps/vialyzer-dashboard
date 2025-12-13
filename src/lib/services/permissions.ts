@@ -2,9 +2,7 @@ import { fetcher } from "../utils/fetch-api";
 
 class PermissionsServices {
 	async getAllPermissions() {
-		return await fetcher<GeneralResponse<Permission[]>>(
-			"/permissions/get-owner-permissions"
-		);
+		return await fetcher<GeneralResponse<Permission[]>>("/permissions/get-owner-permissions");
 	}
 }
 

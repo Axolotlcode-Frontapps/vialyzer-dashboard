@@ -6,11 +6,7 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { kpiServices } from "@/lib/services/kpis";
 import { chartConfig } from "@/lib/utils/charts";
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/card";
-import {
-	ChartContainer,
-	ChartTooltip,
-	ChartTooltipContent,
-} from "../shared/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../shared/chart";
 
 const config = {
 	car: chartConfig.car,
@@ -30,9 +26,7 @@ export function GraphVolumeHour() {
 	const { data } = useQuery({
 		queryKey: ["monitoring-volume-hour", selected, startDate, endDate],
 		queryFn: async () =>
-			selected
-				? await kpiServices.getVolumeHour(selected, startDate, endDate)
-				: [],
+			selected ? await kpiServices.getVolumeHour(selected, startDate, endDate) : [],
 		enabled: !!selected,
 	});
 
@@ -41,9 +35,7 @@ export function GraphVolumeHour() {
 	return (
 		<Card className="border-0 rounded-lg gap-5 p-4">
 			<CardHeader className="p-0 grid-rows-1 h-max">
-				<CardTitle className="monitoring__stat-title max-w-max mr-auto">
-					Volumen por hora
-				</CardTitle>
+				<CardTitle className="monitoring__stat-title max-w-max mr-auto">Volumen por hora</CardTitle>
 			</CardHeader>
 			<CardContent className="p-0">
 				<ul className="flex gap-2 overflow-x-auto snap-x snap-mandatory pb-4">
@@ -66,12 +58,7 @@ export function GraphVolumeHour() {
 					<BarChart accessibilityLayer data={chartData}>
 						<CartesianGrid vertical={false} />
 						<YAxis tickLine={false} tickMargin={10} axisLine={false} />
-						<XAxis
-							dataKey="hour"
-							tickLine={false}
-							tickMargin={10}
-							axisLine={false}
-						/>
+						<XAxis dataKey="hour" tickLine={false} tickMargin={10} axisLine={false} />
 						<ChartTooltip cursor={false} content={<ChartTooltipContent />} />
 						<Bar dataKey="count" fill="var(--color-motorcycle)" radius={4} />
 					</BarChart>

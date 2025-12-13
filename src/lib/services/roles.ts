@@ -53,13 +53,10 @@ class RolesServices {
 	}
 
 	async assignModulesToRole(roleId: string, values: AssignModuleValues) {
-		return await fetcher<GeneralResponse<Role>>(
-			`/roles/associate-modules/${roleId}`,
-			{
-				method: "PUT",
-				data: values,
-			}
-		);
+		return await fetcher<GeneralResponse<Role>>(`/roles/associate-modules/${roleId}`, {
+			method: "PUT",
+			data: values,
+		});
 	}
 }
 

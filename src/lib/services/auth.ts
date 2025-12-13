@@ -19,15 +19,12 @@ class AuthServices {
 	}
 
 	async refreshToken(refreshToken: string) {
-		return await fetcher<GeneralResponse<SignInResponse>>(
-			"/auth/refresh-token",
-			{
-				method: "POST",
-				data: {
-					refreshToken,
-				},
-			}
-		);
+		return await fetcher<GeneralResponse<SignInResponse>>("/auth/refresh-token", {
+			method: "POST",
+			data: {
+				refreshToken,
+			},
+		});
 	}
 
 	async logOut() {
@@ -66,38 +63,28 @@ class AuthServices {
 	}
 
 	async verifyCode(values: VerifyCodeValues, userId: string, token: string) {
-		return await fetcher<GeneralResponse<{ id: string; token: string }>>(
-			"/users/validate-code",
-			{
-				method: "POST",
-				data: {
-					...values,
-					id: userId,
-				},
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			}
-		);
+		return await fetcher<GeneralResponse<{ id: string; token: string }>>("/users/validate-code", {
+			method: "POST",
+			data: {
+				...values,
+				id: userId,
+			},
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
 	}
 
-	async updateUser(
-		values: UpdatePasswordValues,
-		userId: string,
-		token: string
-	) {
-		return await fetcher<GeneralResponse<void>>(
-			`/users/update-user/${userId}`,
-			{
-				method: "PATCH",
-				data: {
-					password: values.password,
-				},
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			}
-		);
+	async updateUser(values: UpdatePasswordValues, userId: string, token: string) {
+		return await fetcher<GeneralResponse<void>>(`/users/update-user/${userId}`, {
+			method: "PATCH",
+			data: {
+				password: values.password,
+			},
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
 	}
 }
 

@@ -1,9 +1,4 @@
-import type {
-	ACTION_NAME,
-	MODULE_BASE_NAME,
-	MODULE_NAME,
-	ROLES_NAMES,
-} from "@/types/enums";
+import type { ACTION_NAME, MODULE_BASE_NAME, MODULE_NAME, ROLES_NAMES } from "@/types/enums";
 
 export const hasRole = (role: ROLES_NAMES, user: User) => {
 	if (!user || !role) return false;
@@ -12,9 +7,7 @@ export const hasRole = (role: ROLES_NAMES, user: User) => {
 
 export const hasModule = (moduleName: MODULE_NAME, user: User) => {
 	if (!user || !moduleName) return false;
-	return user.role.modules.some(
-		(module) => module.name.toLowerCase() === moduleName.toLowerCase()
-	);
+	return user.role.modules.some((module) => module.name.toLowerCase() === moduleName.toLowerCase());
 };
 
 export const hasPermission = (
@@ -35,8 +28,7 @@ export const hasMultiplePermissions = (
 	permissionNames: ACTION_NAME[],
 	user: User
 ) => {
-	if (!user || !permissionNames || permissionNames.length === 0 || !moduleBase)
-		return false;
+	if (!user || !permissionNames || permissionNames.length === 0 || !moduleBase) return false;
 	return permissionNames.every((permissionName) =>
 		user.role.permissions.some(
 			(permission) =>
@@ -51,8 +43,7 @@ export const hasAnyMultiplePermissions = (
 	permissionNames: ACTION_NAME[],
 	user: User
 ) => {
-	if (!user || !permissionNames || permissionNames.length === 0 || !moduleBase)
-		return false;
+	if (!user || !permissionNames || permissionNames.length === 0 || !moduleBase) return false;
 	return permissionNames.some((permissionName) =>
 		user.role.permissions.some(
 			(permission) =>

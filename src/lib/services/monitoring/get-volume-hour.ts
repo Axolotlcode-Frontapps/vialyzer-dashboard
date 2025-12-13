@@ -29,10 +29,7 @@ const getDefaultDateRange = () => {
 	};
 };
 
-export const getVolumeHour = async (
-	instance: AxiosInstance,
-	params?: VolumeHourParams
-) => {
+export const getVolumeHour = async (instance: AxiosInstance, params?: VolumeHourParams) => {
 	try {
 		const defaultRange = getDefaultDateRange();
 		const queryParams = {

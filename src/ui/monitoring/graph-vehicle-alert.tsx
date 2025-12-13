@@ -1,24 +1,13 @@
 import { useSearch } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-	Bar,
-	BarChart,
-	CartesianGrid,
-	LabelList,
-	XAxis,
-	YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 
 import type { ChartConfig } from "../shared/chart";
 
 import { kpiServices } from "@/lib/services/kpis";
 import { Card, CardContent, CardHeader, CardTitle } from "../shared/card";
-import {
-	ChartContainer,
-	ChartTooltip,
-	ChartTooltipContent,
-} from "../shared/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../shared/chart";
 
 const chartConfig = {
 	percentage: {
@@ -43,9 +32,7 @@ export function GraphVehicleAlert() {
 	const { data, isLoading, error } = useQuery({
 		queryKey: ["monitoring-vehicle-alerts", selected, startDate, endDate],
 		queryFn: async () =>
-			selected
-				? await kpiServices.getVehicleAlert(selected, startDate, endDate)
-				: [],
+			selected ? await kpiServices.getVehicleAlert(selected, startDate, endDate) : [],
 	});
 
 	const chartData = useMemo(() => {
@@ -87,15 +74,11 @@ export function GraphVehicleAlert() {
 				{isLoading ? (
 					// || isRefetching || isFetching || isPending
 					<div className="w-full max-h-[212px] flex items-center justify-center">
-						<div className="text-sm text-muted-foreground">
-							Cargando datos...
-						</div>
+						<div className="text-sm text-muted-foreground">Cargando datos...</div>
 					</div>
 				) : error ? (
 					<div className="w-full max-h-[212px] flex items-center justify-center">
-						<div className="text-sm text-destructive">
-							Error al cargar los datos
-						</div>
+						<div className="text-sm text-destructive">Error al cargar los datos</div>
 					</div>
 				) : (
 					<ChartContainer config={chartConfig} className="w-full max-h-[212px]">
@@ -109,22 +92,14 @@ export function GraphVehicleAlert() {
 							}}
 						>
 							<CartesianGrid vertical={false} />
-							<YAxis
-								dataKey="vehicle"
-								type="category"
-								tickLine={false}
-								axisLine={false}
-							/>
+							<YAxis dataKey="vehicle" type="category" tickLine={false} axisLine={false} />
 							<XAxis dataKey="percentage" type="number" tickLine={false} />
 							<ChartTooltip
 								cursor={false}
 								content={
 									<ChartTooltipContent
 										indicator="line"
-										formatter={(value) => [
-											`${Number(value).toFixed(2)}%`,
-											"Porcentaje",
-										]}
+										formatter={(value) => [`${Number(value).toFixed(2)}%`, "Porcentaje"]}
 									/>
 								}
 							/>
@@ -141,9 +116,7 @@ export function GraphVehicleAlert() {
 									offset={8}
 									className="fill-white"
 									fontSize={12}
-									formatter={(value: number) =>
-										value >= 10 ? `${value.toFixed(2)}%` : ""
-									}
+									formatter={(value: number) => (value >= 10 ? `${value.toFixed(2)}%` : "")}
 								/>
 								<LabelList
 									dataKey="percentage"
@@ -151,9 +124,7 @@ export function GraphVehicleAlert() {
 									offset={4}
 									className="fill-white"
 									fontSize={11}
-									formatter={(value: number) =>
-										value < 10 ? `${value.toFixed(2)}%` : ""
-									}
+									formatter={(value: number) => (value < 10 ? `${value.toFixed(2)}%` : "")}
 								/>
 							</Bar>
 						</BarChart>

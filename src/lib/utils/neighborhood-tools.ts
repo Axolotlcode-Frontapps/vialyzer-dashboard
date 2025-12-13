@@ -1,12 +1,6 @@
-import type {
-	NeighborhoodCollection,
-	NeighborhoodFeature,
-	Zone,
-} from "@/types/neighborhood";
+import type { NeighborhoodCollection, NeighborhoodFeature, Zone } from "@/types/neighborhood";
 
-export function extractCaliBoundary(
-	geojson: NeighborhoodCollection
-): NeighborhoodFeature | null {
+export function extractCaliBoundary(geojson: NeighborhoodCollection): NeighborhoodFeature | null {
 	// Buscar el feature con id numérico 421170643 o con name exactamente "Cali"
 	const caliFeature = geojson.features.find((feature) => {
 		// Opción 1: Por ID numérico específico del límite de Cali
@@ -18,8 +12,7 @@ export function extractCaliBoundary(
 		if (
 			feature.properties.name === "Cali" &&
 			!feature.properties.comuna &&
-			(feature.geometry.type === "Polygon" ||
-				feature.geometry.type === "MultiPolygon")
+			(feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon")
 		) {
 			return true;
 		}
@@ -36,15 +29,12 @@ export function extractCaliBoundary(
 	return caliFeature || null;
 }
 
-export function groupNeighborhoodByZone(
-	geojson: NeighborhoodCollection
-): Zone[] {
+export function groupNeighborhoodByZone(geojson: NeighborhoodCollection): Zone[] {
 	const zoneMap = new Map<string, NeighborhoodFeature[]>();
 
 	const validFeatures = geojson.features.filter(
 		(feature) =>
-			(feature.geometry.type === "Polygon" ||
-				feature.geometry.type === "MultiPolygon") &&
+			(feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") &&
 			feature.properties.name
 	);
 
@@ -59,8 +49,7 @@ export function groupNeighborhoodByZone(
 
 	const zones: Zone[] = Array.from(zoneMap.entries())
 		.map(([comunaId, neighborhoods]) => {
-			const comunaName =
-				comunaId === "sin-comuna" ? "Sin Comuna" : `Comuna ${comunaId}`;
+			const comunaName = comunaId === "sin-comuna" ? "Sin Comuna" : `Comuna ${comunaId}`;
 
 			return {
 				id: comunaId,

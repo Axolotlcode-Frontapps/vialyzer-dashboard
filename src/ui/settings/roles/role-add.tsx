@@ -27,8 +27,8 @@ export function RoleAdd() {
 				<SheetHeader>
 					<SheetTitle>Crear rol</SheetTitle>
 					<SheetDescription>
-						Vas a crear un nuevo rol. Completa la información necesaria y guarda
-						para agregar el rol.
+						Vas a crear un nuevo rol. Completa la información necesaria y guarda para agregar el
+						rol.
 					</SheetDescription>
 				</SheetHeader>
 

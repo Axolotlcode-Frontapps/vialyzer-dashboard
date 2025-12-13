@@ -146,9 +146,7 @@ describe("DrawingEvents", () => {
 		// Mock DrawingArrange
 		(DrawingArrange as any).mockImplementation(() => ({
 			changeZOrder: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
-			changeZOrderInLayer: vi
-				.fn()
-				.mockReturnValue({ elements: [], affectedIds: [] }),
+			changeZOrderInLayer: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
 		}));
 
 		// Mock DrawingAnnotation
@@ -229,9 +227,7 @@ describe("DrawingEvents", () => {
 
 			if (eventsMockInstance.handleMouseDown) {
 				eventsMockInstance.handleMouseDown(mouseEvent);
-				expect(eventsMockInstance.handleMouseDown).toHaveBeenCalledWith(
-					mouseEvent
-				);
+				expect(eventsMockInstance.handleMouseDown).toHaveBeenCalledWith(mouseEvent);
 			}
 		});
 
@@ -243,9 +239,7 @@ describe("DrawingEvents", () => {
 
 			if (eventsMockInstance.handleMouseMove) {
 				eventsMockInstance.handleMouseMove(mouseEvent);
-				expect(eventsMockInstance.handleMouseMove).toHaveBeenCalledWith(
-					mouseEvent
-				);
+				expect(eventsMockInstance.handleMouseMove).toHaveBeenCalledWith(mouseEvent);
 			}
 		});
 
@@ -257,9 +251,7 @@ describe("DrawingEvents", () => {
 
 			if (eventsMockInstance.handleMouseUp) {
 				eventsMockInstance.handleMouseUp(mouseEvent);
-				expect(eventsMockInstance.handleMouseUp).toHaveBeenCalledWith(
-					mouseEvent
-				);
+				expect(eventsMockInstance.handleMouseUp).toHaveBeenCalledWith(mouseEvent);
 			}
 		});
 
@@ -283,9 +275,7 @@ describe("DrawingEvents", () => {
 
 			if (eventsMockInstance.handleDoubleClick) {
 				eventsMockInstance.handleDoubleClick(mouseEvent);
-				expect(eventsMockInstance.handleDoubleClick).toHaveBeenCalledWith(
-					mouseEvent
-				);
+				expect(eventsMockInstance.handleDoubleClick).toHaveBeenCalledWith(mouseEvent);
 			}
 		});
 
@@ -297,9 +287,7 @@ describe("DrawingEvents", () => {
 
 			if (eventsMockInstance.handleContextMenu) {
 				eventsMockInstance.handleContextMenu(mouseEvent);
-				expect(eventsMockInstance.handleContextMenu).toHaveBeenCalledWith(
-					mouseEvent
-				);
+				expect(eventsMockInstance.handleContextMenu).toHaveBeenCalledWith(mouseEvent);
 			}
 		});
 

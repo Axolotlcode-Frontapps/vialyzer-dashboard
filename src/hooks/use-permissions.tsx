@@ -1,11 +1,6 @@
 import { usePermissions } from "@/contexts/permissions";
 
-import type {
-	ACTION_NAME,
-	MODULE_BASE_NAME,
-	MODULE_NAME,
-	ROLES_NAMES,
-} from "@/types/enums";
+import type { ACTION_NAME, MODULE_BASE_NAME, MODULE_NAME, ROLES_NAMES } from "@/types/enums";
 
 import {
 	hasAnyMultiplePermissions,
@@ -25,18 +20,15 @@ export const useHasRole = () => {
 export const useHasModule = () => {
 	const { user } = usePermissions();
 
-	const hasModuleVerify = (moduleName: MODULE_NAME) =>
-		hasModule(moduleName, user!);
+	const hasModuleVerify = (moduleName: MODULE_NAME) => hasModule(moduleName, user!);
 	return { hasModule: hasModuleVerify };
 };
 
 export const useHasPermission = () => {
 	const { user } = usePermissions();
 
-	const hasPermissionVerify = (
-		moduleBase: MODULE_BASE_NAME,
-		permissionName: ACTION_NAME
-	) => hasPermission(moduleBase, permissionName, user!);
+	const hasPermissionVerify = (moduleBase: MODULE_BASE_NAME, permissionName: ACTION_NAME) =>
+		hasPermission(moduleBase, permissionName, user!);
 
 	const hasAnyMultiplePermissionsVerify = (
 		moduleBase: MODULE_BASE_NAME,

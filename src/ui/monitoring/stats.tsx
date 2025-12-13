@@ -14,8 +14,7 @@ export function Stats() {
 
 	const { data, isLoading } = useQuery({
 		queryKey: ["monitoring-kpis-info", selected],
-		queryFn: async () =>
-			selected ? await kpiServices.getKpis(selected) : undefined,
+		queryFn: async () => (selected ? await kpiServices.getKpis(selected) : undefined),
 		enabled: !!selected,
 	});
 
@@ -36,10 +35,7 @@ export function Stats() {
 					peakHour={kpisData?.peak_hour}
 					loading={isLoading}
 				/>
-				<Effectivity
-					percentage={kpisData?.effectiveness_percent}
-					loading={isLoading}
-				/>
+				<Effectivity percentage={kpisData?.effectiveness_percent} loading={isLoading} />
 				<Alerts
 					unattended={kpisData?.unattended_alerts}
 					total={kpisData?.total_tickets}

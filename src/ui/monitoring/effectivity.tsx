@@ -25,9 +25,7 @@ export function Effectivity({ percentage, loading }: EffectivityProps) {
 	return (
 		<Card className="p-6">
 			<CardHeader className="p-0">
-				<CardTitle className="monitoring__stat-title">
-					Efectividad de comparendos
-				</CardTitle>
+				<CardTitle className="monitoring__stat-title">Efectividad de comparendos</CardTitle>
 			</CardHeader>
 			<CardContent className="p-0">
 				<span className="block text-center font-medium text-4xl">

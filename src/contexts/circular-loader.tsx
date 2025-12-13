@@ -8,11 +8,7 @@ const CircularLoaderContext = createContext<{
 	setIsLoading: () => null,
 });
 
-export function CircularLoaderProvider({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
+export function CircularLoaderProvider({ children }: { children: React.ReactNode }) {
 	const [isLoading, setIsLoading] = useState(false);
 
 	return (

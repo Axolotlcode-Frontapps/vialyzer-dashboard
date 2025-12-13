@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { Label } from "@/ui/shared/label";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/ui/shared/field";
 import { Textarea } from "@/ui/shared/textarea";
 import { useFieldFiltersContext } from "./context";
 
@@ -27,21 +27,18 @@ export function TextareaField({ label, description, placeholder }: Props) {
 	}, [field.state.meta]);
 
 	return (
-		<Label className="flex-col gap-0">
-			{label ? (
-				<span className="block w-full mb-3.5 text-sm">{label}</span>
-			) : null}
+		<Field orientation="responsive" className="@md/filters:max-w-fit">
+			{label ? <FieldLabel htmlFor={field.name}>{label}</FieldLabel> : null}
+			{description ? <FieldDescription>{description}</FieldDescription> : null}
 			<Textarea
+				id={field.name}
+				name={field.name}
 				value={field.state.value}
 				onChange={(e) => field.handleChange(e.target.value)}
 				placeholder={placeholder}
+				rows={4}
 			/>
-			{description ? (
-				<span className="text-sm text-muted-foreground">{description}</span>
-			) : null}
-			{error ? (
-				<span className="text-sm text-destructive mt-2 w-full">{error}</span>
-			) : null}
-		</Label>
+			{error ? <FieldError>{error}</FieldError> : null}
+		</Field>
 	);
 }

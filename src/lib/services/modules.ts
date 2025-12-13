@@ -8,9 +8,7 @@ class ModulesServices {
 	}
 
 	async getModuleById(moduleId: string) {
-		return await fetcher<GeneralResponse<Module>>(
-			`/cat-modules/get-by-id/${moduleId}`
-		);
+		return await fetcher<GeneralResponse<Module>>(`/cat-modules/get-by-id/${moduleId}`);
 	}
 
 	async createModule(data: Module) {
@@ -21,31 +19,22 @@ class ModulesServices {
 	}
 
 	async updateModule(moduleId: string, data: Module) {
-		return await fetcher<GeneralResponse<Module>>(
-			`/cat-modules/update/${moduleId}`,
-			{
-				method: "PUT",
-				data,
-			}
-		);
+		return await fetcher<GeneralResponse<Module>>(`/cat-modules/update/${moduleId}`, {
+			method: "PUT",
+			data,
+		});
 	}
 
 	async deleteModule(moduleId: string) {
-		return await fetcher<GeneralResponse<Module>>(
-			`/cat-modules/delete/${moduleId}`,
-			{
-				method: "DELETE",
-			}
-		);
+		return await fetcher<GeneralResponse<Module>>(`/cat-modules/delete/${moduleId}`, {
+			method: "DELETE",
+		});
 	}
 
 	async activateModule(moduleId: string) {
-		return await fetcher<GeneralResponse<Module>>(
-			`/cat-modules/activate/${moduleId}`,
-			{
-				method: "PATCH",
-			}
-		);
+		return await fetcher<GeneralResponse<Module>>(`/cat-modules/activate/${moduleId}`, {
+			method: "PATCH",
+		});
 	}
 
 	async assignPermissions(moduleId: string, values: AssignPermissionsValues) {

@@ -181,8 +181,9 @@ describe("Panel Component", () => {
 			render(<Panel drawingEngine={mockEngine as never} />);
 
 			// Get the callback and call it
-			const callback = mockEngine.subscribeToStateChanges.mock
-				.calls[0]?.[0] as (event: { type: string }) => void;
+			const callback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0] as (event: {
+				type: string;
+			}) => void;
 
 			if (callback) {
 				// Panel should be hidden initially
@@ -209,9 +210,7 @@ describe("Panel Component", () => {
 				}),
 			};
 
-			expect(() =>
-				render(<Panel drawingEngine={minimalEngine as never} />)
-			).not.toThrow();
+			expect(() => render(<Panel drawingEngine={minimalEngine as never} />)).not.toThrow();
 		});
 	});
 
@@ -348,9 +347,7 @@ describe("Panel Component", () => {
 				elements: largeElementsArray,
 			};
 
-			expect(() =>
-				render(<Panel drawingEngine={engineWithManyElements as never} />)
-			).not.toThrow();
+			expect(() => render(<Panel drawingEngine={engineWithManyElements as never} />)).not.toThrow();
 		});
 
 		it("should unsubscribe on unmount", () => {

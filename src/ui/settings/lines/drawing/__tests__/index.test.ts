@@ -172,12 +172,8 @@ describe("DrawingEngine - Main Integration", () => {
 		// Mock DrawingArrange
 		(DrawingArrange as any).mockImplementation(() => {
 			arrangeMockInstance = {
-				changeZOrder: vi
-					.fn()
-					.mockReturnValue({ elements: [], affectedIds: [] }),
-				changeZOrderInLayer: vi
-					.fn()
-					.mockReturnValue({ elements: [], affectedIds: [] }),
+				changeZOrder: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
+				changeZOrderInLayer: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
 			};
 			return arrangeMockInstance;
 		});
@@ -297,8 +293,7 @@ describe("DrawingEngine - Main Integration", () => {
 		it("should add elements", () => {
 			// Simulate media loaded first
 			const configConstructorCalls = (DrawingConfig as any).mock.calls;
-			const configArgs =
-				configConstructorCalls[configConstructorCalls.length - 1];
+			const configArgs = configConstructorCalls[configConstructorCalls.length - 1];
 			const configOptions = configArgs[2];
 			configOptions.on.stateChange({ type: "mediaLoaded" });
 

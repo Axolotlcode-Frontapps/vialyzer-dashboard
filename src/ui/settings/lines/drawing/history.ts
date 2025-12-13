@@ -51,15 +51,13 @@ export class DrawingHistory {
 		description?: string,
 		beforeState?: DrawingState
 	): void {
-		if (!this.#state.history.recording || this.#state.history.isApplyingHistory)
-			return;
+		if (!this.#state.history.recording || this.#state.history.isApplyingHistory) return;
 
 		const now = Date.now();
 		const shouldSnapshot =
 			this.#config.history.autoSnapshot &&
 			(this.#config.history.alwaysSnapshot.includes(operation.type) ||
-				now - this.#state.history.lastSnapshotTime >=
-					this.#config.history.minSnapshotInterval);
+				now - this.#state.history.lastSnapshotTime >= this.#config.history.minSnapshotInterval);
 
 		if (!shouldSnapshot && this.#shouldMergeWithLastEntry(operation)) {
 			this.#mergeWithLastEntry(operation, newState, description);
@@ -129,10 +127,7 @@ export class DrawingHistory {
 
 		const entry = this.#state.history.entries[this.#state.history.position];
 		if (!entry) {
-			console.error(
-				"Undo: Entry not found at position",
-				this.#state.history.position
-			);
+			console.error("Undo: Entry not found at position", this.#state.history.position);
 			this.#provideFeedback("Undo failed: Entry not found");
 			return false;
 		}
@@ -151,9 +146,7 @@ export class DrawingHistory {
 			this.#state.history.position--;
 
 			// Update drawing state (not history management fields or transient UI state)
-			this.#state.elements = DrawingState.cloneElements(
-				entry.beforeState.elements
-			);
+			this.#state.elements = DrawingState.cloneElements(entry.beforeState.elements);
 			this.#state.selectedElements = [...entry.beforeState.selectedElements];
 			this.#state.mode = entry.beforeState.mode;
 
@@ -195,10 +188,7 @@ export class DrawingHistory {
 
 		const entry = this.#state.history.entries[this.#state.history.position + 1];
 		if (!entry) {
-			console.error(
-				"Redo: Entry not found at position",
-				this.#state.history.position + 1
-			);
+			console.error("Redo: Entry not found at position", this.#state.history.position + 1);
 			this.#provideFeedback("Redo failed: Entry not found");
 			return false;
 		}
@@ -217,9 +207,7 @@ export class DrawingHistory {
 			this.#state.history.position++;
 
 			// Update drawing state (not history management fields or transient UI state)
-			this.#state.elements = DrawingState.cloneElements(
-				entry.afterState.elements
-			);
+			this.#state.elements = DrawingState.cloneElements(entry.afterState.elements);
 			this.#state.selectedElements = [...entry.afterState.selectedElements];
 			this.#state.mode = entry.afterState.mode;
 
@@ -261,9 +249,7 @@ export class DrawingHistory {
 	 * Check if redo is possible
 	 */
 	canRedo(): boolean {
-		return (
-			this.#state.history.position < this.#state.history.entries.length - 1
-		);
+		return this.#state.history.position < this.#state.history.entries.length - 1;
 	}
 
 	/**
@@ -331,8 +317,7 @@ export class DrawingHistory {
 	 */
 	getStats(): HistoryStats {
 		const oldest = this.#state.history.entries[0];
-		const newest =
-			this.#state.history.entries[this.#state.history.entries.length - 1];
+		const newest = this.#state.history.entries[this.#state.history.entries.length - 1];
 
 		return {
 			totalEntries: this.#state.history.entries.length,
@@ -381,9 +366,7 @@ export class DrawingHistory {
 	 */
 	setRecording(enabled: boolean): void {
 		this.#state.history.recording = enabled;
-		this.#provideFeedback(
-			enabled ? "History recording enabled" : "History recording disabled"
-		);
+		this.#provideFeedback(enabled ? "History recording enabled" : "History recording disabled");
 	}
 
 	/**
@@ -398,8 +381,7 @@ export class DrawingHistory {
 	#shouldMergeWithLastEntry(operation: HistoryOperation): boolean {
 		if (this.#state.history.entries.length === 0) return false;
 
-		const lastEntry =
-			this.#state.history.entries[this.#state.history.entries.length - 1];
+		const lastEntry = this.#state.history.entries[this.#state.history.entries.length - 1];
 		const timeDiff = Date.now() - lastEntry.timestamp;
 
 		// Don't merge addElements operations - each drawn element should be its own history entry
@@ -420,8 +402,7 @@ export class DrawingHistory {
 		newState: DrawingState,
 		description?: string
 	): void {
-		const lastEntry =
-			this.#state.history.entries[this.#state.history.entries.length - 1];
+		const lastEntry = this.#state.history.entries[this.#state.history.entries.length - 1];
 
 		// Update the after state of the last entry
 		lastEntry.afterState = DrawingState.cloneStateForHistory(newState);
@@ -474,19 +455,12 @@ export class DrawingHistory {
 	}
 
 	#trimHistory(): void {
-		if (
-			this.#state.history.entries.length <= this.#config.history.maxHistorySize
-		)
-			return;
+		if (this.#state.history.entries.length <= this.#config.history.maxHistorySize) return;
 
 		const entriesToRemove =
 			this.#state.history.entries.length - this.#config.history.maxHistorySize;
-		this.#state.history.entries =
-			this.#state.history.entries.slice(entriesToRemove);
-		this.#state.history.position = Math.max(
-			-1,
-			this.#state.history.position - entriesToRemove
-		);
+		this.#state.history.entries = this.#state.history.entries.slice(entriesToRemove);
+		this.#state.history.position = Math.max(-1, this.#state.history.position - entriesToRemove);
 	}
 
 	#generateEntryId(): string {
@@ -531,16 +505,13 @@ export class DrawingHistory {
 
 		const elementsCount = this.#state.history.entries.reduce(
 			(total, entry) =>
-				total +
-				entry.beforeState.elements.length +
-				entry.afterState.elements.length,
+				total + entry.beforeState.elements.length + entry.afterState.elements.length,
 			0
 		);
 
 		return {
 			estimatedBytes:
-				this.#state.history.entries.length * bytesPerEntry +
-				elementsCount * bytesPerElement,
+				this.#state.history.entries.length * bytesPerEntry + elementsCount * bytesPerElement,
 			entriesCount: this.#state.history.entries.length,
 			statesCount: this.#state.history.entries.length * 2, // before and after states
 		};
@@ -572,14 +543,12 @@ export class DrawingHistory {
 	 */
 	getUndoPreview(): string | null {
 		if (!this.canUndo()) return null;
-		return this.#state.history.entries[this.#state.history.position]
-			.description;
+		return this.#state.history.entries[this.#state.history.position].description;
 	}
 
 	getRedoPreview(): string | null {
 		if (!this.canRedo()) return null;
-		return this.#state.history.entries[this.#state.history.position + 1]
-			.description;
+		return this.#state.history.entries[this.#state.history.position + 1].description;
 	}
 
 	/**

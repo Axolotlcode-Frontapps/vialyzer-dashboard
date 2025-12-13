@@ -28,26 +28,18 @@ export function CheckboxField({ label, description, checkboxLabel }: Props) {
 
 	return (
 		<div className="flex flex-col gap-0">
-			{label ? (
-				<span className="block w-full mb-3.5 text-sm font-medium">{label}</span>
-			) : null}
+			{label ? <span className="block w-full mb-3.5 text-sm font-medium">{label}</span> : null}
 			<Label className="flex items-center space-x-2 cursor-pointer">
 				<Checkbox
 					checked={field.state.value}
 					onCheckedChange={(checked) => field.handleChange(Boolean(checked))}
 				/>
-				<span className="text-sm text-gray-700">
-					{checkboxLabel || "Enable background"}
-				</span>
+				<span className="text-sm text-gray-700">{checkboxLabel || "Enable background"}</span>
 			</Label>
 			{description ? (
-				<span className="text-sm text-muted-foreground mt-1">
-					{description}
-				</span>
+				<span className="text-sm text-muted-foreground mt-1">{description}</span>
 			) : null}
-			{error ? (
-				<span className="text-sm text-destructive mt-2 w-full">{error}</span>
-			) : null}
+			{error ? <span className="text-sm text-destructive mt-2 w-full">{error}</span> : null}
 		</div>
 	);
 }

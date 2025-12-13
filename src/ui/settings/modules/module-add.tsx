@@ -1,10 +1,4 @@
-import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetHeader,
-	SheetTitle,
-} from "@/ui/shared/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/ui/shared/sheet";
 import { ModuleForm } from "./module-form";
 
 export function ModuleAdd({

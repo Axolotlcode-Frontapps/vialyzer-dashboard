@@ -101,10 +101,7 @@ export const LayerItem = memo(function LayerItem({
 		},
 		[handleRename, handleCancelRename]
 	);
-	const VisibilityIcon = useMemo(
-		() => visibility[layer.visibility],
-		[layer.visibility]
-	);
+	const VisibilityIcon = useMemo(() => visibility[layer.visibility], [layer.visibility]);
 
 	return (
 		<div
@@ -126,11 +123,7 @@ export const LayerItem = memo(function LayerItem({
 							e.stopPropagation();
 							onExpansionToggle(layer.id);
 						}}
-						aria-label={
-							isExpanded
-								? "Contraer detalles de capa"
-								: "Expandir detalles de capa"
-						}
+						aria-label={isExpanded ? "Contraer detalles de capa" : "Expandir detalles de capa"}
 					>
 						{isExpanded ? (
 							<ChevronDown className="w-3 h-3" />
@@ -245,10 +238,7 @@ export const LayerItem = memo(function LayerItem({
 								<Edit className="w-4 h-4 mr-2" />
 								Editar Capa
 							</DropdownMenuItem>
-							<DropdownMenuItem
-								onClick={handleStartRename}
-								onKeyDown={(e) => e.stopPropagation()}
-							>
+							<DropdownMenuItem onClick={handleStartRename} onKeyDown={(e) => e.stopPropagation()}>
 								<PenLine className="size-4 mr-2" />
 								Renombrar Capa
 							</DropdownMenuItem>
@@ -303,9 +293,7 @@ export const LayerItem = memo(function LayerItem({
 						>
 							<Slider
 								value={[layer.opacity * 100]}
-								onValueChange={(values) =>
-									onOpacityChange(layer.id, values[0] / 100)
-								}
+								onValueChange={(values) => onOpacityChange(layer.id, values[0] / 100)}
 								max={100}
 								min={0}
 								step={1}
@@ -327,9 +315,7 @@ export const LayerItem = memo(function LayerItem({
 						{layer?.description ? (
 							<div className="pt-1 border-t border-border/50">
 								<div className="font-medium">Descripción:</div>
-								<div className="text-muted-foreground/80 text-xs">
-									{layer.description}
-								</div>
+								<div className="text-muted-foreground/80 text-xs">{layer.description}</div>
 							</div>
 						) : null}
 					</div>

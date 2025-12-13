@@ -253,15 +253,11 @@ describe("DrawingEngine - Arrange", () => {
 			const layer = engine.getActiveLayer();
 
 			if (layer) {
-				const result = engine.groupElementsInLayer(
-					["group-1", "group-2"],
-					layer.id,
-					{
-						name: "Test Group",
-						description: "A test group",
-						color: "rgb(100, 100, 100)",
-					}
-				);
+				const result = engine.groupElementsInLayer(["group-1", "group-2"], layer.id, {
+					name: "Test Group",
+					description: "A test group",
+					color: "rgb(100, 100, 100)",
+				});
 
 				expect(result !== undefined || result === undefined).toBe(true);
 			}
@@ -330,11 +326,7 @@ describe("DrawingEngine - Arrange", () => {
 			const layer = engine.getActiveLayer();
 
 			if (layer) {
-				const result = engine.alignElementsInLayer(
-					["align-1", "align-2"],
-					"left",
-					layer.id
-				);
+				const result = engine.alignElementsInLayer(["align-1", "align-2"], "left", layer.id);
 
 				expect(result !== undefined || result === undefined).toBe(true);
 			}
@@ -344,11 +336,7 @@ describe("DrawingEngine - Arrange", () => {
 			const layer = engine.getActiveLayer();
 
 			if (layer) {
-				const result = engine.alignElementsInLayer(
-					["align-1", "align-2"],
-					"right",
-					layer.id
-				);
+				const result = engine.alignElementsInLayer(["align-1", "align-2"], "right", layer.id);
 
 				expect(result !== undefined || result === undefined).toBe(true);
 			}
@@ -358,11 +346,7 @@ describe("DrawingEngine - Arrange", () => {
 			const layer = engine.getActiveLayer();
 
 			if (layer) {
-				const result = engine.alignElementsInLayer(
-					["align-1", "align-2"],
-					"centerX",
-					layer.id
-				);
+				const result = engine.alignElementsInLayer(["align-1", "align-2"], "centerX", layer.id);
 
 				expect(result !== undefined || result === undefined).toBe(true);
 			}
@@ -372,11 +356,7 @@ describe("DrawingEngine - Arrange", () => {
 			const layer = engine.getActiveLayer();
 
 			if (layer) {
-				const result = engine.alignElementsInLayer(
-					["align-1", "align-2"],
-					"top",
-					layer.id
-				);
+				const result = engine.alignElementsInLayer(["align-1", "align-2"], "top", layer.id);
 
 				expect(result !== undefined || result === undefined).toBe(true);
 			}
@@ -386,11 +366,7 @@ describe("DrawingEngine - Arrange", () => {
 			const layer = engine.getActiveLayer();
 
 			if (layer) {
-				const result = engine.alignElementsInLayer(
-					["align-1", "align-2"],
-					"bottom",
-					layer.id
-				);
+				const result = engine.alignElementsInLayer(["align-1", "align-2"], "bottom", layer.id);
 
 				expect(result !== undefined || result === undefined).toBe(true);
 			}
@@ -400,11 +376,7 @@ describe("DrawingEngine - Arrange", () => {
 			const layer = engine.getActiveLayer();
 
 			if (layer) {
-				const result = engine.alignElementsInLayer(
-					["align-1", "align-2"],
-					"centerY",
-					layer.id
-				);
+				const result = engine.alignElementsInLayer(["align-1", "align-2"], "centerY", layer.id);
 
 				expect(result !== undefined || result === undefined).toBe(true);
 			}

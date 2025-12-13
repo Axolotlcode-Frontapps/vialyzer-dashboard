@@ -16,10 +16,6 @@ class SharedSchemas {
 
 export const sharedSchemas = new SharedSchemas();
 
-export type GenericTableSearchValues = z.infer<
-	typeof sharedSchemas.genericTableSearchSchema
->;
+export type GenericTableSearchValues = z.infer<typeof sharedSchemas.genericTableSearchSchema>;
 
-export type GenericSearchParams = z.infer<
-	typeof sharedSchemas.searchParamsSchema
->;
+export type GenericSearchParams = z.infer<typeof sharedSchemas.searchParamsSchema>;

@@ -25,9 +25,7 @@ export function Carousel({ items }: CarouselProps) {
 			</div>
 
 			<div className="text-center text-white">
-				<h2 className="text-2xl font-semibold mb-4">
-					{items[currentIndex].title}
-				</h2>
+				<h2 className="text-2xl font-semibold mb-4">{items[currentIndex].title}</h2>
 				<p className="text-lg opacity-90">{items[currentIndex].text}</p>
 			</div>
 
@@ -39,9 +37,7 @@ export function Carousel({ items }: CarouselProps) {
 						onClick={() => setCurrentIndex(index)}
 						className={clsx(
 							"w-2 h-2 rounded-full transition-all",
-							index === currentIndex
-								? "bg-white w-4"
-								: "bg-white/50 hover:bg-white/75"
+							index === currentIndex ? "bg-white w-4" : "bg-white/50 hover:bg-white/75"
 						)}
 					/>
 				))}

@@ -75,9 +75,7 @@ describe("LayerItem Component", () => {
 				/>
 			);
 
-			const colorIndicator = container.querySelector(
-				'[style*="background-color"]'
-			);
+			const colorIndicator = container.querySelector('[style*="background-color"]');
 			expect(colorIndicator).toBeInTheDocument();
 		});
 
@@ -110,9 +108,7 @@ describe("LayerItem Component", () => {
 				/>
 			);
 
-			const visibilityButton = screen.getByLabelText(
-				/Alternar visibilidad de capa/i
-			);
+			const visibilityButton = screen.getByLabelText(/Alternar visibilidad de capa/i);
 			expect(visibilityButton).toBeInTheDocument();
 		});
 
@@ -187,10 +183,7 @@ describe("LayerItem Component", () => {
 			const layerName = screen.getByText("Test Layer");
 			fireEvent.doubleClick(layerName);
 
-			expect(mockCallbacks.onRenameStart).toHaveBeenCalledWith(
-				"layer-1",
-				"Test Layer"
-			);
+			expect(mockCallbacks.onRenameStart).toHaveBeenCalledWith("layer-1", "Test Layer");
 		});
 
 		it("should handle keyboard navigation on layer name", () => {
@@ -228,10 +221,7 @@ describe("LayerItem Component", () => {
 			const layerName = screen.getByText("Test Layer");
 			fireEvent.keyDown(layerName, { key: "F2" });
 
-			expect(mockCallbacks.onRenameStart).toHaveBeenCalledWith(
-				"layer-1",
-				"Test Layer"
-			);
+			expect(mockCallbacks.onRenameStart).toHaveBeenCalledWith("layer-1", "Test Layer");
 		});
 	});
 
@@ -289,10 +279,7 @@ describe("LayerItem Component", () => {
 			const input = screen.getByPlaceholderText("Nombre de capa");
 			fireEvent.keyDown(input, { key: "Enter" });
 
-			expect(mockCallbacks.onRenameComplete).toHaveBeenCalledWith(
-				"layer-1",
-				"New Name"
-			);
+			expect(mockCallbacks.onRenameComplete).toHaveBeenCalledWith("layer-1", "New Name");
 		});
 
 		it("should cancel rename on Escape key", () => {
@@ -330,10 +317,7 @@ describe("LayerItem Component", () => {
 			const input = screen.getByPlaceholderText("Nombre de capa");
 			fireEvent.blur(input);
 
-			expect(mockCallbacks.onRenameComplete).toHaveBeenCalledWith(
-				"layer-1",
-				"New Name"
-			);
+			expect(mockCallbacks.onRenameComplete).toHaveBeenCalledWith("layer-1", "New Name");
 		});
 
 		it("should stop event propagation during rename", () => {
@@ -378,9 +362,7 @@ describe("LayerItem Component", () => {
 				/>
 			);
 
-			const visibilityButton = screen.getByLabelText(
-				/Alternar visibilidad de capa/i
-			);
+			const visibilityButton = screen.getByLabelText(/Alternar visibilidad de capa/i);
 			fireEvent.click(visibilityButton);
 
 			expect(mockCallbacks.onVisibilityToggle).toHaveBeenCalledWith("layer-1");
@@ -399,9 +381,7 @@ describe("LayerItem Component", () => {
 				/>
 			);
 
-			const visibilityButton = screen.getByLabelText(
-				/Alternar visibilidad de capa/i
-			);
+			const visibilityButton = screen.getByLabelText(/Alternar visibilidad de capa/i);
 			expect(visibilityButton).toBeInTheDocument();
 		});
 
@@ -420,9 +400,7 @@ describe("LayerItem Component", () => {
 				/>
 			);
 
-			const visibilityButton = screen.getByLabelText(
-				/Alternar visibilidad de capa/i
-			);
+			const visibilityButton = screen.getByLabelText(/Alternar visibilidad de capa/i);
 			expect(visibilityButton).toBeInTheDocument();
 		});
 
@@ -441,9 +419,7 @@ describe("LayerItem Component", () => {
 				/>
 			);
 
-			const visibilityButton = screen.getByLabelText(
-				/Alternar visibilidad de capa/i
-			);
+			const visibilityButton = screen.getByLabelText(/Alternar visibilidad de capa/i);
 			expect(visibilityButton).toBeInTheDocument();
 		});
 	});
@@ -481,9 +457,7 @@ describe("LayerItem Component", () => {
 				/>
 			);
 
-			const collapseButton = screen.getByLabelText(
-				/Contraer detalles de capa/i
-			);
+			const collapseButton = screen.getByLabelText(/Contraer detalles de capa/i);
 			expect(collapseButton).toBeInTheDocument();
 		});
 
@@ -696,15 +670,9 @@ describe("LayerItem Component", () => {
 				/>
 			);
 
-			expect(
-				screen.getByLabelText(/Expandir detalles de capa/i)
-			).toBeInTheDocument();
-			expect(
-				screen.getByLabelText(/Alternar visibilidad de capa/i)
-			).toBeInTheDocument();
-			expect(
-				screen.getByLabelText(/Menú de opciones de capa/i)
-			).toBeInTheDocument();
+			expect(screen.getByLabelText(/Expandir detalles de capa/i)).toBeInTheDocument();
+			expect(screen.getByLabelText(/Alternar visibilidad de capa/i)).toBeInTheDocument();
+			expect(screen.getByLabelText(/Menú de opciones de capa/i)).toBeInTheDocument();
 		});
 
 		it("should have descriptive layer button ARIA label", () => {
@@ -720,9 +688,7 @@ describe("LayerItem Component", () => {
 				/>
 			);
 
-			const layerButton = screen.getByLabelText(
-				/Capa: Test Layer\. Clic para seleccionar/i
-			);
+			const layerButton = screen.getByLabelText(/Capa: Test Layer\. Clic para seleccionar/i);
 			expect(layerButton).toBeInTheDocument();
 		});
 
@@ -739,9 +705,7 @@ describe("LayerItem Component", () => {
 				/>
 			);
 
-			expect(
-				screen.getByLabelText(/Sección de controles de capa/i)
-			).toBeInTheDocument();
+			expect(screen.getByLabelText(/Sección de controles de capa/i)).toBeInTheDocument();
 		});
 
 		it("should have aria label for rename input container", () => {
@@ -855,9 +819,7 @@ describe("LayerItem Component", () => {
 			);
 
 			expect(
-				screen.getByText(
-					"Very Long Layer Name That Should Be Truncated In The UI"
-				)
+				screen.getByText("Very Long Layer Name That Should Be Truncated In The UI")
 			).toBeInTheDocument();
 		});
 	});

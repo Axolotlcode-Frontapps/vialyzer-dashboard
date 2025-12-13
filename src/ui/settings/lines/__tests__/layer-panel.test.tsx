@@ -1,12 +1,6 @@
 // @vitest-environment jsdom
 /** biome-ignore-all lint/suspicious/noExplicitAny: Need for tests */
-import {
-	cleanup,
-	fireEvent,
-	render,
-	screen,
-	waitFor,
-} from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LayerPanel } from "../layer";
@@ -93,24 +87,14 @@ describe("LayerPanel Component", () => {
 
 	describe("Rendering", () => {
 		it("should render trigger button", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			expect(triggerButton).toBeInTheDocument();
 		});
 
 		it("should show panel when trigger button is clicked", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -135,12 +119,7 @@ describe("LayerPanel Component", () => {
 
 	describe("Layer List", () => {
 		it("should display layers when media is loaded", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -155,12 +134,7 @@ describe("LayerPanel Component", () => {
 				isInitialized: false,
 			};
 
-			render(
-				<LayerPanel
-					drawingEngine={uninitializedEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={uninitializedEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -174,12 +148,7 @@ describe("LayerPanel Component", () => {
 				getLayers: vi.fn().mockReturnValue([]),
 			};
 
-			render(
-				<LayerPanel
-					drawingEngine={engineWithNoLayers as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={engineWithNoLayers as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -188,12 +157,7 @@ describe("LayerPanel Component", () => {
 		});
 
 		it("should display layer count", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -202,12 +166,7 @@ describe("LayerPanel Component", () => {
 		});
 
 		it("should display visible layer count", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -218,12 +177,7 @@ describe("LayerPanel Component", () => {
 
 	describe("Layer Creation", () => {
 		it("should open layer form when create button is clicked", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -238,12 +192,7 @@ describe("LayerPanel Component", () => {
 		});
 
 		it("should call createLayer on form submission", async () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -258,12 +207,7 @@ describe("LayerPanel Component", () => {
 				getLayers: vi.fn().mockReturnValue([]),
 			};
 
-			render(
-				<LayerPanel
-					drawingEngine={engineWithNoLayers as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={engineWithNoLayers as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -274,12 +218,7 @@ describe("LayerPanel Component", () => {
 
 	describe("Layer Selection", () => {
 		it("should display active layer", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -289,12 +228,7 @@ describe("LayerPanel Component", () => {
 		});
 
 		it("should show active layer info", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -306,12 +240,7 @@ describe("LayerPanel Component", () => {
 
 	describe("Layer Operations", () => {
 		it("should handle layer visibility toggle", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -321,12 +250,7 @@ describe("LayerPanel Component", () => {
 		});
 
 		it("should handle layer deletion", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -335,12 +259,7 @@ describe("LayerPanel Component", () => {
 		});
 
 		it("should handle layer duplication", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -349,12 +268,7 @@ describe("LayerPanel Component", () => {
 		});
 
 		it("should handle layer isolation", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -365,12 +279,7 @@ describe("LayerPanel Component", () => {
 
 	describe("State Subscription", () => {
 		it("should subscribe to state changes on mount", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			expect(mockDrawingEngine.subscribeToStateChanges).toHaveBeenCalled();
 		});
@@ -387,15 +296,9 @@ describe("LayerPanel Component", () => {
 				}),
 			};
 
-			render(
-				<LayerPanel
-					drawingEngine={mockEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockEngine as never} vehicles={mockVehicles} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "layerAction",
@@ -418,15 +321,9 @@ describe("LayerPanel Component", () => {
 				}),
 			};
 
-			render(
-				<LayerPanel
-					drawingEngine={mockEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockEngine as never} vehicles={mockVehicles} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({ type: "togglePanel" });
 			}
@@ -444,15 +341,9 @@ describe("LayerPanel Component", () => {
 				}),
 			};
 
-			render(
-				<LayerPanel
-					drawingEngine={mockEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockEngine as never} vehicles={mockVehicles} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({ type: "mediaLoaded" });
 			}
@@ -472,18 +363,12 @@ describe("LayerPanel Component", () => {
 				}),
 			};
 
-			render(
-				<LayerPanel
-					drawingEngine={mockEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "layerAction",
@@ -509,15 +394,9 @@ describe("LayerPanel Component", () => {
 				}),
 			};
 
-			render(
-				<LayerPanel
-					drawingEngine={mockEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockEngine as never} vehicles={mockVehicles} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				// Isolate
 				stateChangeCallback({
@@ -537,23 +416,13 @@ describe("LayerPanel Component", () => {
 
 	describe("Accessibility", () => {
 		it("should have proper button titles", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			expect(screen.getByTitle("Mostrar panel de capas")).toBeInTheDocument();
 		});
 
 		it("should update button title when panel is open", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -570,19 +439,12 @@ describe("LayerPanel Component", () => {
 		});
 
 		it("should handle undefined vehicles", () => {
-			expect(() =>
-				render(<LayerPanel drawingEngine={mockDrawingEngine as never} />)
-			).not.toThrow();
+			expect(() => render(<LayerPanel drawingEngine={mockDrawingEngine as never} />)).not.toThrow();
 		});
 
 		it("should handle empty vehicles array", () => {
 			expect(() =>
-				render(
-					<LayerPanel
-						drawingEngine={mockDrawingEngine as never}
-						vehicles={[]}
-					/>
-				)
+				render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={[]} />)
 			).not.toThrow();
 		});
 
@@ -594,12 +456,7 @@ describe("LayerPanel Component", () => {
 			};
 
 			expect(() =>
-				render(
-					<LayerPanel
-						drawingEngine={engineWithNoLayers as never}
-						vehicles={mockVehicles}
-					/>
-				)
+				render(<LayerPanel drawingEngine={engineWithNoLayers as never} vehicles={mockVehicles} />)
 			).not.toThrow();
 		});
 
@@ -609,12 +466,7 @@ describe("LayerPanel Component", () => {
 				getActiveLayer: vi.fn().mockReturnValue(null),
 			};
 
-			render(
-				<LayerPanel
-					drawingEngine={engineWithNoActive as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={engineWithNoActive as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);
@@ -642,12 +494,7 @@ describe("LayerPanel Component", () => {
 			};
 
 			expect(() =>
-				render(
-					<LayerPanel
-						drawingEngine={engineWithManyLayers as never}
-						vehicles={mockVehicles}
-					/>
-				)
+				render(<LayerPanel drawingEngine={engineWithManyLayers as never} vehicles={mockVehicles} />)
 			).not.toThrow();
 		});
 
@@ -659,10 +506,7 @@ describe("LayerPanel Component", () => {
 			};
 
 			const { unmount } = render(
-				<LayerPanel
-					drawingEngine={mockEngine as never}
-					vehicles={mockVehicles}
-				/>
+				<LayerPanel drawingEngine={mockEngine as never} vehicles={mockVehicles} />
 			);
 
 			unmount();
@@ -677,12 +521,7 @@ describe("LayerPanel Component", () => {
 				getDisplaySize: vi.fn().mockReturnValue({ width: 1920, height: 1080 }),
 			};
 
-			render(
-				<LayerPanel
-					drawingEngine={mockEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockEngine as never} vehicles={mockVehicles} />);
 
 			expect(mockEngine.getDisplaySize).toHaveBeenCalled();
 		});
@@ -699,15 +538,9 @@ describe("LayerPanel Component", () => {
 				}),
 			};
 
-			render(
-				<LayerPanel
-					drawingEngine={mockEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockEngine as never} vehicles={mockVehicles} />);
 
-			const stateChangeCallback =
-				mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
+			const stateChangeCallback = mockEngine.subscribeToStateChanges.mock.calls[0]?.[0];
 			if (stateChangeCallback) {
 				stateChangeCallback({
 					type: "resize",
@@ -719,12 +552,7 @@ describe("LayerPanel Component", () => {
 
 	describe("Layer Order", () => {
 		it("should render layers in reverse order (top to bottom)", () => {
-			render(
-				<LayerPanel
-					drawingEngine={mockDrawingEngine as never}
-					vehicles={mockVehicles}
-				/>
-			);
+			render(<LayerPanel drawingEngine={mockDrawingEngine as never} vehicles={mockVehicles} />);
 
 			const triggerButton = screen.getByRole("button");
 			fireEvent.click(triggerButton);

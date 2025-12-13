@@ -6,15 +6,11 @@ class CamerasService {
 	}
 
 	async scenarios(camera: string) {
-		return await fetcher<GeneralResponse<CameraScenario[]>>(
-			`/camera/${camera}/scenarios/get-all`
-		);
+		return await fetcher<GeneralResponse<CameraScenario[]>>(`/camera/${camera}/scenarios/get-all`);
 	}
 
 	async vehicles(camera: string) {
-		return await fetcher<GeneralResponse<CameraVehicle[]>>(
-			`/camera/${camera}/vehicles/get-all`
-		);
+		return await fetcher<GeneralResponse<CameraVehicle[]>>(`/camera/${camera}/vehicles/get-all`);
 	}
 }
 

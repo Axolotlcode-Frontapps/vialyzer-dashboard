@@ -1,9 +1,5 @@
 import type { LineElement } from "@/lib/services/settings";
-import type {
-	DrawingElement,
-	LayerInfo,
-	MediaMatrix,
-} from "@/ui/settings/lines";
+import type { DrawingElement, LayerInfo, MediaMatrix } from "@/ui/settings/lines";
 
 import Image from "@/assets/images/config-mock.png";
 import { useAddScenarioLine } from "@/hooks/settings/use-add-scenario";
@@ -44,10 +40,7 @@ const bridge = new DrawingBridge({
 					fontFamily: element.info.fontFamily,
 					backgroundColor: element.info.backgroundColor,
 					backgroundOpacity: element.info.backgroundOpacity,
-					coordinates: element.points.map((point) => [
-						Math.floor(point.x),
-						Math.floor(point.y),
-					]),
+					coordinates: element.points.map((point) => [Math.floor(point.x), Math.floor(point.y)]),
 				}),
 				layer: (_value, element, layer) => ({
 					id: layer?.id || element.layerId,
@@ -107,20 +100,13 @@ export function Camera() {
 	const { update } = useUpdateScenarioLine();
 	const { modifyDatasources } = useModifyDatasources();
 
-	const {
-		data: serverLines,
-		loading: linesLoading,
-		refetch,
-	} = useGetScenarioLines();
+	const { data: serverLines, loading: linesLoading, refetch } = useGetScenarioLines();
 
 	const handleDrawingComplete = (data: MediaMatrix) => {
 		console.log("Drawing complete, matrix data:", data);
 	};
 
-	const handleSaveElements = async (
-		elements: DrawingElement[],
-		layers: LayerInfo[]
-	) => {
+	const handleSaveElements = async (elements: DrawingElement[], layers: LayerInfo[]) => {
 		const added = elements.filter((el) => el.syncState === "new");
 		const updated = elements.filter((el) => el.syncState === "edited");
 		const deleted = elements.filter((el) => el.syncState === "deleted");
@@ -148,11 +134,7 @@ export function Camera() {
 
 		if (updated.length > 0) {
 			// Bridge now exports complete LineElement with layer data included
-			const toUpdate = bridge.exportTarget<LineElement>(
-				"lines",
-				updated,
-				layers
-			);
+			const toUpdate = bridge.exportTarget<LineElement>("lines", updated, layers);
 			await update({ lines: toUpdate, serverLines });
 		}
 

@@ -155,9 +155,7 @@ describe("DrawingActions", () => {
 		// Mock DrawingArrange
 		(DrawingArrange as any).mockImplementation(() => ({
 			changeZOrder: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
-			changeZOrderInLayer: vi
-				.fn()
-				.mockReturnValue({ elements: [], affectedIds: [] }),
+			changeZOrderInLayer: vi.fn().mockReturnValue({ elements: [], affectedIds: [] }),
 		}));
 
 		// Mock DrawingAnnotation
@@ -224,10 +222,7 @@ describe("DrawingActions", () => {
 		it("should paste elements at position", () => {
 			const position = { x: 10, y: 10 };
 			engine.pasteElements(true, position);
-			expect(actionsMockInstance.pasteElements).toHaveBeenCalledWith(
-				true,
-				position
-			);
+			expect(actionsMockInstance.pasteElements).toHaveBeenCalledWith(true, position);
 		});
 
 		it("should paste elements without position", () => {
@@ -238,9 +233,10 @@ describe("DrawingActions", () => {
 		it("should duplicate selected elements", () => {
 			stateMockInstance.selectedElements = [{ id: "1", type: "line" }];
 			engine.duplicateSelectedElements();
-			expect(
-				actionsMockInstance.duplicateSelectedElements
-			).toHaveBeenCalledWith([{ id: "1", type: "line" }], []);
+			expect(actionsMockInstance.duplicateSelectedElements).toHaveBeenCalledWith(
+				[{ id: "1", type: "line" }],
+				[]
+			);
 		});
 
 		it("should clear clipboard", () => {
@@ -254,9 +250,7 @@ describe("DrawingActions", () => {
 		});
 
 		it("should get clipboard content", () => {
-			actionsMockInstance.getClipboard.mockReturnValue([
-				{ id: "1", type: "line" },
-			]);
+			actionsMockInstance.getClipboard.mockReturnValue([{ id: "1", type: "line" }]);
 			const clipboard = engine.getClipboard();
 			expect(clipboard).toEqual([{ id: "1", type: "line" }]);
 		});
@@ -433,10 +427,7 @@ describe("DrawingActions", () => {
 		it("should delete selected elements", () => {
 			stateMockInstance.selectedElements = [{ id: "1" }];
 			engine.deleteSelectedElements();
-			expect(actionsMockInstance.deleteSelectedElements).toHaveBeenCalledWith(
-				[{ id: "1" }],
-				[]
-			);
+			expect(actionsMockInstance.deleteSelectedElements).toHaveBeenCalledWith([{ id: "1" }], []);
 		});
 
 		it("should select all elements", () => {
@@ -455,19 +446,13 @@ describe("DrawingActions", () => {
 		it("should bring elements to front", () => {
 			stateMockInstance.selectedElements = [{ id: "1" }];
 			engine.bringToFront();
-			expect(actionsMockInstance.bringToFront).toHaveBeenCalledWith(
-				[{ id: "1" }],
-				[]
-			);
+			expect(actionsMockInstance.bringToFront).toHaveBeenCalledWith([{ id: "1" }], []);
 		});
 
 		it("should send elements to back", () => {
 			stateMockInstance.selectedElements = [{ id: "1" }];
 			engine.sendToBack();
-			expect(actionsMockInstance.sendToBack).toHaveBeenCalledWith(
-				[{ id: "1" }],
-				[]
-			);
+			expect(actionsMockInstance.sendToBack).toHaveBeenCalledWith([{ id: "1" }], []);
 		});
 	});
 
@@ -480,9 +465,7 @@ describe("DrawingActions", () => {
 
 			engine.exportDrawings();
 			// exportDrawings may only pass elements, not layers
-			expect(actionsMockInstance.exportDrawings).toHaveBeenCalledWith(
-				stateMockInstance.elements
-			);
+			expect(actionsMockInstance.exportDrawings).toHaveBeenCalledWith(stateMockInstance.elements);
 		});
 
 		it("should export empty drawings", () => {

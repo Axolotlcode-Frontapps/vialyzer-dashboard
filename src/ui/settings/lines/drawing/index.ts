@@ -95,30 +95,16 @@ export class DrawingEngine implements DrawingEngineInterface {
 		this.#core = new DrawingCore(this.#config);
 		this.#utils = new DrawingUtils(this.#core, this.#config);
 
-		this.#events = new DrawingEvents(
-			this.#config,
-			this.#core,
-			this,
-			this.#utils,
-			this.#state
-		);
+		this.#events = new DrawingEvents(this.#config, this.#core, this, this.#utils, this.#state);
 		this.#shortcuts = new DrawingShortcuts(this.#config, this.#state);
-		this.#actions = new DrawingActions(
-			this.#core,
-			this.#config,
-			this.#utils,
-			this.#state
-		);
+		this.#actions = new DrawingActions(this.#core, this.#config, this.#utils, this.#state);
 		this.#annotation = new DrawingAnnotation(this.#config);
 		this.#history = new DrawingHistory(this.#config, this.#state);
 		this.#layers = new DrawingLayers(
 			this.#config,
 			this.#state,
 			(operationType: string, description: string) =>
-				this.#safeRecordHistoryOperation(
-					operationType as HistoryOperation["type"],
-					description
-				)
+				this.#safeRecordHistoryOperation(operationType as HistoryOperation["type"], description)
 		);
 		this.#arrange = new DrawingArrange(this.#config, this.#layers, this.#state);
 		this.#effects = new DrawingEffects(this.#config);
@@ -223,17 +209,12 @@ export class DrawingEngine implements DrawingEngineInterface {
 				this.#on.stateChange(stateChange);
 				break;
 			default:
-				console.warn(
-					`[DrawingEngine] Unhandled state change type: ${stateChange.type}`
-				);
+				console.warn(`[DrawingEngine] Unhandled state change type: ${stateChange.type}`);
 				break;
 		}
 
 		// Handle layer visibility changes
-		if (
-			stateChange.type === "layerAction" &&
-			stateChange.action === "layerVisibilityChanged"
-		) {
+		if (stateChange.type === "layerAction" && stateChange.action === "layerVisibilityChanged") {
 			this.#clearHiddenElementSelections();
 		}
 
@@ -247,10 +228,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		if (!this.#utils) return;
 
 		if (this.#state.mode === "cursor") {
-			const pointHit = this.#utils.findPointNearMouse(
-				displayPoint,
-				this.#state.elements
-			);
+			const pointHit = this.#utils.findPointNearMouse(displayPoint, this.#state.elements);
 			if (pointHit) {
 				this.#state.drag = {
 					isDragging: true,
@@ -263,10 +241,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		}
 
 		if (this.#state.mode === "select") {
-			const elementId = this.#utils.findElementNearMouse(
-				displayPoint,
-				this.#state.elements
-			);
+			const elementId = this.#utils.findElementNearMouse(displayPoint, this.#state.elements);
 			if (elementId) {
 				if (event?.ctrlKey || event?.metaKey) {
 					this.#toggleElementSelection(elementId);
@@ -280,19 +255,14 @@ export class DrawingEngine implements DrawingEngineInterface {
 		}
 
 		if (this.#state.mode === "erase") {
-			const elementId = this.#utils.findElementNearMouse(
-				displayPoint,
-				this.#state.elements
-			);
+			const elementId = this.#utils.findElementNearMouse(displayPoint, this.#state.elements);
 			if (elementId) {
 				// Mark element as deleted instead of removing it immediately
 				const element = this.#state.elements.find((el) => el.id === elementId);
 				if (element) {
 					// If element is new (not yet saved), remove it completely
 					if (element.syncState === "new") {
-						this.#state.elements = this.#state.elements.filter(
-							(el) => el.id !== elementId
-						);
+						this.#state.elements = this.#state.elements.filter((el) => el.id !== elementId);
 					} else {
 						// Otherwise mark as deleted so it can be synced with backend
 						element.syncState = "deleted";
@@ -310,10 +280,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		}
 
 		// Check for point dragging first
-		const pointHit = this.#utils.findPointNearMouse(
-			displayPoint,
-			this.#state.elements
-		);
+		const pointHit = this.#utils.findPointNearMouse(displayPoint, this.#state.elements);
 		if (pointHit) {
 			this.#state.drag = {
 				isDragging: true,
@@ -325,11 +292,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		}
 
 		// Start drawing new element
-		if (
-			["line", "area", "curve", "rectangle", "circle"].includes(
-				this.#state.mode
-			)
-		) {
+		if (["line", "area", "curve", "rectangle", "circle"].includes(this.#state.mode)) {
 			this.#startDrawing(mediaPoint);
 		}
 	}
@@ -340,10 +303,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 
 		// Update hover state
 		if (this.#state.mode === "select" || this.#state.mode === "erase") {
-			const hoveredElementId = this.#utils.findElementNearMouse(
-				displayPoint,
-				this.#state.elements
-			);
+			const hoveredElementId = this.#utils.findElementNearMouse(displayPoint, this.#state.elements);
 			this.#state.hoveredElement = hoveredElementId || null;
 		} else {
 			this.#state.hoveredElement = null;
@@ -360,10 +320,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		}
 
 		// Update cursor
-		const pointHit = this.#utils.findPointNearMouse(
-			displayPoint,
-			this.#state.elements
-		);
+		const pointHit = this.#utils.findPointNearMouse(displayPoint, this.#state.elements);
 		this.#events?.setCursor(pointHit ? "grab" : "crosshair");
 
 		// Handle drawing
@@ -402,10 +359,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		) {
 			this.#completeElement();
 		} else if (this.#state.mode === "select" || this.#state.mode === "cursor") {
-			const elementId = this.#utils.findElementNearMouse(
-				displayPoint,
-				this.#state.elements
-			);
+			const elementId = this.#utils.findElementNearMouse(displayPoint, this.#state.elements);
 			if (elementId) {
 				const element = this.#state.elements.find((el) => el.id === elementId);
 				if (element?.completed) {
@@ -481,11 +435,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 			}
 
 			// Record the point dragging operation
-			this.#safeRecordHistoryOperation(
-				"updateElements",
-				"Dragged element point",
-				beforeState
-			);
+			this.#safeRecordHistoryOperation("updateElements", "Dragged element point", beforeState);
 		}
 	}
 
@@ -498,10 +448,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 			: undefined;
 		const layerType = layer?.type;
 
-		const completedElement = this.#core.completeElement(
-			this.#state.currentElement,
-			layerType
-		);
+		const completedElement = this.#core.completeElement(this.#state.currentElement, layerType);
 
 		// Capture state BEFORE modification for history
 		const beforeState = this.#state.clone();
@@ -551,18 +498,12 @@ export class DrawingEngine implements DrawingEngineInterface {
 				break;
 			case "copy":
 				if (this.#state.selectedElements.length > 0) {
-					this.#actions?.copySelectedElements(
-						this.#state.selectedElements,
-						this.#state.elements
-					);
+					this.#actions?.copySelectedElements(this.#state.selectedElements, this.#state.elements);
 				}
 				break;
 			case "cut":
 				if (this.#state.selectedElements.length > 0) {
-					this.#actions?.cutSelectedElements(
-						this.#state.selectedElements,
-						this.#state.elements
-					);
+					this.#actions?.cutSelectedElements(this.#state.selectedElements, this.#state.elements);
 				}
 				break;
 			case "paste":
@@ -595,10 +536,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 				break;
 			case "delete":
 				if (this.#state.selectedElements.length > 0) {
-					this.#actions?.deleteSelectedElements(
-						this.#state.selectedElements,
-						this.#state.elements
-					);
+					this.#actions?.deleteSelectedElements(this.#state.selectedElements, this.#state.elements);
 				}
 				break;
 			case "save":
@@ -631,11 +569,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 				this.#config.on.feedback("Zoom functionality coming soon");
 				break;
 			case "moveElements":
-				if (
-					this.#state.selectedElements.length > 0 &&
-					data.direction &&
-					data.step
-				) {
+				if (this.#state.selectedElements.length > 0 && data.direction && data.step) {
 					const displayOffset = { x: 0, y: 0 };
 					switch (data.direction) {
 						case "up":
@@ -664,11 +598,9 @@ export class DrawingEngine implements DrawingEngineInterface {
 					}
 
 					const scaleX =
-						this.#config.resolution.target.width /
-						this.#config.resolution.display.width;
+						this.#config.resolution.target.width / this.#config.resolution.display.width;
 					const scaleY =
-						this.#config.resolution.target.height /
-						this.#config.resolution.display.height;
+						this.#config.resolution.target.height / this.#config.resolution.display.height;
 					const mediaOffset = {
 						x: displayOffset.x * scaleX,
 						y: displayOffset.y * scaleY,
@@ -710,10 +642,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 				break;
 			case "group":
 				if (this.#state.selectedElements.length >= 2) {
-					this.#actions?.groupSelectedElements(
-						this.#state.selectedElements,
-						this.#state.elements
-					);
+					this.#actions?.groupSelectedElements(this.#state.selectedElements, this.#state.elements);
 				}
 				break;
 			case "ungroup":
@@ -726,18 +655,12 @@ export class DrawingEngine implements DrawingEngineInterface {
 				break;
 			case "bringToFront":
 				if (this.#state.selectedElements.length > 0) {
-					this.#actions?.bringToFront(
-						this.#state.selectedElements,
-						this.#state.elements
-					);
+					this.#actions?.bringToFront(this.#state.selectedElements, this.#state.elements);
 				}
 				break;
 			case "sendToBack":
 				if (this.#state.selectedElements.length > 0) {
-					this.#actions?.sendToBack(
-						this.#state.selectedElements,
-						this.#state.elements
-					);
+					this.#actions?.sendToBack(this.#state.selectedElements, this.#state.elements);
 				}
 				break;
 			case "alignLeft":
@@ -797,11 +720,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 
 					this.#state.elements = data.elements;
 					// Don't record history when this is called from history redo/undo
-					this.#safeRecordHistoryOperation(
-						"updateElements",
-						"Updated elements",
-						beforeState
-					);
+					this.#safeRecordHistoryOperation("updateElements", "Updated elements", beforeState);
 				}
 				break;
 			case "deleteElements":
@@ -820,9 +739,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 							if (element.layerId) {
 								const layer = this.#layers.getLayer(element.layerId);
 								if (layer) {
-									layer.elementIds = layer.elementIds.filter(
-										(id) => id !== element.id
-									);
+									layer.elementIds = layer.elementIds.filter((id) => id !== element.id);
 									layer.updatedAt = Date.now();
 								}
 							}
@@ -830,17 +747,14 @@ export class DrawingEngine implements DrawingEngineInterface {
 					}
 
 					// Remove elements that were immediately deleted (new elements)
-					this.#state.elements = this.#state.elements.filter(
-						(el) => !elementIds.includes(el.id)
-					);
+					this.#state.elements = this.#state.elements.filter((el) => !elementIds.includes(el.id));
 
 					// Note: Elements in markedAsDeleted are already marked in the actions module
 					// They remain in the elements array with syncState='deleted' until markAllElementsAsSaved is called
 
 					this.#state.selectedElements = [];
 
-					const totalDeleted =
-						elementIds.length + (data.markedAsDeleted?.length || 0);
+					const totalDeleted = elementIds.length + (data.markedAsDeleted?.length || 0);
 					this.#safeRecordHistoryOperation(
 						"deleteElements",
 						`Deleted ${totalDeleted} element(s)`,
@@ -855,11 +769,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 
 					this.#state.selectedElements = data.selectedElements;
 					// Don't record history when this is called from history redo/undo
-					this.#safeRecordHistoryOperation(
-						"updateSelection",
-						"Updated selection",
-						beforeState
-					);
+					this.#safeRecordHistoryOperation("updateSelection", "Updated selection", beforeState);
 				}
 				break;
 			case "clearAll":
@@ -886,10 +796,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 	#handleModeChange(data: ModeChangeEvent): void {
 		this.#state.mode = data.drawingMode;
 		// Don't record history when this is called from history redo/undo
-		this.#safeRecordHistoryOperation(
-			"changeMode",
-			`Changed mode to ${data.drawingMode}`
-		);
+		this.#safeRecordHistoryOperation("changeMode", `Changed mode to ${data.drawingMode}`);
 	}
 
 	// Layer action handler
@@ -963,11 +870,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 					const beforeState = this.#state.clone();
 
 					this.#state.elements = data.elements;
-					this.#safeRecordHistoryOperation(
-						"updateText",
-						"Updated text",
-						beforeState
-					);
+					this.#safeRecordHistoryOperation("updateText", "Updated text", beforeState);
 				}
 				break;
 			default:
@@ -982,27 +885,16 @@ export class DrawingEngine implements DrawingEngineInterface {
 		const beforeState = this.#state.clone();
 
 		if (this.#state.selectedElements.includes(elementId)) {
-			this.#state.selectedElements = this.#state.selectedElements.filter(
-				(id) => id !== elementId
-			);
+			this.#state.selectedElements = this.#state.selectedElements.filter((id) => id !== elementId);
 		} else {
-			this.#state.selectedElements = [
-				...this.#state.selectedElements,
-				elementId,
-			];
+			this.#state.selectedElements = [...this.#state.selectedElements, elementId];
 		}
-		this.#safeRecordHistoryOperation(
-			"updateSelection",
-			"Updated selection",
-			beforeState
-		);
+		this.#safeRecordHistoryOperation("updateSelection", "Updated selection", beforeState);
 	}
 
 	#handleAddText(): void {
 		if (this.#state.selectedElements.length === 1) {
-			const element = this.#state.elements.find(
-				(el) => el.id === this.#state.selectedElements[0]
-			);
+			const element = this.#state.elements.find((el) => el.id === this.#state.selectedElements[0]);
 			if (element?.completed) {
 				this.#openTextEditor(this.#state.selectedElements[0], element);
 			}
@@ -1015,9 +907,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		}
 		if (element?.completed) {
 			// Get the layer for this element to pass the layer type
-			const layer = element.layerId
-				? this.#layers?.getLayer(element.layerId)
-				: undefined;
+			const layer = element.layerId ? this.#layers?.getLayer(element.layerId) : undefined;
 			this.#annotation?.openTextEditor(elementId, element, layer);
 		}
 	}
@@ -1061,11 +951,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		this.#state.drawing = false;
 		this.#state.drag = { isDragging: false, elementId: null, pointIndex: null };
 		this.#state.hoveredElement = null;
-		this.#safeRecordHistoryOperation(
-			"clearAll",
-			"Cleared all elements",
-			beforeState
-		);
+		this.#safeRecordHistoryOperation("clearAll", "Cleared all elements", beforeState);
 	}
 
 	#exportDrawings(): void {
@@ -1157,8 +1043,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		}
 
 		// If current element has no layerId, it belongs to active layer
-		const elementLayerId =
-			this.#state.currentElement.layerId || this.#layers.getActiveLayer()?.id;
+		const elementLayerId = this.#state.currentElement.layerId || this.#layers.getActiveLayer()?.id;
 
 		if (!elementLayerId) {
 			return true;
@@ -1176,9 +1061,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 			return this.#state.selectedElements;
 		}
 
-		const visibleLayerIds = new Set(
-			this.#layers.getVisibleLayers().map((layer) => layer.id)
-		);
+		const visibleLayerIds = new Set(this.#layers.getVisibleLayers().map((layer) => layer.id));
 
 		return this.#state.selectedElements.filter((elementId) => {
 			const element = this.#state.elements.find((el) => el.id === elementId);
@@ -1200,29 +1083,23 @@ export class DrawingEngine implements DrawingEngineInterface {
 	#clearHiddenElementSelections(): void {
 		if (!this.#layers) return;
 
-		const visibleLayerIds = new Set(
-			this.#layers.getVisibleLayers().map((layer) => layer.id)
-		);
+		const visibleLayerIds = new Set(this.#layers.getVisibleLayers().map((layer) => layer.id));
 
-		const visibleSelectedElements = this.#state.selectedElements.filter(
-			(elementId) => {
-				const element = this.#state.elements.find((el) => el.id === elementId);
-				if (!element) return false;
+		const visibleSelectedElements = this.#state.selectedElements.filter((elementId) => {
+			const element = this.#state.elements.find((el) => el.id === elementId);
+			if (!element) return false;
 
-				// If element has no layerId, keep it selected (for backward compatibility)
-				if (!element.layerId) {
-					return true;
-				}
-
-				// Only keep elements from visible layers
-				return visibleLayerIds.has(element.layerId);
+			// If element has no layerId, keep it selected (for backward compatibility)
+			if (!element.layerId) {
+				return true;
 			}
-		);
+
+			// Only keep elements from visible layers
+			return visibleLayerIds.has(element.layerId);
+		});
 
 		// Update selection if it changed
-		if (
-			visibleSelectedElements.length !== this.#state.selectedElements.length
-		) {
+		if (visibleSelectedElements.length !== this.#state.selectedElements.length) {
 			this.#state.selectedElements = visibleSelectedElements;
 			this.#on.stateChange({
 				type: "action",
@@ -1302,11 +1179,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 				this.#markElementAsEdited(elementId);
 
 				// Record the text update in history
-				this.#safeRecordHistoryOperation(
-					"updateElements",
-					"Updated scenario info",
-					beforeState
-				);
+				this.#safeRecordHistoryOperation("updateElements", "Updated scenario info", beforeState);
 			}
 		}
 		this.#state.isEditingText = false;
@@ -1316,9 +1189,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 	cancelTextInput(): void {
 		// If the element being edited has no name (was just created), remove it
 		if (this.#state.editingTextId) {
-			const element = this.#state.elements.find(
-				(el) => el.id === this.#state.editingTextId
-			);
+			const element = this.#state.elements.find((el) => el.id === this.#state.editingTextId);
 
 			// If element exists and has no name, it was just created and should be removed
 			if (element && !element.info.name.trim()) {
@@ -1334,9 +1205,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 				if (element.layerId && this.#layers) {
 					const layer = this.#layers.getLayer(element.layerId);
 					if (layer) {
-						layer.elementIds = layer.elementIds.filter(
-							(id) => id !== element.id
-						);
+						layer.elementIds = layer.elementIds.filter((id) => id !== element.id);
 						layer.updatedAt = Date.now();
 					}
 				}
@@ -1368,10 +1237,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 	 * @param elements - Array of drawing elements to add (already processed by bridge)
 	 * @param layers - Map of complete LayerInfo objects with elementIds already populated by the bridge
 	 */
-	addElements(
-		elements: DrawingElement[],
-		layers: Map<string, LayerInfo>
-	): void {
+	addElements(elements: DrawingElement[], layers: Map<string, LayerInfo>): void {
 		if (!elements || elements.length === 0) return;
 
 		const beforeState = this.#state.clone();
@@ -1426,30 +1292,21 @@ export class DrawingEngine implements DrawingEngineInterface {
 	// Element operations
 	deleteSelectedElements(): void {
 		if (this.#actions) {
-			this.#actions.deleteSelectedElements(
-				this.#state.selectedElements,
-				this.#state.elements
-			);
+			this.#actions.deleteSelectedElements(this.#state.selectedElements, this.#state.elements);
 		}
 	}
 
 	// Clipboard operations
 	copySelectedElements(): number {
 		if (this.#state.selectedElements.length > 0 && this.#actions) {
-			return this.#actions.copySelectedElements(
-				this.#state.selectedElements,
-				this.#state.elements
-			);
+			return this.#actions.copySelectedElements(this.#state.selectedElements, this.#state.elements);
 		}
 		return 0;
 	}
 
 	cutSelectedElements(): void {
 		if (this.#state.selectedElements.length > 0 && this.#actions) {
-			this.#actions.cutSelectedElements(
-				this.#state.selectedElements,
-				this.#state.elements
-			);
+			this.#actions.cutSelectedElements(this.#state.selectedElements, this.#state.elements);
 		}
 	}
 
@@ -1461,10 +1318,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 
 	duplicateSelectedElements(): void {
 		if (this.#state.selectedElements.length > 0 && this.#actions) {
-			this.#actions.duplicateSelectedElements(
-				this.#state.selectedElements,
-				this.#state.elements
-			);
+			this.#actions.duplicateSelectedElements(this.#state.selectedElements, this.#state.elements);
 		}
 	}
 
@@ -1473,11 +1327,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		const beforeState = this.#state.clone();
 
 		this.#state.selectedElements = [];
-		this.#safeRecordHistoryOperation(
-			"updateSelection",
-			"Cleared selection",
-			beforeState
-		);
+		this.#safeRecordHistoryOperation("updateSelection", "Cleared selection", beforeState);
 	}
 
 	clearClipboard(): void {
@@ -1521,30 +1371,21 @@ export class DrawingEngine implements DrawingEngineInterface {
 
 	ungroupSelectedElements(): void {
 		if (this.#state.selectedElements.length > 0 && this.#actions) {
-			this.#actions.ungroupSelectedElements(
-				this.#state.selectedElements,
-				this.#state.elements
-			);
+			this.#actions.ungroupSelectedElements(this.#state.selectedElements, this.#state.elements);
 		}
 	}
 
 	// Z-order operations
 	bringToFront(): DrawingElement[] {
 		if (this.#state.selectedElements.length > 0 && this.#actions) {
-			return this.#actions.bringToFront(
-				this.#state.selectedElements,
-				this.#state.elements
-			);
+			return this.#actions.bringToFront(this.#state.selectedElements, this.#state.elements);
 		}
 		return this.#state.elements;
 	}
 
 	sendToBack(): DrawingElement[] {
 		if (this.#state.selectedElements.length > 0 && this.#actions) {
-			return this.#actions.sendToBack(
-				this.#state.selectedElements,
-				this.#state.elements
-			);
+			return this.#actions.sendToBack(this.#state.selectedElements, this.#state.elements);
 		}
 		return this.#state.elements;
 	}
@@ -1552,11 +1393,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 	// Alignment operations
 	alignElements(alignment: AlignmentType): void {
 		if (this.#state.selectedElements.length >= 2 && this.#actions) {
-			this.#actions.alignElements(
-				this.#state.selectedElements,
-				this.#state.elements,
-				alignment
-			);
+			this.#actions.alignElements(this.#state.selectedElements, this.#state.elements, alignment);
 		}
 	}
 
@@ -1573,12 +1410,8 @@ export class DrawingEngine implements DrawingEngineInterface {
 			}
 
 			// Convert display offset to media offset using scale factors
-			const scaleX =
-				this.#config.resolution.target.width /
-				this.#config.resolution.display.width;
-			const scaleY =
-				this.#config.resolution.target.height /
-				this.#config.resolution.display.height;
+			const scaleX = this.#config.resolution.target.width / this.#config.resolution.display.width;
+			const scaleY = this.#config.resolution.target.height / this.#config.resolution.display.height;
 			const mediaOffset = {
 				x: offset.x * scaleX,
 				y: offset.y * scaleY,
@@ -1642,10 +1475,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 	 * @param quality - Image quality for JPEG format (0 to 1)
 	 * @returns Promise<Blob> - The snapshot as an image blob
 	 */
-	async takeSnapshot(
-		format: "png" | "jpeg" = "png",
-		quality: number = 0.92
-	): Promise<Blob> {
+	async takeSnapshot(format: "png" | "jpeg" = "png", quality: number = 0.92): Promise<Blob> {
 		// Get visible elements (same logic as #getVisibleElements)
 		const visibleElements = this.#getVisibleElements();
 
@@ -1662,12 +1492,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 			});
 		}
 
-		return this.#core.takeSnapshot(
-			visibleElements,
-			layerProps,
-			format,
-			quality
-		);
+		return this.#core.takeSnapshot(visibleElements, layerProps, format, quality);
 	}
 
 	/**
@@ -1830,13 +1655,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		return this.#core.mediaToDisplayCoords(point);
 	}
 
-	catmullRomSpline(
-		p0: Point,
-		p1: Point,
-		p2: Point,
-		p3: Point,
-		t: number
-	): Point {
+	catmullRomSpline(p0: Point, p1: Point, p2: Point, p3: Point, t: number): Point {
 		return this.#core.catmullRomSpline(p0, p1, p2, p3, t);
 	}
 
@@ -1850,9 +1669,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		this.#core.drawArrow(ctx, point, direction, color, size);
 	}
 
-	calculateDirection(
-		element: DrawingElement
-	): { start: Point; end: Point } | null {
+	calculateDirection(element: DrawingElement): { start: Point; end: Point } | null {
 		return this.#core.calculateDirection(element);
 	}
 
@@ -1863,13 +1680,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		hoveredElement: string | null,
 		dragState: DragState
 	): void {
-		this.#core.drawElement(
-			ctx,
-			element,
-			selectedElements,
-			hoveredElement,
-			dragState
-		);
+		this.#core.drawElement(ctx, element, selectedElements, hoveredElement, dragState);
 	}
 
 	redrawCanvas(
@@ -1895,11 +1706,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		return this.#core.generateMatrix(elements);
 	}
 
-	distanceToLineSegment(
-		point: Point,
-		lineStart: Point,
-		lineEnd: Point
-	): number {
+	distanceToLineSegment(point: Point, lineStart: Point, lineEnd: Point): number {
 		return this.#core.distanceToLineSegment(point, lineStart, lineEnd);
 	}
 
@@ -1935,11 +1742,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 	}
 
 	moveElementsToLayer(elementIds: string[], targetLayerId: string) {
-		return this.#layers?.moveElementsToLayer(
-			elementIds,
-			targetLayerId,
-			this.#state.elements
-		);
+		return this.#layers?.moveElementsToLayer(elementIds, targetLayerId, this.#state.elements);
 	}
 
 	toggleLayerVisibility(layerId: string) {
@@ -1981,9 +1784,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 
 		// If type is changing, we need to update elements' detection
 		if (newType && oldType !== newType) {
-			const layerElements = this.#state.elements.filter(
-				(el) => el.layerId === layerId
-			);
+			const layerElements = this.#state.elements.filter((el) => el.layerId === layerId);
 
 			if (layerElements.length > 0) {
 				// Capture state BEFORE modification for history
@@ -2000,8 +1801,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 						const { detection: _, ...elementWithoutDetection } = element;
 						return {
 							...elementWithoutDetection,
-							syncState:
-								element.syncState === "saved" ? "edited" : element.syncState,
+							syncState: element.syncState === "saved" ? "edited" : element.syncState,
 						} as DrawingElement;
 					}
 
@@ -2011,8 +1811,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 						return {
 							...element,
 							detection,
-							syncState:
-								element.syncState === "saved" ? "edited" : element.syncState,
+							syncState: element.syncState === "saved" ? "edited" : element.syncState,
 						};
 					}
 
@@ -2056,11 +1855,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		);
 	}
 
-	alignElementsInLayer(
-		selectedElements: string[],
-		alignment: AlignmentType,
-		layerId?: string
-	) {
+	alignElementsInLayer(selectedElements: string[], alignment: AlignmentType, layerId?: string) {
 		return this.#arrange?.alignElementsInLayer(
 			selectedElements,
 			this.#state.elements,
@@ -2097,23 +1892,12 @@ export class DrawingEngine implements DrawingEngineInterface {
 		);
 	}
 
-	flipElements(
-		selectedElements: string[],
-		direction: "horizontal" | "vertical"
-	) {
-		return this.#arrange?.flipElements(
-			selectedElements,
-			this.#state.elements,
-			direction
-		);
+	flipElements(selectedElements: string[], direction: "horizontal" | "vertical") {
+		return this.#arrange?.flipElements(selectedElements, this.#state.elements, direction);
 	}
 
 	// Effects methods
-	addLayerEffect(
-		layerId: string,
-		effectType: string,
-		config: Record<string, unknown> = {}
-	) {
+	addLayerEffect(layerId: string, effectType: string, config: Record<string, unknown> = {}) {
 		return this.#effects?.addLayerEffect(
 			layerId,
 			effectType as
@@ -2135,11 +1919,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		return this.#effects?.removeLayerEffect(layerId, effectId);
 	}
 
-	updateLayerEffect(
-		layerId: string,
-		effectId: string,
-		updates: Record<string, unknown>
-	) {
+	updateLayerEffect(layerId: string, effectId: string, updates: Record<string, unknown>) {
 		return this.#effects?.updateLayerEffect(layerId, effectId, updates);
 	}
 
@@ -2219,10 +1999,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 
 	getUnsyncedElements(): DrawingElement[] {
 		return this.#state.elements.filter(
-			(el) =>
-				el.syncState === "new" ||
-				el.syncState === "edited" ||
-				el.syncState === "deleted"
+			(el) => el.syncState === "new" || el.syncState === "edited" || el.syncState === "deleted"
 		);
 	}
 
@@ -2235,9 +2012,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 		});
 
 		// Remove elements marked as deleted (they've been synced to backend)
-		this.#state.elements = this.#state.elements.filter(
-			(el) => el.syncState !== "deleted"
-		);
+		this.#state.elements = this.#state.elements.filter((el) => el.syncState !== "deleted");
 
 		// Request redraw to update visual state
 		this.#redraw();
@@ -2250,18 +2025,10 @@ export class DrawingEngine implements DrawingEngineInterface {
 		saved: number;
 		total: number;
 	} {
-		const newCount = this.#state.elements.filter(
-			(el) => el.syncState === "new"
-		).length;
-		const editedCount = this.#state.elements.filter(
-			(el) => el.syncState === "edited"
-		).length;
-		const deletedCount = this.#state.elements.filter(
-			(el) => el.syncState === "deleted"
-		).length;
-		const savedCount = this.#state.elements.filter(
-			(el) => el.syncState === "saved"
-		).length;
+		const newCount = this.#state.elements.filter((el) => el.syncState === "new").length;
+		const editedCount = this.#state.elements.filter((el) => el.syncState === "edited").length;
+		const deletedCount = this.#state.elements.filter((el) => el.syncState === "deleted").length;
+		const savedCount = this.#state.elements.filter((el) => el.syncState === "saved").length;
 
 		return {
 			new: newCount,
@@ -2292,12 +2059,8 @@ export class DrawingEngine implements DrawingEngineInterface {
 	} {
 		const layers = this.#layers.getLayers();
 		const newCount = layers.filter((layer) => layer.syncState === "new").length;
-		const editedCount = layers.filter(
-			(layer) => layer.syncState === "edited"
-		).length;
-		const savedCount = layers.filter(
-			(layer) => layer.syncState === "saved"
-		).length;
+		const editedCount = layers.filter((layer) => layer.syncState === "edited").length;
+		const savedCount = layers.filter((layer) => layer.syncState === "saved").length;
 
 		return {
 			new: newCount,
@@ -2310,9 +2073,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 	getUnsyncedLayers(): LayerInfo[] {
 		return this.#layers
 			.getLayers()
-			.filter(
-				(layer) => layer.syncState === "new" || layer.syncState === "edited"
-			);
+			.filter((layer) => layer.syncState === "new" || layer.syncState === "edited");
 	}
 
 	/**

@@ -41,10 +41,7 @@ export function RoleTableActions({ role }: { role: Role }) {
 						</DropdownMenuItem>
 					</HasPermission>
 					<HasPermission moduleBase="roles" permissionName="delete">
-						<DropdownMenuItem
-							variant="destructive"
-							onClick={() => setOpenDelete(true)}
-						>
+						<DropdownMenuItem variant="destructive" onClick={() => setOpenDelete(true)}>
 							<Trash />
 							Eliminar
 						</DropdownMenuItem>
@@ -53,25 +50,13 @@ export function RoleTableActions({ role }: { role: Role }) {
 			</DropdownMenu>
 
 			<HasPermission moduleBase="roles" permissionName="associate-modules">
-				<ModuleAssign
-					role={role}
-					open={openAssign}
-					onOpenChange={setOpenAssign}
-				/>
+				<ModuleAssign role={role} open={openAssign} onOpenChange={setOpenAssign} />
 			</HasPermission>
 			<HasPermission moduleBase="roles" permissionName="update">
-				<RoleUpdate
-					role={role}
-					open={openUpdate}
-					onOpenChange={setOpenUpdate}
-				/>
+				<RoleUpdate role={role} open={openUpdate} onOpenChange={setOpenUpdate} />
 			</HasPermission>
 			<HasPermission moduleBase="roles" permissionName="delete">
-				<RoleDelete
-					role={role}
-					open={openDelete}
-					onOpenChange={setOpenDelete}
-				/>
+				<RoleDelete role={role} open={openDelete} onOpenChange={setOpenDelete} />
 			</HasPermission>
 		</>
 	);

@@ -60,13 +60,9 @@ export function SliderField({
 				className={`w-full ${className}`}
 			/>
 			{description ? (
-				<span className="text-sm text-muted-foreground mt-1">
-					{description}
-				</span>
+				<span className="text-sm text-muted-foreground mt-1">{description}</span>
 			) : null}
-			{error ? (
-				<span className="text-sm text-destructive mt-2 w-full">{error}</span>
-			) : null}
+			{error ? <span className="text-sm text-destructive mt-2 w-full">{error}</span> : null}
 		</Label>
 	);
 }

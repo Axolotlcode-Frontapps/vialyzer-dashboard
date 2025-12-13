@@ -22,8 +22,7 @@ export function PermissionsTable({
 	isLoadingModule: boolean;
 }) {
 	const queryClient = useQueryClient();
-	const { columns, selectedPermissionsIds, setSelectedPermissionsIds } =
-		useColumns(moduleData);
+	const { columns, selectedPermissionsIds, setSelectedPermissionsIds } = useColumns(moduleData);
 
 	const { moduleId } = useParams({
 		from: "/_dashboard/settings/modules/$moduleId",
@@ -59,10 +58,7 @@ export function PermissionsTable({
 		const allCurrentIds = selectedPermissionsIds.map((perm) => perm.id);
 
 		if (action === "Asignar") {
-			const allIdsWithoutDuplicates = new Set([
-				...allPrevIds,
-				...allCurrentIds,
-			]);
+			const allIdsWithoutDuplicates = new Set([...allPrevIds, ...allCurrentIds]);
 
 			return [...allIdsWithoutDuplicates.values()];
 		}
@@ -77,18 +73,14 @@ export function PermissionsTable({
 			}),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["module-by-id", moduleId] });
-			toast.success(
-				`Permisos actualizados correctamente: ${selectedPermissionsIds.length}`
-			);
+			toast.success(`Permisos actualizados correctamente: ${selectedPermissionsIds.length}`);
 			setSelectedPermissionsIds([]);
 		},
 		onError: (error: AxiosError) => {
-			const message = (error.response?.data as GeneralResponse<unknown>)
-				?.message;
+			const message = (error.response?.data as GeneralResponse<unknown>)?.message;
 
 			const capitalizedMessage =
-				message &&
-				message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
+				message && message.charAt(0).toUpperCase() + message.slice(1).toLowerCase();
 
 			toast.error(`Error al crear módulo`, {
 				description: capitalizedMessage ?? "Por favor, inténtalo de nuevo.",
@@ -111,10 +103,7 @@ export function PermissionsTable({
 					hasSearchUrl
 				>
 					<Button
-						disabled={
-							selectedPermissionsIds.length === 0 ||
-							updatePermissionsMutation.isPending
-						}
+						disabled={selectedPermissionsIds.length === 0 || updatePermissionsMutation.isPending}
 						onClick={() => updatePermissionsMutation.mutate()}
 					>
 						{updatePermissionsMutation.isPending ? (

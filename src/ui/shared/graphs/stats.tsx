@@ -23,10 +23,7 @@ export function Stats({ info }: Props) {
 						</span>
 					</p>
 					{index < info.length - 1 ? (
-						<Separator
-							orientation="vertical"
-							className="data-[orientation=vertical]:h-10"
-						/>
+						<Separator orientation="vertical" className="data-[orientation=vertical]:h-10" />
 					) : null}
 				</Fragment>
 			))}

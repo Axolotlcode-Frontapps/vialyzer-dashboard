@@ -1,44 +1,42 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 interface AdvancedMarkerProps {
-  map: google.maps.Map | null;
-  position: {
-    lat: number;
-    lng: number;
-  };
-  onClick?: () => void;
-  isSelected?: boolean;
-  color?: string;
-  visible?: boolean;
+	map: google.maps.Map | null;
+	position: {
+		lat: number;
+		lng: number;
+	};
+	onClick?: () => void;
+	isSelected?: boolean;
+	color?: string;
+	visible?: boolean;
 }
 
 export function AdvancedMarker({
-  map,
-  position,
-  onClick,
-  isSelected = false,
-  color = '#0f3227',
-  visible = true,
+	map,
+	position,
+	onClick,
+	isSelected = false,
+	color = "#0f3227",
+	visible = true,
 }: AdvancedMarkerProps) {
-  const markerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(
-    null
-  );
-  const contentRef = useRef<HTMLDivElement | null>(null);
+	const markerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(null);
+	const contentRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (!map || !window.google?.maps?.marker) return;
+	useEffect(() => {
+		if (!map || !window.google?.maps?.marker) return;
 
-    const markerColor = isSelected ? color : `${color}`;
+		const markerColor = isSelected ? color : `${color}`;
 
-    // Crear el contenido HTML del marcador
-    const content = document.createElement('div');
-    content.style.width = '48px';
-    content.style.height = '64px';
-    content.style.cursor = 'pointer';
-    content.style.transition = 'transform 0.2s';
-    content.style.display = visible ? 'block' : 'none';
+		// Crear el contenido HTML del marcador
+		const content = document.createElement("div");
+		content.style.width = "48px";
+		content.style.height = "64px";
+		content.style.cursor = "pointer";
+		content.style.transition = "transform 0.2s";
+		content.style.display = visible ? "block" : "none";
 
-    content.innerHTML = `
+		content.innerHTML = `
       <svg width='36' height='52' viewBox='0 0 48 64' fill='none' xmlns='http://www.w3.org/2000/svg'>
         <defs>
           <filter id='shadow-${position.lat}-${position.lng}' x='0' y='0' width='48' height='64'>
@@ -56,71 +54,71 @@ export function AdvancedMarker({
       </svg>
     `;
 
-    contentRef.current = content;
+		contentRef.current = content;
 
-    // Crear el Advanced Marker
-    const marker = new google.maps.marker.AdvancedMarkerElement({
-      map,
-      position,
-      content,
-      title: 'Camera Location',
-    });
+		// Crear el Advanced Marker
+		const marker = new google.maps.marker.AdvancedMarkerElement({
+			map,
+			position,
+			content,
+			title: "Camera Location",
+		});
 
-    // Agregar evento de click
-    if (onClick) {
-      marker.addListener('click', onClick);
-    }
+		// Agregar evento de click
+		if (onClick) {
+			marker.addListener("click", onClick);
+		}
 
-    // Hover effect
-    content.addEventListener('mouseenter', () => {
-      content.style.transform = 'scale(1.1)';
-    });
+		// Hover effect
+		content.addEventListener("mouseenter", () => {
+			content.style.transform = "scale(1.1)";
+		});
 
-    content.addEventListener('mouseleave', () => {
-      content.style.transform = 'scale(1)';
-    });
+		content.addEventListener("mouseleave", () => {
+			content.style.transform = "scale(1)";
+		});
 
-    markerRef.current = marker;
+		markerRef.current = marker;
 
-    // Cleanup
-    return () => {
-      if (markerRef.current) {
-        markerRef.current.map = null;
-      }
-    };
-  }, [map, position.lat, position.lng, onClick, color, visible, isSelected]);
+		// Cleanup
+		return () => {
+			if (markerRef.current) {
+				markerRef.current.map = null;
+			}
+		};
+	}, [map, position.lat, position.lng, onClick, color, visible, isSelected]);
 
-  // Actualizar el estilo cuando cambia isSelected
-  useEffect(() => {
-    if (!contentRef.current) return;
+	// Actualizar el estilo cuando cambia isSelected
+	useEffect(() => {
+		if (!contentRef.current) return;
 
-    // Mostrar u ocultar el contenido del marcador
-    contentRef.current.style.display = visible ? 'block' : 'none';
+		// Mostrar u ocultar el contenido del marcador
+		contentRef.current.style.display = visible ? "block" : "none";
 
-    // Cambiar el color sin recrear el marcador
-    const markerColor = isSelected ? color : `${color}aa`;
-    const svg = contentRef.current.querySelector('svg');
-    if (svg) {
-      const paths = svg.querySelectorAll('path[fill], rect[fill]');
-      paths.forEach((path, index) => {
-        // index 0 = path principal del pin
-        // index 2 = rect de la cámara
-        if (index === 0 || index === 2) {
-          path.setAttribute('fill', markerColor);
-        }
-      });
-    }
+		// Cambiar el color sin recrear el marcador
+		const markerColor = isSelected ? color : `${color}aa`;
+		const svg = contentRef.current.querySelector("svg");
+		if (svg) {
+			const paths = svg.querySelectorAll("path[fill], rect[fill]");
+			paths.forEach((path, index) => {
+				// index 0 = path principal del pin
+				// index 2 = rect de la cámara
+				if (index === 0 || index === 2) {
+					path.setAttribute("fill", markerColor);
+				}
+			});
+		}
 
-    // Hacer un pequeño "bounce" cuando se selecciona
-    if (isSelected) {
-      contentRef.current.style.transform = 'scale(1.15)';
-      setTimeout(() => {
-        if (contentRef.current) {
-          contentRef.current.style.transform = 'scale(1)';
-        }
-      }, 200);
-    }
-  }, [isSelected, color, visible]);
+		// Hacer un pequeño "bounce" cuando se selecciona
+		if (isSelected) {
+			contentRef.current.style.transform = "scale(1.15)";
+			setTimeout(() => {
+				if (contentRef.current) {
+					contentRef.current.style.transform = "scale(1)";
+				}
+			}, 200);
+		}
+	}, [isSelected, color, visible]);
 
-  return null;
+	return null;
 }

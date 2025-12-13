@@ -14,9 +14,7 @@ export function setSidebarState({ state }: { state: boolean }) {
 			secure: process.env.NODE_ENV === "production",
 			sameSite: "lax",
 			path: "/",
-			...(import.meta.env.VITE_DOMAIN
-				? { domain: import.meta.env.VITE_DOMAIN }
-				: {}),
+			...(import.meta.env.VITE_DOMAIN ? { domain: import.meta.env.VITE_DOMAIN } : {}),
 		});
 	} else {
 		Cookies.remove(SIDEBAR_STATE);

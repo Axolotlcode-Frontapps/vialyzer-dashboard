@@ -18,15 +18,8 @@ export function SubmitButton({
 		<form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
 			{([canSubmit, isSubmitting]) => {
 				return (
-					<Button
-						type="submit"
-						form={formId}
-						className="w-full"
-						disabled={!canSubmit}
-					>
-						{isSubmitting ? (
-							<LoaderCircle className="size-4 animate-spin" />
-						) : null}
+					<Button type="submit" form={formId} className="w-full" disabled={!canSubmit}>
+						{isSubmitting ? <LoaderCircle className="size-4 animate-spin" /> : null}
 						{isSubmitting ? labelLoading : label}
 					</Button>
 				);

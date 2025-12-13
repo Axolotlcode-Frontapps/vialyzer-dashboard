@@ -65,9 +65,7 @@ export function VolumeTable() {
 				header: "Actor vial / Movimiento",
 				cell: ({ row }) =>
 					chartConfig[
-						row.original.vehicle
-							.replaceAll(" ", "_")
-							.toLowerCase() as keyof typeof chartConfig
+						row.original.vehicle.replaceAll(" ", "_").toLowerCase() as keyof typeof chartConfig
 					]?.label ?? row.original.vehicle,
 			},
 			...(scenarios.map((sceario) => ({
@@ -111,10 +109,7 @@ export function VolumeTable() {
 					total,
 				};
 			})
-			.sort(
-				(a, b) =>
-					Number.parseFloat(`${b.total}`) - Number.parseFloat(`${a.total}`)
-			);
+			.sort((a, b) => Number.parseFloat(`${b.total}`) - Number.parseFloat(`${a.total}`));
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const totalCols = rows.reduce((acc, { total, vehicle, ...scenarios }) => {
@@ -124,8 +119,7 @@ export function VolumeTable() {
 				}
 
 				if (typeof acc[scenario] === "number") {
-					acc[scenario] +=
-						typeof value === "number" ? value : Number.parseFloat(`${value}`);
+					acc[scenario] += typeof value === "number" ? value : Number.parseFloat(`${value}`);
 				}
 			});
 
@@ -134,8 +128,7 @@ export function VolumeTable() {
 			}
 
 			if (typeof acc.total === "number") {
-				acc.total +=
-					typeof total === "number" ? total : Number.parseFloat(`${total}`);
+				acc.total += typeof total === "number" ? total : Number.parseFloat(`${total}`);
 			}
 
 			return acc;

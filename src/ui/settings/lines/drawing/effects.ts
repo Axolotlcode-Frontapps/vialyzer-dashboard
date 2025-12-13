@@ -1,11 +1,6 @@
 import type { DrawingConfig } from "./config";
 import type { LayerInfo } from "./layers";
-import type {
-	DrawingElement,
-	FeedbackCallback,
-	Point,
-	StateChangeCallback,
-} from "./types";
+import type { DrawingElement, FeedbackCallback, Point, StateChangeCallback } from "./types";
 
 /**
  * Layer effect types
@@ -511,12 +506,7 @@ export class DrawingEffects {
 		for (const guide of this.#smartGuides.values()) {
 			if (!guide.enabled) continue;
 
-			const result = this.#applySmartGuide(
-				guide,
-				element,
-				adjustedPosition,
-				elements
-			);
+			const result = this.#applySmartGuide(guide, element, adjustedPosition, elements);
 
 			if (result.snapped) {
 				adjustedPosition = result.position;
@@ -722,10 +712,7 @@ export class DrawingEffects {
 		return { ...defaults[effectType], ...overrides };
 	}
 
-	#getDefaultGuideConfig(
-		guideType: SmartGuideType,
-		overrides: SmartGuideConfig
-	): SmartGuideConfig {
+	#getDefaultGuideConfig(guideType: SmartGuideType, overrides: SmartGuideConfig): SmartGuideConfig {
 		const defaults: Record<SmartGuideType, SmartGuideConfig> = {
 			alignment: {
 				showAlignmentLines: true,
@@ -954,13 +941,7 @@ export class DrawingEffects {
 				return this.#applyGridSnapping(guide, position, result);
 
 			case "alignment":
-				return this.#applyAlignmentGuides(
-					guide,
-					element,
-					position,
-					elements,
-					result
-				);
+				return this.#applyAlignmentGuides(guide, element, position, elements, result);
 
 			default:
 				return result;
@@ -976,8 +957,7 @@ export class DrawingEffects {
 
 		for (const snapPoint of this.#snapPoints.values()) {
 			const distance = Math.sqrt(
-				(position.x - snapPoint.point.x) ** 2 +
-					(position.y - snapPoint.point.y) ** 2
+				(position.x - snapPoint.point.x) ** 2 + (position.y - snapPoint.point.y) ** 2
 			);
 
 			if (distance <= tolerance) {
@@ -1139,9 +1119,7 @@ export class DrawingEffects {
 			enabledEffects += effects.filter((e) => e.enabled).length;
 		}
 
-		const enabledGuides = Array.from(this.#smartGuides.values()).filter(
-			(g) => g.enabled
-		).length;
+		const enabledGuides = Array.from(this.#smartGuides.values()).filter((g) => g.enabled).length;
 
 		return {
 			totalEffects,

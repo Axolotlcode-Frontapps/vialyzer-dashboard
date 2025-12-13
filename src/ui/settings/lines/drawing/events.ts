@@ -47,10 +47,7 @@ export class DrawingEvents {
 		if (media.tagName.toLowerCase() === "video") {
 			const video = media as HTMLVideoElement;
 
-			media.addEventListener(
-				"loadedmetadata",
-				this.#handleMediaLoaded.bind(this)
-			);
+			media.addEventListener("loadedmetadata", this.#handleMediaLoaded.bind(this));
 
 			// Error handling for video loading
 			media.addEventListener("error", () => {
@@ -185,10 +182,7 @@ export class DrawingEvents {
 		if (media.tagName.toLowerCase() === "video" && "videoWidth" in media) {
 			mediaWidth = media.videoWidth;
 			mediaHeight = media.videoHeight;
-		} else if (
-			media.tagName.toLowerCase() === "img" &&
-			"naturalWidth" in media
-		) {
+		} else if (media.tagName.toLowerCase() === "img" && "naturalWidth" in media) {
 			mediaWidth = media.naturalWidth;
 			mediaHeight = media.naturalHeight;
 		} else {

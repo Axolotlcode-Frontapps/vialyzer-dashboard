@@ -222,12 +222,7 @@ export interface HistoryState {
 // Drawing Element Types
 // ============================================================================
 
-export type DrawingElementType =
-	| "line"
-	| "area"
-	| "curve"
-	| "rectangle"
-	| "circle";
+export type DrawingElementType = "line" | "area" | "curve" | "rectangle" | "circle";
 
 export type DrawingMode = "cursor" | "select" | "erase" | DrawingElementType;
 
@@ -684,13 +679,7 @@ export interface AccessibilityReport {
 // Alignment and Arrangement Types
 // ============================================================================
 
-export type AlignmentType =
-	| "left"
-	| "right"
-	| "top"
-	| "bottom"
-	| "centerX"
-	| "centerY";
+export type AlignmentType = "left" | "right" | "top" | "bottom" | "centerX" | "centerY";
 
 // ============================================================================
 // Engine Interfaces
@@ -728,9 +717,7 @@ export interface DrawingEngineInterface {
 	requestRedraw(): void;
 
 	// Element operations
-	calculateDirection(
-		element: DrawingElement
-	): { start: Point; end: Point } | null;
+	calculateDirection(element: DrawingElement): { start: Point; end: Point } | null;
 	generateMatrix(elements: DrawingElement[]): MediaMatrix;
 	distanceToLineSegment(point: Point, lineStart: Point, lineEnd: Point): number;
 	pointInPolygon(point: Point, polygon: Point[]): boolean;
@@ -814,10 +801,7 @@ export interface DrawingEngineInterface {
 	setLayerOpacity(layerId: string, opacity: number): unknown;
 	setActiveLayer(layerId: string): unknown;
 	renameLayer(layerId: string, name: string): unknown;
-	updateLayer(
-		layerId: string,
-		updates: Partial<Omit<LayerInfo, "id">>
-	): unknown;
+	updateLayer(layerId: string, updates: Partial<Omit<LayerInfo, "id">>): unknown;
 	isolateLayer(layerId: string): unknown;
 	getLayer(layerId: string): unknown;
 	getLayers(): unknown[];
@@ -825,11 +809,7 @@ export interface DrawingEngineInterface {
 	getVisibleLayers(): unknown[];
 
 	// Arrangement operations
-	groupElementsInLayer(
-		selectedElements: string[],
-		layerId?: string,
-		metadata?: unknown
-	): unknown;
+	groupElementsInLayer(selectedElements: string[], layerId?: string, metadata?: unknown): unknown;
 	alignElementsInLayer(
 		selectedElements: string[],
 		alignment: AlignmentType,
@@ -846,23 +826,12 @@ export interface DrawingEngineInterface {
 		operation: "bringToFront" | "sendToBack" | "bringForward" | "sendBackward",
 		layerId?: string
 	): unknown;
-	flipElements(
-		selectedElements: string[],
-		direction: "horizontal" | "vertical"
-	): unknown;
+	flipElements(selectedElements: string[], direction: "horizontal" | "vertical"): unknown;
 
 	// Effect operations
-	addLayerEffect(
-		layerId: string,
-		effectType: string,
-		config?: unknown
-	): unknown;
+	addLayerEffect(layerId: string, effectType: string, config?: unknown): unknown;
 	removeLayerEffect(layerId: string, effectId: string): unknown;
-	updateLayerEffect(
-		layerId: string,
-		effectId: string,
-		updates: unknown
-	): unknown;
+	updateLayerEffect(layerId: string, effectId: string, updates: unknown): unknown;
 	getLayerEffects(layerId: string): unknown[];
 
 	// Smart guides
@@ -897,10 +866,7 @@ export interface DrawingEngineInterface {
 }
 
 export interface DrawingUtilsInterface {
-	findElementNearMouse(
-		mousePos: Point,
-		elements: DrawingElement[]
-	): string | null;
+	findElementNearMouse(mousePos: Point, elements: DrawingElement[]): string | null;
 	findPointNearMouse(
 		mousePos: Point,
 		elements: DrawingElement[]

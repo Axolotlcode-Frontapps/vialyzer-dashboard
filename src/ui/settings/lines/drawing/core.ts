@@ -152,15 +152,12 @@ export class DrawingCore {
 		// Only generate detection lines for non-CONFIGURATION layer types
 		// CONFIGURATION layers don't have detection, DETECTION and NEAR_MISS do
 		const detection =
-			layerType !== "CONFIGURATION"
-				? this.updateDetectionLines(element)
-				: undefined;
+			layerType !== "CONFIGURATION" ? this.updateDetectionLines(element) : undefined;
 
 		return {
 			...element,
 			completed: true,
-			direction:
-				element.type === "line" || element.type === "curve" ? direction : null,
+			direction: element.type === "line" || element.type === "curve" ? direction : null,
 			detection,
 		};
 	}
@@ -220,12 +217,7 @@ export class DrawingCore {
 					const oldPoint = newPoints[pointIndex]; // Capture old point before update
 
 					if (element.type === "rectangle" && newPoints.length >= 2) {
-						newPoints = this.#updateRectanglePoints(
-							newPoints,
-							pointIndex,
-							mediaPoint,
-							event
-						);
+						newPoints = this.#updateRectanglePoints(newPoints, pointIndex, mediaPoint, event);
 					} else {
 						newPoints[pointIndex] = mediaPoint;
 					}
@@ -233,10 +225,7 @@ export class DrawingCore {
 					updatedElement.points = newPoints;
 
 					// Update direction for all line/curve types when points are dragged
-					if (
-						(element.type === "line" || element.type === "curve") &&
-						updatedElement.completed
-					) {
+					if ((element.type === "line" || element.type === "curve") && updatedElement.completed) {
 						updatedElement.direction = this.calculateDirection(updatedElement);
 
 						// If a start or end point was moved, transform the corresponding detection line
@@ -272,14 +261,8 @@ export class DrawingCore {
 										y: newPivot.y - newPoints[newPoints.length - 2].y,
 									};
 
-							const oldAngle = Math.atan2(
-								oldSegmentVector.y,
-								oldSegmentVector.x
-							);
-							const newAngle = Math.atan2(
-								newSegmentVector.y,
-								newSegmentVector.x
-							);
+							const oldAngle = Math.atan2(oldSegmentVector.y, oldSegmentVector.x);
+							const newAngle = Math.atan2(newSegmentVector.y, newSegmentVector.x);
 							const rotation = newAngle - oldAngle;
 
 							const cos = Math.cos(rotation);
@@ -367,13 +350,7 @@ export class DrawingCore {
 	}
 
 	// Mathematical calculations
-	catmullRomSpline(
-		p0: Point,
-		p1: Point,
-		p2: Point,
-		p3: Point,
-		t: number
-	): Point {
+	catmullRomSpline(p0: Point, p1: Point, p2: Point, p3: Point, t: number): Point {
 		const t2 = t * t;
 		const t3 = t2 * t;
 
@@ -393,9 +370,7 @@ export class DrawingCore {
 		};
 	}
 
-	calculateDirection(
-		element: DrawingElement
-	): { start: Point; end: Point } | null {
+	calculateDirection(element: DrawingElement): { start: Point; end: Point } | null {
 		if (element.points.length < 2) return null;
 
 		if (element.type === "line") {
@@ -423,11 +398,7 @@ export class DrawingCore {
 		return null;
 	}
 
-	distanceToLineSegment(
-		point: Point,
-		lineStart: Point,
-		lineEnd: Point
-	): number {
+	distanceToLineSegment(point: Point, lineStart: Point, lineEnd: Point): number {
 		const A = point.x - lineStart.x;
 		const B = point.y - lineStart.y;
 		const C = lineEnd.x - lineStart.x;
@@ -513,17 +484,11 @@ export class DrawingCore {
 	): void {
 		if (element.points.length === 0) return;
 
-		const displayPoints = element.points.map((point) =>
-			this.mediaToDisplayCoords(point)
-		);
+		const displayPoints = element.points.map((point) => this.mediaToDisplayCoords(point));
 		const isSelected = selectedElements.includes(element.id);
 		const isHovered = hoveredElement === element.id;
 
-		ctx.strokeStyle = isSelected
-			? "#ffff00"
-			: isHovered
-				? "#ff8800"
-				: element.color;
+		ctx.strokeStyle = isSelected ? "#ffff00" : isHovered ? "#ff8800" : element.color;
 		ctx.lineWidth = isSelected
 			? this.#config.rendering.selectedLineWidth
 			: isHovered
@@ -561,10 +526,7 @@ export class DrawingCore {
 						const p0 = i > 0 ? displayPoints[i - 1] : displayPoints[i];
 						const p1 = displayPoints[i];
 						const p2 = displayPoints[i + 1];
-						const p3 =
-							i < displayPoints.length - 2
-								? displayPoints[i + 2]
-								: displayPoints[i + 1];
+						const p3 = i < displayPoints.length - 2 ? displayPoints[i + 2] : displayPoints[i + 1];
 
 						for (let t = 0.1; t <= 1; t += 0.1) {
 							const point = this.catmullRomSpline(p0, p1, p2, p3, t);
@@ -588,8 +550,7 @@ export class DrawingCore {
 			const centerX = displayPoints[0].x;
 			const centerY = displayPoints[0].y;
 			const radius = Math.sqrt(
-				(displayPoints[1].x - centerX) ** 2 +
-					(displayPoints[1].y - centerY) ** 2
+				(displayPoints[1].x - centerX) ** 2 + (displayPoints[1].y - centerY) ** 2
 			);
 
 			ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
@@ -615,9 +576,7 @@ export class DrawingCore {
 			ctx.lineWidth = 1;
 			ctx.setLineDash([5, 5]);
 
-			const entry = element.detection.entry.map((p) =>
-				this.mediaToDisplayCoords(p)
-			);
+			const entry = element.detection.entry.map((p) => this.mediaToDisplayCoords(p));
 			if (entry.length === 2) {
 				ctx.beginPath();
 				ctx.moveTo(entry[0].x, entry[0].y);
@@ -625,9 +584,7 @@ export class DrawingCore {
 				ctx.stroke();
 			}
 
-			const exit = element.detection.exit.map((p) =>
-				this.mediaToDisplayCoords(p)
-			);
+			const exit = element.detection.exit.map((p) => this.mediaToDisplayCoords(p));
 			if (exit.length === 2) {
 				ctx.beginPath();
 				ctx.moveTo(exit[0].x, exit[0].y);
@@ -660,9 +617,7 @@ export class DrawingCore {
 			ctx.globalAlpha = isSelected ? 0.5 : 0.3;
 			ctx.setLineDash([5, 5]);
 
-			const entry = element.detection.entry.map((p) =>
-				this.mediaToDisplayCoords(p)
-			);
+			const entry = element.detection.entry.map((p) => this.mediaToDisplayCoords(p));
 			if (entry.length === 2) {
 				ctx.beginPath();
 				ctx.moveTo(entry[0].x, entry[0].y);
@@ -670,9 +625,7 @@ export class DrawingCore {
 				ctx.stroke();
 			}
 
-			const exit = element.detection.exit.map((p) =>
-				this.mediaToDisplayCoords(p)
-			);
+			const exit = element.detection.exit.map((p) => this.mediaToDisplayCoords(p));
 			if (exit.length === 2) {
 				ctx.beginPath();
 				ctx.moveTo(exit[0].x, exit[0].y);
@@ -714,12 +667,8 @@ export class DrawingCore {
 						// Fallback for 2-point curve (straight line)
 						const t = 0.75;
 						arrowPoint = {
-							x:
-								displayPoints[0].x +
-								(displayPoints[1].x - displayPoints[0].x) * t,
-							y:
-								displayPoints[0].y +
-								(displayPoints[1].y - displayPoints[0].y) * t,
+							x: displayPoints[0].x + (displayPoints[1].x - displayPoints[0].x) * t,
+							y: displayPoints[0].y + (displayPoints[1].y - displayPoints[0].y) * t,
 						};
 					}
 				}
@@ -766,10 +715,9 @@ export class DrawingCore {
 
 		// Draw handles for detection points (only for elements with detection data)
 		if (element.detection) {
-			const allDetectionPoints = [
-				...element.detection.entry,
-				...element.detection.exit,
-			].map((p) => this.mediaToDisplayCoords(p));
+			const allDetectionPoints = [...element.detection.entry, ...element.detection.exit].map((p) =>
+				this.mediaToDisplayCoords(p)
+			);
 
 			allDetectionPoints.forEach((point) => {
 				const size = 8; // Draggable square handle size
@@ -808,10 +756,8 @@ export class DrawingCore {
 		} else if (element.type === "circle" && displayPoints.length >= 2) {
 			textPoint = displayPoints[0];
 		} else if (element.type === "area" && displayPoints.length >= 3) {
-			const centroidX =
-				displayPoints.reduce((sum, p) => sum + p.x, 0) / displayPoints.length;
-			const centroidY =
-				displayPoints.reduce((sum, p) => sum + p.y, 0) / displayPoints.length;
+			const centroidX = displayPoints.reduce((sum, p) => sum + p.x, 0) / displayPoints.length;
+			const centroidY = displayPoints.reduce((sum, p) => sum + p.y, 0) / displayPoints.length;
 			textPoint = { x: centroidX, y: centroidY };
 		} else {
 			const midIndex = Math.floor(displayPoints.length / 2);
@@ -868,9 +814,7 @@ export class DrawingCore {
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.imageSmoothingEnabled = this.#config.rendering.antiAlias;
-		ctx.imageSmoothingQuality = this.#config.rendering.antiAlias
-			? "high"
-			: "low";
+		ctx.imageSmoothingQuality = this.#config.rendering.antiAlias ? "high" : "low";
 
 		// If layers are provided, group elements by layer and render with layer properties
 		if (layers && layers.size > 0) {
@@ -894,21 +838,14 @@ export class DrawingCore {
 
 			// Render elements without layer (backward compatibility) with default settings
 			elementsWithoutLayer.forEach((element) => {
-				this.drawElement(
-					ctx,
-					element,
-					selectedElements,
-					hoveredElement,
-					dragState
-				);
+				this.drawElement(ctx, element, selectedElements, hoveredElement, dragState);
 			});
 
 			// Render each layer with its properties
 			Array.from(layers.entries())
 				.sort(
 					([, a], [, b]) =>
-						(a as { zIndex?: number }).zIndex ||
-						0 - ((b as { zIndex?: number }).zIndex || 0)
+						(a as { zIndex?: number }).zIndex || 0 - ((b as { zIndex?: number }).zIndex || 0)
 				)
 				.forEach(([layerId, layerProps]) => {
 					const layerElements = elementsByLayer.get(layerId);
@@ -925,13 +862,7 @@ export class DrawingCore {
 
 					// Render all elements in this layer
 					layerElements.forEach((element) => {
-						this.drawElement(
-							ctx,
-							element,
-							selectedElements,
-							hoveredElement,
-							dragState
-						);
+						this.drawElement(ctx, element, selectedElements, hoveredElement, dragState);
 					});
 
 					// Restore context state
@@ -940,13 +871,7 @@ export class DrawingCore {
 		} else {
 			// Fallback to simple rendering without layer properties
 			elements.forEach((element) => {
-				this.drawElement(
-					ctx,
-					element,
-					selectedElements,
-					hoveredElement,
-					dragState
-				);
+				this.drawElement(ctx, element, selectedElements, hoveredElement, dragState);
 			});
 		}
 
@@ -956,11 +881,7 @@ export class DrawingCore {
 			ctx.save();
 
 			// Apply layer properties to current element if it has a layer
-			if (
-				currentElement.layerId &&
-				layers &&
-				layers.has(currentElement.layerId)
-			) {
+			if (currentElement.layerId && layers && layers.has(currentElement.layerId)) {
 				const layerProps = layers.get(currentElement.layerId);
 				if (!layerProps) {
 					ctx.restore();
@@ -972,13 +893,7 @@ export class DrawingCore {
 				ctx.globalCompositeOperation = "source-over";
 			}
 
-			this.drawElement(
-				ctx,
-				currentElement,
-				selectedElements,
-				hoveredElement,
-				dragState
-			);
+			this.drawElement(ctx, currentElement, selectedElements, hoveredElement, dragState);
 
 			// Restore context state
 			ctx.restore();
@@ -993,16 +908,10 @@ export class DrawingCore {
 			.map(() => new Array(media.width).fill(0));
 
 		elements.forEach((element) => {
-			const value =
-				element.type === "line" ? 1 : element.type === "area" ? 2 : 3;
+			const value = element.type === "line" ? 1 : element.type === "area" ? 2 : 3;
 
 			if (element.type === "line" && element.points.length >= 2) {
-				this.#drawLineInMatrix(
-					matrix,
-					element.points[0],
-					element.points[1],
-					value
-				);
+				this.#drawLineInMatrix(matrix, element.points[0], element.points[1], value);
 			} else if (element.type === "area" && element.points.length >= 3) {
 				this.#fillPolygonInMatrix(matrix, element.points, value);
 			} else if (element.type === "curve" && element.points.length >= 3) {
@@ -1030,8 +939,7 @@ export class DrawingCore {
 				const centerX = element.points[0].x;
 				const centerY = element.points[0].y;
 				const radius = Math.sqrt(
-					(element.points[1].x - centerX) ** 2 +
-						(element.points[1].y - centerY) ** 2
+					(element.points[1].x - centerX) ** 2 + (element.points[1].y - centerY) ** 2
 				);
 
 				const minX = Math.max(0, Math.floor(centerX - radius));
@@ -1058,12 +966,7 @@ export class DrawingCore {
 		};
 	}
 
-	#drawLineInMatrix(
-		matrix: number[][],
-		start: Point,
-		end: Point,
-		value: number
-	): void {
+	#drawLineInMatrix(matrix: number[][], start: Point, end: Point, value: number): void {
 		const { media } = this.#config.resolution;
 
 		const x0 = Math.round(start.x);
@@ -1099,19 +1002,12 @@ export class DrawingCore {
 		}
 	}
 
-	#fillPolygonInMatrix(
-		matrix: number[][],
-		points: Point[],
-		value: number
-	): void {
+	#fillPolygonInMatrix(matrix: number[][], points: Point[], value: number): void {
 		if (points.length < 3) return;
 		const { media } = this.#config.resolution;
 
 		const minY = Math.max(0, Math.floor(Math.min(...points.map((p) => p.y))));
-		const maxY = Math.min(
-			media.height - 1,
-			Math.ceil(Math.max(...points.map((p) => p.y)))
-		);
+		const maxY = Math.min(media.height - 1, Math.ceil(Math.max(...points.map((p) => p.y))));
 
 		for (let y = minY; y <= maxY; y++) {
 			const intersections: number[] = [];
@@ -1131,10 +1027,7 @@ export class DrawingCore {
 			for (let i = 0; i < intersections.length; i += 2) {
 				if (i + 1 < intersections.length) {
 					const startX = Math.max(0, Math.ceil(intersections[i]));
-					const endX = Math.min(
-						media.width - 1,
-						Math.floor(intersections[i + 1])
-					);
+					const endX = Math.min(media.width - 1, Math.floor(intersections[i + 1]));
 
 					for (let x = startX; x <= endX; x++) {
 						matrix[y][x] = value;
@@ -1166,15 +1059,9 @@ export class DrawingCore {
 		}
 	}
 
-	#calculatePerpendicularLine(
-		point: Point,
-		vector: Point,
-		length: number
-	): [Point, Point] {
+	#calculatePerpendicularLine(point: Point, vector: Point, length: number): [Point, Point] {
 		const perpendicularVector = { x: -vector.y, y: vector.x };
-		const magnitude = Math.sqrt(
-			perpendicularVector.x ** 2 + perpendicularVector.y ** 2
-		);
+		const magnitude = Math.sqrt(perpendicularVector.x ** 2 + perpendicularVector.y ** 2);
 		if (magnitude === 0) {
 			// Handle zero-length vector case, default to a horizontal line
 			return [
@@ -1203,13 +1090,8 @@ export class DrawingCore {
 	 * Generate detection lines for an element (entry and exit lines perpendicular to the element)
 	 * Public method for external access (e.g., when layer type changes)
 	 */
-	updateDetectionLines(
-		element: DrawingElement
-	): { entry: Point[]; exit: Point[] } | undefined {
-		if (
-			(element.type !== "line" && element.type !== "curve") ||
-			element.points.length < 2
-		) {
+	updateDetectionLines(element: DrawingElement): { entry: Point[]; exit: Point[] } | undefined {
+		if ((element.type !== "line" && element.type !== "curve") || element.points.length < 2) {
 			return undefined;
 		}
 
@@ -1221,23 +1103,14 @@ export class DrawingCore {
 		};
 
 		// For a 2-point line, the exit vector is the same as the entry vector.
-		const exitVectorSourceIndex =
-			element.points.length > 2 ? element.points.length - 2 : 0;
+		const exitVectorSourceIndex = element.points.length > 2 ? element.points.length - 2 : 0;
 		const exitVector = {
 			x: exitPoint.x - element.points[exitVectorSourceIndex].x,
 			y: exitPoint.y - element.points[exitVectorSourceIndex].y,
 		};
 
-		const entryLine = this.#calculatePerpendicularLine(
-			entryPoint,
-			entryVector,
-			40
-		);
-		const exitLine = this.#calculatePerpendicularLine(
-			exitPoint,
-			exitVector,
-			40
-		);
+		const entryLine = this.#calculatePerpendicularLine(entryPoint, entryVector, 40);
+		const exitLine = this.#calculatePerpendicularLine(exitPoint, exitVector, 40);
 
 		return {
 			entry: entryLine,
@@ -1276,9 +1149,7 @@ export class DrawingCore {
 		}
 
 		if (snapshotWidth <= 0 || snapshotHeight <= 0) {
-			throw new Error(
-				`Invalid snapshot dimensions: ${snapshotWidth}x${snapshotHeight}`
-			);
+			throw new Error(`Invalid snapshot dimensions: ${snapshotWidth}x${snapshotHeight}`);
 		}
 
 		// Create a temporary canvas for the snapshot
@@ -1293,9 +1164,7 @@ export class DrawingCore {
 
 		// Configure context
 		ctx.imageSmoothingEnabled = this.#config.rendering.antiAlias;
-		ctx.imageSmoothingQuality = this.#config.rendering.antiAlias
-			? "high"
-			: "low";
+		ctx.imageSmoothingQuality = this.#config.rendering.antiAlias ? "high" : "low";
 
 		// Draw the media (video frame or image) first
 		ctx.drawImage(media, 0, 0, snapshotWidth, snapshotHeight);
@@ -1340,8 +1209,7 @@ export class DrawingCore {
 			Array.from(layers.entries())
 				.sort(
 					([, a], [, b]) =>
-						(a as { zIndex?: number }).zIndex ||
-						0 - ((b as { zIndex?: number }).zIndex || 0)
+						(a as { zIndex?: number }).zIndex || 0 - ((b as { zIndex?: number }).zIndex || 0)
 				)
 				.forEach(([layerId, layerProps]) => {
 					const layerElements = elementsByLayer.get(layerId);
@@ -1381,9 +1249,7 @@ export class DrawingCore {
 				);
 			} catch (error) {
 				reject(
-					new Error(
-						`toBlob failed: ${error instanceof Error ? error.message : String(error)}`
-					)
+					new Error(`toBlob failed: ${error instanceof Error ? error.message : String(error)}`)
 				);
 			}
 		});
@@ -1416,9 +1282,7 @@ export class DrawingCore {
 		const snapshotHeight = target.height;
 
 		if (snapshotWidth <= 0 || snapshotHeight <= 0) {
-			throw new Error(
-				`Invalid target resolution: ${snapshotWidth}x${snapshotHeight}`
-			);
+			throw new Error(`Invalid target resolution: ${snapshotWidth}x${snapshotHeight}`);
 		}
 
 		// Create a temporary canvas for the snapshot at target resolution
@@ -1433,9 +1297,7 @@ export class DrawingCore {
 
 		// Configure context
 		ctx.imageSmoothingEnabled = this.#config.rendering.antiAlias;
-		ctx.imageSmoothingQuality = this.#config.rendering.antiAlias
-			? "high"
-			: "low";
+		ctx.imageSmoothingQuality = this.#config.rendering.antiAlias ? "high" : "low";
 
 		// Try to draw the media (video frame or image) first at target resolution
 		let mediaDrawn = false;
@@ -1481,8 +1343,7 @@ export class DrawingCore {
 			Array.from(layers.entries())
 				.sort(
 					([, a], [, b]) =>
-						(a as { zIndex?: number }).zIndex ||
-						0 - ((b as { zIndex?: number }).zIndex || 0)
+						(a as { zIndex?: number }).zIndex || 0 - ((b as { zIndex?: number }).zIndex || 0)
 				)
 				.forEach(([layerId, layerProps]) => {
 					const layerElements = elementsByLayer.get(layerId);
@@ -1522,16 +1383,11 @@ export class DrawingCore {
 	 * Similar to drawElement but uses mediaToTargetCoords instead of mediaToDisplayCoords.
 	 * Does not draw selection highlights or drag handles (for clean snapshot output).
 	 */
-	#drawElementAtTargetResolution(
-		ctx: CanvasRenderingContext2D,
-		element: DrawingElement
-	): void {
+	#drawElementAtTargetResolution(ctx: CanvasRenderingContext2D, element: DrawingElement): void {
 		if (element.points.length === 0) return;
 
 		// Convert points from media coordinates to target coordinates
-		const targetPoints = element.points.map((point) =>
-			this.mediaToTargetCoords(point)
-		);
+		const targetPoints = element.points.map((point) => this.mediaToTargetCoords(point));
 
 		ctx.strokeStyle = element.color;
 		ctx.lineWidth = this.#config.rendering.defaultLineWidth;
@@ -1567,10 +1423,7 @@ export class DrawingCore {
 						const p0 = i > 0 ? targetPoints[i - 1] : targetPoints[i];
 						const p1 = targetPoints[i];
 						const p2 = targetPoints[i + 1];
-						const p3 =
-							i < targetPoints.length - 2
-								? targetPoints[i + 2]
-								: targetPoints[i + 1];
+						const p3 = i < targetPoints.length - 2 ? targetPoints[i + 2] : targetPoints[i + 1];
 
 						for (let t = 0.1; t <= 1; t += 0.1) {
 							const point = this.catmullRomSpline(p0, p1, p2, p3, t);
@@ -1608,18 +1461,13 @@ export class DrawingCore {
 
 		// Draw detection lines (only for elements with detection data)
 		// Detection exists only on DETECTION and NEAR_MISS layer elements
-		if (
-			element.detection &&
-			(element.type === "line" || element.type === "curve")
-		) {
+		if (element.detection && (element.type === "line" || element.type === "curve")) {
 			ctx.save();
 			ctx.strokeStyle = element.color;
 			ctx.lineWidth = 1;
 			ctx.setLineDash([5, 5]);
 
-			const entry = element.detection.entry.map((p) =>
-				this.mediaToTargetCoords(p)
-			);
+			const entry = element.detection.entry.map((p) => this.mediaToTargetCoords(p));
 			if (entry.length === 2) {
 				ctx.beginPath();
 				ctx.moveTo(entry[0].x, entry[0].y);
@@ -1627,9 +1475,7 @@ export class DrawingCore {
 				ctx.stroke();
 			}
 
-			const exit = element.detection.exit.map((p) =>
-				this.mediaToTargetCoords(p)
-			);
+			const exit = element.detection.exit.map((p) => this.mediaToTargetCoords(p));
 			if (exit.length === 2) {
 				ctx.beginPath();
 				ctx.moveTo(exit[0].x, exit[0].y);
@@ -1670,21 +1516,13 @@ export class DrawingCore {
 					} else {
 						const t = 0.75;
 						arrowPoint = {
-							x:
-								targetPoints[0].x + (targetPoints[1].x - targetPoints[0].x) * t,
-							y:
-								targetPoints[0].y + (targetPoints[1].y - targetPoints[0].y) * t,
+							x: targetPoints[0].x + (targetPoints[1].x - targetPoints[0].x) * t,
+							y: targetPoints[0].y + (targetPoints[1].y - targetPoints[0].y) * t,
 						};
 					}
 				}
 
-				this.drawArrow(
-					ctx,
-					arrowPoint,
-					targetEnd,
-					element.color,
-					this.#config.rendering.arrowSize
-				);
+				this.drawArrow(ctx, arrowPoint, targetEnd, element.color, this.#config.rendering.arrowSize);
 			}
 		}
 
@@ -1717,10 +1555,9 @@ export class DrawingCore {
 
 		// Draw handles for detection points (only for elements with detection data)
 		if (element.detection) {
-			const allDetectionPoints = [
-				...element.detection.entry,
-				...element.detection.exit,
-			].map((p) => this.mediaToTargetCoords(p));
+			const allDetectionPoints = [...element.detection.entry, ...element.detection.exit].map((p) =>
+				this.mediaToTargetCoords(p)
+			);
 
 			allDetectionPoints.forEach((point) => {
 				const size = 8;
@@ -1763,10 +1600,8 @@ export class DrawingCore {
 		} else if (element.type === "circle" && targetPoints.length >= 2) {
 			textPoint = targetPoints[0];
 		} else if (element.type === "area" && targetPoints.length >= 3) {
-			const centroidX =
-				targetPoints.reduce((sum, p) => sum + p.x, 0) / targetPoints.length;
-			const centroidY =
-				targetPoints.reduce((sum, p) => sum + p.y, 0) / targetPoints.length;
+			const centroidX = targetPoints.reduce((sum, p) => sum + p.x, 0) / targetPoints.length;
+			const centroidY = targetPoints.reduce((sum, p) => sum + p.y, 0) / targetPoints.length;
 			textPoint = { x: centroidX, y: centroidY };
 		} else {
 			const midIndex = Math.floor(targetPoints.length / 2);
@@ -1781,8 +1616,7 @@ export class DrawingCore {
 		}
 
 		const fontSize = textData.fontSize || this.#config.text.defaultFontSize;
-		const fontFamily =
-			textData.fontFamily || this.#config.text.defaultFontFamily;
+		const fontFamily = textData.fontFamily || this.#config.text.defaultFontFamily;
 
 		ctx.font = `${fontSize}px ${fontFamily}`;
 		ctx.textAlign = "center";
@@ -1797,8 +1631,7 @@ export class DrawingCore {
 			const previousAlpha = ctx.globalAlpha;
 			ctx.fillStyle = textData.backgroundColor;
 			ctx.globalAlpha =
-				(textData.backgroundOpacity ??
-					this.#config.text.defaultBackgroundOpacity) * previousAlpha;
+				(textData.backgroundOpacity ?? this.#config.text.defaultBackgroundOpacity) * previousAlpha;
 			ctx.fillRect(
 				textPoint.x - textWidth / 2 - 4,
 				textPoint.y - textHeight / 2 - 2,

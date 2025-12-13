@@ -8,9 +8,7 @@ import { ModuleAction } from "./actions";
 export const columns: ColumnDef<Module>[] = [
 	{
 		accessorKey: "name",
-		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title="Módulo" />
-		),
+		header: ({ column }) => <DataTableColumnHeader column={column} title="Módulo" />,
 		cell: ({ row }) => (
 			<Link
 				to="/settings/modules/$moduleId"
@@ -23,23 +21,17 @@ export const columns: ColumnDef<Module>[] = [
 	},
 	{
 		accessorKey: "description",
-		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title="Descripción" />
-		),
+		header: ({ column }) => <DataTableColumnHeader column={column} title="Descripción" />,
 		cell: ({ row }) => <span>{row.original.description}</span>,
 	},
 	{
 		accessorKey: "active",
-		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title="Activo" />
-		),
+		header: ({ column }) => <DataTableColumnHeader column={column} title="Activo" />,
 		cell: ({ row }) => <span>{row.original.active ? "Sí" : "No"}</span>,
 	},
 	{
 		accessorKey: "permissions",
-		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title="Permisos" />
-		),
+		header: ({ column }) => <DataTableColumnHeader column={column} title="Permisos" />,
 		cell: ({ row }) => <span>{(row.original.permissions ?? []).length}</span>,
 	},
 	{

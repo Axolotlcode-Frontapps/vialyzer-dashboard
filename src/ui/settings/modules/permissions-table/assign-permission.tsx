@@ -41,15 +41,10 @@ export function AssignPermission({
 
 	const handleToggle = () => {
 		if (permission.assigned) {
-			const updatedPermissions = permissionsIds?.filter(
-				(id) => id !== permission.id
-			);
+			const updatedPermissions = permissionsIds?.filter((id) => id !== permission.id);
 			updatePermissionsMutation.mutate(updatedPermissions || []);
 		} else {
-			updatePermissionsMutation.mutate([
-				...(permissionsIds ?? []),
-				permission.id,
-			]);
+			updatePermissionsMutation.mutate([...(permissionsIds ?? []), permission.id]);
 		}
 	};
 
@@ -58,15 +53,8 @@ export function AssignPermission({
 	}
 
 	return (
-		<Label
-			htmlFor={`switch-${permission.id}`}
-			className="flex items-center gap-2 w-[150px]"
-		>
-			<Switch
-				id={`switch-${permission.id}`}
-				checked={permission.assigned}
-				onClick={handleToggle}
-			/>
+		<Label htmlFor={`switch-${permission.id}`} className="flex items-center gap-2 w-[150px]">
+			<Switch id={`switch-${permission.id}`} checked={permission.assigned} onClick={handleToggle} />
 			{updatePermissionsMutation.isPending ? <Spinner /> : null}
 			{permission.assigned ? "Asignado" : "No asignado"}
 		</Label>

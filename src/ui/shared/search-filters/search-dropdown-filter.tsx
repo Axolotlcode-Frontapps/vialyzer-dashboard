@@ -40,16 +40,11 @@ export function SearchDropdownFilter({
 			<DropdownMenuContent align="end">
 				{mode === "multiple" &&
 					options?.map((option) => (
-						<DropdownMenuCheckboxItem key={option.value}>
-							{option.label}
-						</DropdownMenuCheckboxItem>
+						<DropdownMenuCheckboxItem key={option.value}>{option.label}</DropdownMenuCheckboxItem>
 					))}
 
 				{mode === "single" && (
-					<DropdownMenuRadioGroup
-						value={field.state.value}
-						onValueChange={field.handleChange}
-					>
+					<DropdownMenuRadioGroup value={field.state.value} onValueChange={field.handleChange}>
 						{options?.map((option) => (
 							<DropdownMenuRadioItem value={option.value} key={option.value}>
 								{option.label}

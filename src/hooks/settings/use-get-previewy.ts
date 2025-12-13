@@ -16,15 +16,7 @@ interface UseGetScenarioLinesReturn {
 export function useGetPreview(): UseGetScenarioLinesReturn {
 	const { camera } = Route.useParams();
 
-	const {
-		data,
-		isLoading,
-		isRefetching,
-		isFetching,
-		isPending,
-		error,
-		refetch,
-	} = useQuery({
+	const { data, isLoading, isRefetching, isFetching, isPending, error, refetch } = useQuery({
 		queryKey: ["scenario-line-camera", camera],
 		queryFn: async () => settings.preview(camera),
 		refetchOnWindowFocus: false,

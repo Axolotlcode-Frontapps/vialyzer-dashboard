@@ -46,10 +46,7 @@ export function useRemoveScenarioLine() {
 						);
 					}
 
-					const removed = await settings.removeDatasource(
-						{ id: source.id },
-						{ id: camera }
-					);
+					const removed = await settings.removeDatasource({ id: source.id }, { id: camera });
 
 					return { first, second, source: removed };
 				})
@@ -61,9 +58,7 @@ export function useRemoveScenarioLine() {
 				throw new Error("Error al agregar una o más líneas de escenario");
 			}
 
-			const results = all
-				.filter((item) => item.status === "fulfilled")
-				.map((item) => item.value);
+			const results = all.filter((item) => item.status === "fulfilled").map((item) => item.value);
 
 			return results;
 		},

@@ -51,26 +51,20 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 	const [drawingMode, setDrawingMode] = useState<DrawingMode>(
 		drawingEngine?.drawingMode || "cursor"
 	);
-	const [selectedElements, setSelectedElements] = useState(
-		drawingEngine?.selectedElements || []
-	);
-	const [isMediaLoaded, setIsMediaLoaded] = useState(
-		drawingEngine?.isInitialized || false
-	);
+	const [selectedElements, setSelectedElements] = useState(drawingEngine?.selectedElements || []);
+	const [isMediaLoaded, setIsMediaLoaded] = useState(drawingEngine?.isInitialized || false);
 	const [elements, setElements] = useState(drawingEngine?.elements || []);
 	const [isSaving, setIsSaving] = useState(false);
 	const [hoveredTool, setHoveredTool] = useState<DrawingMode | null>(null);
 	const [unsyncedCount, setUnsyncedCount] = useState(0);
 
 	const handleSave = useCallback(async () => {
-		if (!onSave || !drawingEngine || drawingEngine.elements.length === 0)
-			return;
+		if (!onSave || !drawingEngine || drawingEngine.elements.length === 0) return;
 
 		// Get sync state stats before saving (both elements and layers)
 		const syncStats = drawingEngine.getSyncStateStats();
 		const layerStats = drawingEngine.getLayerSyncStateStats();
-		const unsyncedElementCount =
-			syncStats.new + syncStats.edited + syncStats.deleted;
+		const unsyncedElementCount = syncStats.new + syncStats.edited + syncStats.deleted;
 		const unsyncedLayerCount = layerStats.new + layerStats.edited;
 		const totalUnsyncedCount = unsyncedElementCount + unsyncedLayerCount;
 
@@ -93,22 +87,17 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 
 			const feedbackParts = [];
 			if (syncStats.new > 0) feedbackParts.push(`${syncStats.new} nuevos`);
-			if (syncStats.edited > 0)
-				feedbackParts.push(`${syncStats.edited} editados`);
-			if (syncStats.deleted > 0)
-				feedbackParts.push(`${syncStats.deleted} eliminados`);
-			if (layerStats.new > 0)
-				feedbackParts.push(`${layerStats.new} capas nuevas`);
-			if (layerStats.edited > 0)
-				feedbackParts.push(`${layerStats.edited} capas editadas`);
+			if (syncStats.edited > 0) feedbackParts.push(`${syncStats.edited} editados`);
+			if (syncStats.deleted > 0) feedbackParts.push(`${syncStats.deleted} eliminados`);
+			if (layerStats.new > 0) feedbackParts.push(`${layerStats.new} capas nuevas`);
+			if (layerStats.edited > 0) feedbackParts.push(`${layerStats.edited} capas editadas`);
 
 			drawingEngine.setFeedback(
 				`Guardados ${totalUnsyncedCount} cambio(s) (${feedbackParts.join(", ")})`,
 				3000
 			);
 		} catch (error) {
-			const errorMessage =
-				error instanceof Error ? error.message : "Error desconocido";
+			const errorMessage = error instanceof Error ? error.message : "Error desconocido";
 			drawingEngine.setFeedback(`Error al guardar: ${errorMessage}`, 5000);
 		} finally {
 			setIsSaving(false);
@@ -157,11 +146,7 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 					const stats = drawingEngine.getSyncStateStats();
 					const layerStats = drawingEngine.getLayerSyncStateStats();
 					const newUnsyncedCount =
-						stats.new +
-						stats.edited +
-						stats.deleted +
-						layerStats.new +
-						layerStats.edited;
+						stats.new + stats.edited + stats.deleted + layerStats.new + layerStats.edited;
 
 					setUnsyncedCount(newUnsyncedCount);
 					break;
@@ -195,14 +180,12 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 
 		const targetMode = mode || drawingMode;
 		const messages = {
-			cursor:
-				"Modo Cursor: Arrastra puntos para mover, Doble clic en elementos para agregar texto",
+			cursor: "Modo Cursor: Arrastra puntos para mover, Doble clic en elementos para agregar texto",
 			select:
 				"Modo Selección: Clic para seleccionar, Ctrl+Clic para selección múltiple, Doble clic para agregar texto",
 			erase: "Modo Borrar: Clic en elementos para eliminarlos instantáneamente",
 			line: "Clic y arrastra para dibujar líneas",
-			rectangle:
-				"Clic y arrastra para dibujar rectángulos. Mantén Shift para cuadrados",
+			rectangle: "Clic y arrastra para dibujar rectángulos. Mantén Shift para cuadrados",
 			circle: "Clic y arrastra para dibujar círculos desde el centro",
 			area: "Clic para agregar puntos. Doble clic o presiona Enter para completar",
 			curve:
@@ -217,9 +200,7 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 			<Menubar className="border-0 shadow-none bg-transparent gap-1 p-0">
 				{/* File Menu */}
 				<MenubarMenu>
-					<MenubarTrigger className="px-2.5 py-1.5 text-sm">
-						Archivo
-					</MenubarTrigger>
+					<MenubarTrigger className="px-2.5 py-1.5 text-sm">Archivo</MenubarTrigger>
 					<MenubarContent>
 						{/*<MenubarItem
               onClick={() => drawingEngine?.exportDrawings()}
@@ -264,20 +245,14 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 
 				{/* Drawing Tools */}
 				<MenubarMenu>
-					<MenubarTrigger className="px-2.5 py-1.5 text-sm">
-						Herramientas
-					</MenubarTrigger>
+					<MenubarTrigger className="px-2.5 py-1.5 text-sm">Herramientas</MenubarTrigger>
 					<MenubarContent>
-						<MenubarItem
-							onClick={() => drawingEngine?.setDrawingMode("cursor")}
-						>
+						<MenubarItem onClick={() => drawingEngine?.setDrawingMode("cursor")}>
 							<MousePointer2 className="w-4 h-4" />
 							Modo Cursor
 							<MenubarShortcut>C or 1</MenubarShortcut>
 						</MenubarItem>
-						<MenubarItem
-							onClick={() => drawingEngine?.setDrawingMode("select")}
-						>
+						<MenubarItem onClick={() => drawingEngine?.setDrawingMode("select")}>
 							<Pointer className="w-4 h-4" />
 							Modo Selección
 							<MenubarShortcut>S or 2</MenubarShortcut>
@@ -322,9 +297,7 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 
 				{/* Edit Menu */}
 				<MenubarMenu>
-					<MenubarTrigger className="px-2.5 py-1.5 text-sm">
-						Editar
-					</MenubarTrigger>
+					<MenubarTrigger className="px-2.5 py-1.5 text-sm">Editar</MenubarTrigger>
 					<MenubarContent>
 						<MenubarItem
 							onClick={() => drawingEngine?.undoLast()}
@@ -348,27 +321,20 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 							disabled={!isMediaLoaded || selectedElements.length === 0}
 						>
 							<Copy className="w-4 h-4" />
-							Copiar ({selectedElements.length})
-							<MenubarShortcut>Ctrl+C</MenubarShortcut>
+							Copiar ({selectedElements.length})<MenubarShortcut>Ctrl+C</MenubarShortcut>
 						</MenubarItem>
 						<MenubarItem
 							onClick={() => drawingEngine?.cutSelectedElements()}
 							disabled={!isMediaLoaded || selectedElements.length === 0}
 						>
 							<Scissors className="w-4 h-4" />
-							Cortar ({selectedElements.length})
-							<MenubarShortcut>Ctrl+X</MenubarShortcut>
+							Cortar ({selectedElements.length})<MenubarShortcut>Ctrl+X</MenubarShortcut>
 						</MenubarItem>
 						<MenubarItem
 							onClick={() => drawingEngine?.pasteElements()}
-							disabled={
-								!isMediaLoaded || !drawingEngine?.hasClipboardContent?.()
-							}
+							disabled={!isMediaLoaded || !drawingEngine?.hasClipboardContent?.()}
 						>
-							<Copy
-								className="w-4 h-4"
-								style={{ transform: "rotate(180deg)" }}
-							/>
+							<Copy className="w-4 h-4" style={{ transform: "rotate(180deg)" }} />
 							Pegar
 							<MenubarShortcut>Ctrl+V</MenubarShortcut>
 						</MenubarItem>
@@ -377,8 +343,7 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 							disabled={!isMediaLoaded || selectedElements.length === 0}
 						>
 							<Copy className="w-4 h-4" />
-							Duplicar ({selectedElements.length})
-							<MenubarShortcut>Ctrl+D</MenubarShortcut>
+							Duplicar ({selectedElements.length})<MenubarShortcut>Ctrl+D</MenubarShortcut>
 						</MenubarItem>
 						<MenubarSeparator />
 						<MenubarItem
@@ -521,9 +486,7 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 
 				{/* Actions Menu */}
 				<MenubarMenu>
-					<MenubarTrigger className="px-2.5 py-1.5 text-sm">
-						Acciones
-					</MenubarTrigger>
+					<MenubarTrigger className="px-2.5 py-1.5 text-sm">Acciones</MenubarTrigger>
 					<MenubarContent>
 						<MenubarItem
 							onClick={() => drawingEngine?.addText()}
@@ -698,11 +661,7 @@ export function Controls({ drawingEngine, onSave }: ControlsProps) {
 						disabled={!isMediaLoaded || isSaving || unsyncedCount === 0}
 						title={isSaving ? "Guardando..." : "Guardar elementos (Ctrl+S)"}
 					>
-						{isSaving ? (
-							<Loader2 className="size-4 animate-spin" />
-						) : (
-							<Save className="size-4" />
-						)}
+						{isSaving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
 					</Button>
 				)}
 			</div>

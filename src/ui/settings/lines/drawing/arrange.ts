@@ -1,12 +1,7 @@
 import type { DrawingConfig } from "./config";
 import type { DrawingLayers } from "./layers";
 import type { DrawingState } from "./state";
-import type {
-	AlignmentType,
-	DrawingElement,
-	Point,
-	StateChangeEvent,
-} from "./types";
+import type { AlignmentType, DrawingElement, Point, StateChangeEvent } from "./types";
 
 /**
  * Arrangement operation types
@@ -97,11 +92,7 @@ export class DrawingArrange {
 	// 	vertical: number[];
 	// } = { horizontal: [], vertical: [] };
 
-	constructor(
-		config: DrawingConfig,
-		layers: DrawingLayers,
-		state: DrawingState
-	) {
+	constructor(config: DrawingConfig, layers: DrawingLayers, state: DrawingState) {
 		this.#config = config;
 		this.#layers = layers;
 		this.#state = state;
@@ -126,9 +117,7 @@ export class DrawingArrange {
 		}
 
 		const groupId = this.#generateGroupId();
-		const groupElements = elements.filter((el) =>
-			selectedElements.includes(el.id)
-		);
+		const groupElements = elements.filter((el) => selectedElements.includes(el.id));
 		const bounds = this.#calculateGroupBounds(groupElements);
 
 		// Create group info
@@ -159,11 +148,7 @@ export class DrawingArrange {
 		if (this.#layers) {
 			const activeLayer = this.#layers.getActiveLayer();
 			if (activeLayer) {
-				this.#layers.moveElementsToLayer(
-					selectedElements,
-					activeLayer.id,
-					updatedElements
-				);
+				this.#layers.moveElementsToLayer(selectedElements, activeLayer.id, updatedElements);
 			}
 		}
 
@@ -204,9 +189,7 @@ export class DrawingArrange {
 
 		// Filter elements to only include those in the target layer
 		const layerElements = elements.filter(
-			(el) =>
-				selectedElements.includes(el.id) &&
-				(el.layerId === targetLayerId || !el.layerId)
+			(el) => selectedElements.includes(el.id) && (el.layerId === targetLayerId || !el.layerId)
 		);
 
 		if (layerElements.length < 2) {
@@ -229,13 +212,8 @@ export class DrawingArrange {
 	/**
 	 * Ungroup selected elements
 	 */
-	ungroupElements(
-		selectedElements: string[],
-		elements: DrawingElement[]
-	): ArrangementResult {
-		const groupedElements = elements.filter(
-			(el) => selectedElements.includes(el.id) && el.groupId
-		);
+	ungroupElements(selectedElements: string[], elements: DrawingElement[]): ArrangementResult {
+		const groupedElements = elements.filter((el) => selectedElements.includes(el.id) && el.groupId);
 
 		if (groupedElements.length === 0) {
 			return {
@@ -247,9 +225,7 @@ export class DrawingArrange {
 			};
 		}
 
-		const groupIds = new Set(
-			groupedElements.map((el) => el.groupId).filter(Boolean)
-		);
+		const groupIds = new Set(groupedElements.map((el) => el.groupId).filter(Boolean));
 		const changes: ArrangementResult["changes"] = [];
 
 		// Remove group IDs from elements
@@ -314,11 +290,7 @@ export class DrawingArrange {
 			};
 		}
 
-		const result = this.#layers.moveElementsToLayer(
-			groupInfo.elementIds,
-			targetLayerId,
-			elements
-		);
+		const result = this.#layers.moveElementsToLayer(groupInfo.elementIds, targetLayerId, elements);
 
 		if (result.success) {
 			return {
@@ -358,9 +330,7 @@ export class DrawingArrange {
 			};
 		}
 
-		const selectedEls = elements.filter((el) =>
-			selectedElements.includes(el.id)
-		);
+		const selectedEls = elements.filter((el) => selectedElements.includes(el.id));
 		const bounds = selectedEls.map((el) => ({
 			element: el,
 			bounds: this.#getElementBounds(el),
@@ -391,11 +361,7 @@ export class DrawingArrange {
 			const elementBounds = this.#getElementBounds(element);
 			if (!elementBounds) return element;
 
-			const offset = this.#calculateAlignmentOffset(
-				elementBounds,
-				alignment,
-				referenceValue
-			);
+			const offset = this.#calculateAlignmentOffset(elementBounds, alignment, referenceValue);
 
 			if (offset.x === 0 && offset.y === 0) return element;
 
@@ -488,8 +454,7 @@ export class DrawingArrange {
 					`align${alignment.charAt(0).toUpperCase()}${alignment.slice(1)}` as ArrangementOperation,
 				affectedElements: [],
 				changes: [],
-				message:
-					"Select at least 2 visible elements in the same layer to align",
+				message: "Select at least 2 visible elements in the same layer to align",
 			};
 		}
 
@@ -512,19 +477,14 @@ export class DrawingArrange {
 		if (selectedElements.length < 3) {
 			return {
 				success: false,
-				operation:
-					direction === "horizontal"
-						? "distributeHorizontally"
-						: "distributeVertically",
+				operation: direction === "horizontal" ? "distributeHorizontally" : "distributeVertically",
 				affectedElements: [],
 				changes: [],
 				message: "Select at least 3 elements to distribute",
 			};
 		}
 
-		const selectedEls = elements.filter((el) =>
-			selectedElements.includes(el.id)
-		);
+		const selectedEls = elements.filter((el) => selectedElements.includes(el.id));
 		const boundsArray = selectedEls
 			.map((el) => ({
 				element: el,
@@ -535,10 +495,7 @@ export class DrawingArrange {
 		if (boundsArray.length < 3) {
 			return {
 				success: false,
-				operation:
-					direction === "horizontal"
-						? "distributeHorizontally"
-						: "distributeVertically",
+				operation: direction === "horizontal" ? "distributeHorizontally" : "distributeVertically",
 				affectedElements: [],
 				changes: [],
 				message: "Need at least 3 valid elements to distribute",
@@ -560,24 +517,16 @@ export class DrawingArrange {
 		const first = boundsArray[0];
 		const last = boundsArray[boundsArray.length - 1];
 		const totalDistance = isHorizontal
-			? (last.bounds as ElementBounds).centerX -
-				(first.bounds as ElementBounds).centerX
-			: (last.bounds as ElementBounds).centerY -
-				(first.bounds as ElementBounds).centerY;
+			? (last.bounds as ElementBounds).centerX - (first.bounds as ElementBounds).centerX
+			: (last.bounds as ElementBounds).centerY - (first.bounds as ElementBounds).centerY;
 
 		const gaps = boundsArray.length - 1;
 		const gapSize = spacing || totalDistance / gaps;
 
 		const changes: ArrangementResult["changes"] = [];
 		const updatedElements = elements.map((element) => {
-			const boundsIndex = boundsArray.findIndex(
-				(b) => b.element.id === element.id
-			);
-			if (
-				boundsIndex === -1 ||
-				boundsIndex === 0 ||
-				boundsIndex === boundsArray.length - 1
-			) {
+			const boundsIndex = boundsArray.findIndex((b) => b.element.id === element.id);
+			if (boundsIndex === -1 || boundsIndex === 0 || boundsIndex === boundsArray.length - 1) {
 				return element; // Don't move first and last elements
 			}
 
@@ -624,10 +573,7 @@ export class DrawingArrange {
 
 		return {
 			success: true,
-			operation:
-				direction === "horizontal"
-					? "distributeHorizontally"
-					: "distributeVertically",
+			operation: direction === "horizontal" ? "distributeHorizontally" : "distributeVertically",
 			affectedElements: selectedElements,
 			changes,
 			message: `Distributed elements ${direction}ly`,
@@ -645,22 +591,14 @@ export class DrawingArrange {
 		spacing?: number
 	): ArrangementResult {
 		if (!this.#layers) {
-			return this.distributeElements(
-				selectedElements,
-				elements,
-				direction,
-				spacing
-			);
+			return this.distributeElements(selectedElements, elements, direction, spacing);
 		}
 
 		const targetLayerId = layerId || this.#layers.getActiveLayer()?.id;
 		if (!targetLayerId) {
 			return {
 				success: false,
-				operation:
-					direction === "horizontal"
-						? "distributeHorizontally"
-						: "distributeVertically",
+				operation: direction === "horizontal" ? "distributeHorizontally" : "distributeVertically",
 				affectedElements: [],
 				changes: [],
 				message: "No target layer available",
@@ -678,10 +616,7 @@ export class DrawingArrange {
 		if (layerElements.length < 3) {
 			return {
 				success: false,
-				operation:
-					direction === "horizontal"
-						? "distributeHorizontally"
-						: "distributeVertically",
+				operation: direction === "horizontal" ? "distributeHorizontally" : "distributeVertically",
 				affectedElements: [],
 				changes: [],
 				message: "Select at least 3 elements in the same layer to distribute",
@@ -714,9 +649,7 @@ export class DrawingArrange {
 			};
 		}
 
-		const selectedEls = elements.filter((el) =>
-			selectedElements.includes(el.id)
-		);
+		const selectedEls = elements.filter((el) => selectedElements.includes(el.id));
 		const otherEls = elements.filter((el) => !selectedElements.includes(el.id));
 
 		let reorderedElements: DrawingElement[] = [];
@@ -729,16 +662,10 @@ export class DrawingArrange {
 				reorderedElements = [...selectedEls, ...otherEls];
 				break;
 			case "bringForward":
-				reorderedElements = this.#moveElementsForward(
-					elements,
-					selectedElements
-				);
+				reorderedElements = this.#moveElementsForward(elements, selectedElements);
 				break;
 			case "sendBackward":
-				reorderedElements = this.#moveElementsBackward(
-					elements,
-					selectedElements
-				);
+				reorderedElements = this.#moveElementsBackward(elements, selectedElements);
 				break;
 			default:
 				break;
@@ -790,9 +717,7 @@ export class DrawingArrange {
 			return elementLayerId === targetLayerId;
 		});
 
-		const selectedInLayer = layerElements.filter((el) =>
-			selectedElements.includes(el.id)
-		);
+		const selectedInLayer = layerElements.filter((el) => selectedElements.includes(el.id));
 
 		if (selectedInLayer.length === 0) {
 			return {
@@ -837,8 +762,7 @@ export class DrawingArrange {
 		if (selectedElements.length === 0) {
 			return {
 				success: false,
-				operation:
-					direction === "horizontal" ? "flipHorizontal" : "flipVertical",
+				operation: direction === "horizontal" ? "flipHorizontal" : "flipVertical",
 				affectedElements: [],
 				changes: [],
 				message: "No elements selected",
@@ -938,9 +862,7 @@ export class DrawingArrange {
 		}
 
 		const groups = this.getGroupsInLayer(layerId);
-		const groupedElementIds = new Set(
-			groups.flatMap((group) => group.elementIds)
-		);
+		const groupedElementIds = new Set(groups.flatMap((group) => group.elementIds));
 
 		return {
 			totalElements: layer.elementIds.length,
@@ -1028,10 +950,7 @@ export class DrawingArrange {
 		};
 	}
 
-	#calculateAlignmentReference(
-		bounds: ElementBounds[],
-		alignment: AlignmentType
-	): number {
+	#calculateAlignmentReference(bounds: ElementBounds[], alignment: AlignmentType): number {
 		switch (alignment) {
 			case "left":
 				return Math.min(...bounds.map((b) => b.minX));
@@ -1087,10 +1006,7 @@ export class DrawingArrange {
 		return offset;
 	}
 
-	#moveElementsForward(
-		elements: DrawingElement[],
-		selectedElements: string[]
-	): DrawingElement[] {
+	#moveElementsForward(elements: DrawingElement[], selectedElements: string[]): DrawingElement[] {
 		const result = [...elements];
 
 		for (let i = result.length - 2; i >= 0; i--) {
@@ -1104,10 +1020,7 @@ export class DrawingArrange {
 		return result;
 	}
 
-	#moveElementsBackward(
-		elements: DrawingElement[],
-		selectedElements: string[]
-	): DrawingElement[] {
+	#moveElementsBackward(elements: DrawingElement[], selectedElements: string[]): DrawingElement[] {
 		const result = [...elements];
 
 		for (let i = 1; i < result.length; i++) {

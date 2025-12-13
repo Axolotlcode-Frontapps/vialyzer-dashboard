@@ -16,42 +16,26 @@ export const useUsersColumns = () => {
 		return [
 			{
 				accessorKey: "name",
-				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title="Nombre" />
-				),
-				cell: ({ row }) => (
-					<div className="capitalize">{row.getValue("name")}</div>
-				),
+				header: ({ column }) => <DataTableColumnHeader column={column} title="Nombre" />,
+				cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
 			},
 			{
 				accessorKey: "lastname",
-				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title="Apellidos" />
-				),
+				header: ({ column }) => <DataTableColumnHeader column={column} title="Apellidos" />,
 			},
 			{
 				accessorKey: "email",
-				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title="Email" />
-				),
+				header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
 			},
 			{
 				accessorKey: "phone",
-				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title="Teléfono" />
-				),
-				cell: ({ row }) => (
-					<div className="capitalize">{row.getValue("phone") || "-"}</div>
-				),
+				header: ({ column }) => <DataTableColumnHeader column={column} title="Teléfono" />,
+				cell: ({ row }) => <div className="capitalize">{row.getValue("phone") || "-"}</div>,
 			},
 			{
 				accessorKey: "role",
-				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title="Rol" />
-				),
-				cell: ({ row }) => (
-					<Badge className="capitalize">{row.original.role.name}</Badge>
-				),
+				header: ({ column }) => <DataTableColumnHeader column={column} title="Rol" />,
+				cell: ({ row }) => <Badge className="capitalize">{row.original.role.name}</Badge>,
 				sortingFn: (rowA, rowB) => {
 					const roleA = rowA.original.role.name.toLowerCase();
 					const roleB = rowB.original.role.name.toLowerCase();
@@ -63,23 +47,13 @@ export const useUsersColumns = () => {
 			},
 			{
 				accessorKey: "createdAt",
-				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title="Fecha de creación" />
-				),
+				header: ({ column }) => <DataTableColumnHeader column={column} title="Fecha de creación" />,
 				cell: ({ row }) => (
-					<span className="capitalize">
-						{formatDate(row.getValue("createdAt"))}
-					</span>
+					<span className="capitalize">{formatDate(row.getValue("createdAt"))}</span>
 				),
 				sortingFn: (rowA, rowB) => {
-					const valueA = rowA.getValue("createdAt") as
-						| string
-						| null
-						| undefined;
-					const valueB = rowB.getValue("createdAt") as
-						| string
-						| null
-						| undefined;
+					const valueA = rowA.getValue("createdAt") as string | null | undefined;
+					const valueB = rowB.getValue("createdAt") as string | null | undefined;
 
 					if (!valueA && !valueB) return 0;
 					if (!valueA) return 1;
@@ -98,25 +72,14 @@ export const useUsersColumns = () => {
 			{
 				accessorKey: "lastLogin",
 				header: ({ column }) => (
-					<DataTableColumnHeader
-						column={column}
-						title="Fecha de último acceso"
-					/>
+					<DataTableColumnHeader column={column} title="Fecha de último acceso" />
 				),
 				cell: ({ row }) => (
-					<span className="capitalize">
-						{formatDate(row.getValue("lastLogin"))}
-					</span>
+					<span className="capitalize">{formatDate(row.getValue("lastLogin"))}</span>
 				),
 				sortingFn: (rowA, rowB) => {
-					const valueA = rowA.getValue("lastLogin") as
-						| string
-						| null
-						| undefined;
-					const valueB = rowB.getValue("lastLogin") as
-						| string
-						| null
-						| undefined;
+					const valueA = rowA.getValue("lastLogin") as string | null | undefined;
+					const valueB = rowB.getValue("lastLogin") as string | null | undefined;
 
 					if (!valueA && !valueB) return 0;
 					if (!valueA) return 1;
@@ -135,13 +98,9 @@ export const useUsersColumns = () => {
 			},
 			{
 				accessorKey: "active",
-				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title="Activo" />
-				),
+				header: ({ column }) => <DataTableColumnHeader column={column} title="Activo" />,
 				cell: ({ row }) => (
-					<Badge variant="secondary">
-						{row.getValue("active") ? "Sí" : "No"}
-					</Badge>
+					<Badge variant="secondary">{row.getValue("active") ? "Sí" : "No"}</Badge>
 				),
 			},
 			...((!hasAnyMultiplePermissions("users", ["update-user", "delete"])

@@ -33,7 +33,5 @@ export function HasMultiplePermissions({
 	fallback = null,
 }: HasMultiplePermissionsProps) {
 	const { hasMultiplePermissions } = useHasPermission();
-	return hasMultiplePermissions(moduleBase, permissionNames)
-		? children
-		: fallback;
+	return hasMultiplePermissions(moduleBase, permissionNames) ? children : fallback;
 }

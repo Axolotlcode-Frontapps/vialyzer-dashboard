@@ -29,10 +29,7 @@ describe("DrawingBridge", () => {
 					fontFamily: element.info?.fontFamily,
 					backgroundColor: element.info?.backgroundColor,
 					backgroundOpacity: element.info?.backgroundOpacity,
-					coordinates: element.points.map((point) => [
-						Math.floor(point.x),
-						Math.floor(point.y),
-					]),
+					coordinates: element.points.map((point) => [Math.floor(point.x), Math.floor(point.y)]),
 				}),
 				maps_coordinates: () => [19.3048720286, -99.05621509437437],
 				location: () => "zone 1",
@@ -460,9 +457,7 @@ describe("DrawingBridge", () => {
 
 			// Element should have valid data
 			// ID comes from top-level id per the bridge config mapping (id: "id")
-			expect(result.elements[0].id).toBe(
-				"c3d80101-0484-487a-92b0-130c3707b16b"
-			);
+			expect(result.elements[0].id).toBe("c3d80101-0484-487a-92b0-130c3707b16b");
 			expect(result.elements[0].type).toBe("line");
 			expect(result.elements[0].points).toHaveLength(2);
 			expect(result.elements[0].info?.name).toBe("probando refactor engine");
@@ -881,9 +876,7 @@ describe("DrawingBridge", () => {
 			};
 
 			const exported = bridge.exportTarget("default", [element]) as any[];
-			expect(exported[0].maps_coordinates).toEqual([
-				19.3048720286, -99.05621509437437,
-			]);
+			expect(exported[0].maps_coordinates).toEqual([19.3048720286, -99.05621509437437]);
 			expect(exported[0].location).toBe("zone 1");
 			expect(exported[0].visibility).toBe(true);
 			expect(exported[0].allowed_directions).toBe("ANY");
@@ -925,9 +918,7 @@ describe("DrawingBridge", () => {
 				},
 			};
 
-			const exported = bridge.exportTarget("default", [
-				originalElement,
-			]) as any[];
+			const exported = bridge.exportTarget("default", [originalElement]) as any[];
 			const serverFormat = {
 				...exported[0],
 				scenery: {
@@ -987,28 +978,25 @@ describe("DrawingBridge", () => {
 
 	describe("Performance", () => {
 		it("should handle large datasets efficiently", () => {
-			const largeDataset: DrawingElement[] = Array.from(
-				{ length: 1000 },
-				(_, i) => ({
-					id: `element-${i}`,
-					type: "line",
-					points: [
-						{ x: i, y: i },
-						{ x: i + 10, y: i + 10 },
-					],
-					completed: true,
-					color: "#000000",
-					layerId: "layer-1",
-					info: {
-						name: `Element ${i}`,
-						direction: "left",
-						distance: 100,
-						fontSize: 14,
-						fontFamily: "Arial",
-						backgroundOpacity: 0.8,
-					},
-				})
-			);
+			const largeDataset: DrawingElement[] = Array.from({ length: 1000 }, (_, i) => ({
+				id: `element-${i}`,
+				type: "line",
+				points: [
+					{ x: i, y: i },
+					{ x: i + 10, y: i + 10 },
+				],
+				completed: true,
+				color: "#000000",
+				layerId: "layer-1",
+				info: {
+					name: `Element ${i}`,
+					direction: "left",
+					distance: 100,
+					fontSize: 14,
+					fontFamily: "Arial",
+					backgroundOpacity: 0.8,
+				},
+			}));
 
 			const start = performance.now();
 			const exported = bridge.exportTarget("default", largeDataset);

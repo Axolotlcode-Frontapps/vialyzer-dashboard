@@ -8,11 +8,7 @@ export interface HasModuleProps {
 	fallback?: React.ReactNode;
 }
 
-export function HasModule({
-	children,
-	moduleName,
-	fallback = null,
-}: HasModuleProps) {
+export function HasModule({ children, moduleName, fallback = null }: HasModuleProps) {
 	const { hasModule } = useHasModule();
 	return hasModule(moduleName) ? children : fallback;
 }
