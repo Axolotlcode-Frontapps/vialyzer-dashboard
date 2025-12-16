@@ -16,7 +16,11 @@ export function HasPermission({
 	fallback = null,
 }: HasPermissionProps) {
 	const { hasPermission } = useHasPermission();
-	return hasPermission(moduleBase, permissionName) ? children : fallback;
+	return hasPermission(moduleBase, permissionName) ? (
+		children
+	) : (
+		<span className="text-sm">{fallback}</span>
+	);
 }
 
 interface HasMultiplePermissionsProps {
@@ -33,5 +37,24 @@ export function HasMultiplePermissions({
 	fallback = null,
 }: HasMultiplePermissionsProps) {
 	const { hasMultiplePermissions } = useHasPermission();
-	return hasMultiplePermissions(moduleBase, permissionNames) ? children : fallback;
+
+	return hasMultiplePermissions(moduleBase, permissionNames) ? (
+		children
+	) : (
+		<span className="text-sm">{fallback}</span>
+	);
+}
+
+export function HasAnyPermissions({
+	moduleBase,
+	children,
+	permissionNames,
+	fallback = null,
+}: HasMultiplePermissionsProps) {
+	const { hasAnyMultiplePermissions } = useHasPermission();
+	return hasAnyMultiplePermissions(moduleBase, permissionNames) ? (
+		children
+	) : (
+		<span className="text-sm">{fallback}</span>
+	);
 }
