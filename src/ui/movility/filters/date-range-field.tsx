@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { date, dayEnd } from "@formkit/tempo";
+import { date, dayEnd, dayStart, format } from "@formkit/tempo";
 
 import DateRangePicker from "@/ui/shared/date-range-picker";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/ui/shared/field";
@@ -42,10 +42,10 @@ export function DateRangeField({ label, description, endDate, onChooseEndDate }:
 				}}
 				onChoose={(value) => {
 					if (value?.from) {
-						field.handleChange(value.from.toISOString());
+						field.handleChange(format(dayStart(value.from), "YYYY-MM-DDTHH:mm:ssZ"));
 					}
 					if (value?.to) {
-						onChooseEndDate?.(dayEnd(value.to).toISOString());
+						onChooseEndDate?.(format(dayEnd(value.to), "YYYY-MM-DDTHH:mm:ssZ"));
 					}
 				}}
 			/>

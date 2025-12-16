@@ -145,7 +145,7 @@ export function GraphDistribution() {
 									hideLabel
 									formatter={(value, name, item) => {
 										const percentage = Number.parseFloat(`${value}`).toFixed(2);
-										const locale = chartConfig[name].label;
+										const locale = chartConfig[name]?.label ?? name;
 
 										return (
 											<div
