@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { useMemo } from "react";
-import { weekStart } from "@formkit/tempo";
+import { format, weekStart } from "@formkit/tempo";
 
 import type { MovilityCameraFilters, MovilityCameraForm } from "@/lib/schemas/movility";
 
@@ -70,8 +70,8 @@ export const minuteIntervals = [
 
 export const defaultValues: MovilityCameraForm = {
 	camera: "",
-	startDate: weekStart(new Date()).toISOString(),
-	endDate: new Date().toISOString(),
+	startDate: format(weekStart(new Date()), "YYYY-MM-DDTHH:mm:ssZ"),
+	endDate: format(new Date(), "YYYY-MM-DDTHH:mm:ssZ"),
 	year: new Date().getFullYear(),
 	month: new Date().getMonth(),
 	actors: [],
@@ -79,7 +79,7 @@ export const defaultValues: MovilityCameraForm = {
 	dayOfWeek: undefined,
 	hour: undefined,
 	minuteInterval: undefined,
-	date: new Date().toISOString(),
+	date: format(new Date(), "YYYY-MM-DDTHH:mm:ssZ"),
 	startInterval: undefined, //'00:00',
 	endInterval: undefined, // `${new Date().getHours().toString().padStart(2, '0')}:59`,
 };
