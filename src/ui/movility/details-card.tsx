@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { X } from "lucide-react";
 import { useSelectedLocation } from "@/hooks/use-selected-location";
 
-import { formatDate } from "@/lib/utils/date-format";
+// import { formatDate } from "@/lib/utils/date-format";
 import { STATUS } from "@/lib/utils/statuses";
 import { Button, buttonVariants } from "../shared/button";
 
@@ -32,10 +32,10 @@ export function DetailsCard() {
 						{location.volume.toLocaleString()} v/h
 					</span>
 				</span> */}
-				<span>
+				{/*<span>
 					Última actualización:{" "}
 					<span className="font-semibold">{formatDate(location.updatedAt)}</span>
-				</span>
+				</span>*/}
 				<span>
 					Estado:{" "}
 					<span className={`font-semibold ${STATUS[location.state].dot}`}>

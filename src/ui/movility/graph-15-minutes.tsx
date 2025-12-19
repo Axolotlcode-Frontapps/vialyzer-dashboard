@@ -28,7 +28,7 @@ export function Graph15Minutes() {
 	const { initialValues } = useGraphFilters();
 
 	const {
-		data: hourlyGraph,
+		data: hourlyGraph = [],
 		isLoading,
 		isRefetching,
 		isFetching,
@@ -54,19 +54,21 @@ export function Graph15Minutes() {
 
 	const data = useMemo(
 		() =>
-			hourlyGraph?.map((item) => ({
-				hour_of_day: `${item.hour_of_day.toString().padStart(2, "0")}:00`,
-				...item.metadata.reduce(
-					(acc, vehicle) => {
-						const key = vehicle.vehiclename.replaceAll(" ", "_").toLowerCase();
+			hourlyGraph
+				.filter((item) => item.hour_of_day <= new Date().getHours())
+				.map((item) => ({
+					hour_of_day: `${item.hour_of_day.toString().padStart(2, "0")}:00`,
+					...item.metadata.reduce(
+						(acc, vehicle) => {
+							const key = vehicle.vehiclename.replaceAll(" ", "_").toLowerCase();
 
-						acc[key] = vehicle.vol_acumulate;
+							acc[key] = vehicle.vol_acumulate;
 
-						return acc;
-					},
-					{} as Record<string, number>
-				),
-			})) ?? [],
+							return acc;
+						},
+						{} as Record<string, number>
+					),
+				})),
 		[hourlyGraph]
 	);
 

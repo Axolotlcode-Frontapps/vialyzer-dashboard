@@ -147,7 +147,7 @@ function Monitoring() {
 				<div className="monitoring__map">
 					<div className="h-[400px] @5xl/graphs:h-full">
 						<GoogleMapsProvider>
-							<Maps />
+							<Maps heatmap={false} zones={false} />
 						</GoogleMapsProvider>
 					</div>
 				</div>

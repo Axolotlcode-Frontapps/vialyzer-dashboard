@@ -77,7 +77,7 @@ function Mobility() {
 
 				<section className="@container/map flex-1 relative min-h-[600px] rounded-2xl overflow-hidden bg-card flex items-center justify-center shadow-lg">
 					<GoogleMapsProvider>
-						<Maps />
+						<Maps heatmap={false} />
 					</GoogleMapsProvider>
 					<DetailsCard />
 				</section>

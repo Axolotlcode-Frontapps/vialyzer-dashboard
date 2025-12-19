@@ -15,10 +15,14 @@ export function useCameraVehicles(camera: string) {
 		queryKey: ["camera-vehicles"],
 		queryFn: async () => await camerasService.vehicles(camera),
 		select: (data) =>
-			data.payload?.map((item) => ({
-				...item,
-				name: vehiculesTranslate[item.name as keyof typeof vehiculesTranslate] || item.name,
-			})),
+			data.payload?.map((item) => {
+				const key = item.name.replaceAll("_", "").trim() as keyof typeof vehiculesTranslate;
+
+				return {
+					...item,
+					name: vehiculesTranslate[key] || item.name,
+				};
+			}),
 	});
 
 	const loading = useMemo(

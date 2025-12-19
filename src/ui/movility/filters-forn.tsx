@@ -109,7 +109,7 @@ export function FiltersForm() {
 							/>
 						)}
 					</form.Subscribe>
-					<form.AppField
+					{/*<form.AppField
 						name="hour"
 						validators={{
 							onChange: schema.shape.hour,
@@ -125,6 +125,7 @@ export function FiltersForm() {
 							/>
 						)}
 					/>
+          */}
 					<HasPermission
 						moduleBase="vehicles"
 						permissionName="get-all"
@@ -144,10 +145,7 @@ export function FiltersForm() {
 											? []
 											: {
 													value: vehicle.id,
-													label:
-														vehiclesCat?.[
-															vehicle.name.replaceAll(" ", "_") as keyof typeof vehiclesCat
-														] ?? vehicle.name,
+													label: vehicle.name,
 												}
 									)}
 								/>

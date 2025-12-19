@@ -25,7 +25,12 @@ import { ZoneControls } from "@/ui/movility/zone-controls.tsx";
 
 const center = { lat: 3.4516, lng: -76.532 };
 
-export function Maps() {
+interface Props {
+	heatmap?: boolean;
+	zones?: boolean;
+}
+
+export function Maps({ heatmap = true, zones: zonesControls = true }: Props) {
 	const { isLoaded } = useGoogleMaps();
 	const { zones, caliBoundary } = useNeighborhoods();
 	const { onSelect, selectedLocation, selected } = useSelectedLocation();
@@ -145,16 +150,20 @@ export function Maps() {
 		<div className="relative w-full h-full">
 			<div className="absolute top-2 left-2 @sm/map:top-4 @sm/map:left-4 z-50 flex flex-col gap-2">
 				<MapStyleSelector onStyleChange={setMapStyle} currentStyle={mapStyle} />
-				<ZoneControls
-					zones={zones}
-					selectedZone={selectedZone}
-					selectedNeighborhood={selectedNeighborhood?.properties["@id"] || null}
-					showCaliBoundary={showCaliBoundary}
-					onZoneSelect={setSelectedZone}
-					onNeighborhoodSelect={setSelectedNeighborhood}
-					onToggleCaliBoundary={() => setShowCaliBoundary(!showCaliBoundary)}
-				/>
-				<HeatmapControls activeHeatmap={activeHeatmap} onHeatmapChange={setActiveHeatmap} />
+				{zonesControls ? (
+					<ZoneControls
+						zones={zones}
+						selectedZone={selectedZone}
+						selectedNeighborhood={selectedNeighborhood?.properties["@id"] || null}
+						showCaliBoundary={showCaliBoundary}
+						onZoneSelect={setSelectedZone}
+						onNeighborhoodSelect={setSelectedNeighborhood}
+						onToggleCaliBoundary={() => setShowCaliBoundary(!showCaliBoundary)}
+					/>
+				) : null}
+				{heatmap ? (
+					<HeatmapControls activeHeatmap={activeHeatmap} onHeatmapChange={setActiveHeatmap} />
+				) : null}
 			</div>
 			<GoogleMap
 				key={mapStyle}
