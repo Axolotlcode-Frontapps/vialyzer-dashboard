@@ -9,6 +9,7 @@ import type { MovilityCameraFilters, MovilityCameraForm } from "@/lib/schemas/mo
 import { movilitySchemas } from "@/lib/schemas/movility";
 import { Route } from "@/routes/_dashboard/movility/$camera/route";
 import { Card } from "@/ui/shared/card";
+import { HasPermission } from "../shared/permissions/has-permission";
 import { useFiltersForm } from "./filters/hook";
 import {
 	defaultValues,
@@ -123,46 +124,56 @@ export function FiltersForm() {
 								}))}
 							/>
 						)}
-					/>*/}
-					<form.AppField
-						name="actors"
-						validators={{
-							onChange: schema.shape.actors,
-						}}
-						children={(field) => (
-							<field.MultiCheckField
-								label="Actores viales"
-								loading={loadingVehicles}
-								options={vehicles.flatMap((vehicle) =>
-									inVelocity && vehicle.name === "PERSON"
-										? []
-										: {
-												value: vehicle.id,
-												label:
-													vehiclesCat?.[
-														vehicle.name.replaceAll(" ", "_") as keyof typeof vehiclesCat
-													] ?? vehicle.name,
-											}
-								)}
-							/>
-						)}
 					/>
-					<form.AppField
-						name="zones"
-						validators={{
-							onChange: schema.shape.zones,
-						}}
-						children={(field) => (
-							<field.MultiSelectField
-								label="Movimientos"
-								placeholder="Selecciona movimientos"
-								options={scenarios.map((scenario) => ({
-									value: scenario.id,
-									label: scenario.name,
-								}))}
-							/>
-						)}
-					/>
+          */}
+					<HasPermission
+						moduleBase="vehicles"
+						permissionName="get-all"
+						fallback="Permisos insuficientes para seleccionar actores viales"
+					>
+						<form.AppField
+							name="actors"
+							validators={{
+								onChange: schema.shape.actors,
+							}}
+							children={(field) => (
+								<field.MultiCheckField
+									label="Actores viales"
+									loading={loadingVehicles}
+									options={vehicles.flatMap((vehicle) =>
+										inVelocity && vehicle.name === "PERSON"
+											? []
+											: {
+													value: vehicle.id,
+													label: vehicle.name,
+												}
+									)}
+								/>
+							)}
+						/>
+					</HasPermission>
+					<HasPermission
+						moduleBase="scenarios"
+						permissionName="get-all"
+						fallback="Permisos insuficientes para seleccionar movimientos"
+					>
+						<form.AppField
+							name="zones"
+							validators={{
+								onChange: schema.shape.zones,
+							}}
+							children={(field) => (
+								<field.MultiSelectField
+									label="Movimientos"
+									placeholder="Selecciona movimientos"
+									options={scenarios.map((scenario) => ({
+										value: scenario.id,
+										label: scenario.name,
+									}))}
+								/>
+							)}
+						/>
+					</HasPermission>
 				</div>
 				<form.AppForm>
 					<div className="flex items-center justify-end gap-2 flex-wrap">

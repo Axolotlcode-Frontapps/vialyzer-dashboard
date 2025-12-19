@@ -10,5 +10,5 @@ export interface HasRoleProps {
 
 export function HasRole({ children, roleName, fallback = null }: HasRoleProps) {
 	const { hasRole } = useHasRole();
-	return hasRole(roleName) ? children : fallback;
+	return hasRole(roleName) ? children : <span className="text-sm">{fallback}</span>;
 }

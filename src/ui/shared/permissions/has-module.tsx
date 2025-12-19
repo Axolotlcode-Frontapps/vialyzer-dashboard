@@ -10,5 +10,5 @@ export interface HasModuleProps {
 
 export function HasModule({ children, moduleName, fallback = null }: HasModuleProps) {
 	const { hasModule } = useHasModule();
-	return hasModule(moduleName) ? children : fallback;
+	return hasModule(moduleName) ? children : <span className="text-sm">{fallback}</span>;
 }
