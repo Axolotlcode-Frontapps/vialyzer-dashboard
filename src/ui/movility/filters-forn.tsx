@@ -108,7 +108,7 @@ export function FiltersForm() {
 							/>
 						)}
 					</form.Subscribe>
-					<form.AppField
+					{/*<form.AppField
 						name="hour"
 						validators={{
 							onChange: schema.shape.hour,
@@ -123,7 +123,7 @@ export function FiltersForm() {
 								}))}
 							/>
 						)}
-					/>
+					/>*/}
 					<form.AppField
 						name="actors"
 						validators={{

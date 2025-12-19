@@ -14,7 +14,7 @@ import { useGraphFilters } from "./filters/use-graph-filters";
 
 const chartConfig: ChartConfig = {
 	average_speed: {
-		label: "Velocidad total",
+		label: "Velocidad promedio",
 		color: "hsl(var(--chart-car))",
 	},
 };
@@ -84,6 +84,40 @@ export function GraphVehiclesSpeed() {
 		});
 	}, [speedGraph, initialValues.startDate, initialValues.endDate]);
 
+	const stats = useMemo(() => {
+		const max = data.reduce(
+			(acc, { query_date: date, average_speed: total }) => {
+				if (total > acc.total) {
+					return { date, total };
+				}
+				return acc;
+			},
+			{ date: "", total: 0 }
+		);
+		const min = data.reduce(
+			(acc, { query_date: date, average_speed: total }) => {
+				if (total < acc.total) {
+					return { date, total };
+				}
+				return acc;
+			},
+			{ date: "", total: Number.POSITIVE_INFINITY }
+		);
+
+		return [
+			{
+				label: "Día de menor velocidad promedio",
+				content: [min.date, `${min.total.toLocaleString()} km/h`],
+			},
+			{
+				label: "Día de mayor velocidad promedio",
+				content: [max.date, `${max.total.toLocaleString()} km/h`],
+			},
+		];
+	}, [data]);
+
+	console.log({ stats });
+
 	if (loading) {
 		return <Skeleton className="h-[400px]" />;
 	}
@@ -93,6 +127,7 @@ export function GraphVehiclesSpeed() {
 			title="Velocidad promedio por fecha"
 			data={data}
 			config={chartConfig as Record<string, { label: string; color: string }>}
+			stats={stats}
 			axis={axis}
 			formatter={(value, name, item) => {
 				return (
@@ -108,8 +143,8 @@ export function GraphVehiclesSpeed() {
 							)}
 							style={
 								{
-									"--color-bg": item.payload.fill,
-									"--color-border": item.payload.fill,
+									"--color-bg": "hsl(var(--chart-car))",
+									"--color-border": "hsl(var(--chart-car))",
 								} as React.CSSProperties
 							}
 						/>

@@ -95,7 +95,7 @@ export function GraphDistribution() {
 				: distribution?.filter((d) => initialValues.actors?.includes(d.vehicleId))) ?? [];
 
 		return filteredVehicles.map((item) => {
-			const vehicleType = item.vehicleType.replace(" ", "_").toLowerCase();
+			const vehicleType = item.vehicleType.trim().replace(" ", "_").toLowerCase();
 			return {
 				...item,
 				vehicleType,

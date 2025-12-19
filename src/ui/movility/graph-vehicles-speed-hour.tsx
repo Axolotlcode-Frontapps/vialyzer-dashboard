@@ -12,7 +12,7 @@ import { useGraphFilters } from "./filters/use-graph-filters";
 
 const chartConfig: ChartConfig = {
 	average_speed: {
-		label: "Velocidad total",
+		label: "Velocidad promedio",
 		color: "hsl(var(--chart-car))",
 	},
 };
@@ -62,6 +62,7 @@ export function GraphVehiclesSpeedHour() {
 		() =>
 			serverData
 				.sort((a, b) => a.hour_of_day - b.hour_of_day)
+				.filter((item) => item.hour_of_day <= new Date().getHours())
 				.map((item) => ({
 					average_speed: Number.parseFloat(item.average_speed),
 					hour_of_day: `${item.hour_of_day.toString().padStart(2, "0")}:00`,
@@ -75,7 +76,7 @@ export function GraphVehiclesSpeedHour() {
 
 	return (
 		<GraphBar
-			title="Velocidad promedio por hora"
+			title="Velocidad promedio por hora motorizados"
 			data={data}
 			config={chartConfig as Record<string, { label: string; color: string }>}
 			axis={axis}
@@ -94,8 +95,8 @@ export function GraphVehiclesSpeedHour() {
 							)}
 							style={
 								{
-									"--color-bg": item.payload.fill,
-									"--color-border": item.payload.fill,
+									"--color-bg": "hsl(var(--chart-car))",
+									"--color-border": "hsl(var(--chart-car))",
 								} as React.CSSProperties
 							}
 						/>

@@ -37,7 +37,7 @@ export function GraphAverageSpeed() {
 	return (
 		<Card className="flex w-full @md/velocity:max-w-[calc(30%_-_1.25rem)] @4xl/velocity:max-w-none border-0 rounded-lg @container/graph-velocity">
 			<CardHeader className="items-center pb-0 min-w-max">
-				<CardTitle>Velocidad promedio</CardTitle>
+				<CardTitle>Velocidad promedio motorizados</CardTitle>
 			</CardHeader>
 			<CardContent className="flex-1 pb-0 content-center">
 				<p className="flex flex-wrap justify-center items-center gap-3 text-3xl font-bold flex-1 content-center text-center @xs/graph-velocity:text-5xl">

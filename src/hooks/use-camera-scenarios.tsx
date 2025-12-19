@@ -15,7 +15,9 @@ export function useCameraScenarios(camera: string) {
 		queryFn: async () => await camerasService.scenarios(camera),
 		select: (data) =>
 			data.payload
-				?.filter((scenario) => !scenario.name.includes("- Salida"))
+				?.filter(
+					(scenario) => !scenario.name.includes("- Salida") && scenario.type !== "CONFIGURATION"
+				)
 				.map((scenario) => {
 					scenario.name = scenario.name.replace("- Entrada", "").trim();
 					return scenario;
