@@ -42,15 +42,15 @@ function ModulePermisions() {
 							<Skeleton className="h-7 w-48 inline-block ml-1.5" />
 						</Activity>
 					</h2>
-					<p className="flex items-center gap-2">
-						Total de permisos asignados:
+					<div className="flex items-center gap-2">
+						<span>Total de permisos asignados:</span>
 						<Activity mode={isLoadingModule ? "hidden" : "visible"}>
 							<span className="ml-1">{moduleData?.permissions.length}</span>
 						</Activity>
 						<Activity mode={!isLoadingModule ? "hidden" : "visible"}>
 							<Skeleton className="h-6 w-10 inline-block ml-1.5" />
 						</Activity>
-					</p>
+					</div>
 				</div>
 			</div>
 			<PermissionsTable moduleData={moduleData!} isLoadingModule={isLoadingModule || isPending} />

@@ -10,6 +10,7 @@ export type VehicleType =
 
 interface Agent {
 	id: string;
+	user?: User;
 	userId: string;
 	identification: string;
 	secondName: string;

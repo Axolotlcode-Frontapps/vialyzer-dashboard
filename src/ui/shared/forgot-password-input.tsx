@@ -27,32 +27,30 @@ export function ForgotPasswordInput({
 	const [showPassword, setShowPassword] = useState(false);
 
 	return (
-		<>
-			<Field data-invalid={isInvalid}>
-				<FieldLabel htmlFor={name}>{label}</FieldLabel>
-				<InputGroup>
-					<InputGroupInput
-						type={showPassword ? "text" : "password"}
-						placeholder={placeholder ?? "Contraseña"}
-						value={value}
-						onBlur={handleBlur}
-						onChange={(e) => handleChange(e.target.value)}
-					/>
-					<InputGroupAddon align="inline-end">
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<InputGroupButton onClick={() => setShowPassword(!showPassword)}>
-									{showPassword ? <Eye /> : <EyeClosed />}
-								</InputGroupButton>
-							</TooltipTrigger>
-							<TooltipContent>
-								<p>{showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}</p>
-							</TooltipContent>
-						</Tooltip>
-					</InputGroupAddon>
-				</InputGroup>
-			</Field>
+		<Field data-invalid={isInvalid}>
+			<FieldLabel htmlFor={name}>{label}</FieldLabel>
+			<InputGroup>
+				<InputGroupInput
+					type={showPassword ? "text" : "password"}
+					placeholder={placeholder ?? "Contraseña"}
+					value={value}
+					onBlur={handleBlur}
+					onChange={(e) => handleChange(e.target.value)}
+				/>
+				<InputGroupAddon align="inline-end">
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<InputGroupButton onClick={() => setShowPassword(!showPassword)}>
+								{showPassword ? <Eye /> : <EyeClosed />}
+							</InputGroupButton>
+						</TooltipTrigger>
+						<TooltipContent>
+							<p>{showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}</p>
+						</TooltipContent>
+					</Tooltip>
+				</InputGroupAddon>
+			</InputGroup>
 			{children ? children() : null}
-		</>
+		</Field>
 	);
 }

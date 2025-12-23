@@ -9,6 +9,8 @@ import { TableFilters } from "../search-filters";
 
 const Route = getRouteApi("__root__");
 
+type NestedKeyOf<T> = (keyof T & string) | (string & {});
+
 export function DataTableHeader<TData>({
 	table,
 	searchBy,
@@ -18,7 +20,7 @@ export function DataTableHeader<TData>({
 	hasSearchUrl = false,
 }: {
 	table: Table<TData>;
-	searchBy: keyof TData;
+	searchBy: NestedKeyOf<TData>;
 	searchPlaceholder?: string;
 	filters?: Filters[];
 	children?: React.ReactNode;

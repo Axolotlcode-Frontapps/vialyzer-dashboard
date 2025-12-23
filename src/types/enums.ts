@@ -110,6 +110,7 @@ export const Module = {
 	TRANSIT: "transito",
 	CONFIG_CAMERAS: "configuracion-camaras",
 	MOVILITY: "movilidad",
+	AGENTS_CRUD: "configuracion-agentes",
 } as const;
 
 export type MODULE_NAME = (typeof Module)[keyof typeof Module];

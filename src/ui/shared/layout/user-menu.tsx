@@ -4,6 +4,7 @@ import { BadgeCheck, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/auth";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../avatar";
+import { Badge } from "../badge";
 import { Button } from "../button";
 import {
 	DropdownMenu,
@@ -73,6 +74,7 @@ export function UserMenu() {
 								{userMe?.name} {userMe?.lastname}
 							</span>
 							<span className="truncate text-xs">{userMe?.email}</span>
+							<Badge className="mt-1 text-[10px]">{userMe?.role.name}</Badge>
 						</div>
 					</div>
 				</DropdownMenuLabel>

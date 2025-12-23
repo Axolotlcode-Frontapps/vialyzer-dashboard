@@ -1,5 +1,6 @@
 import { Activity } from "react";
 import {
+	BookUser,
 	Camera,
 	Car,
 	FileSliders,
@@ -140,6 +141,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				icon: Settings,
 				defaultOpen: true,
 				items: [
+					...(!hasModule("modulos")
+						? []
+						: [
+								{
+									title: "Módulos",
+									icon: Package,
+									to: "/settings/modules" as const,
+								},
+							]),
 					...(!hasModule("roles")
 						? []
 						: [
@@ -158,15 +168,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 									to: "/settings/users" as const,
 								},
 							]),
-					...(!hasModule("modulos")
+					...(!hasModule("configuracion-agentes")
 						? []
 						: [
 								{
-									title: "Módulos",
-									icon: Package,
-									to: "/settings/modules" as const,
+									title: "Agentes",
+									icon: BookUser,
+									to: "/settings/agents" as const,
 								},
 							]),
+
 					...(!hasModule("empresas")
 						? []
 						: [
@@ -221,7 +232,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 						hasModule("usuarios") ||
 						hasModule("roles") ||
 						hasModule("modulos") ||
-						hasModule("empresas")
+						hasModule("empresas") ||
+						hasModule("configuracion-agentes")
 							? "visible"
 							: "hidden"
 					}

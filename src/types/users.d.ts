@@ -4,6 +4,7 @@ interface User {
 	phone: string;
 	name: string;
 	lastname: string;
+	lastName?: string;
 	identification: string | null;
 	role: Role;
 	company: Company;
@@ -12,4 +13,6 @@ interface User {
 	lastLogin?: Date;
 	firstLogin?: boolean;
 	companie?: Company;
+	idRole?: string;
+	idCompany?: string;
 }
