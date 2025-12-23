@@ -11,11 +11,7 @@ import { Route } from "@/routes/_dashboard/movility/$camera/route";
 import { Card } from "@/ui/shared/card";
 import { HasPermission } from "../shared/permissions/has-permission";
 import { useFiltersForm } from "./filters/hook";
-import {
-	defaultValues,
-	useGraphFilters,
-	vehicles as vehiclesCat,
-} from "./filters/use-graph-filters";
+import { defaultValues, useGraphFilters } from "./filters/use-graph-filters";
 
 const schema = movilitySchemas.filtersCameraForm;
 
