@@ -149,18 +149,7 @@ export function Camera() {
 		elements: DrawingElement[];
 		layers: Map<string, LayerInfo>;
 	}> => {
-		const { elements, layers } = bridge.import(serverLines);
-
-		// const elementMap = new Map<string, DrawingElement>();
-		// elements.forEach((element) => {
-		// 	if (!elementMap.has(element.id)) {
-		// 		elementMap.set(element.id, element);
-		// 	}
-		// });
-
-		// const uniqueElements = Array.from(elementMap.values());
-
-		return { elements, layers };
+		return bridge.import(serverLines);
 	};
 
 	if (loading || linesLoading) {
@@ -170,7 +159,7 @@ export function Camera() {
 	return (
 		<div className="relative">
 			<Lines
-				src={preview?.previewImageUrl || Image}
+				src={preview?.temporal_preview_image || Image}
 				type="image"
 				onDrawingComplete={handleDrawingComplete}
 				onSave={handleSaveElements}

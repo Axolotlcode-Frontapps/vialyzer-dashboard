@@ -153,20 +153,16 @@ export interface Camera {
 	state: string;
 	clientZone: string;
 	location: {
-		latitude: number;
-		longitude: number;
+		latitude: string;
+		longitude: string;
 		timezone: string;
 	};
-	mongoHost: string;
-	mongoPort: string;
-	mongoUsername: string;
-	mongoPassword: string;
-	mongoDbName: string;
-	previewImageUrl: string;
+	previewImages: {};
+	temporal_preview_image: string;
 	active: boolean;
-	createdAt: string;
-	updatedAt: string;
-	deletedAt: string;
+	owner: string | null;
+	resolution: string | null;
+	connection: string | null;
 }
 
 class SettingsService {
