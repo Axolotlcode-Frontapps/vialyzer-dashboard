@@ -410,7 +410,7 @@ describe("DrawingEngine - Main Integration", () => {
 			const textData = {
 				name: "Test",
 				type: "DETECTION" as const,
-				direction: "top" as const,
+				counterTrack: false,
 				distance: 10,
 				fontSize: 16,
 				fontFamily: "Arial",

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, NotebookPen, Square } from "lucide-react";
+import { ArrowLeftRight, NotebookPen, Square } from "lucide-react";
 
 import type { LabelFormProps } from "./types";
 
@@ -15,13 +15,6 @@ const FONT_SIZE_OPTIONS = [
 	{ value: 24, label: "24px" },
 ];
 
-const DIRECTION_OPTIONS = [
-	{ value: "left", label: "Izquierda", icon: ArrowLeft },
-	{ value: "right", label: "Derecha", icon: ArrowRight },
-	{ value: "top", label: "Arriba", icon: ArrowUp },
-	{ value: "bottom", label: "Abajo", icon: ArrowDown },
-];
-
 export function LabelForm({ drawingEngine }: LabelFormProps) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [editingTextId, setEditingTextId] = useState<string | null>(null);
@@ -34,7 +27,7 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 		defaultValues: {
 			name: "",
 			description: "",
-			direction: "top" as "left" | "right" | "top" | "bottom",
+			counterTrack: false,
 			distance: 0,
 			fontSize: 16,
 			fontFamily: "Arial",
@@ -45,7 +38,7 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 				const infoData = {
 					name: value.name.trim(),
 					description: value.description?.trim() || undefined,
-					direction: value.direction,
+					counterTrack: value.counterTrack,
 					distance: value.distance,
 					fontSize: value.fontSize,
 					fontFamily: value.fontFamily,
@@ -77,7 +70,7 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 				// Update form values from drawing engine
 				form.setFieldValue("name", stateChange.currentText || "");
 				form.setFieldValue("description", stateChange.currentDescription || "");
-				form.setFieldValue("direction", stateChange.currentDirection || "top");
+				form.setFieldValue("counterTrack", stateChange.currentCounterTrack || false);
 				form.setFieldValue("distance", stateChange.currentDistance ?? 0);
 				form.setFieldValue("fontSize", stateChange.currentFontSize || 16);
 				form.setFieldValue("fontFamily", "Arial");
@@ -149,24 +142,6 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 					</form.AppField>
 
 					<div className="space-y-4">
-						<form.AppField
-							name="direction"
-							validators={{
-								onChange: labelFormSchema.shape.direction,
-							}}
-						>
-							{(field) => (
-								<field.ToggleGroupField
-									label="Dirección"
-									type="single"
-									options={DIRECTION_OPTIONS}
-									variant="outline"
-									size="sm"
-									className="justify-start grid-cols-4"
-								/>
-							)}
-						</form.AppField>
-
 						{layerType === "CONFIGURATION" && (
 							<form.AppField
 								name="distance"
@@ -217,6 +192,23 @@ export function LabelForm({ drawingEngine }: LabelFormProps) {
 										aria-label="Alternar fondo blanco"
 									>
 										<Square className="w-4 h-4" />
+									</field.ToggleField>
+								)}
+							</form.AppField>
+							<form.AppField
+								name="counterTrack"
+								validators={{
+									onChange: labelFormSchema.shape.counterTrack,
+								}}
+							>
+								{(field) => (
+									<field.ToggleField
+										label="Contravias"
+										variant="outline"
+										size="sm"
+										aria-label="Alternar contravias"
+									>
+										<ArrowLeftRight className="w-4 h-4" />
 									</field.ToggleField>
 								)}
 							</form.AppField>

@@ -48,7 +48,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Line",
-						direction: "left",
 						distance: 0,
 						fontSize: 12,
 						fontFamily: "Arial",
@@ -77,7 +76,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Rectangle",
-						direction: "left",
 						distance: 0,
 						fontSize: 12,
 						fontFamily: "Arial",
@@ -104,7 +102,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Circle",
-						direction: "left",
 						distance: 0,
 						fontSize: 12,
 						fontFamily: "Arial",
@@ -132,7 +129,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Area",
-						direction: "left",
 						distance: 0,
 						fontSize: 12,
 						fontFamily: "Arial",
@@ -162,7 +158,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Curve",
-						direction: "left",
 						distance: 0,
 						fontSize: 12,
 						fontFamily: "Arial",
@@ -191,7 +186,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Line",
-						direction: "left",
 						distance: 0,
 						fontSize: 12,
 						fontFamily: "Arial",
@@ -222,7 +216,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Line",
-						direction: "left",
 						distance: 0,
 						fontSize: 12,
 						fontFamily: "Arial",
@@ -257,7 +250,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Line",
-						direction: "left",
 						distance: 0,
 						fontSize: 12,
 						fontFamily: "Arial",
@@ -292,7 +284,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Line",
-						direction: "left",
 						distance: 0,
 						fontSize: 12,
 						fontFamily: "Arial",
@@ -323,7 +314,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Rectangle",
-						direction: "left",
 						distance: 0,
 						fontSize: 12,
 						fontFamily: "Arial",
@@ -354,7 +344,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Line",
-						direction: "left",
 						distance: 0,
 						fontSize: 12,
 						fontFamily: "Arial",
@@ -381,7 +370,6 @@ describe("DrawingUtils", () => {
 					color: "#000000",
 					info: {
 						name: "Test Line",
-						direction: "left",
 						distance: 0,
 						fontSize: 12,
 						fontFamily: "Arial",
@@ -445,7 +433,6 @@ describe("DrawingUtils", () => {
 				color: "#000000",
 				info: {
 					name: "Test Line",
-					direction: "left",
 					distance: 0,
 					fontSize: 12,
 					fontFamily: "Arial",
@@ -471,7 +458,6 @@ describe("DrawingUtils", () => {
 				color: "#000000",
 				info: {
 					name: "Test Line",
-					direction: "left",
 					distance: 0,
 					fontSize: 12,
 					fontFamily: "Arial",
@@ -527,7 +513,6 @@ describe("DrawingUtils", () => {
 				color: "#000000",
 				info: {
 					name: "Test Circle",
-					direction: "left",
 					distance: 0,
 					fontSize: 12,
 					fontFamily: "Arial",
@@ -553,7 +538,6 @@ describe("DrawingUtils", () => {
 				color: "#000000",
 				info: {
 					name: "Test Line",
-					direction: "left",
 					distance: 0,
 					fontSize: 12,
 					fontFamily: "Arial",
@@ -574,7 +558,6 @@ describe("DrawingUtils", () => {
 				color: "#000000",
 				info: {
 					name: "Test Line",
-					direction: "left",
 					distance: 0,
 					fontSize: 12,
 					fontFamily: "Arial",

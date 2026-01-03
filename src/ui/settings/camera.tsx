@@ -40,6 +40,7 @@ const bridge = new DrawingBridge({
 					fontFamily: element.info.fontFamily,
 					backgroundColor: element.info.backgroundColor,
 					backgroundOpacity: element.info.backgroundOpacity,
+					counter_track: element.counter_track,
 					coordinates: element.points.map((point) => [Math.floor(point.x), Math.floor(point.y)]),
 				}),
 				layer: (_value, element, layer) => ({
@@ -69,10 +70,7 @@ const bridge = new DrawingBridge({
 				transform: (value) => (value as string).replace(" - Entrada", ""),
 			},
 			"scenery.description": "info.description",
-			"visual_coordinates.direction": {
-				key: "info.direction",
-				transform: (value) => value ?? "bottom",
-			},
+			"visual_coordinates.counter_track": "counter_track",
 			"scenery.distance": "info.distance",
 			"visual_coordinates.fontSize": "info.fontSize",
 			"visual_coordinates.fontFamily": "info.fontFamily",

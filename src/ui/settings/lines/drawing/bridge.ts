@@ -54,7 +54,7 @@ export type AllowedTransforms<P extends DrawingElementPaths> =
 	P extends "color" | "info.backgroundColor"
 		? `${ColorTransforms}(${P})`
 		: // Text fields
-			P extends "type" | "info.name" | "info.description" | "info.fontFamily" | "info.direction"
+			P extends "type" | "info.name" | "info.description" | "info.fontFamily"
 			? `${TextTransforms}(${P})`
 			: // Number fields
 				P extends "info.distance" | "info.fontSize" | "info.backgroundOpacity"
@@ -612,8 +612,8 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			!hasInfo ||
 			typeof item.info.description === "undefined" ||
 			(typeof item.info.description === "string" && item.info.description.trim() !== "");
-		const hasInfoDirection =
-			hasInfo && typeof item.info.direction === "string" && item.info.direction.trim() !== "";
+		const hasValidCounterTrack =
+			typeof item.counter_track === "undefined" || typeof item.counter_track === "boolean";
 		const hasInfoDistance =
 			hasInfo && typeof item.info.distance === "number" && !Number.isNaN(item.info.distance);
 		const hasInfoFontSize =
@@ -641,7 +641,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			hasInfo,
 			hasInfoName,
 			hasValidInfoDescription,
-			hasInfoDirection,
+			hasValidCounterTrack,
 			hasInfoDistance,
 			hasInfoFontSize,
 			hasInfoFontFamily,
@@ -661,7 +661,7 @@ export class DrawingBridge<TSource> implements Bridge<TSource> {
 			hasInfo &&
 			hasInfoName &&
 			hasValidInfoDescription &&
-			hasInfoDirection &&
+			hasValidCounterTrack &&
 			hasInfoDistance &&
 			hasInfoFontSize &&
 			hasInfoFontFamily &&

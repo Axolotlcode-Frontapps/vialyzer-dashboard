@@ -7,9 +7,7 @@ export const labelFormSchema = z.object({
 		.min(1, "El nombre es requerido")
 		.max(100, "El nombre debe tener menos de 100 caracteres"),
 	description: z.string().max(200, "La descripción debe tener menos de 200 caracteres").optional(),
-	direction: z.enum(["left", "right", "top", "bottom"], {
-		message: "La dirección es requerida",
-	}),
+	counterTrack: z.boolean(),
 	distance: z.number().min(0, "La distancia debe ser mayor o igual a 0"),
 	fontSize: z
 		.number()
@@ -65,7 +63,7 @@ export type DrawingFormSchemas = typeof labelFormSchema | typeof layerFormSchema
 export const labelFormDefaults: LabelFormValues = {
 	name: "",
 	description: "",
-	direction: "top",
+	counterTrack: false,
 	distance: 0,
 	fontSize: 16,
 	fontFamily: "Arial",

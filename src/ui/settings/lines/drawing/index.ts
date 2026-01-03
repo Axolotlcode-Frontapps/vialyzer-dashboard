@@ -854,7 +854,7 @@ export class DrawingEngine implements DrawingEngineInterface {
 					elementId: data.elementId,
 					currentText: data.currentText,
 					currentDescription: data.currentDescription,
-					currentDirection: data.currentDirection,
+					currentCounterTrack: data.currentCounterTrack,
 					currentDistance: data.currentDistance,
 					currentFontSize: data.currentFontSize,
 					currentBackgroundEnabled: data.currentBackgroundEnabled,

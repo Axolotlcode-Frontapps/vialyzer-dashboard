@@ -88,18 +88,18 @@ export function CanvasContextMenu({
 							}}
 						>
 							Copiar {selectedElements.length} elemento(s)
-							<ContextMenuShortcut>Ctrl+C</ContextMenuShortcut>
+							<ContextMenuShortcut className="min-w-max">Ctrl+C</ContextMenuShortcut>
 						</ContextMenuItem>
 						<ContextMenuItem
 							onClick={() => drawingEngine?.cutSelectedElements()}
 							className="text-red-600"
 						>
 							Cortar {selectedElements.length} elemento(s)
-							<ContextMenuShortcut>Ctrl+X</ContextMenuShortcut>
+							<ContextMenuShortcut className="min-w-max">Ctrl+X</ContextMenuShortcut>
 						</ContextMenuItem>
 						<ContextMenuItem onClick={() => drawingEngine?.duplicateSelectedElements()}>
 							Duplicar {selectedElements.length} elemento(s)
-							<ContextMenuShortcut>Ctrl+D</ContextMenuShortcut>
+							<ContextMenuShortcut className="min-w-max">Ctrl+D</ContextMenuShortcut>
 						</ContextMenuItem>
 						<ContextMenuSeparator />
 					</>
@@ -112,11 +112,11 @@ export function CanvasContextMenu({
 							onClick={() => drawingEngine?.pasteElements(true, contextMenuPosition)}
 						>
 							Pegar Aquí ({clipboard.length} elemento(s))
-							<ContextMenuShortcut>Ctrl+Shift+V</ContextMenuShortcut>
+							<ContextMenuShortcut className="min-w-max">Ctrl+Shift+V</ContextMenuShortcut>
 						</ContextMenuItem>
 						<ContextMenuItem onClick={() => drawingEngine?.pasteElements(false)}>
 							Pegar con Desplazamiento ({clipboard.length} elemento(s))
-							<ContextMenuShortcut>Ctrl+V</ContextMenuShortcut>
+							<ContextMenuShortcut className="min-w-max">Ctrl+V</ContextMenuShortcut>
 						</ContextMenuItem>
 						<ContextMenuSeparator />
 					</>
@@ -129,7 +129,7 @@ export function CanvasContextMenu({
 							{elements.find((el) => el.id === selectedElements[0])?.info?.name
 								? "Editar Etiqueta de Texto"
 								: "Agregar Etiqueta de Texto"}
-							<ContextMenuShortcut>T</ContextMenuShortcut>
+							<ContextMenuShortcut className="min-w-max">T</ContextMenuShortcut>
 						</ContextMenuItem>
 						<ContextMenuSeparator />
 					</>
@@ -143,11 +143,11 @@ export function CanvasContextMenu({
 							className="text-red-600"
 						>
 							Eliminar {selectedElements.length} elemento(s)
-							<ContextMenuShortcut>Del</ContextMenuShortcut>
+							<ContextMenuShortcut className="min-w-max">Del</ContextMenuShortcut>
 						</ContextMenuItem>
 						<ContextMenuItem onClick={() => drawingEngine?.clearSelection()}>
 							Limpiar Selección
-							<ContextMenuShortcut>Ctrl+Shift+A</ContextMenuShortcut>
+							<ContextMenuShortcut className="min-w-max">Ctrl+Shift+A</ContextMenuShortcut>
 						</ContextMenuItem>
 						<ContextMenuSeparator />
 					</>
@@ -156,35 +156,35 @@ export function CanvasContextMenu({
 				{/* Drawing Mode Operations */}
 				<ContextMenuItem onClick={() => drawingEngine?.setDrawingMode("cursor")}>
 					Cambiar a Modo Cursor
-					<ContextMenuShortcut>C or 1</ContextMenuShortcut>
+					<ContextMenuShortcut className="min-w-max">C or 1</ContextMenuShortcut>
 				</ContextMenuItem>
 				<ContextMenuItem onClick={() => drawingEngine?.setDrawingMode("select")}>
 					Cambiar a Modo Selección
-					<ContextMenuShortcut>S or 2</ContextMenuShortcut>
+					<ContextMenuShortcut className="min-w-max">S or 2</ContextMenuShortcut>
 				</ContextMenuItem>
 				<ContextMenuItem onClick={() => drawingEngine?.setDrawingMode("erase")}>
 					Cambiar a Modo Borrar
-					<ContextMenuShortcut>E or 3</ContextMenuShortcut>
+					<ContextMenuShortcut className="min-w-max">E or 3</ContextMenuShortcut>
 				</ContextMenuItem>
 				<ContextMenuItem onClick={() => drawingEngine?.setDrawingMode("line")}>
 					Cambiar a Modo Línea
-					<ContextMenuShortcut>L or 4</ContextMenuShortcut>
+					<ContextMenuShortcut className="min-w-max">L or 4</ContextMenuShortcut>
 				</ContextMenuItem>
 				<ContextMenuItem onClick={() => drawingEngine?.setDrawingMode("area")}>
 					Cambiar a Modo Área
-					<ContextMenuShortcut>A or 5</ContextMenuShortcut>
+					<ContextMenuShortcut className="min-w-max">A or 5</ContextMenuShortcut>
 				</ContextMenuItem>
 				<ContextMenuItem onClick={() => drawingEngine?.setDrawingMode("curve")}>
 					Cambiar a Modo Curva
-					<ContextMenuShortcut>U or 6</ContextMenuShortcut>
+					<ContextMenuShortcut className="min-w-max">U or 6</ContextMenuShortcut>
 				</ContextMenuItem>
 				<ContextMenuItem onClick={() => drawingEngine?.setDrawingMode("rectangle")}>
 					Cambiar a Modo Rectángulo
-					<ContextMenuShortcut>R or 7</ContextMenuShortcut>
+					<ContextMenuShortcut className="min-w-max">R or 7</ContextMenuShortcut>
 				</ContextMenuItem>
 				<ContextMenuItem onClick={() => drawingEngine?.setDrawingMode("circle")}>
 					Cambiar a Modo Círculo
-					<ContextMenuShortcut>O or 8</ContextMenuShortcut>
+					<ContextMenuShortcut className="min-w-max">O or 8</ContextMenuShortcut>
 				</ContextMenuItem>
 
 				{/* Utility Operations */}
@@ -199,7 +199,7 @@ export function CanvasContextMenu({
 						{elements.length > 0 && (
 							<ContextMenuItem onClick={() => drawingEngine?.clearAll()} className="text-red-600">
 								Limpiar Todos los Elementos ({elements.length} total)
-								<ContextMenuShortcut>Ctrl+Shift+C</ContextMenuShortcut>
+								<ContextMenuShortcut className="min-w-max">Ctrl+Shift+C</ContextMenuShortcut>
 							</ContextMenuItem>
 						)}
 					</>

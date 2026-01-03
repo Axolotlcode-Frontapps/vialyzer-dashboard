@@ -125,6 +125,7 @@ export class DrawingActions {
 		const newElements = this.#state.clipboard.map((element, index) => {
 			let newPoints: Point[];
 			let newDetection: { entry: Point[]; exit: Point[] } | undefined;
+			let newDirection: { start: Point; end: Point } | null | undefined;
 
 			if (atPosition && position) {
 				const mediaPosition = this.#core.displayToMediaCoords(position);
@@ -155,6 +156,20 @@ export class DrawingActions {
 							})),
 						};
 					}
+
+					// Also move direction arrow points if they exist
+					newDirection = element.direction
+						? {
+								start: {
+									x: element.direction.start.x + offsetX,
+									y: element.direction.start.y + offsetY,
+								},
+								end: {
+									x: element.direction.end.x + offsetX,
+									y: element.direction.end.y + offsetY,
+								},
+							}
+						: element.direction;
 				} else {
 					newPoints = element.points.map((point) => ({ ...point }));
 					newDetection = element.detection
@@ -163,6 +178,12 @@ export class DrawingActions {
 								exit: element.detection.exit.map((point) => ({ ...point })),
 							}
 						: undefined;
+					newDirection = element.direction
+						? {
+								start: { ...element.direction.start },
+								end: { ...element.direction.end },
+							}
+						: element.direction;
 				}
 			} else {
 				newPoints = element.points.map((point) => ({
@@ -183,6 +204,20 @@ export class DrawingActions {
 						})),
 					};
 				}
+
+				// Also move direction arrow points if they exist
+				newDirection = element.direction
+					? {
+							start: {
+								x: element.direction.start.x + this.#state.pasteOffset.x,
+								y: element.direction.start.y + this.#state.pasteOffset.y,
+							},
+							end: {
+								x: element.direction.end.x + this.#state.pasteOffset.x,
+								y: element.direction.end.y + this.#state.pasteOffset.y,
+							},
+						}
+					: element.direction;
 			}
 
 			return {
@@ -190,6 +225,7 @@ export class DrawingActions {
 				id: this.#utils.generateElementId(),
 				points: newPoints,
 				detection: newDetection,
+				direction: newDirection,
 			};
 		});
 
@@ -381,6 +417,19 @@ export class DrawingActions {
 								})),
 							}
 						: undefined,
+					// Also move direction arrow points if they exist
+					direction: element.direction
+						? {
+								start: {
+									x: element.direction.start.x + offset.x,
+									y: element.direction.start.y + offset.y,
+								},
+								end: {
+									x: element.direction.end.x + offset.x,
+									y: element.direction.end.y + offset.y,
+								},
+							}
+						: element.direction,
 				};
 			}
 			return element;
@@ -577,6 +626,19 @@ export class DrawingActions {
 					x: point.x + offset.x,
 					y: point.y + offset.y,
 				})),
+				// Also move direction arrow points if they exist
+				direction: element.direction
+					? {
+							start: {
+								x: element.direction.start.x + offset.x,
+								y: element.direction.start.y + offset.y,
+							},
+							end: {
+								x: element.direction.end.x + offset.x,
+								y: element.direction.end.y + offset.y,
+							},
+						}
+					: element.direction,
 			};
 		});
 

@@ -36,7 +36,7 @@ export class DrawingAnnotation {
 			elementId,
 			currentText: element.info?.name || "",
 			currentDescription: element.info?.description || "",
-			currentDirection: element.info?.direction || "top",
+			currentCounterTrack: element.counter_track || false,
 			currentDistance: element.info?.distance ?? 0,
 			currentFontSize: element.info?.fontSize || 16,
 			currentBackgroundEnabled: !!element.info?.backgroundColor,
@@ -65,11 +65,11 @@ export class DrawingAnnotation {
 				// Create updated element - type is inherited from layer, distance is set from form
 				const updatedElement = {
 					...element,
+					counter_track: textData.counterTrack,
 					info: {
 						...element.info,
 						name: name.trim(),
 						description: textData.description?.trim() || undefined,
-						direction: textData.direction,
 						distance: textData.distance,
 						fontSize: textData.fontSize,
 						fontFamily: textData.fontFamily || "Arial",
@@ -460,7 +460,7 @@ export class DrawingAnnotation {
 			"Name",
 			"Description",
 			"Layer Type",
-			"Direction",
+			"Counter Track",
 			"Distance",
 			"Font Size",
 			"Has Background",
@@ -474,7 +474,7 @@ export class DrawingAnnotation {
 				`"${(element.info?.name || "").replace(/"/g, '""')}"`, // Escape quotes for CSV
 				`"${(element.info?.description || "").replace(/"/g, '""')}"`,
 				layer?.type || "DETECTION",
-				element.info?.direction || "top",
+				element.counter_track || false,
 				element.info?.distance || "",
 				element.info?.fontSize || 16,
 				!!element.info?.backgroundColor,

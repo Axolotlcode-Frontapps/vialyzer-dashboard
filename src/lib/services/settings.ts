@@ -75,6 +75,7 @@ export interface LineElement {
 		backgroundColor?: string;
 		backgroundOpacity: number;
 		coordinates: [number, number][];
+		counter_track?: boolean;
 	};
 	layer: {
 		id: string;
