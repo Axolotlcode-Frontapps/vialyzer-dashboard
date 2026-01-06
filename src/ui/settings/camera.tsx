@@ -40,6 +40,7 @@ const bridge = new DrawingBridge({
 					fontFamily: element.info.fontFamily,
 					backgroundColor: element.info.backgroundColor,
 					backgroundOpacity: element.info.backgroundOpacity,
+					counter_track: element.counter_track,
 					coordinates: element.points.map((point) => [Math.floor(point.x), Math.floor(point.y)]),
 				}),
 				layer: (_value, element, layer) => ({
@@ -69,10 +70,7 @@ const bridge = new DrawingBridge({
 				transform: (value) => (value as string).replace(" - Entrada", ""),
 			},
 			"scenery.description": "info.description",
-			"visual_coordinates.direction": {
-				key: "info.direction",
-				transform: (value) => value ?? "bottom",
-			},
+			"visual_coordinates.counter_track": "counter_track",
 			"scenery.distance": "info.distance",
 			"visual_coordinates.fontSize": "info.fontSize",
 			"visual_coordinates.fontFamily": "info.fontFamily",
@@ -149,18 +147,7 @@ export function Camera() {
 		elements: DrawingElement[];
 		layers: Map<string, LayerInfo>;
 	}> => {
-		const { elements, layers } = bridge.import(serverLines);
-
-		// const elementMap = new Map<string, DrawingElement>();
-		// elements.forEach((element) => {
-		// 	if (!elementMap.has(element.id)) {
-		// 		elementMap.set(element.id, element);
-		// 	}
-		// });
-
-		// const uniqueElements = Array.from(elementMap.values());
-
-		return { elements, layers };
+		return bridge.import(serverLines);
 	};
 
 	if (loading || linesLoading) {
@@ -170,7 +157,7 @@ export function Camera() {
 	return (
 		<div className="relative">
 			<Lines
-				src={preview?.previewImageUrl || Image}
+				src={preview?.temporal_preview_image || Image}
 				type="image"
 				onDrawingComplete={handleDrawingComplete}
 				onSave={handleSaveElements}

@@ -403,7 +403,6 @@ describe("Camera Component", () => {
 						name: "Test Line",
 						description: "Test Description",
 						distance: 100,
-						direction: "right",
 						fontSize: 12,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
@@ -501,7 +500,6 @@ describe("Camera Component", () => {
 					info: {
 						name: "Updated Line",
 						distance: 100,
-						direction: "right",
 						fontSize: 12,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
@@ -586,7 +584,6 @@ describe("Camera Component", () => {
 					info: {
 						name: "Line to delete",
 						distance: 100,
-						direction: "right",
 						fontSize: 12,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
@@ -652,7 +649,6 @@ describe("Camera Component", () => {
 					info: {
 						name: "Unchanged Line",
 						distance: 100,
-						direction: "right",
 						fontSize: 12,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
@@ -706,7 +702,6 @@ describe("Camera Component", () => {
 					info: {
 						name: "Test Line",
 						distance: 100,
-						direction: "right",
 						fontSize: 12,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
@@ -799,7 +794,6 @@ describe("Camera Component", () => {
 							name: "Test Line",
 							description: "Test Description",
 							distance: 100,
-							direction: "right",
 							fontSize: 12,
 							fontFamily: "Arial",
 							backgroundOpacity: 0.8,
@@ -905,7 +899,6 @@ describe("Camera Component", () => {
 					info: {
 						name: "Test Line",
 						distance: 100,
-						direction: "right",
 						fontSize: 12,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
@@ -982,7 +975,6 @@ describe("Camera Component", () => {
 					info: {
 						name: "Updated Line",
 						distance: 100,
-						direction: "right",
 						fontSize: 12,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
@@ -1051,7 +1043,6 @@ describe("Camera Component", () => {
 					info: {
 						name: "Line to delete",
 						distance: 100,
-						direction: "right",
 						fontSize: 12,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
@@ -1118,7 +1109,6 @@ describe("Camera Component", () => {
 						name: "Test Line",
 						description: "Test Description",
 						distance: 100,
-						direction: "right",
 						fontSize: 12,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
@@ -1212,7 +1202,6 @@ describe("Camera Component", () => {
 						info: {
 							name: "Test Line",
 							distance: 100,
-							direction: "right",
 							fontSize: 12,
 							fontFamily: "Arial",
 							backgroundOpacity: 0.8,

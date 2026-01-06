@@ -207,7 +207,7 @@ describe("DrawingAnnotation", () => {
 		it("should complete text input with basic properties", () => {
 			const textData = {
 				name: "Test text",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 16,
 				fontFamily: "Arial",
@@ -226,7 +226,7 @@ describe("DrawingAnnotation", () => {
 		it("should complete text input with custom font size", () => {
 			const textData = {
 				name: "Large text",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 24,
 				fontFamily: "Arial",
@@ -245,7 +245,7 @@ describe("DrawingAnnotation", () => {
 		it("should complete text input with custom font family", () => {
 			const textData = {
 				name: "Custom font",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 16,
 				fontFamily: "Helvetica",
@@ -264,7 +264,7 @@ describe("DrawingAnnotation", () => {
 		it("should handle empty text input", () => {
 			const textData = {
 				name: "",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 16,
 				fontFamily: "Arial",
@@ -283,7 +283,7 @@ describe("DrawingAnnotation", () => {
 		it("should complete text input with multiple lines", () => {
 			const textData = {
 				name: "Line 1\nLine 2\nLine 3",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 14,
 				fontFamily: "Arial",
@@ -302,7 +302,7 @@ describe("DrawingAnnotation", () => {
 		it("should complete text input with special characters", () => {
 			const textData = {
 				name: "Special: @#$%^&*()",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 16,
 				fontFamily: "Arial",
@@ -326,7 +326,7 @@ describe("DrawingAnnotation", () => {
 			fontSizes.forEach((fontSize, index) => {
 				const textData = {
 					name: `Size ${fontSize}`,
-					direction: "left" as const,
+					counterTrack: false,
 					distance: 0,
 					fontSize,
 					fontFamily: "Arial",
@@ -353,7 +353,7 @@ describe("DrawingAnnotation", () => {
 			fontFamilies.forEach((fontFamily, index) => {
 				const textData = {
 					name: `Font: ${fontFamily}`,
-					direction: "left" as const,
+					counterTrack: false,
 					distance: 0,
 					fontSize: 16,
 					fontFamily,
@@ -389,7 +389,7 @@ describe("DrawingAnnotation", () => {
 
 			const newTextData = {
 				name: "Updated text",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 18,
 				fontFamily: "Helvetica",
@@ -414,7 +414,7 @@ describe("DrawingAnnotation", () => {
 		it("should handle text updates with same content", () => {
 			const textData = {
 				name: "Same text",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 16,
 				fontFamily: "Arial",
@@ -433,7 +433,7 @@ describe("DrawingAnnotation", () => {
 			const longText = "A".repeat(1000);
 			const textData = {
 				name: longText,
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 16,
 				fontFamily: "Arial",
@@ -452,7 +452,7 @@ describe("DrawingAnnotation", () => {
 		it("should handle text with unicode characters", () => {
 			const textData = {
 				name: "Unicode: 你好世界 🌍 ñáéíóú",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 16,
 				fontFamily: "Arial",
@@ -471,7 +471,7 @@ describe("DrawingAnnotation", () => {
 		it("should handle text with numbers", () => {
 			const textData = {
 				name: "Numbers: 1234567890",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 16,
 				fontFamily: "Arial",
@@ -492,7 +492,7 @@ describe("DrawingAnnotation", () => {
 		it("should update state after text completion", () => {
 			const textData = {
 				name: "New text",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 16,
 				fontFamily: "Arial",
@@ -509,7 +509,7 @@ describe("DrawingAnnotation", () => {
 
 			const textData = {
 				name: "First text",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 16,
 				fontFamily: "Arial",
@@ -530,7 +530,7 @@ describe("DrawingAnnotation", () => {
 		it("should handle whitespace-only text", () => {
 			const textData = {
 				name: "   ",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 16,
 				fontFamily: "Arial",
@@ -549,7 +549,7 @@ describe("DrawingAnnotation", () => {
 		it("should handle text with tabs and newlines", () => {
 			const textData = {
 				name: "Line 1\t\tTabbed\nLine 2",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 16,
 				fontFamily: "Arial",
@@ -568,7 +568,7 @@ describe("DrawingAnnotation", () => {
 		it("should handle minimum font size", () => {
 			const textData = {
 				name: "Tiny text",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 1,
 				fontFamily: "Arial",
@@ -583,7 +583,7 @@ describe("DrawingAnnotation", () => {
 		it("should handle maximum font size", () => {
 			const textData = {
 				name: "Huge text",
-				direction: "left" as const,
+				counterTrack: false,
 				distance: 0,
 				fontSize: 200,
 				fontFamily: "Arial",

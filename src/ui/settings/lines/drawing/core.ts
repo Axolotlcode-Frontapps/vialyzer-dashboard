@@ -82,7 +82,6 @@ export class DrawingCore {
 			info: {
 				name: "",
 				description: undefined,
-				direction: "top",
 				distance: 0,
 				fontSize: 16,
 				fontFamily: "Arial",
@@ -649,7 +648,8 @@ export class DrawingCore {
 
 				let arrowPoint: Point;
 				if (element.type === "line") {
-					const t = 0.75;
+					// Position forward arrow at 80% (20% from end): .-20%-<---->-20%-.
+					const t = 0.8;
 					arrowPoint = {
 						x: displayStart.x + (displayEnd.x - displayStart.x) * t,
 						y: displayStart.y + (displayEnd.y - displayStart.y) * t,
@@ -680,6 +680,52 @@ export class DrawingCore {
 					element.color,
 					this.#config.rendering.arrowSize
 				);
+
+				// Draw counter arrow if counter_track is enabled (bidirectional: <->)
+				if (element.counter_track) {
+					let counterArrowPoint: Point;
+					let counterArrowDirection: Point;
+
+					if (element.type === "line") {
+						// Position counter arrow at 20% (20% from start): .-20%-<---->-20%-.
+						const t = 0.2;
+						counterArrowPoint = {
+							x: displayStart.x + (displayEnd.x - displayStart.x) * t,
+							y: displayStart.y + (displayEnd.y - displayStart.y) * t,
+						};
+						counterArrowDirection = displayStart;
+					} else {
+						// curve - position counter arrow on the first segment of the curve
+						const n = displayPoints.length;
+						if (n >= 3) {
+							// Use first segment with catmullRomSpline to stay on the curve
+							// Mirror the approach used for the forward arrow but on the first segment
+							const p0 = displayPoints[0]; // Start point repeated for p0
+							const p1 = displayPoints[0];
+							const p2 = displayPoints[1];
+							const p3 = displayPoints[2];
+							// Position at 50% along the first curve segment
+							counterArrowPoint = this.catmullRomSpline(p0, p1, p2, p3, 0.5);
+							// Direction: use a point closer to start for proper arrow orientation
+							counterArrowDirection = this.catmullRomSpline(p0, p1, p2, p3, 0.2);
+						} else {
+							const t = 0.25;
+							counterArrowPoint = {
+								x: displayPoints[0].x + (displayPoints[1].x - displayPoints[0].x) * t,
+								y: displayPoints[0].y + (displayPoints[1].y - displayPoints[0].y) * t,
+							};
+							counterArrowDirection = displayPoints[0];
+						}
+					}
+
+					this.drawArrow(
+						ctx,
+						counterArrowPoint,
+						counterArrowDirection,
+						element.color,
+						this.#config.rendering.arrowSize
+					);
+				}
 			}
 		}
 
@@ -1499,7 +1545,8 @@ export class DrawingCore {
 
 				let arrowPoint: Point;
 				if (element.type === "line") {
-					const t = 0.75;
+					// Position forward arrow at 80% (20% from end): .-20%-<---->-20%-.
+					const t = 0.8;
 					arrowPoint = {
 						x: targetStart.x + (targetEnd.x - targetStart.x) * t,
 						y: targetStart.y + (targetEnd.y - targetStart.y) * t,
@@ -1523,6 +1570,52 @@ export class DrawingCore {
 				}
 
 				this.drawArrow(ctx, arrowPoint, targetEnd, element.color, this.#config.rendering.arrowSize);
+
+				// Draw counter arrow if counter_track is enabled (bidirectional: <->)
+				if (element.counter_track) {
+					let counterArrowPoint: Point;
+					let counterArrowDirection: Point;
+
+					if (element.type === "line") {
+						// Position counter arrow at 20% (20% from start): .-20%-<---->-20%-.
+						const t = 0.2;
+						counterArrowPoint = {
+							x: targetStart.x + (targetEnd.x - targetStart.x) * t,
+							y: targetStart.y + (targetEnd.y - targetStart.y) * t,
+						};
+						counterArrowDirection = targetStart;
+					} else {
+						// curve - position counter arrow on the first segment of the curve
+						const n = targetPoints.length;
+						if (n >= 3) {
+							// Use first segment with catmullRomSpline to stay on the curve
+							// Mirror the approach used for the forward arrow but on the first segment
+							const p0 = targetPoints[0]; // Start point repeated for p0
+							const p1 = targetPoints[0];
+							const p2 = targetPoints[1];
+							const p3 = targetPoints[2];
+							// Position at 50% along the first curve segment
+							counterArrowPoint = this.catmullRomSpline(p0, p1, p2, p3, 0.5);
+							// Direction: use a point closer to start for proper arrow orientation
+							counterArrowDirection = this.catmullRomSpline(p0, p1, p2, p3, 0.2);
+						} else {
+							const t = 0.25;
+							counterArrowPoint = {
+								x: targetPoints[0].x + (targetPoints[1].x - targetPoints[0].x) * t,
+								y: targetPoints[0].y + (targetPoints[1].y - targetPoints[0].y) * t,
+							};
+							counterArrowDirection = targetPoints[0];
+						}
+					}
+
+					this.drawArrow(
+						ctx,
+						counterArrowPoint,
+						counterArrowDirection,
+						element.color,
+						this.#config.rendering.arrowSize
+					);
+				}
 			}
 		}
 

@@ -56,7 +56,10 @@ describe("DrawingBridge", () => {
 					},
 					"scenery.description": "info.description",
 					"scenery.distance": "info.distance",
-					"visual_coordinates.direction": "info.direction",
+					"visual_coordinates.counter_track": {
+						key: "counter_track",
+						transform: (value) => value ?? false,
+					},
 					"visual_coordinates.fontSize": "info.fontSize",
 					"visual_coordinates.fontFamily": "info.fontFamily",
 					"visual_coordinates.backgroundColor": "info.backgroundColor",
@@ -140,7 +143,6 @@ describe("DrawingBridge", () => {
 				info: {
 					name: "Test Line",
 					description: "A test line",
-					direction: "left",
 					distance: 100,
 					fontSize: 14,
 					fontFamily: "Arial",
@@ -170,7 +172,6 @@ describe("DrawingBridge", () => {
 					layerId: "layer-1",
 					info: {
 						name: "Line 1",
-						direction: "left",
 						distance: 100,
 						fontSize: 14,
 						fontFamily: "Arial",
@@ -191,7 +192,6 @@ describe("DrawingBridge", () => {
 					layerId: "layer-1",
 					info: {
 						name: "Area 1",
-						direction: "top",
 						distance: 200,
 						fontSize: 14,
 						fontFamily: "Arial",
@@ -222,7 +222,6 @@ describe("DrawingBridge", () => {
 					layerId: "layer-1",
 					info: {
 						name: "Test",
-						direction: "left",
 						distance: 100,
 						fontSize: 14,
 						fontFamily: "Arial",
@@ -249,7 +248,6 @@ describe("DrawingBridge", () => {
 				layerId: "layer-1",
 				info: {
 					name: "Test",
-					direction: "left",
 					distance: 100,
 					fontSize: 16,
 					fontFamily: "Arial",
@@ -280,7 +278,6 @@ describe("DrawingBridge", () => {
 						color: [255, 0, 0],
 						active: true,
 						distance: 100,
-						direction: "left",
 						coordinates: [
 							[0, 0],
 							[100, 100],
@@ -302,7 +299,6 @@ describe("DrawingBridge", () => {
 						fontSize: 14,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
-						direction: "left",
 					},
 				},
 			];
@@ -330,7 +326,6 @@ describe("DrawingBridge", () => {
 							[0, 0],
 							[100, 100],
 						],
-						direction: "left",
 					},
 					second_scenery: {
 						coordinates: [
@@ -348,7 +343,6 @@ describe("DrawingBridge", () => {
 						fontSize: 14,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
-						direction: "left",
 					},
 				},
 				{
@@ -373,7 +367,6 @@ describe("DrawingBridge", () => {
 						active: true,
 						type: "DETECTION",
 						distance: 100,
-						direction: "left",
 						coordinates: [
 							[0, 0],
 							[100, 100],
@@ -395,7 +388,6 @@ describe("DrawingBridge", () => {
 						fontSize: 14,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
-						direction: "left",
 					},
 				},
 			];
@@ -442,7 +434,6 @@ describe("DrawingBridge", () => {
 							[693, 268],
 						],
 						backgroundOpacity: 0.8,
-						direction: "bottom",
 					},
 				},
 			];
@@ -462,7 +453,7 @@ describe("DrawingBridge", () => {
 			expect(result.elements[0].points).toHaveLength(2);
 			expect(result.elements[0].info?.name).toBe("probando refactor engine");
 			expect(result.elements[0].info?.distance).toBe(15);
-			expect(result.elements[0].info?.direction).toBe("bottom");
+			expect(result.elements[0].counter_track).toBe(false);
 
 			// Layer should be CONFIGURATION type
 			expect(result.layers.size).toBe(1);
@@ -489,7 +480,6 @@ describe("DrawingBridge", () => {
 							[0, 0],
 							[100, 100],
 						],
-						direction: "left",
 					},
 					second_scenery: {
 						coordinates: [
@@ -507,7 +497,6 @@ describe("DrawingBridge", () => {
 						fontSize: 14,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
-						direction: "left",
 					},
 				},
 			];
@@ -530,7 +519,6 @@ describe("DrawingBridge", () => {
 						active: true,
 						type: "DETECTION",
 						distance: 100,
-						direction: "left",
 						coordinates: [
 							[0, 0],
 							[100, 100],
@@ -552,7 +540,6 @@ describe("DrawingBridge", () => {
 						fontSize: 14,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
-						direction: "left",
 					},
 				},
 			];
@@ -570,7 +557,6 @@ describe("DrawingBridge", () => {
 				color: "#FF0000",
 				info: {
 					name: "Test",
-					direction: "left",
 					distance: 100,
 					fontSize: 14,
 					fontFamily: "Arial",
@@ -595,7 +581,6 @@ describe("DrawingBridge", () => {
 						active: true,
 						type: "DETECTION",
 						distance: 100,
-						direction: "left",
 						coordinates: [
 							[10, 20],
 							[30, 40],
@@ -622,7 +607,6 @@ describe("DrawingBridge", () => {
 						fontSize: 14,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
-						direction: "left",
 					},
 				},
 			];
@@ -646,7 +630,6 @@ describe("DrawingBridge", () => {
 				color: "#000000",
 				info: {
 					name: "Test",
-					direction: "left",
 					distance: 100,
 					fontSize: 14,
 					fontFamily: "Arial",
@@ -672,7 +655,6 @@ describe("DrawingBridge", () => {
 						active: true,
 						type: "DETECTION",
 						distance: 100,
-						direction: "left",
 						coordinates: [
 							[0, 0],
 							[100, 100],
@@ -687,7 +669,6 @@ describe("DrawingBridge", () => {
 					visual_coordinates: {
 						type: "line",
 						layer_id: "layer-1",
-						direction: "left",
 						coordinates: [
 							[10, 20],
 							[30, 40],
@@ -722,7 +703,6 @@ describe("DrawingBridge", () => {
 							[50, 50],
 							[100, 100],
 						],
-						direction: "left",
 					},
 					second_scenery: {
 						coordinates: [
@@ -741,7 +721,6 @@ describe("DrawingBridge", () => {
 						fontFamily: "Helvetica",
 						backgroundColor: "#FFFFFF",
 						backgroundOpacity: 0.9,
-						direction: "left",
 					},
 				},
 			];
@@ -763,7 +742,6 @@ describe("DrawingBridge", () => {
 				layerId: "layer-1",
 				info: {
 					name: "Text Label",
-					direction: "left",
 					distance: 100,
 					fontSize: 16,
 					fontFamily: "Arial",
@@ -830,7 +808,6 @@ describe("DrawingBridge", () => {
 							[0, 0],
 							[100, 100],
 						],
-						direction: "left",
 					},
 					second_scenery: {
 						coordinates: [
@@ -848,7 +825,6 @@ describe("DrawingBridge", () => {
 						fontSize: 14,
 						fontFamily: "Arial",
 						backgroundOpacity: 0.8,
-						direction: "left",
 					},
 				},
 			];
@@ -867,7 +843,6 @@ describe("DrawingBridge", () => {
 				layerId: "layer-1",
 				info: {
 					name: "Test",
-					direction: "left",
 					distance: 100,
 					fontSize: 14,
 					fontFamily: "Arial",
@@ -910,7 +885,6 @@ describe("DrawingBridge", () => {
 				layerId: "layer-1",
 				info: {
 					name: "Test Line",
-					direction: "left",
 					distance: 100,
 					fontSize: 14,
 					fontFamily: "Arial",
@@ -932,7 +906,6 @@ describe("DrawingBridge", () => {
 						[10, 20],
 						[30, 40],
 					],
-					direction: "left",
 				},
 				second_scenery: {
 					coordinates: [
@@ -942,7 +915,6 @@ describe("DrawingBridge", () => {
 				},
 				visual_coordinates: {
 					...exported[0].visual_coordinates,
-					direction: "left",
 				},
 			};
 
@@ -990,7 +962,6 @@ describe("DrawingBridge", () => {
 				layerId: "layer-1",
 				info: {
 					name: `Element ${i}`,
-					direction: "left",
 					distance: 100,
 					fontSize: 14,
 					fontFamily: "Arial",
@@ -1016,7 +987,6 @@ describe("DrawingBridge", () => {
 					active: true,
 					type: "DETECTION",
 					distance: 100,
-					direction: "left",
 					coordinates: [
 						[i, i],
 						[i + 10, i + 10],
@@ -1038,7 +1008,6 @@ describe("DrawingBridge", () => {
 					fontSize: 14,
 					fontFamily: "Arial",
 					backgroundOpacity: 0.8,
-					direction: "left",
 				},
 			}));
 

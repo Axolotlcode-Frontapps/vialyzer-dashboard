@@ -24,7 +24,6 @@ export function useAddScenarioLine(): UseAddScenarioLineReturn {
 						detection_entry,
 						detection_exit,
 						coordinates,
-						// eslint-disable-next-line @typescript-eslint/no-unused-vars
 						id,
 						layer,
 						visual_coordinates,

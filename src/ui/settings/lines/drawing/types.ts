@@ -240,11 +240,11 @@ export interface DrawingElement {
 	completed: boolean;
 	layerId?: string;
 	groupId?: string;
+	counter_track?: boolean;
 	direction?: { start: Point; end: Point } | null;
 	info: {
 		name: string;
 		description?: string;
-		direction: "left" | "right" | "top" | "bottom";
 		distance: number; // Required - only shown in UI when element is in CONFIGURATION type layer
 		fontSize: number;
 		fontFamily: string;
@@ -404,7 +404,7 @@ export interface OpenTextEditorAnnotation {
 	elementId: string;
 	currentText: string;
 	currentDescription: string;
-	currentDirection: "left" | "right" | "top" | "bottom";
+	currentCounterTrack: boolean;
 	currentDistance: number;
 	currentFontSize: number;
 	currentBackgroundEnabled: boolean;
@@ -587,7 +587,7 @@ export interface TextData {
 	name: string;
 	content?: string; // Deprecated - use name instead
 	description?: string;
-	direction: "left" | "right" | "top" | "bottom";
+	counterTrack: boolean;
 	distance: number; // Required - only shown in UI when element is in CONFIGURATION type layer
 	fontSize: number;
 	fontFamily?: string;

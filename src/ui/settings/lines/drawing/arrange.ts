@@ -390,10 +390,25 @@ export class DrawingArrange {
 				after: { points: newPoints },
 			});
 
+			// Also move direction arrow points if they exist
+			const newDirection = element.direction
+				? {
+						start: {
+							x: element.direction.start.x + offset.x,
+							y: element.direction.start.y + offset.y,
+						},
+						end: {
+							x: element.direction.end.x + offset.x,
+							y: element.direction.end.y + offset.y,
+						},
+					}
+				: element.direction;
+
 			return {
 				...element,
 				points: newPoints,
 				detection: newDetection,
+				direction: newDirection,
 			};
 		});
 
@@ -562,10 +577,25 @@ export class DrawingArrange {
 				after: { points: newPoints },
 			});
 
+			// Also move direction arrow points if they exist
+			const newDirection = element.direction
+				? {
+						start: {
+							x: element.direction.start.x + (isHorizontal ? offset : 0),
+							y: element.direction.start.y + (isHorizontal ? 0 : offset),
+						},
+						end: {
+							x: element.direction.end.x + (isHorizontal ? offset : 0),
+							y: element.direction.end.y + (isHorizontal ? 0 : offset),
+						},
+					}
+				: element.direction;
+
 			return {
 				...element,
 				points: newPoints,
 				detection: newDetection,
+				direction: newDirection,
 			};
 		});
 
@@ -799,7 +829,21 @@ export class DrawingArrange {
 				after: { points: newPoints },
 			});
 
-			return { ...element, points: newPoints };
+			// Also flip direction arrow points if they exist
+			const newDirection = element.direction
+				? {
+						start:
+							direction === "horizontal"
+								? { x: 2 * centerX - element.direction.start.x, y: element.direction.start.y }
+								: { x: element.direction.start.x, y: 2 * centerY - element.direction.start.y },
+						end:
+							direction === "horizontal"
+								? { x: 2 * centerX - element.direction.end.x, y: element.direction.end.y }
+								: { x: element.direction.end.x, y: 2 * centerY - element.direction.end.y },
+					}
+				: element.direction;
+
+			return { ...element, points: newPoints, direction: newDirection };
 		});
 
 		this.#triggerStateChange("updateElements", { elements: updatedElements });
